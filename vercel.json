@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "buildCommand": "pnpm --dir site install && pnpm --dir site build",
+  "outputDirectory": "site/out",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD site/**/* snapshot/**/*"
+}
+

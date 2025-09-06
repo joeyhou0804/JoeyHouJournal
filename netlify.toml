@@ -1,0 +1,12 @@
+[build]
+  command = "pnpm --dir site install && pnpm --dir site build"
+  publish = "site/out"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    cache-control = "public, max-age=600"
+
