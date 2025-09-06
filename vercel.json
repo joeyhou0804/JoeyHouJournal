@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd site && npm install && npm run build",
+  "buildCommand": "cd site && npm install && npm run build && cp -r ../snapshot/www.joeyhou.org/* ./out/",
   "outputDirectory": "site/out",
   "ignoreCommand": "git diff --quiet HEAD^ HEAD site/**/* snapshot/**/*"
 }
