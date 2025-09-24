@@ -63,7 +63,7 @@ export default function PlacesPage() {
           {displayedPlaces.map((place, index) => (
             <Link href={`/places/${place.id}`} key={index}>
               <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                <div className="relative h-48 bg-gray-200 rounded-t-lg overflow-hidden">
+                <div className="relative aspect-square bg-gray-200 rounded-t-lg overflow-hidden">
                   {place.imageUrl ? (
                     <img
                       src={place.imageUrl}
@@ -71,7 +71,7 @@ export default function PlacesPage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="flex items-center justify-center h-full">
+                    <div className="flex items-center justify-center w-full h-full">
                       <Image className="h-12 w-12 text-gray-400" />
                     </div>
                   )}

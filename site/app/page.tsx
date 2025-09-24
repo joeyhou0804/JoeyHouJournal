@@ -95,7 +95,7 @@ export default function Home() {
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {recentPlaces.map((place, index) => (
               <div key={index} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="h-32 rounded-t-lg overflow-hidden bg-gray-200">
+                <div className="aspect-square rounded-t-lg overflow-hidden bg-gray-200">
                   {place.image ? (
                     <img
                       src={place.image}
