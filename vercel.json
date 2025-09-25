@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "cd site && npm install && npm run build && cp -r ../snapshot/www.joeyhou.org/* ./out/",
+  "buildCommand": "cd site && npm install && npm run build && cp -r ../snapshot/www.joeyhou.org/stations ./out/ && cp -r ../snapshot/www.joeyhou.org/stylesheets ./out/ 2>/dev/null || true",
   "outputDirectory": "site/out"
 }
 
