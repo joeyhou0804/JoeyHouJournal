@@ -20,7 +20,14 @@ export default function InfiniteCarousel({
   const secondHalf = images.slice(midpoint)
 
   return (
-    <div className={`relative w-full overflow-hidden ${className}`}>
+    <div
+      className={`relative overflow-hidden ${className}`}
+      style={{
+        transform: 'rotate(-12deg)',
+        width: '150%',
+        marginLeft: '-25%'
+      }}
+    >
       <CarouselRow
         images={firstHalf}
         direction="rtl"
