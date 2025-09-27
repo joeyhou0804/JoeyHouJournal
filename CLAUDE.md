@@ -35,19 +35,20 @@ The project is configured for static hosting with both Vercel and Netlify:
 - Output directory: `site/out`
 
 **Vercel:**
-- Build command: `cd site && npm install && npm run build && cp -r ../snapshot/www.joeyhou.org/* ./out/`
+- Build command: `cd site && npm install && npm run build`
 - Output directory: `site/out`
 
-The build process combines Next.js static export with snapshot content during deployment.
+The build process exports the Next.js application as static files for deployment.
 
 ## Architecture Notes
 
-The site uses an unusual architecture where:
-1. Next.js app (`site/app/page.tsx`) immediately redirects to `/index.html`
-2. The actual website content lives in `snapshot/www.joeyhou.org/`
-3. During build, both Next.js output and snapshot files are combined in `site/out/`
+The site is a standard Next.js application with:
+1. Main homepage with carousel component at `site/app/page.tsx`
+2. Travel journal theme with "Exploring America by Rail" content
+3. Static export configuration for hosting on Vercel/Netlify
+4. Infinite carousel component with properly sized images (450-600px) and -50px gap spacing
 
-This allows serving a static snapshot of a dynamic website while maintaining the ability to use Next.js tooling.
+The site uses Next.js for modern React development while being deployed as static files.
 
 ## Key Configuration
 
