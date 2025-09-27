@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import { ArrowLeft, MapPin, Calendar, Train, Search, Filter, Image } from 'lucide-react'
 import { useState } from 'react'
-import { places } from '../../src/data/places'
+import { places } from 'src/data/places'
 
 export default function PlacesPage() {
   const [showAll, setShowAll] = useState(false)
