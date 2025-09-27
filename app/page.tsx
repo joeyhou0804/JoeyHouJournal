@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { MapPin, Calendar, Train, Search } from 'lucide-react'
-import InfiniteCarousel from '../src/components/InfiniteCarousel'
+import InfiniteCarousel from 'src/components/InfiniteCarousel'
 
 export default function Home() {
   return (
