@@ -1,3 +1,5 @@
 {
-  "version": 2
+  "version": 2,
+  "buildCommand": "npm install && npm run build && cp -r snapshot/www.joeyhou.org/* ./out/ || true",
+  "outputDirectory": "out"
 }
