@@ -55,7 +55,7 @@ function CarouselRow({
 
   const [viewportW, setViewportW] = useState(0)
   const [cycleW, setCycleW] = useState(0)
-  const [gapPx, setGapPx] = useState(-200) // -200px gap (maximum overlapping)
+  const [gapPx, setGapPx] = useState(-50) // -50px gap
 
   useEffect(() => {
     const measure = () => {
@@ -110,8 +110,13 @@ function CarouselRow({
       {images.map((img, i) => (
         <div
           key={`${i}-${ariaHidden ? 'dup' : 'main'}`}
-          className={`flex-shrink-0 w-96 h-60 sm:w-[420px] sm:h-64 md:w-[480px] md:h-72 lg:w-[540px] lg:h-80 ${imageClassName}`}
-          style={{ marginLeft: i === 0 ? '0' : '-200px' }}
+          className={`flex-shrink-0 carousel-image-container ${imageClassName}`}
+          style={{
+            marginLeft: i === 0 ? '0' : '-50px',
+            width: '450px',
+            height: 'auto',
+            minWidth: '450px'
+          }}
         >
           <img
             src={img}
@@ -136,6 +141,32 @@ function CarouselRow({
           from { transform: translateX(-${translatePx}px); }
           to   { transform: translateX(0); }
         }
+        .carousel-image-container {
+          width: 450px !important;
+          height: auto !important;
+          min-width: 450px !important;
+        }
+        @media (min-width: 640px) {
+          .carousel-image-container {
+            width: 500px !important;
+            height: auto !important;
+            min-width: 500px !important;
+          }
+        }
+        @media (min-width: 768px) {
+          .carousel-image-container {
+            width: 550px !important;
+            height: auto !important;
+            min-width: 550px !important;
+          }
+        }
+        @media (min-width: 1024px) {
+          .carousel-image-container {
+            width: 600px !important;
+            height: auto !important;
+            min-width: 600px !important;
+          }
+        }
       `}</style>
 
       <div
@@ -148,12 +179,12 @@ function CarouselRow({
           style={{
             ...animationStyle,
             willChange: 'transform',
-            marginLeft: '-200px' // Offset the gap between cycles
+            marginLeft: '-50px' // Offset the gap between cycles
           }}
         >
           <Cycle refCb={(el) => (firstCycleRef.current = el)} />
           {Array.from({ length: repeats - 1 }).map((_, idx) => (
-            <Cycle key={`dup-${idx}`} ariaHidden style={{ marginLeft: '-200px' }} />
+            <Cycle key={`dup-${idx}`} ariaHidden style={{ marginLeft: '-50px' }} />
           ))}
         </div>
       </div>

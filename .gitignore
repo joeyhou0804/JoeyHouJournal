@@ -34,3 +34,4 @@ pids
 *.swp
 *.swo
 *~
+.vercel
