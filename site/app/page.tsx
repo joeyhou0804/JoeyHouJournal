@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { MapPin, Calendar, Train, Search } from 'lucide-react'
+import InfiniteCarousel from './components/InfiniteCarousel'
 
 export default function Home() {
   return (
@@ -55,6 +56,22 @@ export default function Home() {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Infinite Carousel Section */}
+      <section className="py-12 bg-gradient-to-r from-purple-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <h3 className="text-3xl font-bold text-gray-900 mb-4">Journey Gallery</h3>
+            <p className="text-gray-600">Discover the beauty of America through our lens</p>
+          </div>
+        </div>
+
+        <InfiniteCarousel
+          images={carouselImages}
+          speedPxPerSec={60}
+          className="py-8"
+        />
       </section>
 
       {/* Featured Trips */}
@@ -133,6 +150,18 @@ export default function Home() {
     </div>
   )
 }
+
+// Carousel images from title_carousel_1 to title_carousel_8
+const carouselImages = [
+  '/title_carousel_1.png',
+  '/title_carousel_2.png',
+  '/title_carousel_3.png',
+  '/title_carousel_4.png',
+  '/title_carousel_5.png',
+  '/title_carousel_6.png',
+  '/title_carousel_7.png',
+  '/title_carousel_8.png'
+]
 
 // Mock data - we'll replace this with real data later
 const featuredTrips = [

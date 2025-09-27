@@ -1,5 +1,5 @@
 // Extracted 147 places from snapshot data
-const places = [
+export const places = [
   {
     id: "rutland-vt",
     name: "Rutland, VT",
