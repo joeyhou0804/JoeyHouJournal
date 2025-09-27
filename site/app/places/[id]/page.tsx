@@ -3,7 +3,7 @@ import { ArrowLeft, MapPin, Calendar, Train, Camera, Navigation } from 'lucide-r
 import PlaceDetailClient from './PlaceDetailClient'
 
 // Import the complete places data with all images
-import { places as placesData } from '../../../all_places_with_images.js'
+import { places as placesData } from '../../../src/data/all_places_with_images.js'
 
 // Required for static export
 export function generateStaticParams() {

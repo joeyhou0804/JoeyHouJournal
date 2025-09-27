@@ -1,13 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-
-interface InfiniteCarouselProps {
-  images: string[]
-  speedPxPerSec?: number
-  className?: string
-  imageClassName?: string
-}
+import { InfiniteCarouselProps } from '../types'
 
 export default function InfiniteCarousel({
   images,
