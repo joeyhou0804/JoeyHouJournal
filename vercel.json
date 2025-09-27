@@ -1,6 +1,7 @@
 {
   "version": 2,
-  "buildCommand": "cd site && npm install && npm run build",
-  "outputDirectory": "site/out"
+  "buildCommand": "npm install && npm run build",
+  "outputDirectory": "out",
+  "installCommand": "npm install"
 }
 
