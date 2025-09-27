@@ -54,7 +54,7 @@ function CarouselRow({
 
   const [viewportW, setViewportW] = useState(0)
   const [cycleW, setCycleW] = useState(0)
-  const [gapPx, setGapPx] = useState(-150) // -150px gap (maximum overlapping)
+  const [gapPx, setGapPx] = useState(-200) // -200px gap (maximum overlapping)
 
   useEffect(() => {
     const measure = () => {
@@ -109,8 +109,8 @@ function CarouselRow({
       {images.map((img, i) => (
         <div
           key={`${i}-${ariaHidden ? 'dup' : 'main'}`}
-          className={`flex-shrink-0 w-72 h-44 sm:w-80 sm:h-48 md:w-96 md:h-56 lg:w-[420px] lg:h-64 ${imageClassName}`}
-          style={{ marginLeft: i === 0 ? '0' : '-150px' }}
+          className={`flex-shrink-0 w-96 h-60 sm:w-[420px] sm:h-64 md:w-[480px] md:h-72 lg:w-[540px] lg:h-80 ${imageClassName}`}
+          style={{ marginLeft: i === 0 ? '0' : '-200px' }}
         >
           <img
             src={img}
@@ -147,12 +147,12 @@ function CarouselRow({
           style={{
             ...animationStyle,
             willChange: 'transform',
-            marginLeft: '-150px' // Offset the gap between cycles
+            marginLeft: '-200px' // Offset the gap between cycles
           }}
         >
           <Cycle refCb={(el) => (firstCycleRef.current = el)} />
           {Array.from({ length: repeats - 1 }).map((_, idx) => (
-            <Cycle key={`dup-${idx}`} ariaHidden style={{ marginLeft: '-150px' }} />
+            <Cycle key={`dup-${idx}`} ariaHidden style={{ marginLeft: '-200px' }} />
           ))}
         </div>
       </div>
