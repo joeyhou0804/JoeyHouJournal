@@ -143,7 +143,7 @@ export default function Home() {
       <footer className="bg-gray-900 text-white py-8 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <p className="text-gray-400">
-            Made with ♥ by Joey Hou • 侯江天（小猴同学）• 2024
+            Made with ♥ by Joey Hou • 侯江天（小猴同学）• 2025
           </p>
         </div>
       </footer>
