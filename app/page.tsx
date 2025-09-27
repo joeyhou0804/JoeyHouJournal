@@ -1,69 +1,38 @@
 'use client'
 import Link from 'next/link'
-import { MapPin, Calendar, Train, Search } from 'lucide-react'
+import { MapPin, Calendar, Train } from 'lucide-react'
 import InfiniteCarousel from 'src/components/InfiniteCarousel'
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900">Joey's Travel Journal</h1>
-            <nav className="hidden md:flex space-x-6">
-              <Link href="/" className="text-gray-700 hover:text-blue-600">Home</Link>
-              <Link href="/trips" className="text-gray-700 hover:text-blue-600">All Trips</Link>
-              <Link href="/places" className="text-gray-700 hover:text-blue-600">Places</Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      {/* Hero Section */}
-      <section className="relative py-20 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-5xl font-bold text-gray-900 mb-6">
-            Exploring America by Rail
-          </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Journey through 147 destinations across the United States,
-            from coast to coast aboard America's great train routes.
-          </p>
-
-          {/* Search Bar */}
-          <div className="relative max-w-md mx-auto mb-8">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <input
-              type="text"
-              placeholder="Search places or routes..."
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-600">
-            <div className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" />
-              147 Places
-            </div>
-            <div className="flex items-center gap-1">
-              <Train className="h-4 w-4" />
-              8 Major Routes
-            </div>
-            <div className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
-              2020-2021
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Infinite Carousel Section */}
-      <section className="py-12 bg-gradient-to-r from-purple-50 to-blue-50 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">Journey Gallery</h3>
-            <p className="text-gray-600">Discover the beauty of America through our lens</p>
+      <section
+        className="py-12 overflow-hidden relative"
+        style={{
+          backgroundImage: 'url(/homepage_background.webp)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }}
+      >
+        {/* Logo - Top Left Corner */}
+        <div className="absolute top-4 left-4 z-10">
+          <img
+            src="/logo_en.png"
+            alt="Logo"
+            className="w-64 h-auto md:w-80 lg:w-96 xl:w-[28rem]"
+          />
+        </div>
+
+        {/* Slogan - Center/Right */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 pt-16">
+          <div className="flex justify-center md:justify-end">
+            <img
+              src="/homepage_slogan_en.png"
+              alt="Homepage Slogan"
+              className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
+            />
           </div>
         </div>
 
@@ -72,6 +41,17 @@ export default function Home() {
           speedPxPerSec={60}
           className="py-8"
         />
+
+        {/* Carousel Text - Left Side */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+          <div className="flex justify-start">
+            <img
+              src="/homepage_carousel_text_en.png"
+              alt="Carousel Text"
+              className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
+            />
+          </div>
+        </div>
       </section>
 
       {/* Featured Trips */}

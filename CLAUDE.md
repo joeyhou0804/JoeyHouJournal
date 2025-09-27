@@ -4,16 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Structure
 
-This is a personal website project structured as:
+This is a personal travel journal website built with Next.js and configured for static export:
 
-- Root directory contains the Next.js application
-- `snapshot/` - Contains legacy static website snapshots (for reference)
-
-The Next.js app is configured for static export and serves the "Exploring America by Rail" travel journal website.
+- `app/` - Next.js App Router pages and layouts
+- `src/components/` - Reusable React components (InfiniteCarousel)
+- `src/data/` - JavaScript data files (places.js, all_places_with_images.js)
+- `public/` - Static assets including carousel images (title_carousel_1.png through title_carousel_8.png)
+- `out/` - Static build output directory
 
 ## Development Commands
 
-All commands should be run from the root directory:
+All commands should be run from the root directory using pnpm:
 
 ```bash
 # Development server
@@ -24,34 +25,46 @@ pnpm build
 
 # Lint code
 pnpm lint
+
+# Start production server (after build)
+pnpm start
 ```
 
-## Deployment
+## Architecture Overview
 
-The project is configured for static hosting with both Vercel and Netlify:
+The site is a "Exploring America by Rail" travel journal featuring:
 
-**Netlify:**
+1. **Homepage** (`app/page.tsx`): Features hero section, infinite carousel, and place listings
+2. **Places system**: Individual place pages with dynamic routing (`app/places/[id]/`)
+3. **Data layer**: JavaScript files in `src/data/` containing places and image data
+4. **Custom carousel**: `InfiniteCarousel` component with dual-row animation and responsive sizing
+
+## Key Components
+
+**InfiniteCarousel** (`src/components/InfiniteCarousel.tsx`):
+- Dual-row infinite scrolling with opposite directions
+- Responsive image sizing (450px base, up to 600px on large screens)
+- -50px gap spacing between images
+- 12-degree rotation transform on container
+
+**Image handling**: Cloudinary integration with remote patterns configured for `res.cloudinary.com/joey-hou-homepage/**`
+
+## Deployment Configuration
+
+**Vercel** (`vercel.json`):
+- Static build using `@vercel/static-build`
+- Output directory: `out`
+
+**Netlify** (`netlify.toml`):
 - Build command: `pnpm install && pnpm build`
-- Output directory: `out`
+- Publish directory: `out`
+- Node.js version: 20
 
-**Vercel:**
-- Auto-detected Next.js configuration
-- Output directory: `out`
+## Technology Stack
 
-The build process exports the Next.js application as static files for deployment.
-
-## Architecture Notes
-
-The site is a standard Next.js application with:
-1. Main homepage with carousel component at `app/page.tsx`
-2. Travel journal theme with "Exploring America by Rail" content
-3. Static export configuration for hosting on Vercel/Netlify
-4. Infinite carousel component with properly sized images (450px) and -50px gap spacing
-
-The site uses Next.js for modern React development while being deployed as static files.
-
-## Key Configuration
-
-- **Next.js config:** Configured for static export (`output: 'export'`) with unoptimized images
-- **TypeScript:** Enabled with strict type checking
-- **Build output:** Static files exported to `out/` directory
+- **Framework**: Next.js 14.1.3 with App Router
+- **Styling**: Tailwind CSS with PostCSS
+- **Icons**: Lucide React
+- **TypeScript**: Enabled with baseUrl path resolution
+- **Package manager**: pnpm
+- **Static export**: Configured for deployment without server
