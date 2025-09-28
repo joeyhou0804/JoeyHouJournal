@@ -1,16 +1,47 @@
 'use client'
+
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { MapPin, Calendar, Train } from 'lucide-react'
 import InfiniteCarousel from 'src/components/InfiniteCarousel'
 
 export default function Home() {
+  const sectionRef = useRef<HTMLElement | null>(null)
+  const decoRef = useRef<HTMLDivElement | null>(null)
+
+  // Tweak this if you want a tiny nudge (e.g., to account for mask feathering)
+  const ADJUST_PX = 0
+
+  useSeamlessBackground({
+    sectionRef,
+    decoRef,
+    bgUrl: '/homepage_background.webp',
+    adjustPx: ADJUST_PX,
+  })
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Infinite Carousel Section */}
+    <div
+      className="min-h-screen relative"
+      style={{
+        backgroundImage: 'url(/homepage_background_2.webp)',
+        backgroundRepeat: 'repeat',
+        backgroundSize: '200px auto',
+        animation: 'moveRight 60s linear infinite'
+      }}
+    >
+      <style jsx>{`
+        @keyframes moveRight {
+          0% { background-position: 0% 0%; }
+          100% { background-position: 100% 0%; }
+        }
+      `}</style>
+
+      {/* Section 1 */}
       <section
+        ref={sectionRef}
         className="pt-12 overflow-hidden relative"
         style={{
-          paddingBottom: 'calc(8rem + 180vh)',
+          paddingBottom: '8rem',
           backgroundImage: 'url(/homepage_background.webp)',
           backgroundSize: '100% auto',
           backgroundPosition: 'top center',
@@ -26,7 +57,7 @@ export default function Home() {
           />
         </div>
 
-        {/* Image 1 + Slogan Row (50% / 40% with slight overlap) */}
+        {/* Image 1 + Slogan Row */}
         <div className="relative z-20 mt-56 md:mt-64 lg:mt-72">
           <div className="grid grid-cols-12 items-center gap-8">
             {/* Image 1 — 50% */}
@@ -38,7 +69,7 @@ export default function Home() {
               />
             </div>
 
-            {/* Slogan — 40% (slightly overlapping Image 1) */}
+            {/* Slogan — 40% (overlap) */}
             <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-24 md:-mt-32">
               <img
                 src="/homepage_slogan_en.png"
@@ -84,16 +115,16 @@ export default function Home() {
             />
           </div>
         </div>
+      </section>
 
-        {/* Bottom mask (patterns the section edge) */}
+      {/* Decorative transition (mask flipped, background NOT flipped) */}
+      <div className="relative z-20 h-[200px]">
+        {/* Mask wrapper: flipped vertically */}
         <div
-          aria-hidden
-          className="pointer-events-none absolute left-0 right-0 z-30"
+          className="absolute inset-0"
           style={{
-            bottom: -1,
-            height: 'auto',
-            minHeight: '200px',
-            backgroundColor: '#fff',
+            transform: 'scaleY(-1)',
+
             WebkitMaskImage: 'url(/background_foot_mask.webp)',
             maskImage: 'url(/background_foot_mask.webp)',
             WebkitMaskRepeat: 'no-repeat',
@@ -101,33 +132,30 @@ export default function Home() {
             WebkitMaskSize: '100% auto',
             maskSize: '100% auto',
             WebkitMaskPosition: 'center bottom',
-            maskPosition: 'center bottom'
+            maskPosition: 'center bottom',
+            // Optional: ensure no overflow while masking
+            overflow: 'hidden'
           }}
         >
-          <img
-            src="/background_foot_mask.webp"
-            alt=""
-            className="w-full h-auto opacity-0"
+          {/* Background layer: counter-flip so it renders upright */}
+          <div
+            ref={decoRef} // <-- your hook will set backgroundPositionY on THIS element
+            className="absolute inset-0"
+            style={{
+              transform: 'scaleY(-1)', // counter-flip cancels the parent flip
+              backgroundImage: 'url(/homepage_background.webp)',
+              backgroundSize: '100% auto',
+              backgroundRepeat: 'repeat-y',
+              backgroundPositionX: 'center',
+              // backgroundPositionY is set dynamically by the hook
+            }}
           />
         </div>
-      </section>
+      </div>
+
 
       {/* Featured Trips */}
-      <section
-        className="py-16 px-4 relative overflow-hidden"
-        style={{
-          backgroundImage: 'url(/homepage_background_2.webp)',
-          backgroundRepeat: 'repeat',
-          backgroundSize: '200px auto',
-          animation: 'moveRight 60s linear infinite'
-        }}
-      >
-        <style jsx>{`
-          @keyframes moveRight {
-            0% { background-position: 0% 0%; }
-            100% { background-position: 100% 0%; }
-          }
-        `}</style>
+      <section className="py-16 px-4 relative">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">Featured Journeys</h3>
@@ -202,6 +230,78 @@ export default function Home() {
     </div>
   )
 }
+
+/* ---------- Seamless background hook ---------- */
+
+function useSeamlessBackground({
+  sectionRef,
+  decoRef,
+  bgUrl,
+  adjustPx = 0,
+}: {
+  sectionRef: React.RefObject<HTMLElement>
+  decoRef: React.RefObject<HTMLDivElement>
+  bgUrl: string
+  adjustPx?: number
+}) {
+  const [ratio, setRatio] = useState<number | null>(null)
+
+  // Preload to get intrinsic aspect ratio
+  useLayoutEffect(() => {
+    let mounted = true
+    const img = new Image()
+    img.onload = () => {
+      if (!mounted) return
+      if (img.width > 0) {
+        setRatio(img.height / img.width)
+      }
+    }
+    img.src = bgUrl
+    return () => { mounted = false }
+  }, [bgUrl])
+
+  useEffect(() => {
+    if (!ratio) return
+    const sectionEl = sectionRef.current
+    const decoEl = decoRef.current
+    if (!sectionEl || !decoEl) return
+
+    const computeAndApply = () => {
+      const sectionRect = sectionEl.getBoundingClientRect()
+      const sectionHeight = sectionRect.height
+
+      // Because background-size: 100% auto, one tile's rendered height = section width * (H/W)
+      const sectionWidth = sectionEl.clientWidth
+      const tileHeight = Math.max(1, Math.round(sectionWidth * ratio))
+
+      // remainder of tiles consumed in section 1
+      const remainder = Math.round(sectionHeight % tileHeight)
+
+      // Shift the decorative background up by the remainder so it continues seamlessly
+      const offsetY = -(remainder + adjustPx)
+
+      // Apply
+      decoEl.style.backgroundPositionY = `${offsetY}px`
+    }
+
+    // Run immediately
+    computeAndApply()
+
+    // Recompute on resize
+    const ro = new ResizeObserver(() => computeAndApply())
+    ro.observe(sectionEl)
+    // Also watch window resize (fonts, vw units, etc.)
+    const onWinResize = () => computeAndApply()
+    window.addEventListener('resize', onWinResize)
+
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', onWinResize)
+    }
+  }, [ratio, sectionRef, decoRef, adjustPx])
+}
+
+/* ---------- Data (unchanged from your snippet) ---------- */
 
 // Carousel images from title_carousel_1 to title_carousel_8
 const carouselImages = [
