@@ -118,7 +118,7 @@ export default function Home() {
       </section>
 
       {/* Decorative transition (mask flipped, background NOT flipped) */}
-      <div className="relative z-20 h-[200px]">
+      <div className="relative z-20 h-[100px]">
         {/* Mask wrapper: flipped vertically */}
         <div
           className="absolute inset-0"
@@ -157,9 +157,19 @@ export default function Home() {
       {/* Featured Trips */}
       <section className="py-16 px-4 relative">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900 mb-4">Featured Journeys</h3>
-            <p className="text-gray-600">Explore my most memorable train adventures</p>
+          <div className="relative mb-12">
+            <img
+              src="/journeys_title.png"
+              alt="Featured Journeys"
+              className="h-auto max-w-4xl relative z-10"
+              style={{ transform: 'translate(-5rem, -4rem)' }}
+            />
+            <img
+              src="/journeys_subtitle.png"
+              alt="Explore my most memorable train adventures"
+              className="h-auto max-w-4xl relative z-10"
+              style={{ transform: 'translate(2rem, -16rem)' }}
+            />
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
