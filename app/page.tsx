@@ -86,7 +86,21 @@ export default function Home() {
       </section>
 
       {/* Featured Trips */}
-      <section className="py-16 px-4 bg-white">
+      <section
+        className="py-16 px-4 relative overflow-hidden"
+        style={{
+          backgroundImage: 'url(/homepage_background_2.webp)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px auto',
+          animation: 'moveRight 60s linear infinite'
+        }}
+      >
+        <style jsx>{`
+          @keyframes moveRight {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 0%; }
+          }
+        `}</style>
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900 mb-4">Featured Journeys</h3>
