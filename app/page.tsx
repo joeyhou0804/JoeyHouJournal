@@ -8,8 +8,9 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Infinite Carousel Section */}
       <section
-        className="py-12 overflow-hidden relative"
+        className="pt-12 overflow-hidden relative"
         style={{
+          paddingBottom: 'calc(8rem + 180vh)',
           backgroundImage: 'url(/homepage_background.webp)',
           backgroundSize: '100% auto',
           backgroundPosition: 'top center',
@@ -82,6 +83,32 @@ export default function Home() {
               className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
             />
           </div>
+        </div>
+
+        {/* Bottom mask (patterns the section edge) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-0 right-0 z-30"
+          style={{
+            bottom: -1,
+            height: 'auto',
+            minHeight: '200px',
+            backgroundColor: '#fff',
+            WebkitMaskImage: 'url(/background_foot_mask.webp)',
+            maskImage: 'url(/background_foot_mask.webp)',
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskSize: '100% auto',
+            maskSize: '100% auto',
+            WebkitMaskPosition: 'center bottom',
+            maskPosition: 'center bottom'
+          }}
+        >
+          <img
+            src="/background_foot_mask.webp"
+            alt=""
+            className="w-full h-auto opacity-0"
+          />
         </div>
       </section>
 
