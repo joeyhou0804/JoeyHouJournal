@@ -11,9 +11,9 @@ export default function Home() {
         className="py-12 overflow-hidden relative"
         style={{
           backgroundImage: 'url(/homepage_background.webp)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundSize: '100% auto',
+          backgroundPosition: 'top center',
+          backgroundRepeat: 'repeat-y'
         }}
       >
         {/* Logo - Top Left Corner */}
@@ -25,30 +25,61 @@ export default function Home() {
           />
         </div>
 
-        {/* Slogan - Center/Right */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 pt-16">
-          <div className="flex justify-center md:justify-end">
-            <img
-              src="/homepage_slogan_en.png"
-              alt="Homepage Slogan"
-              className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
-            />
+        {/* Image 1 + Slogan Row (50% / 40% with slight overlap) */}
+        <div className="relative z-20 mt-56 md:mt-64 lg:mt-72">
+          <div className="grid grid-cols-12 items-center gap-8">
+            {/* Image 1 — 50% */}
+            <div className="col-span-12 md:col-span-6 relative z-20">
+              <img
+                src="/homepage_image_1.png"
+                alt="Homepage Image 1"
+                className="w-full h-auto"
+              />
+            </div>
+
+            {/* Slogan — 40% (slightly overlapping Image 1) */}
+            <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-24 md:-mt-32">
+              <img
+                src="/homepage_slogan_en.png"
+                alt="Homepage Slogan"
+                className="w-full max-w-[40rem] h-auto drop-shadow-md"
+                style={{ transform: 'translateX(-6rem)' }}
+              />
+            </div>
+
+            {/* Spacer — ~10% */}
+            <div className="hidden md:block col-span-1" />
           </div>
         </div>
 
-        <InfiniteCarousel
-          images={carouselImages}
-          speedPxPerSec={60}
-          className="py-8"
-        />
+        {/* Carousel - pulled upward, sits *under* image1 */}
+        <div className="relative z-20 -mt-24 md:-mt-32 lg:-mt-40">
+          <InfiniteCarousel
+            images={carouselImages}
+            speedPxPerSec={60}
+            className="py-8"
+          />
+        </div>
 
-        {/* Carousel Text - Left Side */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
-          <div className="flex justify-start">
+        {/* Carousel Text and Image Container */}
+        <div className="relative z-30 mt-8">
+          {/* Carousel Text - Left Side */}
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-start">
+              <img
+                src="/homepage_carousel_text_en.png"
+                alt="Carousel Text"
+                className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
+              />
+            </div>
+          </div>
+
+          {/* Homepage Image 2 - Right edge */}
+          <div className="absolute right-0 z-30" style={{ top: "-300px" }}>
             <img
-              src="/homepage_carousel_text_en.png"
-              alt="Carousel Text"
-              className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
+              src="/homepage_image_2.png"
+              alt="Homepage Image 2"
+              className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
             />
           </div>
         </div>
