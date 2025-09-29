@@ -28,7 +28,7 @@ export default function Home() {
   useSeamlessCarryOver({
     fromRef: headDecoRef,
     toRef: recentRef,
-    tileHeightPx: 300,  // fixed tile height for /homepage_destination_background.webp
+    bgUrl: '/homepage_background.webp',
     adjustPx: ADJUST_PX_HEAD,
   })
 
@@ -381,9 +381,9 @@ export default function Home() {
             ref={headDecoRef}
             className="absolute inset-0"
             style={{
-              backgroundImage: 'url(/homepage_destination_background.webp)',
-              backgroundRepeat: 'repeat',
-              backgroundSize: 'auto 300px', // fixed tile height (300px)
+              backgroundImage: 'url(/homepage_background.webp)',
+              backgroundRepeat: 'repeat-y',
+              backgroundSize: '100% auto',
               backgroundPositionX: 'center',
               // Y remains default; we offset the next section instead
             }}
@@ -396,9 +396,9 @@ export default function Home() {
         ref={recentRef}
         className="py-16 px-4 -mt-8"
         style={{
-          backgroundImage: 'url(/homepage_destination_background.webp)',
-          backgroundRepeat: 'repeat',
-          backgroundSize: 'auto 300px', // same fixed tile height
+          backgroundImage: 'url(/homepage_background.webp)',
+          backgroundRepeat: 'repeat-y',
+          backgroundSize: '100% auto',
           backgroundPositionX: 'center',
           // backgroundPositionY is set by useSeamlessCarryOver
         }}
@@ -528,23 +528,45 @@ function useSeamlessBackground({
 function useSeamlessCarryOver({
   fromRef,
   toRef,
-  tileHeightPx,
+  bgUrl,
   adjustPx = 0,
 }: {
   fromRef: React.RefObject<HTMLElement>
   toRef: React.RefObject<HTMLElement>
-  tileHeightPx: number
+  bgUrl: string
   adjustPx?: number
 }) {
+  const [ratio, setRatio] = useState<number | null>(null)
+
+  // Preload to get intrinsic aspect ratio
+  useLayoutEffect(() => {
+    let mounted = true
+    const img = new Image()
+    img.onload = () => {
+      if (!mounted) return
+      if (img.width > 0) {
+        setRatio(img.height / img.width)
+      }
+    }
+    img.src = bgUrl
+    return () => { mounted = false }
+  }, [bgUrl])
+
   useEffect(() => {
+    if (!ratio) return
     const fromEl = fromRef.current
     const toEl = toRef.current
-    if (!fromEl || !toEl || tileHeightPx <= 0) return
+    if (!fromEl || !toEl) return
 
     const apply = () => {
-      // how much vertical background we “consumed” inside the decorative band
+      // how much vertical background we "consumed" inside the decorative band
       const consumed = fromEl.getBoundingClientRect().height
-      const remainder = Math.round(consumed % tileHeightPx)
+
+      // Calculate tile height based on current width and ratio
+      const fromWidth = fromEl.clientWidth
+      const tileHeight = Math.max(1, Math.round(fromWidth * ratio))
+
+      const remainder = Math.round(consumed % tileHeight)
 
       // start the next section exactly where this band ended
       const offsetY = -(remainder + adjustPx)
@@ -563,7 +585,7 @@ function useSeamlessCarryOver({
       ro.disconnect()
       window.removeEventListener('resize', onWinResize)
     }
-  }, [fromRef, toRef, tileHeightPx, adjustPx])
+  }, [ratio, fromRef, toRef, adjustPx])
 }
 
 /* ---------- Data (unchanged) ---------- */
