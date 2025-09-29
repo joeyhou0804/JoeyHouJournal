@@ -600,15 +600,55 @@ export default function Home() {
         }}
       >
         <div className="flex items-center justify-between">
-          <Link href="/" className="hover:opacity-80 transition-opacity duration-200">
+          <Link href="/" className="hover:scale-105 transition-transform duration-200">
             <img
               src="/logo_en.png"
               alt="Logo"
               className="h-60 w-auto"
             />
           </Link>
-          <div className="max-w-7xl mx-auto">
-            <p className="text-gray-400">
+          <div className="flex-1 flex flex-col items-center justify-center">
+            {/* Button Row */}
+            <div className="flex items-center space-x-4 mb-4">
+              <Link href="/trips" className="group">
+                <img
+                  src="/journey_button.png"
+                  alt="Journeys"
+                  className="h-20 w-auto group-hover:hidden"
+                />
+                <img
+                  src="/journey_button_hover.png"
+                  alt="Journeys"
+                  className="h-20 w-auto hidden group-hover:block"
+                />
+              </Link>
+              <Link href="/places" className="group">
+                <img
+                  src="/destination_button.png"
+                  alt="Destinations"
+                  className="h-20 w-auto group-hover:hidden"
+                />
+                <img
+                  src="/destination_button_hover.png"
+                  alt="Destinations"
+                  className="h-20 w-auto hidden group-hover:block"
+                />
+              </Link>
+              <button className="group">
+                <img
+                  src="/language_button_en.png"
+                  alt="Language Toggle"
+                  className="h-20 w-auto group-hover:hidden"
+                />
+                <img
+                  src="/language_button_en_hover.png"
+                  alt="Language Toggle"
+                  className="h-20 w-auto hidden group-hover:block"
+                />
+              </button>
+            </div>
+            {/* Copyright Text */}
+            <p className="text-gray-400 text-center">
               Made with ♥ by Joey Hou • 侯江天（小猴同学）• 2025
             </p>
           </div>
