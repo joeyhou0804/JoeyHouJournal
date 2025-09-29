@@ -106,7 +106,7 @@ export default function Home() {
         <img
           src="/icon_menu.webp"
           alt="Menu"
-          className="w-16 h-16"
+          className="w-20 h-20"
         />
       </button>
 
