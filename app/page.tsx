@@ -88,6 +88,11 @@ export default function Home() {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(0); }
         }
+        @keyframes moveArrow {
+          0% { transform: translate(24rem, -5.2rem); }
+          50% { transform: translate(24.5rem, -5.3rem); }
+          100% { transform: translate(24rem, -5.2rem); }
+        }
         .animate-slide-in {
           animation: slide-in 0.3s ease-in-out forwards;
         }
@@ -404,11 +409,30 @@ export default function Home() {
         }}
       >
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-12">
-            <h3 className="text-3xl font-bold text-gray-900">Recent Destinations</h3>
-            <Link href="/places" className="text-blue-600 hover:text-blue-700 font-medium">
-              View all places →
+          <div className="relative mb-12">
+            <img
+              src="/destinations_title.png"
+              alt="Recent Destinations"
+              className="h-auto max-w-4xl relative"
+              style={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
+            />
+            <Link href="/places" className="absolute" style={{ transform: 'translate(2rem, -8rem)', zIndex: 20 }}>
+              <img
+                src="/button_explore.png"
+                alt="Explore Places"
+                className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
+              />
             </Link>
+            <img
+              src="/button_explore_arrow.webp"
+              alt="Arrow"
+              className="absolute h-auto w-8"
+              style={{
+                transform: 'translate(26rem, -5rem)',
+                zIndex: 20,
+                animation: 'moveArrow 1s ease-in-out infinite'
+              }}
+            />
           </div>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
