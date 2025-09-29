@@ -10,7 +10,7 @@ export default function Home() {
   const decoRef = useRef<HTMLDivElement | null>(null)
 
   // Tweak this if you want a tiny nudge (e.g., to account for mask feathering)
-  const ADJUST_PX = 0
+  const ADJUST_PX = -32
 
   useSeamlessBackground({
     sectionRef,
@@ -162,14 +162,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Decorative transition (mask flipped, background NOT flipped) */}
-      <div className="relative z-20 h-[100px]">
-        {/* Mask wrapper: flipped vertically */}
+      {/* Decorative transition (mask normal, background NOT flipped) */}
+      <div className="relative z-20 h-[200px] -mt-8">
+        {/* Mask wrapper: normal orientation */}
         <div
           className="absolute inset-0"
           style={{
-            transform: 'scaleY(-1)',
-
             WebkitMaskImage: 'url(/background_foot_mask.webp)',
             maskImage: 'url(/background_foot_mask.webp)',
             WebkitMaskRepeat: 'no-repeat',
@@ -182,12 +180,11 @@ export default function Home() {
             overflow: 'hidden'
           }}
         >
-          {/* Background layer: counter-flip so it renders upright */}
+          {/* Background layer: normal orientation */}
           <div
             ref={decoRef} // <-- your hook will set backgroundPositionY on THIS element
             className="absolute inset-0"
             style={{
-              transform: 'scaleY(-1)', // counter-flip cancels the parent flip
               backgroundImage: 'url(/homepage_background.webp)',
               backgroundSize: '100% auto',
               backgroundRepeat: 'repeat-y',
