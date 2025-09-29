@@ -93,6 +93,11 @@ export default function Home() {
           50% { transform: translate(24.5rem, -5.3rem); }
           100% { transform: translate(24rem, -5.2rem); }
         }
+        @keyframes moveJourneysArrow {
+          0% { transform: translate(24rem, -14.2rem); }
+          50% { transform: translate(24.5rem, -14.3rem); }
+          100% { transform: translate(24rem, -14.2rem); }
+        }
         .animate-slide-in {
           animation: slide-in 0.3s ease-in-out forwards;
         }
@@ -240,6 +245,23 @@ export default function Home() {
               alt="Explore my most memorable train adventures"
               className="h-auto max-w-4xl relative"
               style={{ transform: 'translate(2rem, -16rem)', zIndex: 20 }}
+            />
+            <Link href="/trips" className="absolute" style={{ transform: 'translate(2rem, -17rem)', zIndex: 20 }}>
+              <img
+                src="/button_explore.png"
+                alt="Explore Journeys"
+                className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
+              />
+            </Link>
+            <img
+              src="/button_explore_arrow.webp"
+              alt="Arrow"
+              className="absolute h-auto w-8"
+              style={{
+                transform: 'translate(24rem, -14.2rem)',
+                zIndex: 20,
+                animation: 'moveJourneysArrow 0.5s ease-in-out infinite'
+              }}
             />
           </div>
 
@@ -430,7 +452,7 @@ export default function Home() {
               style={{
                 transform: 'translate(26rem, -5rem)',
                 zIndex: 20,
-                animation: 'moveArrow 1s ease-in-out infinite'
+                animation: 'moveArrow 0.5s ease-in-out infinite'
               }}
             />
           </div>
