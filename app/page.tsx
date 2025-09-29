@@ -172,20 +172,19 @@ export default function Home() {
               />
             </div>
           </div>
-
-          {/* Homepage Image 2 - Right edge */}
-          <div className="absolute right-0 z-30" style={{ top: '-300px' }}>
-            <img
-              src="/homepage_image_2.png"
-              alt="Homepage Image 2"
-              className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
-            />
-          </div>
         </div>
       </section>
 
       {/* Decorative transition (foot mask; background not flipped) */}
       <div className="relative z-20 h-[200px] -mt-8">
+        {/* Homepage Image 2 - Right edge, overlapping section above */}
+        <div className="absolute top-0 right-0" style={{ transform: 'translate(0, -700px)', zIndex: 30 }}>
+          <img
+            src="/homepage_image_2.png"
+            alt="Homepage Image 2"
+            className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
+          />
+        </div>
         <div
           className="absolute inset-0"
           style={{
