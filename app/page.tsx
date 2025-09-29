@@ -39,12 +39,22 @@ export default function Home() {
     return () => clearInterval(interval)
   }, [journeyImages.length])
 
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % featuredTrips.length)
+    setIsTransitioning(true)
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev + 1) % featuredTrips.length)
+      setIsTransitioning(false)
+    }, 150)
   }
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + featuredTrips.length) % featuredTrips.length)
+    setIsTransitioning(true)
+    setTimeout(() => {
+      setCurrentSlide((prev) => (prev - 1 + featuredTrips.length) % featuredTrips.length)
+      setIsTransitioning(false)
+    }, 150)
   }
 
   return (
@@ -61,6 +71,13 @@ export default function Home() {
         @keyframes moveRight {
           0% { background-position: 0% 0%; }
           100% { background-position: 100% 0%; }
+        }
+        @keyframes slide-in {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(0); }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-in-out forwards;
         }
       `}</style>
 
@@ -240,69 +257,91 @@ export default function Home() {
               />
             </div>
 
-            {/* Carousel Content */}
-            <div className="relative z-10 px-4 sm:px-6 lg:px-8 py-16">
-              <div className="max-w-7xl mx-auto">
-                <div className="flex items-center justify-between">
-                  {/* Previous Button */}
+            {/* Masked journey image - left edge */}
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 z-15">
+              <div
+                className={`w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out ${
+                  isTransitioning ? '-translate-x-full' : 'translate-x-0'
+                }`}
+                style={{
+                  backgroundImage: `url(/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
+                  backgroundSize: '100% auto',
+                  backgroundPosition: '50% 100%',
+                  WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
+                  maskImage: 'url(/homepage_journey_image_mask.webp)',
+                  WebkitMaskSize: 'contain',
+                  maskSize: 'contain',
+                  WebkitMaskRepeat: 'no-repeat',
+                  maskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'center',
+                  maskPosition: 'center'
+                }}
+              />
+              {/* Incoming image */}
+              {isTransitioning && (
+                <div
+                  className="absolute top-0 left-0 w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
+                  style={{
+                    backgroundImage: `url(/homepage_journey_slide_image_${((currentSlide + 1) % featuredTrips.length) + 1}.jpg)`,
+                    backgroundSize: '100% auto',
+                    backgroundPosition: '50% 100%',
+                    WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
+                    maskImage: 'url(/homepage_journey_image_mask.webp)',
+                    WebkitMaskSize: 'contain',
+                    maskSize: 'contain',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskPosition: 'center',
+                    maskPosition: 'center'
+                  }}
+                />
+              )}
+            </div>
+
+            {/* Journey Text Overlay - Center right */}
+            <div className="absolute right-64 top-1/2 -translate-y-1/2 z-25 text-white max-w-md">
+              <h2 className="text-4xl font-bold mb-4">{featuredTrips[currentSlide].name}</h2>
+              <p className="text-lg mb-6 leading-relaxed opacity-90">
+                {featuredTrips[currentSlide].description}
+              </p>
+              <div className="flex items-center mb-6 text-lg">
+                <span className="w-3 h-3 bg-white rounded-full mr-3"></span>
+                {featuredTrips[currentSlide].places} destinations
+              </div>
+              <button className="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200">
+                Explore Journey
+              </button>
+            </div>
+
+            {/* Navigation Arrows - Positioned in center of carousel */}
+            {/* Previous Button */}
+            <button
+              onClick={prevSlide}
+              className="absolute left-8 top-1/2 -translate-y-1/2 z-30 p-6 hover:scale-110 transition-transform duration-200"
+            >
+              <img src="/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={nextSlide}
+              className="absolute right-8 top-1/2 -translate-y-1/2 z-30 p-6 hover:scale-110 transition-transform duration-200"
+            >
+              <img src="/arrow_next.webp" alt="Next" className="w-16 h-16" />
+            </button>
+
+            {/* Slide Indicators */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-25">
+              <div className="flex justify-center space-x-2">
+                {featuredTrips.map((_, index) => (
                   <button
-                    onClick={prevSlide}
-                    className="p-4 hover:scale-110 transition-transform duration-200"
-                  >
-                    <img src="/arrow_prev.webp" alt="Previous" className="w-8 h-8" />
-                  </button>
-
-                  {/* Current Slide */}
-                  <div className="flex-1 max-w-4xl mx-8">
-                    <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-2xl">
-                      <div className="grid md:grid-cols-2 gap-8 items-center">
-                        {/* Journey content card */}
-                        <div className="aspect-video bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                          <div className="text-white text-center">
-                            <h3 className="text-2xl font-bold mb-2">{featuredTrips[currentSlide].name}</h3>
-                            <p className="text-lg opacity-90">{featuredTrips[currentSlide].places} places</p>
-                          </div>
-                        </div>
-
-                        {/* Content */}
-                        <div className="space-y-4">
-                          <h2 className="text-3xl font-bold text-gray-900">{featuredTrips[currentSlide].name}</h2>
-                          <p className="text-gray-600 leading-relaxed">{featuredTrips[currentSlide].description}</p>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500">
-                            <span className="flex items-center">
-                              <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
-                              {featuredTrips[currentSlide].places} destinations
-                            </span>
-                          </div>
-                          <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                            Explore Journey
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Next Button */}
-                  <button
-                    onClick={nextSlide}
-                    className="p-4 hover:scale-110 transition-transform duration-200"
-                  >
-                    <img src="/arrow_next.webp" alt="Next" className="w-8 h-8" />
-                  </button>
-                </div>
-
-                {/* Slide Indicators */}
-                <div className="flex justify-center mt-8 space-x-2">
-                  {featuredTrips.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentSlide(index)}
-                      className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                        index === currentSlide ? 'bg-white' : 'bg-white/50'
-                      }`}
-                    />
-                  ))}
-                </div>
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                      index === currentSlide ? 'bg-white' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
               </div>
             </div>
           </div>
