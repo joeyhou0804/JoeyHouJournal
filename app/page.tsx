@@ -9,14 +9,27 @@ export default function Home() {
   const sectionRef = useRef<HTMLElement | null>(null)
   const decoRef = useRef<HTMLDivElement | null>(null)
 
+  // NEW: refs for the head mask band and the Recent Places section
+  const headDecoRef = useRef<HTMLDivElement | null>(null)
+  const recentRef = useRef<HTMLElement | null>(null)
+
   // Tweak this if you want a tiny nudge (e.g., to account for mask feathering)
-  const ADJUST_PX = -32
+  const ADJUST_PX_FOOT = -32
+  const ADJUST_PX_HEAD = -32
 
   useSeamlessBackground({
     sectionRef,
     decoRef,
     bgUrl: '/homepage_background.webp',
-    adjustPx: ADJUST_PX,
+    adjustPx: ADJUST_PX_FOOT,
+  })
+
+  // Carry over tile alignment from the head mask band to Recent Places
+  useSeamlessCarryOver({
+    fromRef: headDecoRef,
+    toRef: recentRef,
+    tileHeightPx: 300,  // fixed tile height for /homepage_destination_background.webp
+    adjustPx: ADJUST_PX_HEAD,
   })
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -35,7 +48,6 @@ export default function Home() {
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % journeyImages.length)
     }, 3000)
-
     return () => clearInterval(interval)
   }, [journeyImages.length])
 
@@ -152,7 +164,7 @@ export default function Home() {
           </div>
 
           {/* Homepage Image 2 - Right edge */}
-          <div className="absolute right-0 z-30" style={{ top: "-300px" }}>
+          <div className="absolute right-0 z-30" style={{ top: '-300px' }}>
             <img
               src="/homepage_image_2.png"
               alt="Homepage Image 2"
@@ -162,9 +174,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Decorative transition (mask normal, background NOT flipped) */}
+      {/* Decorative transition (foot mask; background not flipped) */}
       <div className="relative z-20 h-[200px] -mt-8">
-        {/* Mask wrapper: normal orientation */}
         <div
           className="absolute inset-0"
           style={{
@@ -176,31 +187,32 @@ export default function Home() {
             maskSize: '100% auto',
             WebkitMaskPosition: 'center bottom',
             maskPosition: 'center bottom',
-            // Optional: ensure no overflow while masking
             overflow: 'hidden'
           }}
         >
-          {/* Background layer: normal orientation */}
+          {/* Background layer we align TO (hook sets backgroundPositionY) */}
           <div
-            ref={decoRef} // <-- your hook will set backgroundPositionY on THIS element
+            ref={decoRef}
             className="absolute inset-0"
             style={{
               backgroundImage: 'url(/homepage_background.webp)',
               backgroundSize: '100% auto',
               backgroundRepeat: 'repeat-y',
               backgroundPositionX: 'center',
-              // backgroundPositionY is set dynamically by the hook
+              // Y set by useSeamlessBackground
             }}
           />
         </div>
       </div>
 
-
       {/* Featured Trips */}
       <section className="py-16 px-4 relative">
         <div className="max-w-7xl mx-auto">
           <div className="relative mb-12">
-            <div className="absolute right-0 z-5" style={{ transform: 'translate(-44rem, 2rem)' }}>
+            <div
+              className="absolute right-0"
+              style={{ transform: 'translate(-44rem, 2rem)', zIndex: 5 }}
+            >
               {journeyImages.map((image, index) => (
                 <img
                   key={index}
@@ -215,22 +227,25 @@ export default function Home() {
             <img
               src="/journeys_title.png"
               alt="Featured Journeys"
-              className="h-auto max-w-4xl relative z-20"
-              style={{ transform: 'translate(-5rem, -4rem)' }}
+              className="h-auto max-w-4xl relative"
+              style={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
             />
             <img
               src="/journeys_subtitle.png"
               alt="Explore my most memorable train adventures"
-              className="h-auto max-w-4xl relative z-20"
-              style={{ transform: 'translate(2rem, -16rem)' }}
+              className="h-auto max-w-4xl relative"
+              style={{ transform: 'translate(2rem, -16rem)', zIndex: 20 }}
             />
           </div>
 
           {/* Journey Carousel */}
-          <div className="relative w-screen left-1/2 -ml-[50vw] mt-96" style={{ aspectRatio: '1920/800' }}>
+          <div
+            className="relative w-screen left-1/2 -ml-[50vw] mt-96"
+            style={{ aspectRatio: '1920/800' }}
+          >
             {/* Background with mask */}
             <div
-              className="absolute inset-0 z-0"
+              className="absolute inset-0"
               style={{
                 backgroundImage: 'url(/homepage_journey_slide_background.avif)',
                 backgroundSize: 'cover',
@@ -241,12 +256,13 @@ export default function Home() {
                 WebkitMaskSize: '100% 100%',
                 maskSize: '100% 100%',
                 WebkitMaskRepeat: 'no-repeat',
-                maskRepeat: 'no-repeat'
+                maskRepeat: 'no-repeat',
+                zIndex: 0,
               }}
             />
 
             {/* Train image overlay - top left, above mask */}
-            <div className="absolute -top-80 left-0 z-20">
+            <div className="absolute -top-80 left-0" style={{ zIndex: 20 }}>
               <img
                 src="/homepage_journey_train_image.png"
                 alt="Train Journey"
@@ -255,7 +271,7 @@ export default function Home() {
             </div>
 
             {/* Masked journey image - left edge */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 z-15">
+            <div className="absolute left-0 top-1/2 -translate-y-1/2" style={{ zIndex: 15 }}>
               <div
                 className={`w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out ${
                   isTransitioning ? '-translate-x-full' : 'translate-x-0'
@@ -296,7 +312,7 @@ export default function Home() {
             </div>
 
             {/* Journey Text Overlay - Center right */}
-            <div className="absolute right-64 top-1/2 -translate-y-1/2 z-25 text-white max-w-md">
+            <div className="absolute right-64 top-1/2 -translate-y-1/2 text-white max-w-md" style={{ zIndex: 25 }}>
               <h2 className="text-4xl font-bold mb-4">{featuredTrips[currentSlide].name}</h2>
               <p className="text-lg mb-6 leading-relaxed opacity-90">
                 {featuredTrips[currentSlide].description}
@@ -310,25 +326,24 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Navigation Arrows - Positioned in center of carousel */}
-            {/* Previous Button */}
+            {/* Navigation Arrows */}
             <button
               onClick={prevSlide}
-              className="absolute left-8 top-1/2 -translate-y-1/2 z-30 p-6 hover:scale-110 transition-transform duration-200"
+              className="absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
+              style={{ zIndex: 30 }}
             >
               <img src="/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
             </button>
-
-            {/* Next Button */}
             <button
               onClick={nextSlide}
-              className="absolute right-8 top-1/2 -translate-y-1/2 z-30 p-6 hover:scale-110 transition-transform duration-200"
+              className="absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
+              style={{ zIndex: 30 }}
             >
               <img src="/arrow_next.webp" alt="Next" className="w-16 h-16" />
             </button>
 
             {/* Slide Indicators */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-25">
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2" style={{ zIndex: 25 }}>
               <div className="flex justify-center space-x-2">
                 {featuredTrips.map((_, index) => (
                   <button
@@ -345,8 +360,49 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Decorative transition (head mask; background not flipped) */}
+      <div className="relative z-20 h-[200px] -mt-8">
+        <div
+          className="absolute inset-0"
+          style={{
+            WebkitMaskImage: 'url(/background_head_mask.webp)',
+            maskImage: 'url(/background_head_mask.webp)',
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskSize: '100% auto',
+            maskSize: '100% auto',
+            WebkitMaskPosition: 'center top',
+            maskPosition: 'center top',
+            overflow: 'hidden'
+          }}
+        >
+          {/* Background layer we align FROM */}
+          <div
+            ref={headDecoRef}
+            className="absolute inset-0"
+            style={{
+              backgroundImage: 'url(/homepage_destination_background.webp)',
+              backgroundRepeat: 'repeat',
+              backgroundSize: 'auto 300px', // fixed tile height (300px)
+              backgroundPositionX: 'center',
+              // Y remains default; we offset the next section instead
+            }}
+          />
+        </div>
+      </div>
+
       {/* Recent Places */}
-      <section className="py-16 px-4 bg-gray-50">
+      <section
+        ref={recentRef}
+        className="py-16 px-4 -mt-8"
+        style={{
+          backgroundImage: 'url(/homepage_destination_background.webp)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: 'auto 300px', // same fixed tile height
+          backgroundPositionX: 'center',
+          // backgroundPositionY is set by useSeamlessCarryOver
+        }}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-12">
             <h3 className="text-3xl font-bold text-gray-900">Recent Destinations</h3>
@@ -467,7 +523,50 @@ function useSeamlessBackground({
   }, [ratio, sectionRef, decoRef, adjustPx])
 }
 
-/* ---------- Data (unchanged from your snippet) ---------- */
+/* ---------- Seamless carry-over for second decorative band ---------- */
+
+function useSeamlessCarryOver({
+  fromRef,
+  toRef,
+  tileHeightPx,
+  adjustPx = 0,
+}: {
+  fromRef: React.RefObject<HTMLElement>
+  toRef: React.RefObject<HTMLElement>
+  tileHeightPx: number
+  adjustPx?: number
+}) {
+  useEffect(() => {
+    const fromEl = fromRef.current
+    const toEl = toRef.current
+    if (!fromEl || !toEl || tileHeightPx <= 0) return
+
+    const apply = () => {
+      // how much vertical background we “consumed” inside the decorative band
+      const consumed = fromEl.getBoundingClientRect().height
+      const remainder = Math.round(consumed % tileHeightPx)
+
+      // start the next section exactly where this band ended
+      const offsetY = -(remainder + adjustPx)
+      toEl.style.backgroundPositionY = `${offsetY}px`
+    }
+
+    apply()
+
+    // Recompute on layout changes
+    const ro = new ResizeObserver(apply)
+    ro.observe(fromEl)
+    const onWinResize = () => apply()
+    window.addEventListener('resize', onWinResize)
+
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', onWinResize)
+    }
+  }, [fromRef, toRef, tileHeightPx, adjustPx])
+}
+
+/* ---------- Data (unchanged) ---------- */
 
 // Carousel images from title_carousel_1 to title_carousel_8
 const carouselImages = [
