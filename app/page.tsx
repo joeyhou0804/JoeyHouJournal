@@ -19,6 +19,25 @@ export default function Home() {
     adjustPx: ADJUST_PX,
   })
 
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const journeyImages = [
+    '/homepage_journey_image_1.png',
+    '/homepage_journey_image_2.png',
+    '/homepage_journey_image_3.png',
+    '/homepage_journey_image_4.png',
+    '/homepage_journey_image_5.png',
+    '/homepage_journey_image_6.png'
+  ]
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % journeyImages.length)
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [journeyImages.length])
+
   return (
     <div
       className="min-h-screen relative"
@@ -158,16 +177,28 @@ export default function Home() {
       <section className="py-16 px-4 relative">
         <div className="max-w-7xl mx-auto">
           <div className="relative mb-12">
+            <div className="absolute right-0 z-5" style={{ transform: 'translate(-44rem, 2rem)' }}>
+              {journeyImages.map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`Featured Journey ${index + 1}`}
+                  className={`h-auto max-w-5xl absolute top-0 left-0 transition-opacity duration-1000 ${
+                    index === currentIndex ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+              ))}
+            </div>
             <img
               src="/journeys_title.png"
               alt="Featured Journeys"
-              className="h-auto max-w-4xl relative z-10"
+              className="h-auto max-w-4xl relative z-20"
               style={{ transform: 'translate(-5rem, -4rem)' }}
             />
             <img
               src="/journeys_subtitle.png"
               alt="Explore my most memorable train adventures"
-              className="h-auto max-w-4xl relative z-10"
+              className="h-auto max-w-4xl relative z-20"
               style={{ transform: 'translate(2rem, -16rem)' }}
             />
           </div>
