@@ -421,7 +421,7 @@ export default function Home() {
       {/* Recent Places */}
       <section
         ref={recentRef}
-        className="py-16 px-4 -mt-8"
+        className="py-16 px-4 -mt-8 relative"
         style={{
           backgroundImage: 'url(/homepage_background.webp)',
           backgroundRepeat: 'repeat-y',
@@ -430,6 +430,15 @@ export default function Home() {
           // backgroundPositionY is set by useSeamlessCarryOver
         }}
       >
+        {/* Homepage Image 4 - Top right corner, overlapping decorative section */}
+        <div className="absolute top-0 right-0" style={{ transform: 'translate(0, -18rem)', zIndex: 30 }}>
+          <img
+            src="/homepage_image_4.png"
+            alt="Homepage Image 4"
+            className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
+          />
+        </div>
+
         <div className="max-w-7xl mx-auto">
           <div className="relative mb-12">
             <img
