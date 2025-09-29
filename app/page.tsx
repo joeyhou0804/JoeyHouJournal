@@ -36,6 +36,9 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [currentDestSlide, setCurrentDestSlide] = useState(0)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
+  const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
+  const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
   const journeyImages = [
     '/homepage_journey_image_1.png',
@@ -88,6 +91,35 @@ export default function Home() {
     }, 150)
   }
 
+  const openMenu = () => {
+    // Menu button animates out first
+    setIsMenuButtonAnimating(true)
+
+    setTimeout(() => {
+      setIsMenuButtonVisible(false)
+      setIsMenuOpen(true)
+      setTimeout(() => {
+        setIsDrawerAnimating(false)
+      }, 50)
+    }, 150)
+  }
+
+  const closeMenu = () => {
+    // Drawer animates out first
+    setIsDrawerAnimating(true)
+
+    setTimeout(() => {
+      setIsMenuOpen(false)
+      setTimeout(() => {
+        setIsMenuButtonVisible(true)
+        setIsMenuButtonAnimating(true)
+        setTimeout(() => {
+          setIsMenuButtonAnimating(false)
+        }, 50)
+      }, 50)
+    }, 150)
+  }
+
   return (
     <div
       className="min-h-screen relative overflow-x-hidden"
@@ -99,16 +131,20 @@ export default function Home() {
       }}
     >
       {/* Menu Button - Fixed to top right */}
-      <button
-        onClick={() => setIsMenuOpen(true)}
-        className="fixed top-8 right-4 z-50 p-2 hover:scale-105 transition-transform duration-200"
-      >
-        <img
-          src="/icon_menu.webp"
-          alt="Menu"
-          className="w-20 h-20"
-        />
-      </button>
+      {isMenuButtonVisible && (
+        <button
+          onClick={openMenu}
+          className={`fixed top-8 right-4 z-50 p-2 hover:scale-105 transition-all duration-150 ${
+            isMenuButtonAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
+          }`}
+        >
+          <img
+            src="/icon_menu.webp"
+            alt="Menu"
+            className="w-20 h-20"
+          />
+        </button>
+      )}
 
       {/* Navigation Drawer */}
       {isMenuOpen && (
@@ -116,12 +152,14 @@ export default function Home() {
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={() => setIsMenuOpen(false)}
+            onClick={closeMenu}
           />
 
           {/* Drawer */}
           <div
-            className="fixed top-8 right-0 h-96 w-64 z-50 transform transition-transform duration-300 ease-out rounded-l-2xl border-4"
+            className={`fixed top-8 right-0 h-96 w-64 z-50 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
+              isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
+            }`}
             style={{
               backgroundImage: 'url(/footer_background.webp)',
               backgroundRepeat: 'repeat',
@@ -131,7 +169,7 @@ export default function Home() {
           >
             {/* Close Button */}
             <button
-              onClick={() => setIsMenuOpen(false)}
+              onClick={closeMenu}
               className="absolute -top-6 -left-6 hover:scale-105 transition-transform duration-200"
             >
               <img
@@ -143,14 +181,14 @@ export default function Home() {
 
             {/* Navigation Buttons */}
             <div className="flex flex-col items-center justify-center h-full space-y-3 px-6">
-              <Link href="/" className="group" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/" className="group" onClick={closeMenu}>
                 <img
                   src="/logo_en.png"
                   alt="Home"
                   className="h-32 w-auto hover:scale-105 transition-transform duration-200"
                 />
               </Link>
-              <Link href="/trips" className="group" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/trips" className="group" onClick={closeMenu}>
                 <img
                   src="/journey_button.png"
                   alt="Journeys"
@@ -162,7 +200,7 @@ export default function Home() {
                   className="w-48 h-auto hidden group-hover:block"
                 />
               </Link>
-              <Link href="/places" className="group" onClick={() => setIsMenuOpen(false)}>
+              <Link href="/places" className="group" onClick={closeMenu}>
                 <img
                   src="/destination_button.png"
                   alt="Destinations"
