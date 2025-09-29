@@ -1,8 +1,11 @@
 import './globals.css'
 
 export const metadata = {
-  title: "Joey's Travel Journal",
-  description: 'Exploring America by Rail - A journey through 147 destinations across train routes',
+  title: "Joey Hou's Journal | United States",
+  description: "Welcome to my travel journal site! Enjoy the pictures I take in the US on trains...and more!",
+  icons: {
+    icon: '/favicon.png',
+  },
 }
 
 export default function RootLayout({
