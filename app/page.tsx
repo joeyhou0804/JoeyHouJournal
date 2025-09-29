@@ -35,6 +35,7 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [currentDestSlide, setCurrentDestSlide] = useState(0)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const journeyImages = [
     '/homepage_journey_image_1.png',
@@ -97,6 +98,98 @@ export default function Home() {
         animation: 'moveRight 60s linear infinite'
       }}
     >
+      {/* Menu Button - Fixed to top right */}
+      <button
+        onClick={() => setIsMenuOpen(true)}
+        className="fixed top-8 right-4 z-50 p-2 hover:scale-105 transition-transform duration-200"
+      >
+        <img
+          src="/icon_menu.webp"
+          alt="Menu"
+          className="w-16 h-16"
+        />
+      </button>
+
+      {/* Navigation Drawer */}
+      {isMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setIsMenuOpen(false)}
+          />
+
+          {/* Drawer */}
+          <div
+            className="fixed top-8 right-0 h-96 w-64 z-50 transform transition-transform duration-300 ease-out rounded-l-2xl border-4"
+            style={{
+              backgroundImage: 'url(/footer_background.webp)',
+              backgroundRepeat: 'repeat',
+              backgroundSize: '200px',
+              borderColor: '#373737'
+            }}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => setIsMenuOpen(false)}
+              className="absolute -top-6 -left-6 hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src="/menu_close.webp"
+                alt="Close Menu"
+                className="w-12 h-12"
+              />
+            </button>
+
+            {/* Navigation Buttons */}
+            <div className="flex flex-col items-center justify-center h-full space-y-3 px-6">
+              <Link href="/" className="group" onClick={() => setIsMenuOpen(false)}>
+                <img
+                  src="/logo_en.png"
+                  alt="Home"
+                  className="h-32 w-auto hover:scale-105 transition-transform duration-200"
+                />
+              </Link>
+              <Link href="/trips" className="group" onClick={() => setIsMenuOpen(false)}>
+                <img
+                  src="/journey_button.png"
+                  alt="Journeys"
+                  className="w-48 h-auto group-hover:hidden"
+                />
+                <img
+                  src="/journey_button_hover.png"
+                  alt="Journeys"
+                  className="w-48 h-auto hidden group-hover:block"
+                />
+              </Link>
+              <Link href="/places" className="group" onClick={() => setIsMenuOpen(false)}>
+                <img
+                  src="/destination_button.png"
+                  alt="Destinations"
+                  className="w-48 h-auto group-hover:hidden"
+                />
+                <img
+                  src="/destination_button_hover.png"
+                  alt="Destinations"
+                  className="w-48 h-auto hidden group-hover:block"
+                />
+              </Link>
+              <button className="group">
+                <img
+                  src="/language_button_en.png"
+                  alt="Language Toggle"
+                  className="w-48 h-auto group-hover:hidden"
+                />
+                <img
+                  src="/language_button_en_hover.png"
+                  alt="Language Toggle"
+                  className="w-48 h-auto hidden group-hover:block"
+                />
+              </button>
+            </div>
+          </div>
+        </>
+      )}
       <style jsx>{`
         @keyframes moveRight {
           0% { background-position: 0% 0%; }
