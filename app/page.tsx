@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <div
-      className="min-h-screen relative"
+      className="min-h-screen relative overflow-x-hidden"
       style={{
         backgroundImage: 'url(/homepage_background_2.webp)',
         backgroundRepeat: 'repeat',
