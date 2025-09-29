@@ -34,6 +34,7 @@ export default function Home() {
 
   const [currentIndex, setCurrentIndex] = useState(0)
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [currentDestSlide, setCurrentDestSlide] = useState(0)
 
   const journeyImages = [
     '/homepage_journey_image_1.png',
@@ -52,6 +53,7 @@ export default function Home() {
   }, [journeyImages.length])
 
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [isDestTransitioning, setIsDestTransitioning] = useState(false)
 
   const nextSlide = () => {
     setIsTransitioning(true)
@@ -66,6 +68,22 @@ export default function Home() {
     setTimeout(() => {
       setCurrentSlide((prev) => (prev - 1 + featuredTrips.length) % featuredTrips.length)
       setIsTransitioning(false)
+    }, 150)
+  }
+
+  const nextDestSlide = () => {
+    setIsDestTransitioning(true)
+    setTimeout(() => {
+      setCurrentDestSlide((prev) => (prev + 1) % recentPlaces.length)
+      setIsDestTransitioning(false)
+    }, 150)
+  }
+
+  const prevDestSlide = () => {
+    setIsDestTransitioning(true)
+    setTimeout(() => {
+      setCurrentDestSlide((prev) => (prev - 1 + recentPlaces.length) % recentPlaces.length)
+      setIsDestTransitioning(false)
     }, 150)
   }
 
@@ -321,7 +339,7 @@ export default function Home() {
                 <div
                   className="absolute top-0 left-0 w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
                   style={{
-                    backgroundImage: `url(/homepage_journey_slide_image_${((currentSlide + 1) % featuredTrips.length) + 1}.jpg)`,
+                    backgroundImage: `url(/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
                     backgroundSize: '100% auto',
                     backgroundPosition: '50% 100%',
                     WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
@@ -465,42 +483,135 @@ export default function Home() {
             />
           </div>
 
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {recentPlaces.map((place, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="aspect-square rounded-t-lg overflow-hidden bg-gray-200">
-                  {place.image ? (
-                    <img
-                      src={place.image}
-                      alt={place.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                      <MapPin className="h-8 w-8" />
-                    </div>
-                  )}
-                </div>
-                <div className="p-4">
-                  <h4 className="font-semibold text-gray-900 mb-1">{place.name}</h4>
-                  <p className="text-sm text-gray-500 mb-2">{place.date}</p>
-                  <div className="flex items-center text-xs text-blue-600">
-                    <Train className="h-3 w-3 mr-1" />
-                    {place.route}
-                  </div>
-                </div>
+          {/* Destination Carousel */}
+          <div
+            className="relative w-screen left-1/2 -ml-[50vw] mt-48"
+            style={{ aspectRatio: '1920/800' }}
+          >
+            {/* Background */}
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage: 'url(/destination_background.webp)',
+                backgroundSize: '100% 100%',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                zIndex: 0,
+              }}
+            />
+
+            {/* Masked destination image - left edge */}
+            <div className="absolute left-0 top-1/2 -translate-y-1/2" style={{ zIndex: 15 }}>
+              <div
+                className={`w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out ${
+                  isDestTransitioning ? '-translate-x-full' : 'translate-x-0'
+                }`}
+                style={{
+                  backgroundImage: `url(${recentPlaces[currentDestSlide].image})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
+                  maskImage: 'url(/homepage_journey_image_mask.webp)',
+                  WebkitMaskSize: 'contain',
+                  maskSize: 'contain',
+                  WebkitMaskRepeat: 'no-repeat',
+                  maskRepeat: 'no-repeat',
+                  WebkitMaskPosition: 'center',
+                  maskPosition: 'center'
+                }}
+              />
+              {/* Incoming image */}
+              {isDestTransitioning && (
+                <div
+                  className="absolute top-0 left-0 w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
+                  style={{
+                    backgroundImage: `url(${recentPlaces[currentDestSlide].image})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
+                    maskImage: 'url(/homepage_journey_image_mask.webp)',
+                    WebkitMaskSize: 'contain',
+                    maskSize: 'contain',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskPosition: 'center',
+                    maskPosition: 'center'
+                  }}
+                />
+              )}
+            </div>
+
+            {/* Destination Text Overlay - Center right */}
+            <div className="absolute right-64 top-1/2 -translate-y-1/2 max-w-md" style={{ zIndex: 25, color: '#373737' }}>
+              <h2 className="text-4xl font-bold mb-4">{recentPlaces[currentDestSlide].name}</h2>
+              <p className="text-lg mb-6 leading-relaxed opacity-90">
+                Visited on {recentPlaces[currentDestSlide].date}
+              </p>
+              <div className="flex items-center mb-6 text-lg">
+                <Train className="w-4 h-4 mr-3" />
+                {recentPlaces[currentDestSlide].route}
               </div>
-            ))}
+              <button className="bg-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200" style={{ color: '#373737' }}>
+                View Details
+              </button>
+            </div>
+
+            {/* Navigation Arrows */}
+            <button
+              onClick={prevDestSlide}
+              className="absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
+              style={{ zIndex: 30 }}
+            >
+              <img src="/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
+            </button>
+            <button
+              onClick={nextDestSlide}
+              className="absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
+              style={{ zIndex: 30 }}
+            >
+              <img src="/arrow_next.webp" alt="Next" className="w-16 h-16" />
+            </button>
+
+            {/* Slide Indicators */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2" style={{ zIndex: 25 }}>
+              <div className="flex justify-center space-x-2">
+                {recentPlaces.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentDestSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                      index === currentDestSlide ? 'bg-white' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-gray-400">
-            Made with ♥ by Joey Hou • 侯江天（小猴同学）• 2025
-          </p>
+      <footer
+        className="text-white py-8 px-4 border-t border-gray-400"
+        style={{
+          backgroundImage: 'url(/footer_background.webp)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px'
+        }}
+      >
+        <div className="flex items-center justify-between">
+          <Link href="/" className="hover:opacity-80 transition-opacity duration-200">
+            <img
+              src="/logo_en.png"
+              alt="Logo"
+              className="h-60 w-auto"
+            />
+          </Link>
+          <div className="max-w-7xl mx-auto">
+            <p className="text-gray-400">
+              Made with ♥ by Joey Hou • 侯江天（小猴同学）• 2025
+            </p>
+          </div>
         </div>
       </footer>
     </div>
