@@ -22,7 +22,7 @@ interface Place {
   state: string
   lat: number
   lng: number
-  imageUrl?: string
+  images: string[]
 }
 
 interface InteractiveMapProps {
