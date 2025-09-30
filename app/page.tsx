@@ -325,7 +325,7 @@ export default function Home() {
         className="relative pt-64"
         style={{
           paddingBottom: '8rem',
-          backgroundImage: 'url(/homepage_background.webp)',
+          backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
           backgroundSize: '100% auto',
           backgroundPositionX: 'center',
           backgroundRepeat: 'repeat-y'
@@ -630,7 +630,7 @@ export default function Home() {
         ref={recentRef}
         className="py-16 px-4 -mt-8 relative"
         style={{
-          backgroundImage: 'url(/homepage_background.webp)',
+          backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
           backgroundRepeat: 'repeat-y',
           backgroundSize: '100% auto',
           backgroundPositionX: 'center',
