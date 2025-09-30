@@ -2,11 +2,8 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Link from 'next/link'
-import Box from '@mui/material/Box'
 import { MapPin, Calendar, Train } from 'lucide-react'
 import InfiniteCarousel from 'src/components/InfiniteCarousel'
-import Section from 'src/components/Section'
-import Container from 'src/components/Container'
 
 export default function Home() {
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -138,9 +135,9 @@ export default function Home() {
   }
 
   return (
-    <Box
+    <div
       className="min-h-screen relative overflow-x-hidden"
-      sx={{
+      style={{
         backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
         backgroundRepeat: 'repeat',
         backgroundSize: '200px auto',
@@ -149,37 +146,35 @@ export default function Home() {
     >
       {/* Menu Button - Fixed to top right */}
       {isMenuButtonVisible && (
-        <Box
-          component="button"
+        <button
           onClick={openMenu}
           className={`fixed top-8 right-4 z-50 p-2 hover:scale-105 transition-all duration-150 ${
             isMenuButtonAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
           }`}
         >
-          <Box
-            component="img"
+          <img
             src="/images/icons/icon_menu.webp"
             alt="Menu"
             className="w-20 h-20"
           />
-        </Box>
+        </button>
       )}
 
       {/* Navigation Drawer */}
       {isMenuOpen && (
         <>
           {/* Backdrop */}
-          <Box
+          <div
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
             onClick={closeMenu}
           />
 
           {/* Drawer */}
-          <Box
+          <div
             className={`fixed top-8 right-0 h-96 w-64 z-50 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
               isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
             }`}
-            sx={{
+            style={{
               backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
               backgroundRepeat: 'repeat',
               backgroundSize: '200px',
@@ -187,73 +182,64 @@ export default function Home() {
             }}
           >
             {/* Close Button */}
-            <Box
-              component="button"
+            <button
               onClick={closeMenu}
               className="absolute -top-6 -left-6 hover:scale-105 transition-transform duration-200"
             >
-              <Box
-                component="img"
+              <img
                 src="/images/icons/menu_close.webp"
                 alt="Close Menu"
                 className="w-12 h-12"
               />
-            </Box>
+            </button>
 
             {/* Navigation Buttons */}
-            <Box className="flex flex-col items-center justify-center h-full space-y-3 px-6">
+            <div className="flex flex-col items-center justify-center h-full space-y-3 px-6">
               <Link href="/" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
+                <img
                   src="/images/logos/logo_en.png"
                   alt="Home"
                   className="h-32 w-auto hover:scale-105 transition-transform duration-200"
                 />
               </Link>
               <Link href="/trips" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/journey_button.png"
                   alt="Journeys"
                   className="w-48 h-auto group-hover:hidden"
                 />
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/journey_button_hover.png"
                   alt="Journeys"
                   className="w-48 h-auto hidden group-hover:block"
                 />
               </Link>
               <Link href="/places" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/destination_button.png"
                   alt="Destinations"
                   className="w-48 h-auto group-hover:hidden"
                 />
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/destination_button_hover.png"
                   alt="Destinations"
                   className="w-48 h-auto hidden group-hover:block"
                 />
               </Link>
-              <Box component="button" className="group">
-                <Box
-                  component="img"
+              <button className="group">
+                <img
                   src="/images/buttons/language_button_en.png"
                   alt="Language Toggle"
                   className="w-48 h-auto group-hover:hidden"
                 />
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/language_button_en_hover.png"
                   alt="Language Toggle"
                   className="w-48 h-auto hidden group-hover:block"
                 />
-              </Box>
-            </Box>
-          </Box>
+              </button>
+            </div>
+          </div>
         </>
       )}
       <style jsx>{`
@@ -281,14 +267,9 @@ export default function Home() {
       `}</style>
 
       {/* Video Background Section */}
-      <Section
-        component="section"
-        className="relative w-full overflow-hidden"
-        sx={{ height: '120vh' }}
-      >
+      <section className="relative w-full overflow-hidden" style={{ height: '120vh' }}>
         {/* Video Background */}
-        <Box
-          component="video"
+        <video
           autoPlay
           loop
           muted
@@ -296,27 +277,23 @@ export default function Home() {
           className="absolute top-0 left-0 w-full h-full object-cover"
         >
           <source src="/images/homepage/homepage_title_video.mp4" type="video/mp4" />
-        </Box>
+        </video>
 
         {/* Logo - Top Left Corner */}
-        <Container className="absolute top-4 left-4 z-10">
-          <Box
-            component="img"
+        <div className="absolute top-4 left-4 z-10">
+          <img
             src="/images/logos/logo_en.png"
             alt="Logo"
             className="w-64 h-auto md:w-80 lg:w-96 xl:w-[28rem]"
           />
-        </Container>
-      </Section>
+        </div>
+      </section>
 
       {/* Decorative transition (homepage head mask) */}
-      <Container
-        className="relative z-20 h-[200px] -mb-16"
-        sx={{ marginTop: '-200px' }}
-      >
-        <Container
+      <div className="relative z-20 h-[200px] -mb-16" style={{ marginTop: '-200px' }}>
+        <div
           className="absolute inset-0"
-          sx={{
+          style={{
             WebkitMaskImage: 'url(/images/masks/homepage_head_mask.webp)',
             maskImage: 'url(/images/masks/homepage_head_mask.webp)',
             WebkitMaskRepeat: 'no-repeat',
@@ -329,25 +306,24 @@ export default function Home() {
           }}
         >
           {/* Background layer we align FROM */}
-          <Container
-            innerRef={homepageHeadDecoRef}
+          <div
+            ref={homepageHeadDecoRef}
             className="absolute inset-0"
-            sx={{
+            style={{
               backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
               backgroundRepeat: 'repeat-y',
               backgroundSize: '100% auto',
               backgroundPositionX: 'center',
             }}
           />
-        </Container>
-      </Container>
+        </div>
+      </div>
 
       {/* Section 1 */}
-      <Section
-        component="section"
-        innerRef={section1Ref}
+      <section
+        ref={section1Ref}
         className="relative pt-64"
-        sx={{
+        style={{
           paddingBottom: '8rem',
           backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
           backgroundSize: '100% auto',
@@ -355,77 +331,71 @@ export default function Home() {
           backgroundRepeat: 'repeat-y'
         }}
       >
+
         {/* Image 1 + Slogan Row */}
-        <Container className="relative z-20 -mt-64">
-          <Container className="grid grid-cols-12 items-center gap-8">
+        <div className="relative z-20 -mt-64">
+          <div className="grid grid-cols-12 items-center gap-8">
             {/* Image 1 — 60% */}
-            <Container className="col-span-12 md:col-span-7 relative z-20">
-              <Box
-                component="img"
+            <div className="col-span-12 md:col-span-7 relative z-20">
+              <img
                 src="/images/homepage/homepage_image_1.png"
                 alt="Homepage Image 1"
                 className="w-full h-auto"
               />
-            </Container>
+            </div>
 
             {/* Slogan — 40% (overlap) */}
-            <Container className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-16 md:-mt-20">
-              <Box
-                component="img"
+            <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-16 md:-mt-20">
+              <img
                 src="/images/homepage/homepage_slogan_en.png"
                 alt="Homepage Slogan"
                 className="w-full max-w-[40rem] h-auto drop-shadow-md"
-                sx={{ transform: 'translateX(-12rem)' }}
+                style={{ transform: 'translateX(-12rem)' }}
               />
-            </Container>
+            </div>
 
             {/* Spacer — ~10% */}
-            <Container className="hidden md:block col-span-1" />
-          </Container>
-        </Container>
+            <div className="hidden md:block col-span-1" />
+          </div>
+        </div>
 
         {/* Carousel - pulled upward, sits *under* image1 */}
-        <Container className="relative z-20 -mt-24 md:-mt-32 lg:-mt-40">
+        <div className="relative z-20 -mt-24 md:-mt-32 lg:-mt-40">
           <InfiniteCarousel
             images={carouselImages}
             speedPxPerSec={60}
             className="py-8"
           />
-        </Container>
+        </div>
 
         {/* Carousel Text and Image Container */}
-        <Container className="relative z-30 mt-8">
+        <div className="relative z-30 mt-8">
           {/* Carousel Text - Left Side */}
-          <Container className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Container className="flex justify-start">
-              <Box
-                component="img"
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-start">
+              <img
                 src="/images/homepage/homepage_carousel_text_en.png"
                 alt="Carousel Text"
                 className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
               />
-            </Container>
-          </Container>
-        </Container>
-      </Section>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Decorative transition (foot mask; background not flipped) */}
-      <Container className="relative z-20 h-[200px] -mt-8">
+      <div className="relative z-20 h-[200px] -mt-8">
         {/* Homepage Image 2 - Right edge, overlapping section above */}
-        <Container
-          className="absolute top-0 right-0"
-          sx={{ transform: 'translate(0, -700px)', zIndex: 30 }}
-        >
-          <Box
-            component="img"
+        <div className="absolute top-0 right-0" style={{ transform: 'translate(0, -700px)', zIndex: 30 }}>
+          <img
             src="/images/homepage/homepage_image_2.png"
             alt="Homepage Image 2"
             className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
           />
-        </Container>
-        <Container
+        </div>
+        <div
           className="absolute inset-0"
-          sx={{
+          style={{
             WebkitMaskImage: 'url(/images/masks/background_foot_mask.webp)',
             maskImage: 'url(/images/masks/background_foot_mask.webp)',
             WebkitMaskRepeat: 'no-repeat',
@@ -438,10 +408,10 @@ export default function Home() {
           }}
         >
           {/* Background layer we align TO (hook sets backgroundPositionY) */}
-          <Container
-            innerRef={decoRef}
+          <div
+            ref={decoRef}
             className="absolute inset-0"
-            sx={{
+            style={{
               backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
               backgroundSize: '100% auto',
               backgroundRepeat: 'repeat-y',
@@ -449,21 +419,20 @@ export default function Home() {
               // Y set by useSeamlessBackground
             }}
           />
-        </Container>
-      </Container>
+        </div>
+      </div>
 
       {/* Featured Trips */}
-      <Section component="section" className="py-16 px-4 relative">
-        <Container className="max-w-7xl mx-auto">
-          <Container className="relative mb-12">
-            <Container
+      <section className="py-16 px-4 relative">
+        <div className="max-w-7xl mx-auto">
+          <div className="relative mb-12">
+            <div
               className="absolute right-0"
-              sx={{ transform: 'translate(-44rem, 2rem)', zIndex: 5 }}
+              style={{ transform: 'translate(-44rem, 2rem)', zIndex: 5 }}
             >
               {journeyImages.map((image, index) => (
-                <Box
+                <img
                   key={index}
-                  component="img"
                   src={image}
                   alt={`Featured Journey ${index + 1}`}
                   className={`h-auto max-w-5xl absolute top-0 left-0 transition-opacity duration-1000 ${
@@ -471,56 +440,47 @@ export default function Home() {
                   }`}
                 />
               ))}
-            </Container>
-            <Box
-              component="img"
+            </div>
+            <img
               src="/images/journey/journeys_title.png"
               alt="Featured Journeys"
               className="h-auto max-w-4xl relative"
-              sx={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
+              style={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
             />
-            <Box
-              component="img"
+            <img
               src="/images/journey/journeys_subtitle.png"
               alt="Explore my most memorable train adventures"
               className="h-auto max-w-4xl relative"
-              sx={{ transform: 'translate(2rem, -16rem)', zIndex: 20 }}
+              style={{ transform: 'translate(2rem, -16rem)', zIndex: 20 }}
             />
-            <Box
-              component={Link}
-              href="/trips"
-              className="absolute"
-              sx={{ transform: 'translate(2rem, -17rem)', zIndex: 20 }}
-            >
-              <Box
-                component="img"
+            <Link href="/trips" className="absolute" style={{ transform: 'translate(2rem, -17rem)', zIndex: 20 }}>
+              <img
                 src="/images/buttons/button_explore.png"
                 alt="Explore Journeys"
                 className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
               />
-            </Box>
-            <Box
-              component="img"
+            </Link>
+            <img
               src="/images/buttons/button_explore_arrow.webp"
               alt="Arrow"
               className="absolute h-auto w-8"
-              sx={{
+              style={{
                 transform: 'translate(24rem, -14.2rem)',
                 zIndex: 20,
                 animation: 'moveJourneysArrow 0.5s ease-in-out infinite'
               }}
             />
-          </Container>
+          </div>
 
           {/* Journey Carousel */}
-          <Container
+          <div
             className="relative w-screen left-1/2 -ml-[50vw] mt-96"
-            sx={{ aspectRatio: '1920/800' }}
+            style={{ aspectRatio: '1920/800' }}
           >
             {/* Background with mask */}
-            <Container
+            <div
               className="absolute inset-0"
-              sx={{
+              style={{
                 backgroundImage: 'url(/images/journey/homepage_journey_slide_background.avif)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
@@ -536,22 +496,21 @@ export default function Home() {
             />
 
             {/* Train image overlay - top left, above mask */}
-            <Container className="absolute -top-80 left-0" sx={{ zIndex: 20 }}>
-              <Box
-                component="img"
+            <div className="absolute -top-80 left-0" style={{ zIndex: 20 }}>
+              <img
                 src="/images/journey/homepage_journey_train_image.png"
                 alt="Train Journey"
                 className="h-[32rem] w-auto object-cover"
               />
-            </Container>
+            </div>
 
             {/* Masked journey image - left edge */}
-            <Container className="absolute left-0 top-1/2 -translate-y-1/2" sx={{ zIndex: 15 }}>
-              <Container
+            <div className="absolute left-0 top-1/2 -translate-y-1/2" style={{ zIndex: 15 }}>
+              <div
                 className={`w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out ${
                   isTransitioning ? '-translate-x-full' : 'translate-x-0'
                 }`}
-                sx={{
+                style={{
                   backgroundImage: `url(/images/journey/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
                   backgroundSize: '100% auto',
                   backgroundPosition: '50% 100%',
@@ -567,14 +526,14 @@ export default function Home() {
               />
               {/* Incoming image */}
               {isTransitioning && (
-                <Container
+                <div
                   className="absolute top-0 left-0 w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
-                  sx={{
+                  style={{
                     backgroundImage: `url(/images/journey/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
                     backgroundSize: '100% auto',
                     backgroundPosition: '50% 100%',
-                    WebkitMaskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
-                    maskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
+                    WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
+                    maskImage: 'url(/homepage_journey_image_mask.webp)',
                     WebkitMaskSize: 'contain',
                     maskSize: 'contain',
                     WebkitMaskRepeat: 'no-repeat',
@@ -584,73 +543,62 @@ export default function Home() {
                   }}
                 />
               )}
-            </Container>
+            </div>
 
             {/* Journey Text Overlay - Center right */}
-            <Container
-              className="absolute right-64 top-1/2 -translate-y-1/2 text-white max-w-md"
-              sx={{ zIndex: 25 }}
-            >
-              <Box component="h2" className="text-4xl font-bold mb-4">
-                {featuredTrips[currentSlide].name}
-              </Box>
-              <Box component="p" className="text-lg mb-6 leading-relaxed opacity-90">
+            <div className="absolute right-64 top-1/2 -translate-y-1/2 text-white max-w-md" style={{ zIndex: 25 }}>
+              <h2 className="text-4xl font-bold mb-4">{featuredTrips[currentSlide].name}</h2>
+              <p className="text-lg mb-6 leading-relaxed opacity-90">
                 {featuredTrips[currentSlide].description}
-              </Box>
-              <Container className="flex items-center mb-6 text-lg">
-                <Box component="span" className="w-3 h-3 bg-white rounded-full mr-3" />
+              </p>
+              <div className="flex items-center mb-6 text-lg">
+                <span className="w-3 h-3 bg-white rounded-full mr-3"></span>
                 {featuredTrips[currentSlide].places} destinations
-              </Container>
-              <Box
-                component="button"
-                className="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
-              >
+              </div>
+              <button className="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200">
                 Explore Journey
-              </Box>
-            </Container>
+              </button>
+            </div>
 
             {/* Navigation Arrows */}
-            <Box
-              component="button"
+            <button
               onClick={prevSlide}
               className="absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
-              sx={{ zIndex: 30 }}
+              style={{ zIndex: 30 }}
             >
-              <Box component="img" src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
-            </Box>
-            <Box
-              component="button"
+              <img src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
+            </button>
+            <button
               onClick={nextSlide}
               className="absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
-              sx={{ zIndex: 30 }}
+              style={{ zIndex: 30 }}
             >
-              <Box component="img" src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16" />
-            </Box>
+              <img src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16" />
+            </button>
 
             {/* Slide Indicators */}
-            <Container className="absolute bottom-8 left-1/2 -translate-x-1/2" sx={{ zIndex: 25 }}>
-              <Container className="flex justify-center space-x-2">
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2" style={{ zIndex: 25 }}>
+              <div className="flex justify-center space-x-2">
                 {featuredTrips.map((_, index) => (
-                  <Box
+                  <button
                     key={index}
-                    component="button"
                     onClick={() => setCurrentSlide(index)}
                     className={`w-3 h-3 rounded-full transition-colors duration-200 ${
                       index === currentSlide ? 'bg-white' : 'bg-white/50'
                     }`}
                   />
                 ))}
-              </Container>
-            </Container>
-          </Container>
-        </Container>
-      </Section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Decorative transition (head mask; background not flipped) */}
-      <Container className="relative z-20 h-[200px] -mt-8">
-        <Container
+      <div className="relative z-20 h-[200px] -mt-8">
+        <div
           className="absolute inset-0"
-          sx={{
+          style={{
             WebkitMaskImage: 'url(/images/masks/background_head_mask.webp)',
             maskImage: 'url(/images/masks/background_head_mask.webp)',
             WebkitMaskRepeat: 'no-repeat',
@@ -663,10 +611,10 @@ export default function Home() {
           }}
         >
           {/* Background layer we align FROM */}
-          <Container
-            innerRef={headDecoRef}
+          <div
+            ref={headDecoRef}
             className="absolute inset-0"
-            sx={{
+            style={{
               backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
               backgroundRepeat: 'repeat-y',
               backgroundSize: '100% auto',
@@ -674,15 +622,14 @@ export default function Home() {
               // Y remains default; we offset the next section instead
             }}
           />
-        </Container>
-      </Container>
+        </div>
+      </div>
 
       {/* Recent Places */}
-      <Section
-        component="section"
-        innerRef={recentRef}
+      <section
+        ref={recentRef}
         className="py-16 px-4 -mt-8 relative"
-        sx={{
+        style={{
           backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
           backgroundRepeat: 'repeat-y',
           backgroundSize: '100% auto',
@@ -691,62 +638,50 @@ export default function Home() {
         }}
       >
         {/* Homepage Image 4 - Top right corner, overlapping decorative section */}
-        <Container
-          className="absolute top-0 right-0"
-          sx={{ transform: 'translate(0, -18rem)', zIndex: 30 }}
-        >
-          <Box
-            component="img"
+        <div className="absolute top-0 right-0" style={{ transform: 'translate(0, -18rem)', zIndex: 30 }}>
+          <img
             src="/images/homepage/homepage_image_4.png"
             alt="Homepage Image 4"
             className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
           />
-        </Container>
+        </div>
 
-        <Container className="max-w-7xl mx-auto">
-          <Container className="relative mb-12">
-            <Box
-              component="img"
+        <div className="max-w-7xl mx-auto">
+          <div className="relative mb-12">
+            <img
               src="/images/homepage/destinations_title.png"
               alt="Recent Destinations"
               className="h-auto max-w-4xl relative"
-              sx={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
+              style={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
             />
-            <Box
-              component={Link}
-              href="/places"
-              className="absolute"
-              sx={{ transform: 'translate(2rem, -8rem)', zIndex: 20 }}
-            >
-              <Box
-                component="img"
+            <Link href="/places" className="absolute" style={{ transform: 'translate(2rem, -8rem)', zIndex: 20 }}>
+              <img
                 src="/images/buttons/button_explore.png"
                 alt="Explore Places"
                 className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
               />
-            </Box>
-            <Box
-              component="img"
+            </Link>
+            <img
               src="/images/buttons/button_explore_arrow.webp"
               alt="Arrow"
               className="absolute h-auto w-8"
-              sx={{
+              style={{
                 transform: 'translate(26rem, -5rem)',
                 zIndex: 20,
                 animation: 'moveArrow 0.5s ease-in-out infinite'
               }}
             />
-          </Container>
+          </div>
 
           {/* Destination Carousel */}
-          <Container
+          <div
             className="relative w-screen left-1/2 -ml-[50vw] mt-48"
-            sx={{ aspectRatio: '1920/800' }}
+            style={{ aspectRatio: '1920/800' }}
           >
             {/* Background */}
-            <Container
+            <div
               className="absolute inset-0"
-              sx={{
+              style={{
                 backgroundImage: 'url(/images/backgrounds/destination_background.webp)',
                 backgroundSize: '100% 100%',
                 backgroundPosition: 'center',
@@ -756,12 +691,12 @@ export default function Home() {
             />
 
             {/* Masked destination image - left edge */}
-            <Container className="absolute left-0 top-1/2 -translate-y-1/2" sx={{ zIndex: 15 }}>
-              <Container
+            <div className="absolute left-0 top-1/2 -translate-y-1/2" style={{ zIndex: 15 }}>
+              <div
                 className={`w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out ${
                   isDestTransitioning ? '-translate-x-full' : 'translate-x-0'
                 }`}
-                sx={{
+                style={{
                   backgroundImage: `url(${recentPlaces[currentDestSlide].image})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
@@ -777,14 +712,14 @@ export default function Home() {
               />
               {/* Incoming image */}
               {isDestTransitioning && (
-                <Container
+                <div
                   className="absolute top-0 left-0 w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
-                  sx={{
+                  style={{
                     backgroundImage: `url(${recentPlaces[currentDestSlide].image})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
-                    WebkitMaskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
-                    maskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
+                    WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
+                    maskImage: 'url(/homepage_journey_image_mask.webp)',
                     WebkitMaskSize: 'contain',
                     maskSize: 'contain',
                     WebkitMaskRepeat: 'no-repeat',
@@ -794,142 +729,122 @@ export default function Home() {
                   }}
                 />
               )}
-            </Container>
+            </div>
 
             {/* Destination Text Overlay - Center right */}
-            <Container
-              className="absolute right-64 top-1/2 -translate-y-1/2 max-w-md"
-              sx={{ zIndex: 25, color: '#373737' }}
-            >
-              <Box component="h2" className="text-4xl font-bold mb-4">
-                {recentPlaces[currentDestSlide].name}
-              </Box>
-              <Box component="p" className="text-lg mb-6 leading-relaxed opacity-90">
+            <div className="absolute right-64 top-1/2 -translate-y-1/2 max-w-md" style={{ zIndex: 25, color: '#373737' }}>
+              <h2 className="text-4xl font-bold mb-4">{recentPlaces[currentDestSlide].name}</h2>
+              <p className="text-lg mb-6 leading-relaxed opacity-90">
                 Visited on {recentPlaces[currentDestSlide].date}
-              </Box>
-              <Container className="flex items-center mb-6 text-lg">
+              </p>
+              <div className="flex items-center mb-6 text-lg">
                 <Train className="w-4 h-4 mr-3" />
                 {recentPlaces[currentDestSlide].route}
-              </Container>
-              <Box
-                component="button"
-                className="bg-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
-                sx={{ color: '#373737' }}
-              >
+              </div>
+              <button className="bg-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200" style={{ color: '#373737' }}>
                 View Details
-              </Box>
-            </Container>
+              </button>
+            </div>
 
             {/* Navigation Arrows */}
-            <Box
-              component="button"
+            <button
               onClick={prevDestSlide}
               className="absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
-              sx={{ zIndex: 30 }}
+              style={{ zIndex: 30 }}
             >
-              <Box component="img" src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
-            </Box>
-            <Box
-              component="button"
+              <img src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
+            </button>
+            <button
               onClick={nextDestSlide}
               className="absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
-              sx={{ zIndex: 30 }}
+              style={{ zIndex: 30 }}
             >
-              <Box component="img" src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16" />
-            </Box>
+              <img src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16" />
+            </button>
 
             {/* Slide Indicators */}
-            <Container className="absolute bottom-8 left-1/2 -translate-x-1/2" sx={{ zIndex: 25 }}>
-              <Container className="flex justify-center space-x-2">
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2" style={{ zIndex: 25 }}>
+              <div className="flex justify-center space-x-2">
                 {recentPlaces.map((_, index) => (
-                  <Box
+                  <button
                     key={index}
-                    component="button"
                     onClick={() => setCurrentDestSlide(index)}
                     className={`w-3 h-3 rounded-full transition-colors duration-200 ${
                       index === currentDestSlide ? 'bg-white' : 'bg-white/50'
                     }`}
                   />
                 ))}
-              </Container>
-            </Container>
-          </Container>
-        </Container>
-      </Section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Footer */}
-      <Box
-        component="footer"
+      <footer
         className="text-white py-8 px-4 border-t border-gray-400"
-        sx={{
+        style={{
           backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
           backgroundRepeat: 'repeat',
           backgroundSize: '200px'
         }}
       >
-        <Container className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <Link href="/" className="hover:scale-105 transition-transform duration-200">
-            <Box
-              component="img"
+            <img
               src="/images/logos/logo_en.png"
               alt="Logo"
               className="h-60 w-auto"
             />
           </Link>
-          <Container className="flex-1 flex flex-col items-center justify-center">
+          <div className="flex-1 flex flex-col items-center justify-center">
             {/* Button Row */}
-            <Container className="flex items-center space-x-4 mb-4">
+            <div className="flex items-center space-x-4 mb-4">
               <Link href="/trips" className="group">
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/journey_button.png"
                   alt="Journeys"
                   className="h-20 w-auto group-hover:hidden"
                 />
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/journey_button_hover.png"
                   alt="Journeys"
                   className="h-20 w-auto hidden group-hover:block"
                 />
               </Link>
               <Link href="/places" className="group">
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/destination_button.png"
                   alt="Destinations"
                   className="h-20 w-auto group-hover:hidden"
                 />
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/destination_button_hover.png"
                   alt="Destinations"
                   className="h-20 w-auto hidden group-hover:block"
                 />
               </Link>
-              <Box component="button" className="group">
-                <Box
-                  component="img"
+              <button className="group">
+                <img
                   src="/images/buttons/language_button_en.png"
                   alt="Language Toggle"
                   className="h-20 w-auto group-hover:hidden"
                 />
-                <Box
-                  component="img"
+                <img
                   src="/images/buttons/language_button_en_hover.png"
                   alt="Language Toggle"
                   className="h-20 w-auto hidden group-hover:block"
                 />
-              </Box>
-            </Container>
+              </button>
+            </div>
             {/* Copyright Text */}
-            <Box component="p" className="text-gray-400 text-center">
+            <p className="text-gray-400 text-center">
               Made with ♥ by Joey Hou • 侯江天（小猴同学）• 2025
-            </Box>
-          </Container>
-        </Container>
-      </Box>
-    </Box>
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
   )
 }
 
