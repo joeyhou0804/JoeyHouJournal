@@ -165,7 +165,7 @@ export default function StationsPage() {
       {/* Station Page Title - Full Width */}
       <div className="w-full">
         <img
-          src="/destination_page_title.png"
+          src="/images/destinations/destination_page_title.png"
           alt="Stations"
           className="w-full h-auto object-cover"
         />
@@ -176,7 +176,7 @@ export default function StationsPage() {
         component="section"
         className="w-full py-24"
         sx={{
-          backgroundImage: 'url(/destination_page_map_background.webp)',
+          backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
           backgroundRepeat: 'repeat',
           backgroundSize: '300px auto',
         }}
@@ -184,14 +184,14 @@ export default function StationsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center mb-16 mt-8">
             <img
-              src="/destination_map_view_title.png"
+              src="/images/destinations/destination_map_view_title.png"
               alt="Map View"
               className="max-w-md w-full h-auto"
             />
           </div>
           <Box
             sx={{
-              backgroundImage: 'url(/destination_page_map_box_background.webp)',
+              backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
               backgroundRepeat: 'repeat',
               backgroundSize: '200px auto',
               padding: '1rem',

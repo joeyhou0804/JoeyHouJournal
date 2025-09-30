@@ -79,10 +79,10 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
       const marker = L.marker([place.lat, place.lng], { icon: orangeIcon }).addTo(map)
 
       const popupContent = `
-        <div style="width: 460px; padding: 8px; background-image: url('/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
-          <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
+        <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
+          <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
             <div style="position: relative; width: 100%; height: 146px;">
-              <img src="/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
+              <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
               ${place.images && place.images.length > 0 ? `
                 <img
                   src="${place.images[0]}"
@@ -91,7 +91,7 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
                 />
               ` : ''}
               <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
-                <img src="/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
+                <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
                 <h3 style="font-family: 'MarioFontTitle', sans-serif; font-weight: 600; font-size: 20px; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${place.name}</h3>
               </div>
               <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
@@ -103,10 +103,10 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
               <a
                 href="/destinations/${place.id}"
                 style="display: inline-block;"
-                onmouseover="this.querySelector('img').src='/view_details_button_hover.png'"
-                onmouseout="this.querySelector('img').src='/view_details_button.png'"
+                onmouseover="this.querySelector('img').src='/images/buttons/view_details_button_hover.png'"
+                onmouseout="this.querySelector('img').src='/images/buttons/view_details_button.png'"
               >
-                <img src="/view_details_button.png" alt="View Details" style="height: 55px; width: auto; display: block;" />
+                <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 55px; width: auto; display: block;" />
               </a>
             </div>
           </div>
