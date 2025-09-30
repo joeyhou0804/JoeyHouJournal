@@ -51,9 +51,9 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
     const map = L.map(mapContainerRef.current).setView(center, 5)
     mapRef.current = map
 
-    // Add tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    // Add tile layer with light gray theme
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       minZoom: 4,
       maxZoom: 10,
     }).addTo(map)
@@ -63,28 +63,45 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
       const marker = L.marker([place.lat, place.lng]).addTo(map)
 
       const popupContent = `
-        <div class="min-w-[200px]">
-          ${place.imageUrl ? `
-            <img
-              src="${place.imageUrl}"
-              alt="${place.name}"
-              class="w-full h-32 object-cover rounded mb-2"
-            />
-          ` : ''}
-          <h3 class="font-semibold text-base mb-1">${place.name}</h3>
-          <p class="text-sm text-gray-600 mb-1">${place.state}</p>
-          <p class="text-xs text-gray-500 mb-2">${place.route}</p>
-          <a
-            href="/places/${place.id}"
-            class="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded transition-colors"
-          >
-            View Details
-          </a>
+        <div style="width: 460px; padding: 8px; background-image: url('/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
+          <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
+            <div style="position: relative; width: 100%; height: 146px;">
+              <img src="/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
+              ${place.imageUrl ? `
+                <img
+                  src="${place.imageUrl}"
+                  alt="${place.name}"
+                  style="position: absolute; top: 8px; left: 8px; width: 130px; height: 130px; object-fit: cover; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
+                />
+              ` : ''}
+              <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
+                <img src="/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
+                <h3 style="font-family: 'MarioFontTitle', sans-serif; font-weight: 600; font-size: 20px; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${place.name}</h3>
+              </div>
+              <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
+                <p style="font-family: 'MarioFont', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${place.state}</p>
+                <p style="font-family: 'MarioFont', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+              </div>
+            </div>
+            <div style="text-align: center; margin-top: 4px;">
+              <a
+                href="/places/${place.id}"
+                style="display: inline-block;"
+                onmouseover="this.querySelector('img').src='/view_details_button_hover.png'"
+                onmouseout="this.querySelector('img').src='/view_details_button.png'"
+              >
+                <img src="/view_details_button.png" alt="View Details" style="height: 55px; width: auto; display: block;" />
+              </a>
+            </div>
+          </div>
         </div>
       `
 
       marker.bindPopup(popupContent, {
-        maxWidth: 250
+        maxWidth: 520,
+        minWidth: 520,
+        className: 'custom-popup',
+        closeButton: false
       })
     })
 
