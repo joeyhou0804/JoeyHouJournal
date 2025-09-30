@@ -1,63 +1,185 @@
 'use client'
 import Link from 'next/link'
-import { ArrowLeft, MapPin, Calendar, Train, Search, Filter, Image } from 'lucide-react'
+import { MapPin, Calendar, Train, Image } from 'lucide-react'
 import { useState } from 'react'
 import { places } from 'src/data/all_places_with_images'
+import Box from '@mui/material/Box'
 
-export default function PlacesPage() {
+export default function DestinationsPage() {
   const [showAll, setShowAll] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
+  const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
+  const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
+
   const displayedPlaces = showAll ? places : places.slice(0, 12)
+
+  const openMenu = () => {
+    setIsMenuButtonAnimating(true)
+    setTimeout(() => {
+      setIsMenuButtonVisible(false)
+      setIsMenuOpen(true)
+      setTimeout(() => {
+        setIsDrawerAnimating(false)
+      }, 50)
+    }, 150)
+  }
+
+  const closeMenu = () => {
+    setIsDrawerAnimating(true)
+    setTimeout(() => {
+      setIsMenuOpen(false)
+      setTimeout(() => {
+        setIsMenuButtonVisible(true)
+        setIsMenuButtonAnimating(true)
+        setTimeout(() => {
+          setIsMenuButtonAnimating(false)
+        }, 50)
+      }, 50)
+    }, 150)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">
-                <ArrowLeft className="h-5 w-5" />
+      {/* Navigation Drawer */}
+      {isMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <Box
+            className="fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={closeMenu}
+          />
+
+          {/* Drawer */}
+          <Box
+            className={`fixed top-8 right-0 h-96 w-64 z-50 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
+              isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
+            }`}
+            sx={{
+              backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
+              backgroundRepeat: 'repeat',
+              backgroundSize: '200px',
+              borderColor: '#373737'
+            }}
+          >
+            {/* Close Button */}
+            <Box
+              component="button"
+              onClick={closeMenu}
+              className="absolute -top-6 -left-6 hover:scale-105 transition-transform duration-200"
+            >
+              <Box
+                component="img"
+                src="/images/icons/menu_close.webp"
+                alt="Close Menu"
+                className="w-12 h-12"
+              />
+            </Box>
+
+            {/* Navigation Buttons */}
+            <Box className="flex flex-col items-center justify-center h-full space-y-3 px-6">
+              <Link href="/" className="group" onClick={closeMenu}>
+                <Box
+                  component="img"
+                  src="/images/logos/logo_en.png"
+                  alt="Home"
+                  className="h-32 w-auto hover:scale-105 transition-transform duration-200"
+                />
               </Link>
-              <h1 className="text-2xl font-bold text-gray-900">All Places</h1>
-            </div>
-            <nav className="hidden md:flex space-x-6">
-              <Link href="/" className="text-gray-700 hover:text-blue-600">Home</Link>
-              <Link href="/trips" className="text-gray-700 hover:text-blue-600">All Trips</Link>
-              <Link href="/places" className="text-blue-600 font-medium">Places</Link>
-            </nav>
-          </div>
+              <Link href="/trips" className="group" onClick={closeMenu}>
+                <Box
+                  component="img"
+                  src="/images/buttons/journey_button.png"
+                  alt="Journeys"
+                  className="w-48 h-auto group-hover:hidden"
+                />
+                <Box
+                  component="img"
+                  src="/images/buttons/journey_button_hover.png"
+                  alt="Journeys"
+                  className="w-48 h-auto hidden group-hover:block"
+                />
+              </Link>
+              <Link href="/places" className="group" onClick={closeMenu}>
+                <Box
+                  component="img"
+                  src="/images/buttons/destination_button.png"
+                  alt="Destinations"
+                  className="w-48 h-auto group-hover:hidden"
+                />
+                <Box
+                  component="img"
+                  src="/images/buttons/destination_button_hover.png"
+                  alt="Destinations"
+                  className="w-48 h-auto hidden group-hover:block"
+                />
+              </Link>
+              <Box component="button" className="group">
+                <Box
+                  component="img"
+                  src="/images/buttons/language_button_en.png"
+                  alt="Language Toggle"
+                  className="w-48 h-auto group-hover:hidden"
+                />
+                <Box
+                  component="img"
+                  src="/images/buttons/language_button_en_hover.png"
+                  alt="Language Toggle"
+                  className="w-48 h-auto hidden group-hover:block"
+                />
+              </Box>
+            </Box>
+          </Box>
+        </>
+      )}
+
+      {/* Menu Button */}
+      {isMenuButtonVisible && (
+        <Box
+          component="button"
+          onClick={openMenu}
+          className={`fixed top-8 right-4 z-50 p-2 hover:scale-105 transition-all duration-150 ${
+            isMenuButtonAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
+          }`}
+        >
+          <Box
+            component="img"
+            src="/images/icons/icon_menu.webp"
+            alt="Menu"
+            className="w-16 h-16"
+          />
+        </Box>
+      )}
+
+      {/* Destination Page Title - Full Width */}
+      <div className="w-full">
+        <img
+          src="/destination_page_title.png"
+          alt="Destinations"
+          className="w-full h-auto object-cover"
+        />
+      </div>
+
+      {/* Map View Section */}
+      <Box
+        component="section"
+        className="w-full py-16"
+        sx={{
+          backgroundImage: 'url(/destination_page_map_background.webp)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '300px auto',
+        }}
+      >
+        <div className="flex justify-center items-center">
+          <img
+            src="/destination_map_view_title.png"
+            alt="Map View"
+            className="max-w-md w-full h-auto"
+          />
         </div>
-      </header>
+      </Box>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search and Filter Bar */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-              <input
-                type="text"
-                placeholder="Search places, states, or routes..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            <div className="flex space-x-2">
-              <select className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">All Routes</option>
-                <option value="california-zephyr">California Zephyr</option>
-                <option value="empire-builder">Empire Builder</option>
-                <option value="southwest-chief">Southwest Chief</option>
-                <option value="texas-eagle">Texas Eagle</option>
-              </select>
-              <select className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="">All States</option>
-                <option value="ca">California</option>
-                <option value="co">Colorado</option>
-                <option value="il">Illinois</option>
-                <option value="ny">New York</option>
-              </select>
-            </div>
-          </div>
-        </div>
 
         {/* Places Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -127,13 +249,6 @@ export default function PlacesPage() {
           </div>
         )}
 
-        {/* Map View Toggle */}
-        <div className="fixed bottom-6 right-6">
-          <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-            <MapPin className="h-4 w-4 mr-2" />
-            Map View
-          </button>
-        </div>
       </div>
     </div>
   )
