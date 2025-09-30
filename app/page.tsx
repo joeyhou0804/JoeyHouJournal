@@ -26,7 +26,7 @@ export default function Home() {
   useSeamlessCarryOver({
     fromRef: homepageHeadDecoRef,
     toRef: section1Ref,
-    bgUrl: '/homepage_background.webp',
+    bgUrl: '/images/backgrounds/homepage_background.webp',
     adjustPx: ADJUST_PX_HOMEPAGE_HEAD,
   })
 
@@ -34,7 +34,7 @@ export default function Home() {
   useSeamlessBackground({
     sectionRef: section1Ref,
     decoRef,
-    bgUrl: '/homepage_background.webp',
+    bgUrl: '/images/backgrounds/homepage_background.webp',
     adjustPx: ADJUST_PX_FOOT,
   })
 
@@ -42,7 +42,7 @@ export default function Home() {
   useSeamlessCarryOver({
     fromRef: headDecoRef,
     toRef: recentRef,
-    bgUrl: '/homepage_background.webp',
+    bgUrl: '/images/backgrounds/homepage_background.webp',
     adjustPx: ADJUST_PX_HEAD,
   })
 
