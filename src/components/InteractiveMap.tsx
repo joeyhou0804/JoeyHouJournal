@@ -83,9 +83,9 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
           <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
             <div style="position: relative; width: 100%; height: 146px;">
               <img src="/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
-              ${place.imageUrl ? `
+              ${place.images && place.images.length > 0 ? `
                 <img
-                  src="${place.imageUrl}"
+                  src="${place.images[0]}"
                   alt="${place.name}"
                   style="position: absolute; top: 8px; left: 8px; width: 130px; height: 130px; object-fit: cover; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
                 />
@@ -101,7 +101,7 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
             </div>
             <div style="text-align: center; margin-top: 4px;">
               <a
-                href="/places/${place.id}"
+                href="/destinations/${place.id}"
                 style="display: inline-block;"
                 onmouseover="this.querySelector('img').src='/view_details_button_hover.png'"
                 onmouseout="this.querySelector('img').src='/view_details_button.png'"

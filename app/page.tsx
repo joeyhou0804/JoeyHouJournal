@@ -224,7 +224,7 @@ export default function Home() {
                   className="w-48 h-auto hidden group-hover:block"
                 />
               </Link>
-              <Link href="/places" className="group" onClick={closeMenu}>
+              <Link href="/destinations" className="group" onClick={closeMenu}>
                 <Box
                   component="img"
                   src="/images/buttons/destination_button.png"
@@ -714,7 +714,7 @@ export default function Home() {
             />
             <Box
               component={Link}
-              href="/places"
+              href="/destinations"
               className="absolute"
               sx={{ transform: 'translate(2rem, -8rem)', zIndex: 20 }}
             >
@@ -893,7 +893,7 @@ export default function Home() {
                   className="h-20 w-auto hidden group-hover:block"
                 />
               </Link>
-              <Link href="/places" className="group">
+              <Link href="/destinations" className="group">
                 <Box
                   component="img"
                   src="/images/buttons/destination_button.png"

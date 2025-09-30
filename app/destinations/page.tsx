@@ -1,8 +1,8 @@
 'use client'
 import Link from 'next/link'
-import { MapPin, Calendar, Train, Image } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import { places } from 'src/data/all_places_with_images'
+import { Calendar, Train, Image } from 'lucide-react'
+import { useState } from 'react'
+import { stations } from 'src/data/stations'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
 
@@ -16,14 +16,14 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   )
 })
 
-export default function DestinationsPage() {
+export default function StationsPage() {
   const [showAll, setShowAll] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
-  const displayedPlaces = showAll ? places : places.slice(0, 12)
+  const displayedStations = showAll ? stations : stations.slice(0, 12)
 
   const openMenu = () => {
     setIsMenuButtonAnimating(true)
@@ -111,7 +111,7 @@ export default function DestinationsPage() {
                   className="w-48 h-auto hidden group-hover:block"
                 />
               </Link>
-              <Link href="/places" className="group" onClick={closeMenu}>
+              <Link href="/destinations" className="group" onClick={closeMenu}>
                 <Box
                   component="img"
                   src="/images/buttons/destination_button.png"
@@ -162,11 +162,11 @@ export default function DestinationsPage() {
         </Box>
       )}
 
-      {/* Destination Page Title - Full Width */}
+      {/* Station Page Title - Full Width */}
       <div className="w-full">
         <img
           src="/destination_page_title.png"
-          alt="Destinations"
+          alt="Stations"
           className="w-full h-auto object-cover"
         />
       </div>
@@ -198,23 +198,23 @@ export default function DestinationsPage() {
               borderRadius: '1.5rem'
             }}
           >
-            <InteractiveMap places={places} />
+            <InteractiveMap places={stations} />
           </Box>
         </div>
       </Box>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        {/* Places Grid */}
+        {/* Stations Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {displayedPlaces.map((place, index) => (
-            <Link href={`/places/${place.id}`} key={index}>
+          {displayedStations.map((station, index) => (
+            <Link href={`/destinations/${station.id}`} key={index}>
               <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
                 <div className="relative aspect-square bg-gray-200 rounded-t-lg overflow-hidden">
-                  {place.imageUrl ? (
+                  {station.images && station.images.length > 0 ? (
                     <img
-                      src={place.imageUrl}
-                      alt={place.name}
+                      src={station.images[0]}
+                      alt={station.name}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -224,19 +224,19 @@ export default function DestinationsPage() {
                   )}
                   <div className="absolute top-2 right-2">
                     <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-white bg-opacity-90 text-gray-700">
-                      {place.state}
+                      {station.state}
                     </span>
                   </div>
                 </div>
                 <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">{place.name}</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">{station.name}</h3>
                   <div className="flex items-center text-sm text-gray-500 mb-2">
                     <Calendar className="h-3 w-3 mr-1" />
-                    {place.date}
+                    {station.date}
                   </div>
                   <div className="flex items-center text-xs text-blue-600">
                     <Train className="h-3 w-3 mr-1" />
-                    <span className="line-clamp-1">{place.route}</span>
+                    <span className="line-clamp-1">{station.route}</span>
                   </div>
                 </div>
               </div>
@@ -245,16 +245,16 @@ export default function DestinationsPage() {
         </div>
 
         {/* Load More Button */}
-        {!showAll && places.length > 12 && (
+        {!showAll && stations.length > 12 && (
           <div className="text-center mt-12">
             <button
               onClick={() => setShowAll(true)}
               className="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              Load More Places
+              Load More Stations
             </button>
             <p className="text-sm text-gray-500 mt-2">
-              Showing {displayedPlaces.length} of {places.length} places
+              Showing {displayedStations.length} of {stations.length} stations
             </p>
           </div>
         )}
@@ -268,7 +268,7 @@ export default function DestinationsPage() {
               Show Less
             </button>
             <p className="text-sm text-gray-500 mt-2">
-              Showing all {places.length} places
+              Showing all {stations.length} stations
             </p>
           </div>
         )}

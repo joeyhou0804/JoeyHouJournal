@@ -17,7 +17,7 @@ export default function TripsPage() {
             <nav className="hidden md:flex space-x-6">
               <Link href="/" className="text-gray-700 hover:text-blue-600">Home</Link>
               <Link href="/trips" className="text-blue-600 font-medium">All Trips</Link>
-              <Link href="/places" className="text-gray-700 hover:text-blue-600">Places</Link>
+              <Link href="/destinations" className="text-gray-700 hover:text-blue-600">Destinations</Link>
             </nav>
           </div>
         </div>
