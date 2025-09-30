@@ -9,16 +9,30 @@ export default function Home() {
   const sectionRef = useRef<HTMLElement | null>(null)
   const decoRef = useRef<HTMLDivElement | null>(null)
 
+  // NEW: refs for the homepage head mask and Section 1
+  const homepageHeadDecoRef = useRef<HTMLDivElement | null>(null)
+  const section1Ref = useRef<HTMLElement | null>(null)
+
   // NEW: refs for the head mask band and the Recent Places section
   const headDecoRef = useRef<HTMLDivElement | null>(null)
   const recentRef = useRef<HTMLElement | null>(null)
 
   // Tweak this if you want a tiny nudge (e.g., to account for mask feathering)
-  const ADJUST_PX_FOOT = -32
+  const ADJUST_PX_FOOT = 104
   const ADJUST_PX_HEAD = -32
+  const ADJUST_PX_HOMEPAGE_HEAD = -64
 
+  // Carry over tile alignment from the homepage head mask to Section 1
+  useSeamlessCarryOver({
+    fromRef: homepageHeadDecoRef,
+    toRef: section1Ref,
+    bgUrl: '/homepage_background.webp',
+    adjustPx: ADJUST_PX_HOMEPAGE_HEAD,
+  })
+
+  // Connect Section 1 to the decorative foot mask below it
   useSeamlessBackground({
-    sectionRef,
+    sectionRef: section1Ref,
     decoRef,
     bgUrl: '/homepage_background.webp',
     adjustPx: ADJUST_PX_FOOT,
@@ -252,18 +266,19 @@ export default function Home() {
         }
       `}</style>
 
-      {/* Section 1 */}
-      <section
-        ref={sectionRef}
-        className="pt-12 overflow-hidden relative"
-        style={{
-          paddingBottom: '8rem',
-          backgroundImage: 'url(/homepage_background.webp)',
-          backgroundSize: '100% auto',
-          backgroundPosition: 'top center',
-          backgroundRepeat: 'repeat-y'
-        }}
-      >
+      {/* Video Background Section */}
+      <section className="relative w-full overflow-hidden" style={{ height: '120vh' }}>
+        {/* Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute top-0 left-0 w-full h-full object-cover"
+        >
+          <source src="/homepage_title_video.mp4" type="video/mp4" />
+        </video>
+
         {/* Logo - Top Left Corner */}
         <div className="absolute top-4 left-4 z-10">
           <img
@@ -272,9 +287,53 @@ export default function Home() {
             className="w-64 h-auto md:w-80 lg:w-96 xl:w-[28rem]"
           />
         </div>
+      </section>
+
+      {/* Decorative transition (homepage head mask) */}
+      <div className="relative z-20 h-[200px] -mb-16" style={{ marginTop: '-200px' }}>
+        <div
+          className="absolute inset-0"
+          style={{
+            WebkitMaskImage: 'url(/homepage_head_mask.webp)',
+            maskImage: 'url(/homepage_head_mask.webp)',
+            WebkitMaskRepeat: 'no-repeat',
+            maskRepeat: 'no-repeat',
+            WebkitMaskSize: '100% auto',
+            maskSize: '100% auto',
+            WebkitMaskPosition: 'center top',
+            maskPosition: 'center top',
+            overflow: 'hidden'
+          }}
+        >
+          {/* Background layer we align FROM */}
+          <div
+            ref={homepageHeadDecoRef}
+            className="absolute inset-0"
+            style={{
+              backgroundImage: 'url(/homepage_background.webp)',
+              backgroundRepeat: 'repeat-y',
+              backgroundSize: '100% auto',
+              backgroundPositionX: 'center',
+            }}
+          />
+        </div>
+      </div>
+
+      {/* Section 1 */}
+      <section
+        ref={section1Ref}
+        className="overflow-hidden relative"
+        style={{
+          paddingBottom: '8rem',
+          backgroundImage: 'url(/homepage_background.webp)',
+          backgroundSize: '100% auto',
+          backgroundPositionX: 'center',
+          backgroundRepeat: 'repeat-y'
+        }}
+      >
 
         {/* Image 1 + Slogan Row */}
-        <div className="relative z-20 mt-56 md:mt-64 lg:mt-72">
+        <div className="relative z-20 mt-12">
           <div className="grid grid-cols-12 items-center gap-8">
             {/* Image 1 — 50% */}
             <div className="col-span-12 md:col-span-6 relative z-20">
