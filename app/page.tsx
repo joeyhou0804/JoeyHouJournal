@@ -55,12 +55,12 @@ export default function Home() {
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
   const journeyImages = [
-    '/homepage_journey_image_1.png',
-    '/homepage_journey_image_2.png',
-    '/homepage_journey_image_3.png',
-    '/homepage_journey_image_4.png',
-    '/homepage_journey_image_5.png',
-    '/homepage_journey_image_6.png'
+    '/images/journey/homepage_journey_image_1.png',
+    '/images/journey/homepage_journey_image_2.png',
+    '/images/journey/homepage_journey_image_3.png',
+    '/images/journey/homepage_journey_image_4.png',
+    '/images/journey/homepage_journey_image_5.png',
+    '/images/journey/homepage_journey_image_6.png'
   ]
 
   useEffect(() => {
@@ -138,7 +138,7 @@ export default function Home() {
     <div
       className="min-h-screen relative overflow-x-hidden"
       style={{
-        backgroundImage: 'url(/homepage_background_2.webp)',
+        backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
         backgroundRepeat: 'repeat',
         backgroundSize: '200px auto',
         animation: 'moveRight 60s linear infinite'
@@ -153,7 +153,7 @@ export default function Home() {
           }`}
         >
           <img
-            src="/icon_menu.webp"
+            src="/images/icons/icon_menu.webp"
             alt="Menu"
             className="w-20 h-20"
           />
@@ -175,7 +175,7 @@ export default function Home() {
               isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
             }`}
             style={{
-              backgroundImage: 'url(/footer_background.webp)',
+              backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
               backgroundRepeat: 'repeat',
               backgroundSize: '200px',
               borderColor: '#373737'
@@ -187,7 +187,7 @@ export default function Home() {
               className="absolute -top-6 -left-6 hover:scale-105 transition-transform duration-200"
             >
               <img
-                src="/menu_close.webp"
+                src="/images/icons/menu_close.webp"
                 alt="Close Menu"
                 className="w-12 h-12"
               />
@@ -197,43 +197,43 @@ export default function Home() {
             <div className="flex flex-col items-center justify-center h-full space-y-3 px-6">
               <Link href="/" className="group" onClick={closeMenu}>
                 <img
-                  src="/logo_en.png"
+                  src="/images/logos/logo_en.png"
                   alt="Home"
                   className="h-32 w-auto hover:scale-105 transition-transform duration-200"
                 />
               </Link>
               <Link href="/trips" className="group" onClick={closeMenu}>
                 <img
-                  src="/journey_button.png"
+                  src="/images/buttons/journey_button.png"
                   alt="Journeys"
                   className="w-48 h-auto group-hover:hidden"
                 />
                 <img
-                  src="/journey_button_hover.png"
+                  src="/images/buttons/journey_button_hover.png"
                   alt="Journeys"
                   className="w-48 h-auto hidden group-hover:block"
                 />
               </Link>
               <Link href="/places" className="group" onClick={closeMenu}>
                 <img
-                  src="/destination_button.png"
+                  src="/images/buttons/destination_button.png"
                   alt="Destinations"
                   className="w-48 h-auto group-hover:hidden"
                 />
                 <img
-                  src="/destination_button_hover.png"
+                  src="/images/buttons/destination_button_hover.png"
                   alt="Destinations"
                   className="w-48 h-auto hidden group-hover:block"
                 />
               </Link>
               <button className="group">
                 <img
-                  src="/language_button_en.png"
+                  src="/images/buttons/language_button_en.png"
                   alt="Language Toggle"
                   className="w-48 h-auto group-hover:hidden"
                 />
                 <img
-                  src="/language_button_en_hover.png"
+                  src="/images/buttons/language_button_en_hover.png"
                   alt="Language Toggle"
                   className="w-48 h-auto hidden group-hover:block"
                 />
@@ -276,13 +276,13 @@ export default function Home() {
           playsInline
           className="absolute top-0 left-0 w-full h-full object-cover"
         >
-          <source src="/homepage_title_video.mp4" type="video/mp4" />
+          <source src="/images/homepage/homepage_title_video.mp4" type="video/mp4" />
         </video>
 
         {/* Logo - Top Left Corner */}
         <div className="absolute top-4 left-4 z-10">
           <img
-            src="/logo_en.png"
+            src="/images/logos/logo_en.png"
             alt="Logo"
             className="w-64 h-auto md:w-80 lg:w-96 xl:w-[28rem]"
           />
@@ -294,8 +294,8 @@ export default function Home() {
         <div
           className="absolute inset-0"
           style={{
-            WebkitMaskImage: 'url(/homepage_head_mask.webp)',
-            maskImage: 'url(/homepage_head_mask.webp)',
+            WebkitMaskImage: 'url(/images/masks/homepage_head_mask.webp)',
+            maskImage: 'url(/images/masks/homepage_head_mask.webp)',
             WebkitMaskRepeat: 'no-repeat',
             maskRepeat: 'no-repeat',
             WebkitMaskSize: '100% auto',
@@ -310,7 +310,7 @@ export default function Home() {
             ref={homepageHeadDecoRef}
             className="absolute inset-0"
             style={{
-              backgroundImage: 'url(/homepage_background.webp)',
+              backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
               backgroundRepeat: 'repeat-y',
               backgroundSize: '100% auto',
               backgroundPositionX: 'center',
@@ -338,7 +338,7 @@ export default function Home() {
             {/* Image 1 — 60% */}
             <div className="col-span-12 md:col-span-7 relative z-20">
               <img
-                src="/homepage_image_1.png"
+                src="/images/homepage/homepage_image_1.png"
                 alt="Homepage Image 1"
                 className="w-full h-auto"
               />
@@ -347,7 +347,7 @@ export default function Home() {
             {/* Slogan — 40% (overlap) */}
             <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-16 md:-mt-20">
               <img
-                src="/homepage_slogan_en.png"
+                src="/images/homepage/homepage_slogan_en.png"
                 alt="Homepage Slogan"
                 className="w-full max-w-[40rem] h-auto drop-shadow-md"
                 style={{ transform: 'translateX(-12rem)' }}
@@ -374,7 +374,7 @@ export default function Home() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-start">
               <img
-                src="/homepage_carousel_text_en.png"
+                src="/images/homepage/homepage_carousel_text_en.png"
                 alt="Carousel Text"
                 className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
               />
@@ -388,7 +388,7 @@ export default function Home() {
         {/* Homepage Image 2 - Right edge, overlapping section above */}
         <div className="absolute top-0 right-0" style={{ transform: 'translate(0, -700px)', zIndex: 30 }}>
           <img
-            src="/homepage_image_2.png"
+            src="/images/homepage/homepage_image_2.png"
             alt="Homepage Image 2"
             className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
           />
@@ -396,8 +396,8 @@ export default function Home() {
         <div
           className="absolute inset-0"
           style={{
-            WebkitMaskImage: 'url(/background_foot_mask.webp)',
-            maskImage: 'url(/background_foot_mask.webp)',
+            WebkitMaskImage: 'url(/images/masks/background_foot_mask.webp)',
+            maskImage: 'url(/images/masks/background_foot_mask.webp)',
             WebkitMaskRepeat: 'no-repeat',
             maskRepeat: 'no-repeat',
             WebkitMaskSize: '100% auto',
@@ -412,7 +412,7 @@ export default function Home() {
             ref={decoRef}
             className="absolute inset-0"
             style={{
-              backgroundImage: 'url(/homepage_background.webp)',
+              backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
               backgroundSize: '100% auto',
               backgroundRepeat: 'repeat-y',
               backgroundPositionX: 'center',
@@ -442,26 +442,26 @@ export default function Home() {
               ))}
             </div>
             <img
-              src="/journeys_title.png"
+              src="/images/homepage/journeys_title.png"
               alt="Featured Journeys"
               className="h-auto max-w-4xl relative"
               style={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
             />
             <img
-              src="/journeys_subtitle.png"
+              src="/images/homepage/journeys_subtitle.png"
               alt="Explore my most memorable train adventures"
               className="h-auto max-w-4xl relative"
               style={{ transform: 'translate(2rem, -16rem)', zIndex: 20 }}
             />
             <Link href="/trips" className="absolute" style={{ transform: 'translate(2rem, -17rem)', zIndex: 20 }}>
               <img
-                src="/button_explore.png"
+                src="/images/buttons/button_explore.png"
                 alt="Explore Journeys"
                 className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
               />
             </Link>
             <img
-              src="/button_explore_arrow.webp"
+              src="/images/buttons/button_explore_arrow.webp"
               alt="Arrow"
               className="absolute h-auto w-8"
               style={{
@@ -481,12 +481,12 @@ export default function Home() {
             <div
               className="absolute inset-0"
               style={{
-                backgroundImage: 'url(/homepage_journey_slide_background.avif)',
+                backgroundImage: 'url(/images/journey/homepage_journey_slide_background.avif)',
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
-                WebkitMaskImage: 'url(/homepage_journey_slide_mask.webp)',
-                maskImage: 'url(/homepage_journey_slide_mask.webp)',
+                WebkitMaskImage: 'url(/images/masks/homepage_journey_slide_mask.webp)',
+                maskImage: 'url(/images/masks/homepage_journey_slide_mask.webp)',
                 WebkitMaskSize: '100% 100%',
                 maskSize: '100% 100%',
                 WebkitMaskRepeat: 'no-repeat',
@@ -498,7 +498,7 @@ export default function Home() {
             {/* Train image overlay - top left, above mask */}
             <div className="absolute -top-80 left-0" style={{ zIndex: 20 }}>
               <img
-                src="/homepage_journey_train_image.png"
+                src="/images/journey/homepage_journey_train_image.png"
                 alt="Train Journey"
                 className="h-[32rem] w-auto object-cover"
               />
@@ -511,11 +511,11 @@ export default function Home() {
                   isTransitioning ? '-translate-x-full' : 'translate-x-0'
                 }`}
                 style={{
-                  backgroundImage: `url(/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
+                  backgroundImage: `url(/images/journey/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
                   backgroundSize: '100% auto',
                   backgroundPosition: '50% 100%',
-                  WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
-                  maskImage: 'url(/homepage_journey_image_mask.webp)',
+                  WebkitMaskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
+                  maskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
                   WebkitMaskSize: 'contain',
                   maskSize: 'contain',
                   WebkitMaskRepeat: 'no-repeat',
@@ -529,7 +529,7 @@ export default function Home() {
                 <div
                   className="absolute top-0 left-0 w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
                   style={{
-                    backgroundImage: `url(/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
+                    backgroundImage: `url(/images/journey/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
                     backgroundSize: '100% auto',
                     backgroundPosition: '50% 100%',
                     WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
@@ -566,14 +566,14 @@ export default function Home() {
               className="absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
               style={{ zIndex: 30 }}
             >
-              <img src="/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
+              <img src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
             </button>
             <button
               onClick={nextSlide}
               className="absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
               style={{ zIndex: 30 }}
             >
-              <img src="/arrow_next.webp" alt="Next" className="w-16 h-16" />
+              <img src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16" />
             </button>
 
             {/* Slide Indicators */}
@@ -599,8 +599,8 @@ export default function Home() {
         <div
           className="absolute inset-0"
           style={{
-            WebkitMaskImage: 'url(/background_head_mask.webp)',
-            maskImage: 'url(/background_head_mask.webp)',
+            WebkitMaskImage: 'url(/images/masks/background_head_mask.webp)',
+            maskImage: 'url(/images/masks/background_head_mask.webp)',
             WebkitMaskRepeat: 'no-repeat',
             maskRepeat: 'no-repeat',
             WebkitMaskSize: '100% auto',
@@ -615,7 +615,7 @@ export default function Home() {
             ref={headDecoRef}
             className="absolute inset-0"
             style={{
-              backgroundImage: 'url(/homepage_background.webp)',
+              backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
               backgroundRepeat: 'repeat-y',
               backgroundSize: '100% auto',
               backgroundPositionX: 'center',
@@ -640,7 +640,7 @@ export default function Home() {
         {/* Homepage Image 4 - Top right corner, overlapping decorative section */}
         <div className="absolute top-0 right-0" style={{ transform: 'translate(0, -18rem)', zIndex: 30 }}>
           <img
-            src="/homepage_image_4.png"
+            src="/images/homepage/homepage_image_4.png"
             alt="Homepage Image 4"
             className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
           />
@@ -649,20 +649,20 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="relative mb-12">
             <img
-              src="/destinations_title.png"
+              src="/images/homepage/destinations_title.png"
               alt="Recent Destinations"
               className="h-auto max-w-4xl relative"
               style={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
             />
             <Link href="/places" className="absolute" style={{ transform: 'translate(2rem, -8rem)', zIndex: 20 }}>
               <img
-                src="/button_explore.png"
+                src="/images/buttons/button_explore.png"
                 alt="Explore Places"
                 className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
               />
             </Link>
             <img
-              src="/button_explore_arrow.webp"
+              src="/images/buttons/button_explore_arrow.webp"
               alt="Arrow"
               className="absolute h-auto w-8"
               style={{
@@ -682,7 +682,7 @@ export default function Home() {
             <div
               className="absolute inset-0"
               style={{
-                backgroundImage: 'url(/destination_background.webp)',
+                backgroundImage: 'url(/images/backgrounds/destination_background.webp)',
                 backgroundSize: '100% 100%',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -700,8 +700,8 @@ export default function Home() {
                   backgroundImage: `url(${recentPlaces[currentDestSlide].image})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                  WebkitMaskImage: 'url(/homepage_journey_image_mask.webp)',
-                  maskImage: 'url(/homepage_journey_image_mask.webp)',
+                  WebkitMaskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
+                  maskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
                   WebkitMaskSize: 'contain',
                   maskSize: 'contain',
                   WebkitMaskRepeat: 'no-repeat',
@@ -752,14 +752,14 @@ export default function Home() {
               className="absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
               style={{ zIndex: 30 }}
             >
-              <img src="/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
+              <img src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
             </button>
             <button
               onClick={nextDestSlide}
               className="absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
               style={{ zIndex: 30 }}
             >
-              <img src="/arrow_next.webp" alt="Next" className="w-16 h-16" />
+              <img src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16" />
             </button>
 
             {/* Slide Indicators */}
@@ -784,7 +784,7 @@ export default function Home() {
       <footer
         className="text-white py-8 px-4 border-t border-gray-400"
         style={{
-          backgroundImage: 'url(/footer_background.webp)',
+          backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
           backgroundRepeat: 'repeat',
           backgroundSize: '200px'
         }}
@@ -792,7 +792,7 @@ export default function Home() {
         <div className="flex items-center justify-between">
           <Link href="/" className="hover:scale-105 transition-transform duration-200">
             <img
-              src="/logo_en.png"
+              src="/images/logos/logo_en.png"
               alt="Logo"
               className="h-60 w-auto"
             />
@@ -802,36 +802,36 @@ export default function Home() {
             <div className="flex items-center space-x-4 mb-4">
               <Link href="/trips" className="group">
                 <img
-                  src="/journey_button.png"
+                  src="/images/buttons/journey_button.png"
                   alt="Journeys"
                   className="h-20 w-auto group-hover:hidden"
                 />
                 <img
-                  src="/journey_button_hover.png"
+                  src="/images/buttons/journey_button_hover.png"
                   alt="Journeys"
                   className="h-20 w-auto hidden group-hover:block"
                 />
               </Link>
               <Link href="/places" className="group">
                 <img
-                  src="/destination_button.png"
+                  src="/images/buttons/destination_button.png"
                   alt="Destinations"
                   className="h-20 w-auto group-hover:hidden"
                 />
                 <img
-                  src="/destination_button_hover.png"
+                  src="/images/buttons/destination_button_hover.png"
                   alt="Destinations"
                   className="h-20 w-auto hidden group-hover:block"
                 />
               </Link>
               <button className="group">
                 <img
-                  src="/language_button_en.png"
+                  src="/images/buttons/language_button_en.png"
                   alt="Language Toggle"
                   className="h-20 w-auto group-hover:hidden"
                 />
                 <img
-                  src="/language_button_en_hover.png"
+                  src="/images/buttons/language_button_en_hover.png"
                   alt="Language Toggle"
                   className="h-20 w-auto hidden group-hover:block"
                 />
@@ -987,14 +987,14 @@ function useSeamlessCarryOver({
 
 // Carousel images from title_carousel_1 to title_carousel_8
 const carouselImages = [
-  '/title_carousel_1.png',
-  '/title_carousel_2.png',
-  '/title_carousel_3.png',
-  '/title_carousel_4.png',
-  '/title_carousel_5.png',
-  '/title_carousel_6.png',
-  '/title_carousel_7.png',
-  '/title_carousel_8.png'
+  '/images/carousel/title_carousel_1.png',
+  '/images/carousel/title_carousel_2.png',
+  '/images/carousel/title_carousel_3.png',
+  '/images/carousel/title_carousel_4.png',
+  '/images/carousel/title_carousel_5.png',
+  '/images/carousel/title_carousel_6.png',
+  '/images/carousel/title_carousel_7.png',
+  '/images/carousel/title_carousel_8.png'
 ]
 
 // Mock data - we'll replace this with real data later
