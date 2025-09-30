@@ -1,9 +1,20 @@
 'use client'
 import Link from 'next/link'
 import { MapPin, Calendar, Train, Image } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { places } from 'src/data/all_places_with_images'
 import Box from '@mui/material/Box'
+import dynamic from 'next/dynamic'
+
+// Dynamically import the map component to avoid SSR issues
+const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
+      <p className="text-gray-600">Loading map...</p>
+    </div>
+  )
+})
 
 export default function DestinationsPage() {
   const [showAll, setShowAll] = useState(false)
@@ -163,19 +174,32 @@ export default function DestinationsPage() {
       {/* Map View Section */}
       <Box
         component="section"
-        className="w-full py-16"
+        className="w-full py-24"
         sx={{
           backgroundImage: 'url(/destination_page_map_background.webp)',
           backgroundRepeat: 'repeat',
           backgroundSize: '300px auto',
         }}
       >
-        <div className="flex justify-center items-center">
-          <img
-            src="/destination_map_view_title.png"
-            alt="Map View"
-            className="max-w-md w-full h-auto"
-          />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center mb-16 mt-8">
+            <img
+              src="/destination_map_view_title.png"
+              alt="Map View"
+              className="max-w-md w-full h-auto"
+            />
+          </div>
+          <Box
+            sx={{
+              backgroundImage: 'url(/destination_page_map_box_background.webp)',
+              backgroundRepeat: 'repeat',
+              backgroundSize: '200px auto',
+              padding: '1rem',
+              borderRadius: '1.5rem'
+            }}
+          >
+            <InteractiveMap places={places} />
+          </Box>
         </div>
       </Box>
 

@@ -1,3 +1,29 @@
+@font-face {
+  font-family: 'MarioFont';
+  src: url('/fonts/MarioFont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MarioFontTitle';
+  src: url('/fonts/MarioFontTitle.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'MarioFont', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'MarioFontTitle', 'MarioFont', system-ui, -apple-system, sans-serif;
+  }
+}
