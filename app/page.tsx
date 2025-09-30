@@ -796,27 +796,115 @@ export default function Home() {
               )}
             </Container>
 
-            {/* Destination Text Overlay - Center right */}
+            {/* Destination Card - Center right */}
             <Container
-              className="absolute right-64 top-1/2 -translate-y-1/2 max-w-md"
-              sx={{ zIndex: 25, color: '#373737' }}
+              className="absolute right-48 top-1/2 -translate-y-1/2"
+              sx={{
+                zIndex: 25,
+                width: '460px',
+                padding: '8px',
+                backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                backgroundSize: '200px auto',
+                backgroundRepeat: 'repeat',
+                borderRadius: '12px'
+              }}
             >
-              <Box component="h2" className="text-4xl font-bold mb-4">
-                {recentPlaces[currentDestSlide].name}
-              </Box>
-              <Box component="p" className="text-lg mb-6 leading-relaxed opacity-90">
-                Visited on {recentPlaces[currentDestSlide].date}
-              </Box>
-              <Container className="flex items-center mb-6 text-lg">
-                <Train className="w-4 h-4 mr-3" />
-                {recentPlaces[currentDestSlide].route}
-              </Container>
-              <Box
-                component="button"
-                className="bg-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
-                sx={{ color: '#373737' }}
-              >
-                View Details
+              <Box sx={{ padding: '8px' }}>
+                <Box sx={{ position: 'relative', width: '100%', height: '146px' }}>
+                  {/* Popup Card Background */}
+                  <Box
+                    component="img"
+                    src="/images/destinations/destination_popup_card.webp"
+                    alt="Card"
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '400px',
+                      height: 'auto',
+                      zIndex: 1
+                    }}
+                  />
+
+                  {/* Place Image */}
+                  <Box
+                    component="img"
+                    src={recentPlaces[currentDestSlide].image}
+                    alt={recentPlaces[currentDestSlide].name}
+                    sx={{
+                      position: 'absolute',
+                      top: '8px',
+                      left: '8px',
+                      width: '130px',
+                      height: '130px',
+                      objectFit: 'cover',
+                      borderRadius: '6px',
+                      zIndex: 2,
+                      boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                    }}
+                  />
+
+                  {/* Title Section */}
+                  <Box sx={{ position: 'absolute', top: '50%', left: '165px', transform: 'translate(0, -50%)', marginTop: '-40px', zIndex: 3, width: '250px' }}>
+                    <Box
+                      component="img"
+                      src="/images/destinations/destination_location_title.webp"
+                      alt="Location"
+                      sx={{ width: '100%', height: 'auto', display: 'block' }}
+                    />
+                    <Box
+                      component="h3"
+                      sx={{
+                        fontFamily: 'MarioFontTitle, sans-serif',
+                        fontWeight: 600,
+                        fontSize: '20px',
+                        color: '#373737',
+                        margin: 0,
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        whiteSpace: 'nowrap',
+                        textAlign: 'center',
+                        width: '100%'
+                      }}
+                    >
+                      {recentPlaces[currentDestSlide].name}
+                    </Box>
+                  </Box>
+
+                  {/* Date and Route */}
+                  <Box sx={{ position: 'absolute', top: '50%', left: '165px', transform: 'translateY(-50%)', marginTop: '8px', zIndex: 2, width: '250px', textAlign: 'center' }}>
+                    <Box component="p" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', color: '#373737', marginBottom: '2px', marginTop: 0 }}>
+                      {recentPlaces[currentDestSlide].route}
+                    </Box>
+                    <Box component="p" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '15px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                      {recentPlaces[currentDestSlide].date}
+                    </Box>
+                  </Box>
+                </Box>
+
+                {/* View Details Button */}
+                <Box sx={{ textAlign: 'center', marginTop: '4px' }}>
+                  <Box
+                    component="a"
+                    href={`/destinations`}
+                    sx={{
+                      display: 'inline-block',
+                      '&:hover img': {
+                        content: 'url(/images/buttons/view_details_button_hover.png)'
+                      }
+                    }}
+                  >
+                    <Box
+                      component="img"
+                      src="/images/buttons/view_details_button.png"
+                      alt="View Details"
+                      sx={{ height: '55px', width: 'auto', display: 'block' }}
+                    />
+                  </Box>
+                </Box>
               </Box>
             </Container>
 
