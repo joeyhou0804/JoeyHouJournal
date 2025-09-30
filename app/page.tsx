@@ -539,7 +539,7 @@ export default function Home() {
             <Container className="absolute -top-80 left-0" sx={{ zIndex: 20 }}>
               <Box
                 component="img"
-                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_train_image"
+                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_3"
                 alt="Train Journey"
                 className="h-[32rem] w-auto object-cover"
               />
