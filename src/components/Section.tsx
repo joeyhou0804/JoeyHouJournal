@@ -4,7 +4,7 @@ import Box from '@mui/material/Box'
 import { SxProps, Theme } from '@mui/material/styles'
 
 interface SectionProps {
-  children: React.ReactNode
+  children?: React.ReactNode
   sx?: SxProps<Theme>
   component?: React.ElementType
   className?: string
