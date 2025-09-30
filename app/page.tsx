@@ -442,13 +442,13 @@ export default function Home() {
               ))}
             </div>
             <img
-              src="/images/homepage/journeys_title.png"
+              src="/images/journey/journeys_title.png"
               alt="Featured Journeys"
               className="h-auto max-w-4xl relative"
               style={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
             />
             <img
-              src="/images/homepage/journeys_subtitle.png"
+              src="/images/journey/journeys_subtitle.png"
               alt="Explore my most memorable train adventures"
               className="h-auto max-w-4xl relative"
               style={{ transform: 'translate(2rem, -16rem)', zIndex: 20 }}
