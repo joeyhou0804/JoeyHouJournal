@@ -58,12 +58,12 @@ export default function Home() {
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
   const journeyImages = [
-    '/images/journey/homepage_journey_image_1.png',
-    '/images/journey/homepage_journey_image_2.png',
-    '/images/journey/homepage_journey_image_3.png',
-    '/images/journey/homepage_journey_image_4.png',
-    '/images/journey/homepage_journey_image_5.png',
-    '/images/journey/homepage_journey_image_6.png'
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_1',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_2',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_3',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_4',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_5',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_6'
   ]
 
   useEffect(() => {
@@ -295,7 +295,7 @@ export default function Home() {
           playsInline
           className="absolute top-0 left-0 w-full h-full object-cover"
         >
-          <source src="/images/homepage/homepage_title_video.mp4" type="video/mp4" />
+          <source src="https://res.cloudinary.com/joey-hou-homepage/video/upload/v1759208440/homepage_title_video_pyiksq.mp4" type="video/mp4" />
         </Box>
 
         {/* Logo - Top Left Corner */}
@@ -362,7 +362,7 @@ export default function Home() {
             <Container className="col-span-12 md:col-span-7 relative z-20">
               <Box
                 component="img"
-                src="/images/homepage/homepage_image_1.png"
+                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_1"
                 alt="Homepage Image 1"
                 className="w-full h-auto"
               />
@@ -418,7 +418,7 @@ export default function Home() {
         >
           <Box
             component="img"
-            src="/images/homepage/homepage_image_2.png"
+            src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_2"
             alt="Homepage Image 2"
             className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
           />
@@ -539,7 +539,7 @@ export default function Home() {
             <Container className="absolute -top-80 left-0" sx={{ zIndex: 20 }}>
               <Box
                 component="img"
-                src="/images/journey/homepage_journey_train_image.png"
+                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_train_image"
                 alt="Train Journey"
                 className="h-[32rem] w-auto object-cover"
               />
@@ -697,7 +697,7 @@ export default function Home() {
         >
           <Box
             component="img"
-            src="/images/homepage/homepage_image_4.png"
+            src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_4"
             alt="Homepage Image 4"
             className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
           />
@@ -1072,14 +1072,14 @@ function useSeamlessCarryOver({
 
 // Carousel images from title_carousel_1 to title_carousel_8
 const carouselImages = [
-  '/images/carousel/title_carousel_1.png',
-  '/images/carousel/title_carousel_2.png',
-  '/images/carousel/title_carousel_3.png',
-  '/images/carousel/title_carousel_4.png',
-  '/images/carousel/title_carousel_5.png',
-  '/images/carousel/title_carousel_6.png',
-  '/images/carousel/title_carousel_7.png',
-  '/images/carousel/title_carousel_8.png'
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_1',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_2',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_3',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_4',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_5',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_6',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_7',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_8'
 ]
 
 // Mock data - we'll replace this with real data later
