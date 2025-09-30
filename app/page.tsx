@@ -322,7 +322,7 @@ export default function Home() {
       {/* Section 1 */}
       <section
         ref={section1Ref}
-        className="overflow-hidden relative"
+        className="relative pt-64"
         style={{
           paddingBottom: '8rem',
           backgroundImage: 'url(/homepage_background.webp)',
@@ -333,10 +333,10 @@ export default function Home() {
       >
 
         {/* Image 1 + Slogan Row */}
-        <div className="relative z-20 mt-12">
+        <div className="relative z-20 -mt-64">
           <div className="grid grid-cols-12 items-center gap-8">
-            {/* Image 1 — 50% */}
-            <div className="col-span-12 md:col-span-6 relative z-20">
+            {/* Image 1 — 60% */}
+            <div className="col-span-12 md:col-span-7 relative z-20">
               <img
                 src="/homepage_image_1.png"
                 alt="Homepage Image 1"
@@ -345,12 +345,12 @@ export default function Home() {
             </div>
 
             {/* Slogan — 40% (overlap) */}
-            <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-24 md:-mt-32">
+            <div className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-16 md:-mt-20">
               <img
                 src="/homepage_slogan_en.png"
                 alt="Homepage Slogan"
                 className="w-full max-w-[40rem] h-auto drop-shadow-md"
-                style={{ transform: 'translateX(-6rem)' }}
+                style={{ transform: 'translateX(-12rem)' }}
               />
             </div>
 
