@@ -271,45 +271,90 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
           </Box>
         </Box>
 
-        {/* Station Details */}
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          {/* Image Carousel */}
-          {station.images && station.images.length > 0 && (
-            <div className="relative h-96 w-full">
-              <img
+        {/* Image Carousel */}
+        {station.images && station.images.length > 0 && (
+          <Box
+            sx={{
+              backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+              backgroundRepeat: 'repeat',
+              backgroundSize: '200px auto',
+              padding: '1rem',
+              borderRadius: '1.5rem',
+              maxWidth: '800px',
+              margin: '0 auto 3rem'
+            }}
+          >
+            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1' }}>
+              <Box
+                component="img"
                 src={station.images[currentImageIndex]}
                 alt={`${station.name} - Image ${currentImageIndex + 1}`}
-                className="w-full h-full object-cover"
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  borderRadius: '1rem'
+                }}
               />
 
               {/* Carousel Controls */}
               {station.images.length > 1 && (
                 <>
-                  <button
+                  <Box
+                    component="button"
                     onClick={prevImage}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-75 text-white p-3 rounded-full transition-all"
+                    disabled={currentImageIndex === 0}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 group"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                    </svg>
-                  </button>
-                  <button
+                    <Box
+                      component="img"
+                      src="/images/buttons/tab_prev.webp"
+                      alt="Previous"
+                      className={currentImageIndex === 0 ? 'h-24 w-auto opacity-40' : 'h-24 w-auto group-hover:hidden'}
+                    />
+                    {currentImageIndex !== 0 && (
+                      <Box
+                        component="img"
+                        src="/images/buttons/tab_prev_hover.webp"
+                        alt="Previous"
+                        className="h-24 w-auto hidden group-hover:block"
+                      />
+                    )}
+                  </Box>
+                  <Box
+                    component="button"
                     onClick={nextImage}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-75 text-white p-3 rounded-full transition-all"
+                    disabled={currentImageIndex === station.images.length - 1}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 group"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                    </svg>
-                  </button>
+                    <Box
+                      component="img"
+                      src="/images/buttons/tab_next.webp"
+                      alt="Next"
+                      className={currentImageIndex === station.images.length - 1 ? 'h-24 w-auto opacity-40' : 'h-24 w-auto group-hover:hidden'}
+                    />
+                    {currentImageIndex !== station.images.length - 1 && (
+                      <Box
+                        component="img"
+                        src="/images/buttons/tab_next_hover.webp"
+                        alt="Next"
+                        className="h-24 w-auto hidden group-hover:block"
+                      />
+                    )}
+                  </Box>
 
                   {/* Image Counter */}
-                  <div className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                  <Box className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
                     {currentImageIndex + 1} / {station.images.length}
-                  </div>
+                  </Box>
                 </>
               )}
-            </div>
-          )}
+            </Box>
+          </Box>
+        )}
+
+        {/* Station Details */}
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-800px mx-auto">
 
           {/* Station Info */}
           <div className="p-8">
