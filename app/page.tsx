@@ -10,6 +10,7 @@ import Container from 'src/components/Container'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import HeroSection from 'src/components/HeroSection'
+import { stations } from 'src/data/stations'
 
 export default function Home() {
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -59,6 +60,15 @@ export default function Home() {
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
+
+  // Get latest 8 destinations from stations data
+  const recentPlaces = stations.slice(0, 8).map(station => ({
+    id: station.id,
+    name: station.name,
+    date: station.date,
+    route: station.route,
+    image: station.images && station.images.length > 0 ? station.images[0] : ''
+  }))
 
   const journeyImages = [
     'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_1',
@@ -639,7 +649,7 @@ export default function Home() {
               {/* View Details Button */}
               <Box
                 component="a"
-                href={`/destinations`}
+                href={`/destinations/${recentPlaces[currentDestSlide].id}`}
                 sx={{
                   display: 'inline-block',
                   marginLeft: '400px',
@@ -852,32 +862,5 @@ const featuredTrips = [
     name: "Southwest Chief",
     places: 13,
     description: "Chicago to Los Angeles through the Southwest deserts"
-  }
-]
-
-const recentPlaces = [
-  {
-    name: "Denver, CO",
-    date: "2021/08/09",
-    route: "California Zephyr",
-    image: "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636410658/joeyhouhomepage/apjryalysi4xaxrvgocr.jpg"
-  },
-  {
-    name: "Grand Junction, CO",
-    date: "2021/08/09",
-    route: "California Zephyr",
-    image: "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636410975/joeyhouhomepage/ukstlvrb7pufegwvq2ka.jpg"
-  },
-  {
-    name: "Chicago, IL",
-    date: "2021/08/08",
-    route: "Capital Limited",
-    image: "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636410190/joeyhouhomepage/nnk376sy1lzuhnxw3lhv.jpg"
-  },
-  {
-    name: "Pittsburgh, PA",
-    date: "2021/08/07",
-    route: "Pennsylvanian",
-    image: "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636409975/joeyhouhomepage/fhfmucnslcx6cijeeydk.jpg"
   }
 ]
