@@ -161,28 +161,36 @@ export default function StationsPage() {
 
         {/* Load More Button */}
         {!showAll && stations.length > 12 && (
-          <div className="text-center mt-12">
+          <div className="text-center mt-48">
             <button
               onClick={() => setShowAll(true)}
-              className="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="hover:scale-105 transition-transform duration-200"
             >
-              Load More Stations
+              <img
+                src="/images/buttons/show_more_button.png"
+                alt="Show More"
+                className="h-16 w-auto"
+              />
             </button>
-            <p className="text-sm text-gray-500 mt-2">
+            <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#373737' }} className="mt-4">
               Showing {displayedStations.length} of {stations.length} stations
             </p>
           </div>
         )}
 
         {showAll && (
-          <div className="text-center mt-12">
+          <div className="text-center mt-48">
             <button
               onClick={() => setShowAll(false)}
-              className="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="hover:scale-105 transition-transform duration-200"
             >
-              Show Less
+              <img
+                src="/images/buttons/show_less_button.png"
+                alt="Show Less"
+                className="h-16 w-auto"
+              />
             </button>
-            <p className="text-sm text-gray-500 mt-2">
+            <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#373737' }} className="mt-4">
               Showing all {stations.length} stations
             </p>
           </div>
