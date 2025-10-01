@@ -563,17 +563,19 @@ export default function Home() {
             {/* Navigation Arrows */}
             <button
               onClick={prevSlide}
-              className="absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
+              className="group absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
               style={{ zIndex: 30 }}
             >
-              <img src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
+              <img src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16 group-hover:hidden" />
+              <img src="/images/buttons/arrow_prev_hover.webp" alt="Previous" className="w-16 h-16 hidden group-hover:block" />
             </button>
             <button
               onClick={nextSlide}
-              className="absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
+              className="group absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
               style={{ zIndex: 30 }}
             >
-              <img src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16" />
+              <img src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16 group-hover:hidden" />
+              <img src="/images/buttons/arrow_next_hover.webp" alt="Next" className="w-16 h-16 hidden group-hover:block" />
             </button>
 
             {/* Slide Indicators */}
@@ -749,17 +751,19 @@ export default function Home() {
             {/* Navigation Arrows */}
             <button
               onClick={prevDestSlide}
-              className="absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
+              className="group absolute left-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
               style={{ zIndex: 30 }}
             >
-              <img src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16" />
+              <img src="/images/buttons/arrow_prev.webp" alt="Previous" className="w-16 h-16 group-hover:hidden" />
+              <img src="/images/buttons/arrow_prev_hover.webp" alt="Previous" className="w-16 h-16 hidden group-hover:block" />
             </button>
             <button
               onClick={nextDestSlide}
-              className="absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
+              className="group absolute right-8 top-1/2 -translate-y-1/2 p-6 hover:scale-110 transition-transform duration-200"
               style={{ zIndex: 30 }}
             >
-              <img src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16" />
+              <img src="/images/buttons/arrow_next.webp" alt="Next" className="w-16 h-16 group-hover:hidden" />
+              <img src="/images/buttons/arrow_next_hover.webp" alt="Next" className="w-16 h-16 hidden group-hover:block" />
             </button>
 
             {/* Slide Indicators */}

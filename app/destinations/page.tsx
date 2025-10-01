@@ -207,12 +207,17 @@ export default function StationsPage() {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`hover:scale-105 transition-transform duration-200 ${currentPage === 1 ? 'opacity-40 cursor-not-allowed' : ''}`}
+                className={`group transition-transform duration-200 ${currentPage === 1 ? 'opacity-40' : 'hover:scale-105 cursor-pointer'}`}
               >
                 <img
                   src="/images/buttons/arrow_prev.webp"
                   alt="Previous"
-                  className="w-16 h-16"
+                  className={`w-16 h-16 ${currentPage === 1 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/arrow_prev_hover.webp"
+                  alt="Previous"
+                  className={`w-16 h-16 ${currentPage === 1 ? 'hidden' : 'hidden group-hover:block'}`}
                 />
               </button>
 
@@ -245,8 +250,8 @@ export default function StationsPage() {
                     <button
                       key={page}
                       onClick={() => handlePageChange(page)}
-                      style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px' }}
-                      className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                      style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', width: '3.5rem' }}
+                      className={`py-2 rounded-lg transition-all duration-200 ${
                         currentPage === page
                           ? 'bg-[#373737] text-white border-2 border-[#F6F6F6]'
                           : 'bg-[#F6F6F6] text-[#373737] hover:bg-[#FFD701]'
@@ -262,12 +267,17 @@ export default function StationsPage() {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className={`hover:scale-105 transition-transform duration-200 ${currentPage === totalPages ? 'opacity-40 cursor-not-allowed' : ''}`}
+                className={`group transition-transform duration-200 ${currentPage === totalPages ? 'opacity-40' : 'hover:scale-105 cursor-pointer'}`}
               >
                 <img
                   src="/images/buttons/arrow_next.webp"
                   alt="Next"
-                  className="w-16 h-16"
+                  className={`w-16 h-16 ${currentPage === totalPages ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/arrow_next_hover.webp"
+                  alt="Next"
+                  className={`w-16 h-16 ${currentPage === totalPages ? 'hidden' : 'hidden group-hover:block'}`}
                 />
               </button>
             </div>
