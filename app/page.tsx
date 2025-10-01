@@ -659,7 +659,7 @@ export default function Home() {
                   component="img"
                   src="/view_details_button.png"
                   alt="View Details"
-                  sx={{ height: '90px', width: 'auto', display: 'block' }}
+                  sx={{ height: '70px', width: 'auto', display: 'block' }}
                 />
               </Box>
             </Box>
