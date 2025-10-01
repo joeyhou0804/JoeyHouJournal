@@ -534,13 +534,13 @@ export default function Home() {
               src="/images/homepage/homepage_destination_text_en.png"
               alt="Discover the places that shaped my rail journey across America"
               className="h-auto max-w-4xl relative"
-              sx={{ transform: 'translate(2rem, -8rem)', zIndex: 20 }}
+              sx={{ transform: 'translate(2rem, 2rem)', zIndex: 20 }}
             />
           </Container>
 
           {/* Destination Carousel */}
           <Container
-            className="relative w-screen left-1/2 -ml-[50vw] mt-48"
+            className="relative w-screen left-1/2 -ml-[50vw] mt-24"
             sx={{ aspectRatio: '1920/800' }}
           >
             {/* Background */}
