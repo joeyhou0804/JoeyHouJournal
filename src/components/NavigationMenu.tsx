@@ -8,6 +8,7 @@ interface NavigationMenuProps {
   isMenuButtonAnimating: boolean
   openMenu: () => void
   closeMenu: () => void
+  currentPage?: 'home' | 'trips' | 'destinations'
 }
 
 export default function NavigationMenu({
@@ -16,7 +17,8 @@ export default function NavigationMenu({
   isDrawerAnimating,
   isMenuButtonAnimating,
   openMenu,
-  closeMenu
+  closeMenu,
+  currentPage
 }: NavigationMenuProps) {
   return (
     <>
@@ -65,34 +67,59 @@ export default function NavigationMenu({
                   className="h-32 w-auto"
                 />
               </Link>
-              <Link href="/trips" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/buttons/journey_button.png"
-                  alt="Journeys"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/journey_button_hover.png"
-                  alt="Journeys"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Link>
-              <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/buttons/destination_button.png"
-                  alt="Destinations"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/destination_button_hover.png"
-                  alt="Destinations"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Link>
+
+              {currentPage === 'trips' ? (
+                <Box className="group">
+                  <Box
+                    component="img"
+                    src="/images/buttons/journey_button_hover.png"
+                    alt="Journeys"
+                    className="w-48 h-auto"
+                  />
+                </Box>
+              ) : (
+                <Link href="/trips" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
+                  <Box
+                    component="img"
+                    src="/images/buttons/journey_button.png"
+                    alt="Journeys"
+                    className="w-48 h-auto group-hover:hidden"
+                  />
+                  <Box
+                    component="img"
+                    src="/images/buttons/journey_button_hover.png"
+                    alt="Journeys"
+                    className="w-48 h-auto hidden group-hover:block"
+                  />
+                </Link>
+              )}
+
+              {currentPage === 'destinations' ? (
+                <Box className="group">
+                  <Box
+                    component="img"
+                    src="/images/buttons/destination_button_hover.png"
+                    alt="Destinations"
+                    className="w-48 h-auto"
+                  />
+                </Box>
+              ) : (
+                <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
+                  <Box
+                    component="img"
+                    src="/images/buttons/destination_button.png"
+                    alt="Destinations"
+                    className="w-48 h-auto group-hover:hidden"
+                  />
+                  <Box
+                    component="img"
+                    src="/images/buttons/destination_button_hover.png"
+                    alt="Destinations"
+                    className="w-48 h-auto hidden group-hover:block"
+                  />
+                </Link>
+              )}
+
               <Box component="button" className="group hover:scale-105 transition-transform duration-200">
                 <Box
                   component="img"

@@ -170,6 +170,7 @@ export default function Home() {
         isMenuButtonAnimating={isMenuButtonAnimating}
         openMenu={openMenu}
         closeMenu={closeMenu}
+        currentPage="home"
       />
       <style jsx>{`
         @keyframes moveRight {

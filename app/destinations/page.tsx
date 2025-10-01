@@ -85,6 +85,7 @@ export default function StationsPage() {
         isMenuButtonAnimating={isMenuButtonAnimating}
         openMenu={openMenu}
         closeMenu={closeMenu}
+        currentPage="destinations"
       />
 
       {/* Station Page Title - Full Width */}
@@ -293,7 +294,7 @@ export default function StationsPage() {
         </div>
       </Box>
 
-      <Footer />
+      <Footer currentPage="destinations" />
     </div>
   )
 }

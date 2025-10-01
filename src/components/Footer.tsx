@@ -1,7 +1,11 @@
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 
-export default function Footer() {
+interface FooterProps {
+  currentPage?: 'home' | 'trips' | 'destinations'
+}
+
+export default function Footer({ currentPage }: FooterProps = {}) {
   return (
     <Box
       component="footer"
@@ -24,34 +28,58 @@ export default function Footer() {
         <div className="flex-1 flex flex-col items-center justify-center">
           {/* Button Row */}
           <div className="flex items-center space-x-4 mb-4">
-            <Link href="/trips" className="group hover:scale-105 transition-transform duration-200">
-              <Box
-                component="img"
-                src="/images/buttons/journey_button.png"
-                alt="Journeys"
-                className="h-20 w-auto group-hover:hidden"
-              />
-              <Box
-                component="img"
-                src="/images/buttons/journey_button_hover.png"
-                alt="Journeys"
-                className="h-20 w-auto hidden group-hover:block"
-              />
-            </Link>
-            <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200">
-              <Box
-                component="img"
-                src="/images/buttons/destination_button.png"
-                alt="Destinations"
-                className="h-20 w-auto group-hover:hidden"
-              />
-              <Box
-                component="img"
-                src="/images/buttons/destination_button_hover.png"
-                alt="Destinations"
-                className="h-20 w-auto hidden group-hover:block"
-              />
-            </Link>
+            {currentPage === 'trips' ? (
+              <Box className="group">
+                <Box
+                  component="img"
+                  src="/images/buttons/journey_button_hover.png"
+                  alt="Journeys"
+                  className="h-20 w-auto"
+                />
+              </Box>
+            ) : (
+              <Link href="/trips" className="group hover:scale-105 transition-transform duration-200">
+                <Box
+                  component="img"
+                  src="/images/buttons/journey_button.png"
+                  alt="Journeys"
+                  className="h-20 w-auto group-hover:hidden"
+                />
+                <Box
+                  component="img"
+                  src="/images/buttons/journey_button_hover.png"
+                  alt="Journeys"
+                  className="h-20 w-auto hidden group-hover:block"
+                />
+              </Link>
+            )}
+
+            {currentPage === 'destinations' ? (
+              <Box className="group">
+                <Box
+                  component="img"
+                  src="/images/buttons/destination_button_hover.png"
+                  alt="Destinations"
+                  className="h-20 w-auto"
+                />
+              </Box>
+            ) : (
+              <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200">
+                <Box
+                  component="img"
+                  src="/images/buttons/destination_button.png"
+                  alt="Destinations"
+                  className="h-20 w-auto group-hover:hidden"
+                />
+                <Box
+                  component="img"
+                  src="/images/buttons/destination_button_hover.png"
+                  alt="Destinations"
+                  className="h-20 w-auto hidden group-hover:block"
+                />
+              </Link>
+            )}
+
             <Box component="button" className="group hover:scale-105 transition-transform duration-200">
               <Box
                 component="img"
