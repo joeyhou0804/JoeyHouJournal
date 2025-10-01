@@ -68,7 +68,14 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <Box
+      className="min-h-screen"
+      sx={{
+        backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
+        backgroundRepeat: 'repeat-y, repeat',
+        backgroundSize: '100% auto, 400px auto',
+      }}
+    >
       {/* Navigation Drawer */}
       {isMenuOpen && (
         <>
@@ -190,6 +197,74 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
           Back to Destinations
         </Link>
 
+        {/* Location Title */}
+        <Box sx={{ width: '100%', maxWidth: '800px', margin: '0 auto 3rem' }}>
+          <Box sx={{ position: 'relative', width: '100%', marginBottom: '2rem' }}>
+            <Box
+              component="img"
+              src="/images/destinations/destination_location_title.webp"
+              alt="Location"
+              sx={{ width: '100%', height: 'auto', display: 'block' }}
+            />
+            <Box
+              component="h1"
+              sx={{
+                fontFamily: 'MarioFontTitle, sans-serif',
+                fontWeight: 600,
+                fontSize: '48px',
+                color: '#373737',
+                margin: 0,
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                whiteSpace: 'nowrap',
+                textAlign: 'center',
+                width: '100%'
+              }}
+            >
+              {station.name}
+            </Box>
+          </Box>
+
+          {/* State, Date, and Route */}
+          <Box sx={{ textAlign: 'center' }}>
+            <Box
+              component="p"
+              sx={{
+                fontFamily: 'MarioFontTitle, sans-serif',
+                fontSize: '32px',
+                color: '#373737',
+                margin: '0.5rem 0'
+              }}
+            >
+              {station.state}
+            </Box>
+            <Box
+              component="p"
+              sx={{
+                fontFamily: 'MarioFontTitle, sans-serif',
+                fontSize: '32px',
+                color: '#373737',
+                margin: '0.5rem 0'
+              }}
+            >
+              {station.date}
+            </Box>
+            <Box
+              component="p"
+              sx={{
+                fontFamily: 'MarioFontTitle, sans-serif',
+                fontSize: '32px',
+                color: '#373737',
+                margin: '0.5rem 0'
+              }}
+            >
+              {station.route}
+            </Box>
+          </Box>
+        </Box>
+
         {/* Station Details */}
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           {/* Image Carousel */}
@@ -232,23 +307,6 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
 
           {/* Station Info */}
           <div className="p-8">
-            <div className="mb-6">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">{station.name}</h1>
-              <div className="flex flex-wrap items-center gap-4 text-gray-600">
-                <div className="flex items-center">
-                  <MapPin className="h-5 w-5 mr-2" />
-                  <span>{station.state}</span>
-                </div>
-                <div className="flex items-center">
-                  <Calendar className="h-5 w-5 mr-2" />
-                  <span>{station.date}</span>
-                </div>
-                <div className="flex items-center">
-                  <Train className="h-5 w-5 mr-2" />
-                  <span>{station.route}</span>
-                </div>
-              </div>
-            </div>
 
             {/* Description */}
             {station.description && (
@@ -273,6 +331,6 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
           </div>
         </div>
       </div>
-    </div>
+    </Box>
   )
 }
