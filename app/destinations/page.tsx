@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import DestinationCard from 'src/components/DestinationCard'
+import MapViewHint from 'src/components/MapViewHint'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -115,6 +116,18 @@ export default function StationsPage() {
               className="max-w-md w-full h-auto"
             />
           </div>
+
+          {/* Map View Hint */}
+          <div className="my-36">
+            <MapViewHint station={{
+              id: '',
+              name: 'Check out the map',
+              route: 'Click on the markers to see the place name.',
+              date: 'You can also view more details with the button.',
+              images: ['/map_view_hint.jpg']
+            }} />
+          </div>
+
           <Box
             sx={{
               backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
