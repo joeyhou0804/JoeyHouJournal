@@ -657,7 +657,7 @@ export default function Home() {
               >
                 <Box
                   component="img"
-                  src="/view_details_button.webp"
+                  src="/view_details_button.png"
                   alt="View Details"
                   sx={{ height: '90px', width: 'auto', display: 'block' }}
                 />
