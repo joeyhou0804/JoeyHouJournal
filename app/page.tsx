@@ -529,6 +529,13 @@ export default function Home() {
                 animation: 'moveArrow 0.5s ease-in-out infinite'
               }}
             />
+            <Box
+              component="img"
+              src="/images/homepage/homepage_destination_text_en.png"
+              alt="Discover the places that shaped my rail journey across America"
+              className="h-auto max-w-4xl relative"
+              sx={{ transform: 'translate(2rem, -8rem)', zIndex: 20 }}
+            />
           </Container>
 
           {/* Destination Carousel */}
