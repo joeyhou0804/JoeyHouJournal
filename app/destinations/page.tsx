@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { stations } from 'src/data/stations'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
@@ -24,6 +24,7 @@ export default function StationsPage() {
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
+  const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 12
 
@@ -40,7 +41,9 @@ export default function StationsPage() {
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (listSectionRef.current) {
+      listSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
 
   const handleSortChange = (order: 'latest' | 'earliest') => {
@@ -127,6 +130,7 @@ export default function StationsPage() {
 
       <Box
         component="section"
+        ref={listSectionRef}
         className="w-full py-24"
         sx={{
           backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
