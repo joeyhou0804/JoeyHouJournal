@@ -119,13 +119,31 @@ export default function StationsPage() {
 
           {/* Map View Hint */}
           <div className="my-36">
-            <MapViewHint station={{
-              id: '',
-              name: 'Check out the map',
-              route: 'Click on the markers to see the place name.',
-              date: 'You can also view more details with the button.',
-              images: ['/map_view_hint.jpg']
-            }} />
+            <MapViewHint
+              cardNumber={1}
+              station={{
+                id: '',
+                name: 'Check out the map',
+                route: 'Click on the markers to see the place name.',
+                date: 'You can also view more details with the button.',
+                images: ['/map_view_hint.jpg']
+              }}
+            />
+          </div>
+
+          {/* Second Map View Hint - Image on right */}
+          <div className="my-36">
+            <MapViewHint
+              imageOnRight={true}
+              cardNumber={2}
+              station={{
+                id: '',
+                name: 'As for golden markers...',
+                route: 'Golden markers indicate cities with multiple visits.',
+                date: 'Use the side buttons to navigate through them.',
+                images: ['/map_view_hint_2.png']
+              }}
+            />
           </div>
 
           <Box
