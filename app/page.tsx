@@ -756,7 +756,7 @@ export default function Home() {
             />
 
             {/* Masked destination image - left edge */}
-            <Container className="absolute left-0 top-1/2 -translate-y-1/2" sx={{ zIndex: 15 }}>
+            <Container className="absolute left-0 top-1/2 -translate-y-1/2" sx={{ zIndex: 25 }}>
               <Container
                 className={`w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out ${
                   isDestTransitioning ? '-translate-x-full' : 'translate-x-0'
@@ -797,116 +797,90 @@ export default function Home() {
             </Container>
 
             {/* Destination Card - Center right */}
-            <Container
-              className="absolute right-48 top-1/2 -translate-y-1/2"
+            <Box
+              className="absolute left-[250px] top-1/2 -translate-y-1/3"
               sx={{
-                zIndex: 25,
-                width: '460px',
-                padding: '8px',
-                backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
-                backgroundSize: '200px auto',
-                backgroundRepeat: 'repeat',
-                borderRadius: '12px'
+                zIndex: 20,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '24px'
               }}
             >
-              <Box sx={{ padding: '8px' }}>
-                <Box sx={{ position: 'relative', width: '100%', height: '146px' }}>
-                  {/* Popup Card Background */}
+              {/* Card Background with Title */}
+              <Box sx={{ position: 'relative', width: '1100px' }}>
+                {/* Popup Card Background */}
+                <Box
+                  component="img"
+                  src="/images/destinations/destination_popup_card.webp"
+                  alt="Card"
+                  sx={{
+                    width: '1100px',
+                    height: 'auto',
+                    display: 'block'
+                  }}
+                />
+
+                {/* Title Section */}
+                <Box sx={{ position: 'absolute', top: '0%', left: '70%', transform: 'translate(-50%, -50%)', width: '65%' }}>
                   <Box
                     component="img"
-                    src="/images/destinations/destination_popup_card.webp"
-                    alt="Card"
+                    src="/images/destinations/destination_location_title_black.webp"
+                    alt="Location"
+                    sx={{ width: '100%', height: 'auto', display: 'block' }}
+                  />
+                  <Box
+                    component="h3"
                     sx={{
+                      fontFamily: 'MarioFontTitle, sans-serif',
+                      fontWeight: 600,
+                      fontSize: '40px',
+                      color: '#FFD701',
+                      margin: 0,
                       position: 'absolute',
                       top: '50%',
                       left: '50%',
                       transform: 'translate(-50%, -50%)',
-                      width: '400px',
-                      height: 'auto',
-                      zIndex: 1
+                      whiteSpace: 'nowrap',
+                      textAlign: 'center',
+                      width: '100%'
                     }}
-                  />
-
-                  {/* Place Image */}
-                  <Box
-                    component="img"
-                    src={recentPlaces[currentDestSlide].image}
-                    alt={recentPlaces[currentDestSlide].name}
-                    sx={{
-                      position: 'absolute',
-                      top: '8px',
-                      left: '8px',
-                      width: '130px',
-                      height: '130px',
-                      objectFit: 'cover',
-                      borderRadius: '6px',
-                      zIndex: 2,
-                      boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
-                    }}
-                  />
-
-                  {/* Title Section */}
-                  <Box sx={{ position: 'absolute', top: '50%', left: '165px', transform: 'translate(0, -50%)', marginTop: '-40px', zIndex: 3, width: '250px' }}>
-                    <Box
-                      component="img"
-                      src="/images/destinations/destination_location_title.webp"
-                      alt="Location"
-                      sx={{ width: '100%', height: 'auto', display: 'block' }}
-                    />
-                    <Box
-                      component="h3"
-                      sx={{
-                        fontFamily: 'MarioFontTitle, sans-serif',
-                        fontWeight: 600,
-                        fontSize: '20px',
-                        color: '#373737',
-                        margin: 0,
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        whiteSpace: 'nowrap',
-                        textAlign: 'center',
-                        width: '100%'
-                      }}
-                    >
-                      {recentPlaces[currentDestSlide].name}
-                    </Box>
-                  </Box>
-
-                  {/* Date and Route */}
-                  <Box sx={{ position: 'absolute', top: '50%', left: '165px', transform: 'translateY(-50%)', marginTop: '8px', zIndex: 2, width: '250px', textAlign: 'center' }}>
-                    <Box component="p" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', color: '#373737', marginBottom: '2px', marginTop: 0 }}>
-                      {recentPlaces[currentDestSlide].route}
-                    </Box>
-                    <Box component="p" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '15px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
-                      {recentPlaces[currentDestSlide].date}
-                    </Box>
+                  >
+                    {recentPlaces[currentDestSlide].name}
                   </Box>
                 </Box>
 
-                {/* View Details Button */}
-                <Box sx={{ textAlign: 'center', marginTop: '4px' }}>
-                  <Box
-                    component="a"
-                    href={`/destinations`}
-                    sx={{
-                      display: 'inline-block',
-                      '&:hover img': {
-                        content: 'url(/images/buttons/view_details_button_hover.png)'
-                      }
-                    }}
-                  >
-                    <Box
-                      component="img"
-                      src="/images/buttons/view_details_button.png"
-                      alt="View Details"
-                      sx={{ height: '55px', width: 'auto', display: 'block' }}
-                    />
+                {/* Route and Date */}
+                <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
+                  <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
+                    {recentPlaces[currentDestSlide].route}
+                  </Box>
+                  <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                    {recentPlaces[currentDestSlide].date}
                   </Box>
                 </Box>
               </Box>
-            </Container>
+
+              {/* View Details Button */}
+              <Box
+                component="a"
+                href={`/destinations`}
+                sx={{
+                  display: 'inline-block',
+                  marginLeft: '400px',
+                  '&:hover img': {
+                    content: 'url(/images/buttons/view_details_button_hover.png)'
+                  }
+                }}
+              >
+                <Box
+                  component="img"
+                  src="/images/buttons/view_details_button.png"
+                  alt="View Details"
+                  sx={{ height: '90px', width: 'auto', display: 'block' }}
+                />
+              </Box>
+            </Box>
 
             {/* Navigation Arrows */}
             <Box
