@@ -1,27 +1,53 @@
-import Link from 'next/link'
-import { ArrowLeft, MapPin, Calendar, Train, Clock } from 'lucide-react'
+'use client'
 
-export default function TripsPage() {
+import Link from 'next/link'
+import { useState } from 'react'
+import { MapPin, Calendar, Train, Clock } from 'lucide-react'
+import NavigationMenu from 'src/components/NavigationMenu'
+import Footer from 'src/components/Footer'
+
+export default function JourneysPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
+  const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
+  const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
+
+  const openMenu = () => {
+    setIsMenuButtonAnimating(true)
+    setTimeout(() => {
+      setIsMenuButtonVisible(false)
+      setIsMenuOpen(true)
+      setTimeout(() => {
+        setIsDrawerAnimating(false)
+      }, 50)
+    }, 150)
+  }
+
+  const closeMenu = () => {
+    setIsDrawerAnimating(true)
+    setTimeout(() => {
+      setIsMenuOpen(false)
+      setTimeout(() => {
+        setIsMenuButtonVisible(true)
+        setIsMenuButtonAnimating(true)
+        setTimeout(() => {
+          setIsMenuButtonAnimating(false)
+        }, 50)
+      }, 50)
+    }, 150)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <Link href="/" className="text-gray-600 hover:text-gray-900">
-                <ArrowLeft className="h-5 w-5" />
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900">All Train Trips</h1>
-            </div>
-            <nav className="hidden md:flex space-x-6">
-              <Link href="/" className="text-gray-700 hover:text-blue-600">Home</Link>
-              <Link href="/trips" className="text-blue-600 font-medium">All Trips</Link>
-              <Link href="/destinations" className="text-gray-700 hover:text-blue-600">Destinations</Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+      <NavigationMenu
+        isMenuOpen={isMenuOpen}
+        isMenuButtonVisible={isMenuButtonVisible}
+        isDrawerAnimating={isDrawerAnimating}
+        isMenuButtonAnimating={isMenuButtonAnimating}
+        openMenu={openMenu}
+        closeMenu={closeMenu}
+        currentPage="trips"
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats */}
@@ -85,7 +111,7 @@ export default function TripsPage() {
                   </div>
                   <div className="mt-4 lg:mt-0 lg:ml-6">
                     <Link
-                      href={`/trips/${trip.slug}`}
+                      href={`/journeys/${trip.slug}`}
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     >
                       View Journey
@@ -109,6 +135,8 @@ export default function TripsPage() {
           </div>
         </div>
       </div>
+
+      <Footer currentPage="trips" />
     </div>
   )
 }

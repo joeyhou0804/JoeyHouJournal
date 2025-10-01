@@ -78,7 +78,7 @@ export default function NavigationMenu({
                   />
                 </Box>
               ) : (
-                <Link href="/trips" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
+                <Link href="/journeys" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
                   <Box
                     component="img"
                     src="/images/buttons/journey_button.png"

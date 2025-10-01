@@ -38,7 +38,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                 />
               </Box>
             ) : (
-              <Link href="/trips" className="group hover:scale-105 transition-transform duration-200">
+              <Link href="/journeys" className="group hover:scale-105 transition-transform duration-200">
                 <Box
                   component="img"
                   src="/images/buttons/journey_button.png"

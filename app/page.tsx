@@ -277,7 +277,7 @@ export default function Home() {
             />
             <Box
               component={Link}
-              href="/trips"
+              href="/journeys"
               className="absolute"
               sx={{ transform: 'translate(2rem, -17rem)', zIndex: 20 }}
             >
