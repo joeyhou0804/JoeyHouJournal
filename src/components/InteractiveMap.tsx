@@ -102,11 +102,11 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
             <div style="text-align: center; margin-top: 4px;">
               <a
                 href="/destinations/${place.id}"
-                style="display: inline-block;"
-                onmouseover="this.querySelector('img').src='/images/buttons/view_details_button_hover.png'"
-                onmouseout="this.querySelector('img').src='/images/buttons/view_details_button.png'"
+                style="display: inline-block; transition: transform 0.2s;"
+                onmouseover="this.style.transform='scale(1.05)'"
+                onmouseout="this.style.transform='scale(1)'"
               >
-                <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 55px; width: auto; display: block;" />
+                <img src="/view_details_button.webp" alt="View Details" style="height: 55px; width: auto; display: block;" />
               </a>
             </div>
           </div>

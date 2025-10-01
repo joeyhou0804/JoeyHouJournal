@@ -653,17 +653,11 @@ export default function Home() {
               <Box
                 component="a"
                 href={`/destinations/${recentPlaces[currentDestSlide].id}`}
-                sx={{
-                  display: 'inline-block',
-                  marginLeft: '400px',
-                  '&:hover img': {
-                    content: 'url(/images/buttons/view_details_button_hover.png)'
-                  }
-                }}
+                className="inline-block ml-[400px] hover:scale-105 transition-transform duration-200"
               >
                 <Box
                   component="img"
-                  src="/images/buttons/view_details_button.png"
+                  src="/view_details_button.webp"
                   alt="View Details"
                   sx={{ height: '90px', width: 'auto', display: 'block' }}
                 />
