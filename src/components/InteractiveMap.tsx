@@ -59,7 +59,7 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
       maxZoom: 10,
     }).addTo(map)
 
-    // Create custom orange marker icon
+    // Create custom orange marker icon (single visit)
     const orangeIcon = L.icon({
       iconUrl: 'data:image/svg+xml;base64,' + btoa(`
         <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
@@ -75,51 +75,215 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
       shadowAnchor: [12, 41]
     })
 
-    // Add markers
-    placesWithCoords.forEach((place) => {
-      const marker = L.marker([place.lat, place.lng], { icon: orangeIcon }).addTo(map)
+    // Create custom golden marker icon (multiple visits)
+    const goldenIcon = L.icon({
+      iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+        <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.5 0C5.596 0 0 5.596 0 12.5c0 8.437 12.5 28.5 12.5 28.5S25 20.937 25 12.5C25 5.596 19.404 0 12.5 0z" fill="#FFD701"/>
+          <circle cx="12.5" cy="12.5" r="6" fill="white"/>
+        </svg>
+      `),
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      shadowSize: [41, 41],
+      shadowAnchor: [12, 41]
+    })
 
-      const popupContent = `
-        <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
-          <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
-            <div style="position: relative; width: 100%; height: 146px;">
-              <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
-              ${place.images && place.images.length > 0 ? `
-                <img
-                  src="${place.images[0]}"
-                  alt="${place.name}"
-                  style="position: absolute; top: 8px; left: 8px; width: 130px; height: 130px; object-fit: cover; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
-                />
-              ` : ''}
-              <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
-                <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
-                <h3 style="font-family: 'MarioFontTitle', sans-serif; font-weight: normal; font-size: 20px; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${place.name}</h3>
-              </div>
-              <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
-                <p style="font-family: 'MarioFont', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${place.state}</p>
-                <p style="font-family: 'MarioFont', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+    // Group places by name first, then by approximate coordinates
+    const groupedPlaces: { [key: string]: Place[] } = {}
+    placesWithCoords.forEach((place) => {
+      // First, try to find an existing group with the same name
+      let foundKey = Object.keys(groupedPlaces).find(key => {
+        const existingPlaces = groupedPlaces[key]
+        return existingPlaces.some(p => p.name === place.name)
+      })
+
+      // If not found by name, group by approximate coordinates (within ~0.05 degrees)
+      if (!foundKey) {
+        const coordKey = `${Math.round(place.lat * 20) / 20},${Math.round(place.lng * 20) / 20}`
+        foundKey = Object.keys(groupedPlaces).find(key => key.startsWith(coordKey))
+        if (!foundKey) {
+          foundKey = `${coordKey}_${place.name}`
+        }
+      }
+
+      if (!groupedPlaces[foundKey]) {
+        groupedPlaces[foundKey] = []
+      }
+      groupedPlaces[foundKey].push(place)
+    })
+
+    // Sort each group by date and time
+    Object.values(groupedPlaces).forEach(group => {
+      group.sort((a, b) => {
+        const dateA = new Date(a.date).getTime()
+        const dateB = new Date(b.date).getTime()
+        // If same date, maintain original order (stable sort)
+        if (dateA === dateB) return 0
+        return dateA - dateB
+      })
+    })
+
+    // Add markers for each group
+    Object.entries(groupedPlaces).forEach(([key, places]) => {
+      const isMultiVisit = places.length > 1
+      const icon = isMultiVisit ? goldenIcon : orangeIcon
+      const marker = L.marker([places[0].lat, places[0].lng], { icon }).addTo(map)
+
+      if (isMultiVisit) {
+        // Multi-visit popup with carousel
+        const carouselId = key.replace(/[,.-]/g, '_')
+        let currentIndex = 0
+
+        const createPopupContent = (index: number) => {
+          const place = places[index]
+
+          return `
+            <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
+              <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
+                <div style="position: relative; width: 100%; height: 146px;">
+                  <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
+                  ${place.images && place.images.length > 0 ? `
+                    <img
+                      src="${place.images[0]}"
+                      alt="${place.name}"
+                      style="position: absolute; top: 8px; left: 8px; width: 130px; height: 130px; object-fit: cover; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
+                    />
+                  ` : ''}
+                  <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
+                    <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
+                    <h3 style="font-family: 'MarioFontTitle', sans-serif; font-weight: normal; font-size: 20px; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${place.name}</h3>
+                  </div>
+                  <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
+                    <p style="font-family: 'MarioFont', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${place.state}</p>
+                    <p style="font-family: 'MarioFont', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 4px;">
+                  <button
+                    data-carousel-id="${carouselId}"
+                    data-carousel-action="prev"
+                    style="background: none; border: none; cursor: pointer; padding: 0; transition: transform 0.2s;"
+                    onmouseover="this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.transform='scale(1)'"
+                  >
+                    <img src="/images/buttons/arrow_prev.webp" alt="Previous" style="height: 40px; width: auto; display: block;" />
+                  </button>
+                  <a
+                    href="/destinations/${place.id}"
+                    style="display: inline-block; transition: transform 0.2s;"
+                    onmouseover="this.style.transform='scale(1.05)'"
+                    onmouseout="this.style.transform='scale(1)'"
+                  >
+                    <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
+                  </a>
+                  <button
+                    data-carousel-id="${carouselId}"
+                    data-carousel-action="next"
+                    style="background: none; border: none; cursor: pointer; padding: 0; transition: transform 0.2s;"
+                    onmouseover="this.style.transform='scale(1.1)'"
+                    onmouseout="this.style.transform='scale(1)'"
+                  >
+                    <img src="/images/buttons/arrow_next.webp" alt="Next" style="height: 40px; width: auto; display: block;" />
+                  </button>
+                </div>
               </div>
             </div>
-            <div style="text-align: center; margin-top: 4px;">
-              <a
-                href="/destinations/${place.id}"
-                style="display: inline-block; transition: transform 0.2s;"
-                onmouseover="this.style.transform='scale(1.05)'"
-                onmouseout="this.style.transform='scale(1)'"
-              >
-                <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
-              </a>
+          `
+        }
+
+        const popup = L.popup({
+          maxWidth: 520,
+          minWidth: 520,
+          className: 'custom-popup',
+          closeButton: false
+        })
+
+        popup.setContent(createPopupContent(0))
+        marker.bindPopup(popup)
+
+        // Function to attach event listeners
+        const attachListeners = () => {
+          const prevBtn = document.querySelector(`[data-carousel-id="${carouselId}"][data-carousel-action="prev"]`)
+          const nextBtn = document.querySelector(`[data-carousel-id="${carouselId}"][data-carousel-action="next"]`)
+
+          if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
+              e.stopPropagation() // Prevent popup from closing
+              currentIndex = (currentIndex - 1 + places.length) % places.length
+              popup.setContent(createPopupContent(currentIndex))
+              // Re-attach listeners after content update
+              setTimeout(() => attachListeners(), 0)
+            })
+          }
+
+          if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+              e.stopPropagation() // Prevent popup from closing
+              currentIndex = (currentIndex + 1) % places.length
+              popup.setContent(createPopupContent(currentIndex))
+              // Re-attach listeners after content update
+              setTimeout(() => attachListeners(), 0)
+            })
+          }
+        }
+
+        // Attach event listeners when popup opens
+        marker.on('popupopen', () => {
+          attachListeners()
+        })
+
+        // Reset index when popup closes
+        marker.on('popupclose', () => {
+          currentIndex = 0
+        })
+      } else {
+        // Single visit popup (original design)
+        const place = places[0]
+        const popupContent = `
+          <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
+            <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
+              <div style="position: relative; width: 100%; height: 146px;">
+                <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
+                ${place.images && place.images.length > 0 ? `
+                  <img
+                    src="${place.images[0]}"
+                    alt="${place.name}"
+                    style="position: absolute; top: 8px; left: 8px; width: 130px; height: 130px; object-fit: cover; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
+                  />
+                ` : ''}
+                <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
+                  <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
+                  <h3 style="font-family: 'MarioFontTitle', sans-serif; font-weight: normal; font-size: 20px; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${place.name}</h3>
+                </div>
+                <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
+                  <p style="font-family: 'MarioFont', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${place.state}</p>
+                  <p style="font-family: 'MarioFont', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                </div>
+              </div>
+              <div style="text-align: center; margin-top: 4px;">
+                <a
+                  href="/destinations/${place.id}"
+                  style="display: inline-block; transition: transform 0.2s;"
+                  onmouseover="this.style.transform='scale(1.05)'"
+                  onmouseout="this.style.transform='scale(1)'"
+                >
+                  <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      `
+        `
 
-      marker.bindPopup(popupContent, {
-        maxWidth: 520,
-        minWidth: 520,
-        className: 'custom-popup',
-        closeButton: false
-      })
+        marker.bindPopup(popupContent, {
+          maxWidth: 520,
+          minWidth: 520,
+          className: 'custom-popup',
+          closeButton: false
+        })
+      }
     })
 
     // Fit bounds to show all markers

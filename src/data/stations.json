@@ -1,7 +1,7 @@
 [
   {
     "id": "61907965adaca0b81e8afe1d",
-    "name": "Penn Station, New York",
+    "name": "New York, NY",
     "lat": 40.7506415,
     "lng": -73.9936575,
     "date": "2020/08/22",
@@ -105,7 +105,7 @@
   },
   {
     "id": "61907b59adaca0b81e8afeca",
-    "name": "Chicago Union Station",
+    "name": "Chicago, IL",
     "lat": 41.878827,
     "lng": -87.6397835,
     "date": "2020/08/23",
@@ -121,7 +121,7 @@
   },
   {
     "id": "61907b9dadaca0b81e8afedb",
-    "name": "The Chicago Loop",
+    "name": "Chicago, IL",
     "lat": 41.876916,
     "lng": -87.62451899999999,
     "date": "2020/08/23",
@@ -348,7 +348,7 @@
   },
   {
     "id": "61907f51adaca0b81e8b0480",
-    "name": "Union Station, Los Angeles",
+    "name": "Los Angeles, CA",
     "lat": 34.05560125,
     "lng": -118.2349205,
     "date": "2020/08/25",
@@ -434,7 +434,7 @@
   },
   {
     "id": "619080b8adaca0b81e8b04e1",
-    "name": "Chinatown, Los Angeles",
+    "name": "Los Angeles, CA",
     "lat": 34.0625,
     "lng": -118.239,
     "date": "2020/08/26",
@@ -643,7 +643,7 @@
   },
   {
     "id": "6190838aadaca0b81e8b05f3",
-    "name": "Chicago Union Station",
+    "name": "Chicago, IL",
     "lat": 41.878827,
     "lng": -87.6397835,
     "date": "2020/08/29",
@@ -725,7 +725,7 @@
   },
   {
     "id": "619084d7adaca0b81e8b064c",
-    "name": "Washington D.C. Union Station",
+    "name": "Washington D.C.",
     "lat": 38.899004,
     "lng": -77.006292,
     "date": "2020/08/30",
@@ -743,7 +743,7 @@
   },
   {
     "id": "61908516adaca0b81e8b0661",
-    "name": "White House, Washington D.C.",
+    "name": "Washington D.C.",
     "lat": 38.8977365,
     "lng": -77.036556,
     "date": "2020/08/30",
@@ -778,7 +778,7 @@
   },
   {
     "id": "618e0f7e1d2baa475d30b9ba",
-    "name": "Rockaway Beach, New York, NY",
+    "name": "New York, NY",
     "lat": 40.583499,
     "lng": -73.82313,
     "date": "2020/12/13",
@@ -960,7 +960,7 @@
   },
   {
     "id": "618ca176912161e40e99e34e",
-    "name": "Lavender By the Bay, New York",
+    "name": "New York, NY",
     "lat": 41.123538,
     "lng": -72.343801,
     "date": "2021/07/15",
@@ -1405,7 +1405,7 @@
   },
   {
     "id": "6189a820efae22e1cf780b7b",
-    "name": "Fisherman's Wharf, San Francisco",
+    "name": "San Francisco, CA",
     "lat": 37.8076,
     "lng": -122.4171,
     "date": "2021/08/10",
@@ -1445,7 +1445,7 @@
   },
   {
     "id": "6189a933efae22e1cf780dbb",
-    "name": "Chinatown, San Francisco",
+    "name": "San Francisco, CA",
     "lat": 37.7966,
     "lng": -122.4086,
     "date": "2021/08/11",
@@ -1480,7 +1480,7 @@
   },
   {
     "id": "6189c82df2c10fc7fe14c9c3",
-    "name": "Chinatown, Portland, OR",
+    "name": "Portland, OR",
     "lat": 45.5257,
     "lng": -122.673,
     "date": "2021/08/12",
@@ -1739,7 +1739,7 @@
   },
   {
     "id": "6189cbe5f2c10fc7fe14cd4a",
-    "name": "Chinatown, Chicago",
+    "name": "Chicago, IL",
     "lat": 41.85,
     "lng": -87.63,
     "date": "2021/08/14",
@@ -1757,7 +1757,7 @@
   },
   {
     "id": "6189cc3df2c10fc7fe14cd5f",
-    "name": "Asia on Argyle, Chicago",
+    "name": "Chicago, IL",
     "lat": 41.973347,
     "lng": -87.659191,
     "date": "2021/08/14",
@@ -1845,7 +1845,7 @@
   },
   {
     "id": "6189cdc9f2c10fc7fe14d07e",
-    "name": "Union Station, New Orleans",
+    "name": "New Orleans, LA",
     "lat": 29.9514458,
     "lng": -90.0717811,
     "date": "2021/08/16",
@@ -1861,7 +1861,7 @@
   },
   {
     "id": "6189ce2af2c10fc7fe14d08f",
-    "name": "New Orleans French Quarter",
+    "name": "New Orleans, LA",
     "lat": 29.957791,
     "lng": -90.063348,
     "date": "2021/08/16",
@@ -2035,7 +2035,7 @@
   },
   {
     "id": "6189d0d2f2c10fc7fe14d2fa",
-    "name": "34th Street, New York, NY",
+    "name": "New York, NY",
     "lat": 40.758422,
     "lng": -73.925158,
     "date": "2021/08/18",
