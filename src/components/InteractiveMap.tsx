@@ -163,6 +163,7 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
                     <p style="font-family: 'MarioFont', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
                   </div>
                 </div>
+                ${!isDetailView ? `
                 <div style="text-align: center; margin-top: 4px;">
                   <a
                     href="/destinations/${place.id}"
@@ -173,6 +174,7 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
                     <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
                   </a>
                 </div>
+                ` : ''}
                 <button
                   data-carousel-id="${carouselId}"
                   data-carousel-action="prev"
@@ -301,6 +303,7 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
                   <p style="font-family: 'MarioFont', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
                 </div>
               </div>
+              ${!isDetailView ? `
               <div style="text-align: center; margin-top: 4px;">
                 <a
                   href="/destinations/${place.id}"
@@ -311,6 +314,7 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
                   <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
                 </a>
               </div>
+              ` : ''}
             </div>
           </div>
         `
