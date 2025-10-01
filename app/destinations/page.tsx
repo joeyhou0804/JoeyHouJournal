@@ -263,7 +263,7 @@ export default function StationsPage() {
                     {/* Popup Card Background */}
                     <Box
                       component="img"
-                      src="/images/destinations/destination_popup_card.webp"
+                      src="/images/destinations/destination_card_odd.webp"
                       alt="Card"
                       sx={{ width: '100%', height: 'auto', display: 'block' }}
                     />
@@ -272,7 +272,7 @@ export default function StationsPage() {
                     <Box sx={{ position: 'absolute', top: '0%', left: '70%', transform: 'translate(-50%, -50%)', width: '65%' }}>
                       <Box
                         component="img"
-                        src="/images/destinations/destination_location_title_black.webp"
+                        src="/images/destinations/destination_location_title.webp"
                         alt="Location"
                         sx={{ width: '100%', height: 'auto', display: 'block' }}
                       />
@@ -282,7 +282,7 @@ export default function StationsPage() {
                           fontFamily: 'MarioFontTitle, sans-serif',
                           fontWeight: 600,
                           fontSize: '40px',
-                          color: '#FFD701',
+                          color: '#373737',
                           margin: 0,
                           position: 'absolute',
                           top: '50%',
@@ -299,10 +299,10 @@ export default function StationsPage() {
 
                     {/* Route and Date */}
                     <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
+                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
                         {station.route}
                       </Box>
-                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
                         {station.date}
                       </Box>
                     </Box>
@@ -346,7 +346,7 @@ export default function StationsPage() {
                     {/* Popup Card Background */}
                     <Box
                       component="img"
-                      src="/images/destinations/destination_popup_card.webp"
+                      src="/images/destinations/destination_card_even.webp"
                       alt="Card"
                       sx={{ width: '100%', height: 'auto', display: 'block' }}
                     />
@@ -355,7 +355,7 @@ export default function StationsPage() {
                     <Box sx={{ position: 'absolute', top: '0%', left: '30%', transform: 'translate(-50%, -50%)', width: '65%' }}>
                       <Box
                         component="img"
-                        src="/images/destinations/destination_location_title_black.webp"
+                        src="/images/destinations/destination_location_title.webp"
                         alt="Location"
                         sx={{ width: '100%', height: 'auto', display: 'block' }}
                       />
@@ -365,7 +365,7 @@ export default function StationsPage() {
                           fontFamily: 'MarioFontTitle, sans-serif',
                           fontWeight: 600,
                           fontSize: '40px',
-                          color: '#FFD701',
+                          color: '#373737',
                           margin: 0,
                           position: 'absolute',
                           top: '50%',
@@ -382,10 +382,10 @@ export default function StationsPage() {
 
                     {/* Route and Date - moved to left */}
                     <Box sx={{ position: 'absolute', top: '60%', left: '30%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
+                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
                         {station.route}
                       </Box>
-                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
                         {station.date}
                       </Box>
                     </Box>
