@@ -23,8 +23,15 @@ export default function StationsPage() {
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
+  const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
 
-  const displayedStations = showAll ? stations : stations.slice(0, 12)
+  const sortedStations = [...stations].sort((a, b) => {
+    const dateA = new Date(a.date).getTime()
+    const dateB = new Date(b.date).getTime()
+    return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
+  })
+
+  const displayedStations = showAll ? sortedStations : sortedStations.slice(0, 12)
 
   const openMenu = () => {
     setIsMenuButtonAnimating(true)
@@ -113,12 +120,36 @@ export default function StationsPage() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center mb-64 mt-8">
+          <div className="flex justify-center items-center mb-16 mt-8">
             <img
               src="/images/destinations/destination_list_of_places_title.png"
               alt="List of Places"
               className="max-w-md w-full h-auto"
             />
+          </div>
+
+          {/* Sort Buttons */}
+          <div className="flex justify-center items-center gap-4 mb-48">
+            <button
+              onClick={() => setSortOrder('latest')}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                sortOrder === 'latest'
+                  ? 'bg-blue-600 text-white shadow-lg scale-105'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              Latest First
+            </button>
+            <button
+              onClick={() => setSortOrder('earliest')}
+              className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
+                sortOrder === 'earliest'
+                  ? 'bg-blue-600 text-white shadow-lg scale-105'
+                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+              }`}
+            >
+              Earliest First
+            </button>
           </div>
 
           {/* Stations Grid */}
