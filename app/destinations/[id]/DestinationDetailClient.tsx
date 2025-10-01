@@ -273,17 +273,70 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
 
         {/* Image Carousel */}
         {station.images && station.images.length > 0 && (
-          <Box
-            sx={{
-              backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
-              backgroundRepeat: 'repeat',
-              backgroundSize: '200px auto',
-              padding: '1rem',
-              borderRadius: '1.5rem',
-              maxWidth: '800px',
-              margin: '0 auto 3rem'
-            }}
-          >
+          <Box sx={{ maxWidth: '800px', margin: '0 auto 3rem' }}>
+            {/* Tab Navigation */}
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              {station.images.map((_, index) => {
+                // Hidden boolean to control if single image should use tab_1 instead of tab_map
+                const useSingleImageAsMap = true
+
+                const isLastImage = index === station.images.length - 1
+                const isSingleImage = station.images.length === 1
+                const useMapTab = (isSingleImage && useSingleImageAsMap) || (isLastImage && station.images.length > 1)
+                const tabNumber = index + 1
+                const isSelected = currentImageIndex === index
+
+                let tabSrc = ''
+                if (useMapTab) {
+                  tabSrc = isSelected
+                    ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_selected.png'
+                    : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map.png'
+                } else {
+                  tabSrc = isSelected
+                    ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_selected.png`
+                    : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}.png`
+                }
+
+                const hoverSrc = useMapTab
+                  ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_hover.png'
+                  : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_hover.png`
+
+                return (
+                  <Box
+                    key={index}
+                    component="button"
+                    onClick={() => setCurrentImageIndex(index)}
+                    className="group"
+                    sx={{ padding: 0, border: 'none', background: 'none', cursor: 'pointer' }}
+                  >
+                    <Box
+                      component="img"
+                      src={tabSrc}
+                      alt={`Tab ${tabNumber}`}
+                      className={isSelected ? 'h-12 w-auto' : 'h-12 w-auto group-hover:hidden'}
+                    />
+                    {!isSelected && (
+                      <Box
+                        component="img"
+                        src={hoverSrc}
+                        alt={`Tab ${tabNumber}`}
+                        className="h-12 w-auto hidden group-hover:block"
+                      />
+                    )}
+                  </Box>
+                )
+              })}
+            </Box>
+
+            <Box
+              sx={{
+                backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                backgroundRepeat: 'repeat',
+                backgroundSize: '200px auto',
+                padding: '1rem',
+                borderRadius: '1.5rem'
+              }}
+            >
             <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1' }}>
               <Box
                 component="img"
@@ -349,6 +402,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                   </Box>
                 </>
               )}
+            </Box>
             </Box>
           </Box>
         )}
