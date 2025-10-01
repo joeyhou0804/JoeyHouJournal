@@ -1,11 +1,11 @@
 'use client'
-import Link from 'next/link'
-import { Calendar, Train, Image } from 'lucide-react'
 import { useState } from 'react'
 import { stations } from 'src/data/stations'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
+import NavigationMenu from 'src/components/NavigationMenu'
+import DestinationCard from 'src/components/DestinationCard'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -53,115 +53,14 @@ export default function StationsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Navigation Drawer */}
-      {isMenuOpen && (
-        <>
-          {/* Backdrop */}
-          <Box
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={closeMenu}
-          />
-
-          {/* Drawer */}
-          <Box
-            className={`fixed top-8 right-0 h-96 w-64 z-50 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
-              isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
-            }`}
-            sx={{
-              backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
-              backgroundRepeat: 'repeat',
-              backgroundSize: '200px',
-              borderColor: '#373737'
-            }}
-          >
-            {/* Close Button */}
-            <Box
-              component="button"
-              onClick={closeMenu}
-              className="absolute -top-6 -left-6 hover:scale-105 transition-transform duration-200"
-            >
-              <Box
-                component="img"
-                src="/images/icons/menu_close.webp"
-                alt="Close Menu"
-                className="w-12 h-12"
-              />
-            </Box>
-
-            {/* Navigation Buttons */}
-            <Box className="flex flex-col items-center justify-center h-full space-y-3 px-6">
-              <Link href="/" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/logos/logo_en.png"
-                  alt="Home"
-                  className="h-32 w-auto hover:scale-105 transition-transform duration-200"
-                />
-              </Link>
-              <Link href="/trips" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/buttons/journey_button.png"
-                  alt="Journeys"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/journey_button_hover.png"
-                  alt="Journeys"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Link>
-              <Link href="/destinations" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/buttons/destination_button.png"
-                  alt="Destinations"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/destination_button_hover.png"
-                  alt="Destinations"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Link>
-              <Box component="button" className="group">
-                <Box
-                  component="img"
-                  src="/images/buttons/language_button_en.png"
-                  alt="Language Toggle"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/language_button_en_hover.png"
-                  alt="Language Toggle"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Box>
-            </Box>
-          </Box>
-        </>
-      )}
-
-      {/* Menu Button */}
-      {isMenuButtonVisible && (
-        <Box
-          component="button"
-          onClick={openMenu}
-          className={`fixed top-8 right-4 z-50 p-2 hover:scale-105 transition-all duration-150 ${
-            isMenuButtonAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
-          }`}
-        >
-          <Box
-            component="img"
-            src="/images/icons/icon_menu.webp"
-            alt="Menu"
-            className="w-16 h-16"
-          />
-        </Box>
-      )}
+      <NavigationMenu
+        isMenuOpen={isMenuOpen}
+        isMenuButtonVisible={isMenuButtonVisible}
+        isDrawerAnimating={isDrawerAnimating}
+        isMenuButtonAnimating={isMenuButtonAnimating}
+        openMenu={openMenu}
+        closeMenu={closeMenu}
+      />
 
       {/* Station Page Title - Full Width */}
       <div className="w-full">
@@ -224,177 +123,9 @@ export default function StationsPage() {
 
           {/* Stations Grid */}
           <div className="grid grid-cols-1 gap-48">
-          {displayedStations.map((station, index) => {
-            const isEven = index % 2 === 0
-
-            if (isEven) {
-              // Even index: Homepage carousel-style card
-              return (
-                <Link href={`/destinations/${station.id}`} key={index}>
-                  <Box sx={{ position: 'relative', width: '100%', maxWidth: '1100px', margin: '0 auto', '&:hover': { transform: 'scale(1.05)', transition: 'transform 0.2s' } }}>
-                    {/* Station Image - Left side, overlapping */}
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        left: '-50px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '400px',
-                        height: '400px',
-                        borderRadius: '20px',
-                        overflow: 'hidden',
-                        zIndex: 10,
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                      }}
-                    >
-                      {station.images && station.images.length > 0 ? (
-                        <Box
-                          component="img"
-                          src={station.images[0]}
-                          alt={station.name}
-                          sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      ) : (
-                        <Box sx={{ width: '100%', height: '100%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <Image className="h-12 w-12 text-gray-400" />
-                        </Box>
-                      )}
-                    </Box>
-
-                    {/* Popup Card Background */}
-                    <Box
-                      component="img"
-                      src="/images/destinations/destination_card_odd.webp"
-                      alt="Card"
-                      sx={{ width: '100%', height: 'auto', display: 'block' }}
-                    />
-
-                    {/* Title Section */}
-                    <Box sx={{ position: 'absolute', top: '0%', left: '70%', transform: 'translate(-50%, -50%)', width: '65%' }}>
-                      <Box
-                        component="img"
-                        src="/images/destinations/destination_location_title.webp"
-                        alt="Location"
-                        sx={{ width: '100%', height: 'auto', display: 'block' }}
-                      />
-                      <Box
-                        component="h3"
-                        sx={{
-                          fontFamily: 'MarioFontTitle, sans-serif',
-                          fontWeight: 600,
-                          fontSize: '40px',
-                          color: '#373737',
-                          margin: 0,
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          whiteSpace: 'nowrap',
-                          textAlign: 'center',
-                          width: '100%'
-                        }}
-                      >
-                        {station.name}
-                      </Box>
-                    </Box>
-
-                    {/* Route and Date */}
-                    <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
-                        {station.route}
-                      </Box>
-                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
-                        {station.date}
-                      </Box>
-                    </Box>
-                  </Box>
-                </Link>
-              )
-            } else {
-              // Odd index: Same style but image on right, text on left
-              return (
-                <Link href={`/destinations/${station.id}`} key={index}>
-                  <Box sx={{ position: 'relative', width: '100%', maxWidth: '1100px', margin: '0 auto', '&:hover': { transform: 'scale(1.05)', transition: 'transform 0.2s' } }}>
-                    {/* Station Image - Right side, overlapping */}
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        right: '-50px',
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '400px',
-                        height: '400px',
-                        borderRadius: '20px',
-                        overflow: 'hidden',
-                        zIndex: 10,
-                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-                      }}
-                    >
-                      {station.images && station.images.length > 0 ? (
-                        <Box
-                          component="img"
-                          src={station.images[0]}
-                          alt={station.name}
-                          sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      ) : (
-                        <Box sx={{ width: '100%', height: '100%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                          <Image className="h-12 w-12 text-gray-400" />
-                        </Box>
-                      )}
-                    </Box>
-
-                    {/* Popup Card Background */}
-                    <Box
-                      component="img"
-                      src="/images/destinations/destination_card_even.webp"
-                      alt="Card"
-                      sx={{ width: '100%', height: 'auto', display: 'block' }}
-                    />
-
-                    {/* Title Section - moved to left */}
-                    <Box sx={{ position: 'absolute', top: '0%', left: '30%', transform: 'translate(-50%, -50%)', width: '65%' }}>
-                      <Box
-                        component="img"
-                        src="/images/destinations/destination_location_title.webp"
-                        alt="Location"
-                        sx={{ width: '100%', height: 'auto', display: 'block' }}
-                      />
-                      <Box
-                        component="h3"
-                        sx={{
-                          fontFamily: 'MarioFontTitle, sans-serif',
-                          fontWeight: 600,
-                          fontSize: '40px',
-                          color: '#373737',
-                          margin: 0,
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          whiteSpace: 'nowrap',
-                          textAlign: 'center',
-                          width: '100%'
-                        }}
-                      >
-                        {station.name}
-                      </Box>
-                    </Box>
-
-                    {/* Route and Date - moved to left */}
-                    <Box sx={{ position: 'absolute', top: '60%', left: '30%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
-                        {station.route}
-                      </Box>
-                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
-                        {station.date}
-                      </Box>
-                    </Box>
-                  </Box>
-                </Link>
-              )
-            }
-          })}
+            {displayedStations.map((station, index) => (
+              <DestinationCard key={station.id} station={station} index={index} />
+            ))}
         </div>
 
         {/* Load More Button */}
