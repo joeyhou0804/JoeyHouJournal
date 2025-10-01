@@ -57,15 +57,15 @@ export default function NavigationMenu({
 
             {/* Navigation Buttons */}
             <Box className="flex flex-col items-center justify-center h-full space-y-3 px-6">
-              <Link href="/" className="group" onClick={closeMenu}>
+              <Link href="/" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
                 <Box
                   component="img"
                   src="/images/logos/logo_en.png"
                   alt="Home"
-                  className="h-32 w-auto hover:scale-105 transition-transform duration-200"
+                  className="h-32 w-auto"
                 />
               </Link>
-              <Link href="/trips" className="group" onClick={closeMenu}>
+              <Link href="/trips" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
                 <Box
                   component="img"
                   src="/images/buttons/journey_button.png"
@@ -79,7 +79,7 @@ export default function NavigationMenu({
                   className="w-48 h-auto hidden group-hover:block"
                 />
               </Link>
-              <Link href="/destinations" className="group" onClick={closeMenu}>
+              <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
                 <Box
                   component="img"
                   src="/images/buttons/destination_button.png"
@@ -93,7 +93,7 @@ export default function NavigationMenu({
                   className="w-48 h-auto hidden group-hover:block"
                 />
               </Link>
-              <Box component="button" className="group">
+              <Box component="button" className="group hover:scale-105 transition-transform duration-200">
                 <Box
                   component="img"
                   src="/images/buttons/language_button_en.png"

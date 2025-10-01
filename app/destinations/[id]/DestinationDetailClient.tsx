@@ -202,7 +202,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                     key={index}
                     component="button"
                     onClick={() => setCurrentImageIndex(index)}
-                    className="group"
+                    className="group hover:scale-105 transition-transform duration-200"
                     sx={{ padding: 0, border: 'none', background: 'none', cursor: 'pointer' }}
                   >
                     <Box

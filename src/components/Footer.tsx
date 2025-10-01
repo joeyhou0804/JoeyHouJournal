@@ -24,7 +24,7 @@ export default function Footer() {
         <div className="flex-1 flex flex-col items-center justify-center">
           {/* Button Row */}
           <div className="flex items-center space-x-4 mb-4">
-            <Link href="/trips" className="group">
+            <Link href="/trips" className="group hover:scale-105 transition-transform duration-200">
               <Box
                 component="img"
                 src="/images/buttons/journey_button.png"
@@ -38,7 +38,7 @@ export default function Footer() {
                 className="h-20 w-auto hidden group-hover:block"
               />
             </Link>
-            <Link href="/destinations" className="group">
+            <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200">
               <Box
                 component="img"
                 src="/images/buttons/destination_button.png"
@@ -52,7 +52,7 @@ export default function Footer() {
                 className="h-20 w-auto hidden group-hover:block"
               />
             </Link>
-            <Box component="button" className="group">
+            <Box component="button" className="group hover:scale-105 transition-transform duration-200">
               <Box
                 component="img"
                 src="/images/buttons/language_button_en.png"
