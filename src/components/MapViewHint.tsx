@@ -44,7 +44,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
         {/* Popup Card Background */}
         <Box
           component="img"
-          src={`/map_view_hint_card_${cardNumber}.webp`}
+          src={`/images/destinations/hints/map_view_hint_card_${cardNumber}.webp`}
           alt="Card"
           sx={{ width: '100%', height: 'auto', display: 'block' }}
         />
@@ -53,7 +53,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
         <Box sx={{ position: 'absolute', top: '0%', left: imageOnRight ? '30%' : '70%', transform: 'translate(-50%, -50%)', width: '65%' }}>
           <Box
             component="img"
-            src="/map_view_hint_title.webp"
+            src="/images/destinations/hints/map_view_hint_title.webp"
             alt="Location"
             sx={{ width: '100%', height: 'auto', display: 'block' }}
           />

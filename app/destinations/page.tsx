@@ -126,7 +126,7 @@ export default function StationsPage() {
                 name: 'Check out the map',
                 route: 'Click on the markers to see the place name.',
                 date: 'You can also view more details with the button.',
-                images: ['/map_view_hint.jpg']
+                images: ['/images/destinations/hints/map_view_hint.jpg']
               }}
             />
           </div>
@@ -141,7 +141,7 @@ export default function StationsPage() {
                 name: 'As for golden markers...',
                 route: 'Golden markers indicate cities with multiple visits.',
                 date: 'Use the side buttons to navigate through them.',
-                images: ['/map_view_hint_2.png']
+                images: ['/images/destinations/hints/map_view_hint_2.png']
               }}
             />
           </div>
