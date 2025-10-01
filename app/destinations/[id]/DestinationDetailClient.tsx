@@ -7,6 +7,7 @@ import Box from '@mui/material/Box'
 import { Calendar, Train, ArrowLeft, MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
+import NavigationMenu from 'src/components/NavigationMenu'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -88,115 +89,14 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
         backgroundSize: '100% auto, 400px auto',
       }}
     >
-      {/* Navigation Drawer */}
-      {isMenuOpen && (
-        <>
-          {/* Backdrop */}
-          <Box
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={closeMenu}
-          />
-
-          {/* Drawer */}
-          <Box
-            className={`fixed top-8 right-0 h-96 w-64 z-50 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
-              isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
-            }`}
-            sx={{
-              backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
-              backgroundRepeat: 'repeat',
-              backgroundSize: '200px',
-              borderColor: '#373737'
-            }}
-          >
-            {/* Close Button */}
-            <Box
-              component="button"
-              onClick={closeMenu}
-              className="absolute -top-6 -left-6 hover:scale-105 transition-transform duration-200"
-            >
-              <Box
-                component="img"
-                src="/images/icons/menu_close.webp"
-                alt="Close Menu"
-                className="w-12 h-12"
-              />
-            </Box>
-
-            {/* Navigation Buttons */}
-            <Box className="flex flex-col items-center justify-center h-full space-y-3 px-6">
-              <Link href="/" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/logos/logo_en.png"
-                  alt="Home"
-                  className="h-32 w-auto hover:scale-105 transition-transform duration-200"
-                />
-              </Link>
-              <Link href="/trips" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/buttons/journey_button.png"
-                  alt="Journeys"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/journey_button_hover.png"
-                  alt="Journeys"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Link>
-              <Link href="/destinations" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/buttons/destination_button.png"
-                  alt="Destinations"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/destination_button_hover.png"
-                  alt="Destinations"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Link>
-              <Box component="button" className="group">
-                <Box
-                  component="img"
-                  src="/images/buttons/language_button_en.png"
-                  alt="Language Toggle"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/language_button_en_hover.png"
-                  alt="Language Toggle"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Box>
-            </Box>
-          </Box>
-        </>
-      )}
-
-      {/* Menu Button */}
-      {isMenuButtonVisible && (
-        <Box
-          component="button"
-          onClick={openMenu}
-          className={`fixed top-8 right-4 z-50 p-2 hover:scale-105 transition-all duration-150 ${
-            isMenuButtonAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
-          }`}
-        >
-          <Box
-            component="img"
-            src="/images/icons/icon_menu.webp"
-            alt="Menu"
-            className="w-16 h-16"
-          />
-        </Box>
-      )}
+      <NavigationMenu
+        isMenuOpen={isMenuOpen}
+        isMenuButtonVisible={isMenuButtonVisible}
+        isDrawerAnimating={isDrawerAnimating}
+        isMenuButtonAnimating={isMenuButtonAnimating}
+        openMenu={openMenu}
+        closeMenu={closeMenu}
+      />
 
       {/* Back Button */}
       <Box
