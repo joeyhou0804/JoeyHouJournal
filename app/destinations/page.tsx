@@ -213,7 +213,7 @@ export default function StationsPage() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center mb-16 mt-8">
+          <div className="flex justify-center items-center mb-64 mt-8">
             <img
               src="/images/destinations/destination_list_of_places_title.png"
               alt="List of Places"
@@ -222,42 +222,178 @@ export default function StationsPage() {
           </div>
 
           {/* Stations Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {displayedStations.map((station, index) => (
-            <Link href={`/destinations/${station.id}`} key={index}>
-              <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
-                <div className="relative aspect-square bg-gray-200 rounded-t-lg overflow-hidden">
-                  {station.images && station.images.length > 0 ? (
-                    <img
-                      src={station.images[0]}
-                      alt={station.name}
-                      className="w-full h-full object-cover"
+          <div className="grid grid-cols-1 gap-48">
+          {displayedStations.map((station, index) => {
+            const isEven = index % 2 === 0
+
+            if (isEven) {
+              // Even index: Homepage carousel-style card
+              return (
+                <Link href={`/destinations/${station.id}`} key={index}>
+                  <Box sx={{ position: 'relative', width: '100%', maxWidth: '1100px', margin: '0 auto' }}>
+                    {/* Station Image - Left side, overlapping */}
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        left: '-50px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '400px',
+                        height: '400px',
+                        borderRadius: '20px',
+                        overflow: 'hidden',
+                        zIndex: 10,
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                      }}
+                    >
+                      {station.images && station.images.length > 0 ? (
+                        <Box
+                          component="img"
+                          src={station.images[0]}
+                          alt={station.name}
+                          sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <Box sx={{ width: '100%', height: '100%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Image className="h-12 w-12 text-gray-400" />
+                        </Box>
+                      )}
+                    </Box>
+
+                    {/* Popup Card Background */}
+                    <Box
+                      component="img"
+                      src="/images/destinations/destination_popup_card.webp"
+                      alt="Card"
+                      sx={{ width: '100%', height: 'auto', display: 'block' }}
                     />
-                  ) : (
-                    <div className="flex items-center justify-center w-full h-full">
-                      <Image className="h-12 w-12 text-gray-400" />
-                    </div>
-                  )}
-                  <div className="absolute top-2 right-2">
-                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-white bg-opacity-90 text-gray-700">
-                      {station.state}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">{station.name}</h3>
-                  <div className="flex items-center text-sm text-gray-500 mb-2">
-                    <Calendar className="h-3 w-3 mr-1" />
-                    {station.date}
-                  </div>
-                  <div className="flex items-center text-xs text-blue-600">
-                    <Train className="h-3 w-3 mr-1" />
-                    <span className="line-clamp-1">{station.route}</span>
-                  </div>
-                </div>
-              </div>
-            </Link>
-          ))}
+
+                    {/* Title Section */}
+                    <Box sx={{ position: 'absolute', top: '0%', left: '70%', transform: 'translate(-50%, -50%)', width: '65%' }}>
+                      <Box
+                        component="img"
+                        src="/images/destinations/destination_location_title_black.webp"
+                        alt="Location"
+                        sx={{ width: '100%', height: 'auto', display: 'block' }}
+                      />
+                      <Box
+                        component="h3"
+                        sx={{
+                          fontFamily: 'MarioFontTitle, sans-serif',
+                          fontWeight: 600,
+                          fontSize: '40px',
+                          color: '#FFD701',
+                          margin: 0,
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          whiteSpace: 'nowrap',
+                          textAlign: 'center',
+                          width: '100%'
+                        }}
+                      >
+                        {station.name}
+                      </Box>
+                    </Box>
+
+                    {/* Route and Date */}
+                    <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
+                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
+                        {station.route}
+                      </Box>
+                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                        {station.date}
+                      </Box>
+                    </Box>
+                  </Box>
+                </Link>
+              )
+            } else {
+              // Odd index: Same style but image on right, text on left
+              return (
+                <Link href={`/destinations/${station.id}`} key={index}>
+                  <Box sx={{ position: 'relative', width: '100%', maxWidth: '1100px', margin: '0 auto' }}>
+                    {/* Station Image - Right side, overlapping */}
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        right: '-50px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '400px',
+                        height: '400px',
+                        borderRadius: '20px',
+                        overflow: 'hidden',
+                        zIndex: 10,
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+                      }}
+                    >
+                      {station.images && station.images.length > 0 ? (
+                        <Box
+                          component="img"
+                          src={station.images[0]}
+                          alt={station.name}
+                          sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <Box sx={{ width: '100%', height: '100%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <Image className="h-12 w-12 text-gray-400" />
+                        </Box>
+                      )}
+                    </Box>
+
+                    {/* Popup Card Background */}
+                    <Box
+                      component="img"
+                      src="/images/destinations/destination_popup_card.webp"
+                      alt="Card"
+                      sx={{ width: '100%', height: 'auto', display: 'block' }}
+                    />
+
+                    {/* Title Section - moved to left */}
+                    <Box sx={{ position: 'absolute', top: '0%', left: '30%', transform: 'translate(-50%, -50%)', width: '65%' }}>
+                      <Box
+                        component="img"
+                        src="/images/destinations/destination_location_title_black.webp"
+                        alt="Location"
+                        sx={{ width: '100%', height: 'auto', display: 'block' }}
+                      />
+                      <Box
+                        component="h3"
+                        sx={{
+                          fontFamily: 'MarioFontTitle, sans-serif',
+                          fontWeight: 600,
+                          fontSize: '40px',
+                          color: '#FFD701',
+                          margin: 0,
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          whiteSpace: 'nowrap',
+                          textAlign: 'center',
+                          width: '100%'
+                        }}
+                      >
+                        {station.name}
+                      </Box>
+                    </Box>
+
+                    {/* Route and Date - moved to left */}
+                    <Box sx={{ position: 'absolute', top: '60%', left: '30%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
+                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
+                        {station.route}
+                      </Box>
+                      <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                        {station.date}
+                      </Box>
+                    </Box>
+                  </Box>
+                </Link>
+              )
+            }
+          })}
         </div>
 
         {/* Load More Button */}
