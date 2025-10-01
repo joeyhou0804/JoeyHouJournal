@@ -93,7 +93,7 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
               ` : ''}
               <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
                 <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
-                <h3 style="font-family: 'MarioFontTitle', sans-serif; font-weight: 600; font-size: 20px; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${place.name}</h3>
+                <h3 style="font-family: 'MarioFontTitle', sans-serif; font-weight: normal; font-size: 20px; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${place.name}</h3>
               </div>
               <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
                 <p style="font-family: 'MarioFont', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${place.state}</p>
