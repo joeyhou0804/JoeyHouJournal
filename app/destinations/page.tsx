@@ -213,6 +213,13 @@ export default function StationsPage() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center mb-16 mt-8">
+            <img
+              src="/images/destinations/destination_list_of_places_title.png"
+              alt="List of Places"
+              className="max-w-md w-full h-auto"
+            />
+          </div>
 
           {/* Stations Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
