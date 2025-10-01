@@ -106,7 +106,7 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
                 onmouseover="this.style.transform='scale(1.05)'"
                 onmouseout="this.style.transform='scale(1)'"
               >
-                <img src="/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
+                <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
               </a>
             </div>
           </div>

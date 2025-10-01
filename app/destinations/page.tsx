@@ -132,23 +132,23 @@ export default function StationsPage() {
           <div className="flex justify-center items-center gap-4 mb-48">
             <button
               onClick={() => setSortOrder('latest')}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-                sortOrder === 'latest'
-                  ? 'bg-blue-600 text-white shadow-lg scale-105'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-              }`}
+              className="hover:scale-105 transition-transform duration-200"
             >
-              Latest First
+              <img
+                src="/images/buttons/latest_first_button.png"
+                alt="Latest First"
+                className="h-16 w-auto"
+              />
             </button>
             <button
               onClick={() => setSortOrder('earliest')}
-              className={`px-6 py-3 rounded-lg font-semibold transition-all duration-200 ${
-                sortOrder === 'earliest'
-                  ? 'bg-blue-600 text-white shadow-lg scale-105'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
-              }`}
+              className="hover:scale-105 transition-transform duration-200"
             >
-              Earliest First
+              <img
+                src="/images/buttons/earliest_first_button.png"
+                alt="Earliest First"
+                className="h-16 w-auto"
+              />
             </button>
           </div>
 

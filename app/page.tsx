@@ -657,7 +657,7 @@ export default function Home() {
               >
                 <Box
                   component="img"
-                  src="/view_details_button.png"
+                  src="/images/buttons/view_details_button.png"
                   alt="View Details"
                   sx={{ height: '70px', width: 'auto', display: 'block' }}
                 />
