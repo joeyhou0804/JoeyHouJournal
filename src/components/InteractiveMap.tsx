@@ -139,10 +139,12 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
 
         const createPopupContent = (index: number) => {
           const place = places[index]
+          const isFirst = index === 0
+          const isLast = index === places.length - 1
 
           return `
             <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
-              <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
+              <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; position: relative;">
                 <div style="position: relative; width: 100%; height: 146px;">
                   <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
                   ${place.images && place.images.length > 0 ? `
@@ -161,16 +163,7 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
                     <p style="font-family: 'MarioFont', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
                   </div>
                 </div>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 4px;">
-                  <button
-                    data-carousel-id="${carouselId}"
-                    data-carousel-action="prev"
-                    style="background: none; border: none; cursor: pointer; padding: 0; transition: transform 0.2s;"
-                    onmouseover="this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.transform='scale(1)'"
-                  >
-                    <img src="/images/buttons/arrow_prev.webp" alt="Previous" style="height: 40px; width: auto; display: block;" />
-                  </button>
+                <div style="text-align: center; margin-top: 4px;">
                   <a
                     href="/destinations/${place.id}"
                     style="display: inline-block; transition: transform 0.2s;"
@@ -179,16 +172,27 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
                   >
                     <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
                   </a>
-                  <button
-                    data-carousel-id="${carouselId}"
-                    data-carousel-action="next"
-                    style="background: none; border: none; cursor: pointer; padding: 0; transition: transform 0.2s;"
-                    onmouseover="this.style.transform='scale(1.1)'"
-                    onmouseout="this.style.transform='scale(1)'"
-                  >
-                    <img src="/images/buttons/arrow_next.webp" alt="Next" style="height: 40px; width: auto; display: block;" />
-                  </button>
                 </div>
+                <button
+                  data-carousel-id="${carouselId}"
+                  data-carousel-action="prev"
+                  class="carousel-btn-prev"
+                  ${isFirst ? 'disabled' : ''}
+                  style="position: absolute; left: 0px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: ${isFirst ? 'default' : 'pointer'}; padding: 0; z-index: 10; opacity: ${isFirst ? '0.4' : '1'};"
+                >
+                  <img src="/images/buttons/tab_prev.webp" alt="Previous" style="height: 60px; width: auto; display: block;" class="default-img" />
+                  <img src="/images/buttons/tab_prev_hover.webp" alt="Previous" style="height: 60px; width: auto; display: none;" class="hover-img" />
+                </button>
+                <button
+                  data-carousel-id="${carouselId}"
+                  data-carousel-action="next"
+                  class="carousel-btn-next"
+                  ${isLast ? 'disabled' : ''}
+                  style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: ${isLast ? 'default' : 'pointer'}; padding: 0; z-index: 10; opacity: ${isLast ? '0.4' : '1'};"
+                >
+                  <img src="/images/buttons/tab_next.webp" alt="Next" style="height: 60px; width: auto; display: block;" class="default-img" />
+                  <img src="/images/buttons/tab_next_hover.webp" alt="Next" style="height: 60px; width: auto; display: none;" class="hover-img" />
+                </button>
               </div>
             </div>
           `
@@ -206,26 +210,60 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
 
         // Function to attach event listeners
         const attachListeners = () => {
-          const prevBtn = document.querySelector(`[data-carousel-id="${carouselId}"][data-carousel-action="prev"]`)
-          const nextBtn = document.querySelector(`[data-carousel-id="${carouselId}"][data-carousel-action="next"]`)
+          const prevBtn = document.querySelector(`[data-carousel-id="${carouselId}"][data-carousel-action="prev"]`) as HTMLButtonElement
+          const nextBtn = document.querySelector(`[data-carousel-id="${carouselId}"][data-carousel-action="next"]`) as HTMLButtonElement
 
           if (prevBtn) {
             prevBtn.addEventListener('click', (e) => {
+              if (prevBtn.disabled) return
               e.stopPropagation() // Prevent popup from closing
               currentIndex = (currentIndex - 1 + places.length) % places.length
               popup.setContent(createPopupContent(currentIndex))
               // Re-attach listeners after content update
               setTimeout(() => attachListeners(), 0)
             })
+
+            // Add hover effect for image swap (only if not disabled)
+            prevBtn.addEventListener('mouseenter', () => {
+              if (prevBtn.disabled) return
+              const defaultImg = prevBtn.querySelector('.default-img') as HTMLElement
+              const hoverImg = prevBtn.querySelector('.hover-img') as HTMLElement
+              if (defaultImg) defaultImg.style.display = 'none'
+              if (hoverImg) hoverImg.style.display = 'block'
+            })
+            prevBtn.addEventListener('mouseleave', () => {
+              if (prevBtn.disabled) return
+              const defaultImg = prevBtn.querySelector('.default-img') as HTMLElement
+              const hoverImg = prevBtn.querySelector('.hover-img') as HTMLElement
+              if (defaultImg) defaultImg.style.display = 'block'
+              if (hoverImg) hoverImg.style.display = 'none'
+            })
           }
 
           if (nextBtn) {
             nextBtn.addEventListener('click', (e) => {
+              if (nextBtn.disabled) return
               e.stopPropagation() // Prevent popup from closing
               currentIndex = (currentIndex + 1) % places.length
               popup.setContent(createPopupContent(currentIndex))
               // Re-attach listeners after content update
               setTimeout(() => attachListeners(), 0)
+            })
+
+            // Add hover effect for image swap (only if not disabled)
+            nextBtn.addEventListener('mouseenter', () => {
+              if (nextBtn.disabled) return
+              const defaultImg = nextBtn.querySelector('.default-img') as HTMLElement
+              const hoverImg = nextBtn.querySelector('.hover-img') as HTMLElement
+              if (defaultImg) defaultImg.style.display = 'none'
+              if (hoverImg) hoverImg.style.display = 'block'
+            })
+            nextBtn.addEventListener('mouseleave', () => {
+              if (nextBtn.disabled) return
+              const defaultImg = nextBtn.querySelector('.default-img') as HTMLElement
+              const hoverImg = nextBtn.querySelector('.hover-img') as HTMLElement
+              if (defaultImg) defaultImg.style.display = 'block'
+              if (hoverImg) hoverImg.style.display = 'none'
             })
           }
         }
