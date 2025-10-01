@@ -61,8 +61,8 @@ export default function Home() {
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
-  // Get latest 8 destinations from stations data
-  const recentPlaces = stations.slice(0, 8).map(station => ({
+  // Get latest 8 destinations from stations data (reverse to get most recent first)
+  const recentPlaces = stations.slice(0, 8).reverse().map(station => ({
     id: station.id,
     name: station.name,
     date: station.date,
