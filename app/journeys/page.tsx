@@ -49,6 +49,15 @@ export default function JourneysPage() {
         currentPage="trips"
       />
 
+      {/* Journeys Page Title - Full Width */}
+      <div className="w-full">
+        <img
+          src="/images/journey/journeys_page_title.png"
+          alt="Journeys"
+          className="w-full h-auto object-cover"
+        />
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
