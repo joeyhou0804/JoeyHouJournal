@@ -203,10 +203,19 @@ export default function StationsPage() {
         </div>
       </Box>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Box
+        component="section"
+        className="w-full py-24"
+        sx={{
+          backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
+          backgroundRepeat: 'repeat-y, repeat',
+          backgroundSize: '100% auto, 400px auto',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {/* Stations Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {/* Stations Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {displayedStations.map((station, index) => (
             <Link href={`/destinations/${station.id}`} key={index}>
               <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer">
@@ -273,7 +282,8 @@ export default function StationsPage() {
           </div>
         )}
 
-      </div>
+        </div>
+      </Box>
     </div>
   )
 }
