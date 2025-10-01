@@ -233,42 +233,23 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
             </Box>
           </Box>
 
-          {/* State, Date, and Route */}
-          <Box sx={{ textAlign: 'center' }}>
-            <Box
-              component="p"
-              sx={{
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '32px',
-                color: '#373737',
-                margin: '0.5rem 0'
-              }}
-            >
-              {station.state}
+          {/* About/Description */}
+          {station.description && (
+            <Box sx={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
+              <Box
+                component="div"
+                sx={{
+                  fontFamily: 'MarioFontTitle, sans-serif',
+                  fontSize: '24px',
+                  color: '#373737',
+                  whiteSpace: 'pre-line',
+                  lineHeight: '1.6'
+                }}
+              >
+                {station.description}
+              </Box>
             </Box>
-            <Box
-              component="p"
-              sx={{
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '32px',
-                color: '#373737',
-                margin: '0.5rem 0'
-              }}
-            >
-              {station.date}
-            </Box>
-            <Box
-              component="p"
-              sx={{
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '32px',
-                color: '#373737',
-                margin: '0.5rem 0'
-              }}
-            >
-              {station.route}
-            </Box>
-          </Box>
+          )}
         </Box>
 
         {/* Image Carousel */}
@@ -403,38 +384,31 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 </>
               )}
             </Box>
+
+            {/* Station Info Below Image */}
+            <Box sx={{ padding: '2rem', display: 'flex', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <MapPin style={{ color: '#F6F6F6' }} size={24} />
+                <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                  {station.state}
+                </Box>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Calendar style={{ color: '#F6F6F6' }} size={24} />
+                <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                  {station.date}
+                </Box>
+              </Box>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Train style={{ color: '#F6F6F6' }} size={24} />
+                <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                  {station.route}
+                </Box>
+              </Box>
+            </Box>
             </Box>
           </Box>
         )}
-
-        {/* Station Details */}
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-800px mx-auto">
-
-          {/* Station Info */}
-          <div className="p-8">
-
-            {/* Description */}
-            {station.description && (
-              <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900 mb-3">About</h2>
-                <p className="text-gray-700 whitespace-pre-line">{station.description}</p>
-              </div>
-            )}
-
-            {/* Location */}
-            <div className="border-t pt-6">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-3">Location</h2>
-              <div className="grid grid-cols-2 gap-4 text-gray-700">
-                <div>
-                  <span className="font-medium">Latitude:</span> {station.lat}
-                </div>
-                <div>
-                  <span className="font-medium">Longitude:</span> {station.lng}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </Box>
   )
