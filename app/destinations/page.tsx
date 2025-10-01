@@ -18,12 +18,14 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
 })
 
 export default function StationsPage() {
-  const [showAll, setShowAll] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
+
+  const itemsPerPage = 12
 
   const sortedStations = [...stations].sort((a, b) => {
     const dateA = new Date(a.date).getTime()
@@ -31,7 +33,20 @@ export default function StationsPage() {
     return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
   })
 
-  const displayedStations = showAll ? sortedStations : sortedStations.slice(0, 12)
+  const totalPages = Math.ceil(sortedStations.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const displayedStations = sortedStations.slice(startIndex, endIndex)
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handleSortChange = (order: 'latest' | 'earliest') => {
+    setSortOrder(order)
+    setCurrentPage(1) // Reset to first page when sorting changes
+  }
 
   const openMenu = () => {
     setIsMenuButtonAnimating(true)
@@ -131,7 +146,7 @@ export default function StationsPage() {
           {/* Sort Buttons */}
           <div className="flex justify-center items-center gap-4 mb-48">
             <button
-              onClick={() => setSortOrder('latest')}
+              onClick={() => handleSortChange('latest')}
               className="hover:scale-105 transition-transform duration-200"
             >
               <img
@@ -141,7 +156,7 @@ export default function StationsPage() {
               />
             </button>
             <button
-              onClick={() => setSortOrder('earliest')}
+              onClick={() => handleSortChange('earliest')}
               className="hover:scale-105 transition-transform duration-200"
             >
               <img
@@ -159,40 +174,105 @@ export default function StationsPage() {
             ))}
         </div>
 
-        {/* Load More Button */}
-        {!showAll && stations.length > 12 && (
-          <div className="text-center mt-48">
-            <button
-              onClick={() => setShowAll(true)}
-              className="hover:scale-105 transition-transform duration-200"
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="mt-48 flex justify-center">
+            <Box
+              sx={{
+                backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                backgroundRepeat: 'repeat',
+                backgroundSize: '200px auto',
+                padding: '0.5rem',
+                borderRadius: '1rem'
+              }}
             >
-              <img
-                src="/images/buttons/show_more_button.png"
-                alt="Show More"
-                className="h-16 w-auto"
-              />
-            </button>
-            <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#373737' }} className="mt-4">
-              Showing {displayedStations.length} of {stations.length} stations
-            </p>
-          </div>
-        )}
+              <Box
+                sx={{
+                  border: '2px solid #F6F6F6',
+                  borderRadius: '0.75rem',
+                  padding: '1.5rem',
+                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '200px auto'
+                }}
+              >
+                {/* Page Info */}
+                <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#F6F6F6' }} className="text-center mb-8">
+                  Page {currentPage} of {totalPages}
+                </p>
 
-        {showAll && (
-          <div className="text-center mt-48">
-            <button
-              onClick={() => setShowAll(false)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src="/images/buttons/show_less_button.png"
-                alt="Show Less"
-                className="h-16 w-auto"
-              />
-            </button>
-            <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#373737' }} className="mt-4">
-              Showing all {stations.length} stations
-            </p>
+                {/* Pagination Controls */}
+                <div className="flex justify-center items-center gap-4">
+              {/* Previous Button */}
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`hover:scale-105 transition-transform duration-200 ${currentPage === 1 ? 'opacity-40 cursor-not-allowed' : ''}`}
+              >
+                <img
+                  src="/images/buttons/arrow_prev.webp"
+                  alt="Previous"
+                  className="w-16 h-16"
+                />
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex gap-2">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                  // Show first page, last page, current page, and pages around current
+                  const showPage =
+                    page === 1 ||
+                    page === totalPages ||
+                    (page >= currentPage - 1 && page <= currentPage + 1)
+
+                  if (!showPage) {
+                    // Show ellipsis
+                    if (page === currentPage - 2 || page === currentPage + 2) {
+                      return (
+                        <span
+                          key={page}
+                          style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#F6F6F6' }}
+                          className="px-2"
+                        >
+                          ...
+                        </span>
+                      )
+                    }
+                    return null
+                  }
+
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => handlePageChange(page)}
+                      style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px' }}
+                      className={`px-4 py-2 rounded-lg transition-all duration-200 ${
+                        currentPage === page
+                          ? 'bg-[#373737] text-white border-2 border-[#F6F6F6]'
+                          : 'bg-[#F6F6F6] text-[#373737] hover:bg-[#FFD701]'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`hover:scale-105 transition-transform duration-200 ${currentPage === totalPages ? 'opacity-40 cursor-not-allowed' : ''}`}
+              >
+                <img
+                  src="/images/buttons/arrow_next.webp"
+                  alt="Next"
+                  className="w-16 h-16"
+                />
+              </button>
+            </div>
+              </Box>
+            </Box>
           </div>
         )}
 
