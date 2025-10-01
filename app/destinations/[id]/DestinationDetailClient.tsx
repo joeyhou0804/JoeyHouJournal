@@ -186,19 +186,25 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
         </Box>
       )}
 
+      {/* Back Button */}
+      <Box
+        component={Link}
+        href="/destinations"
+        className="fixed top-8 left-4 z-50 p-2 hover:scale-105 transition-all duration-150"
+      >
+        <Box
+          component="img"
+          src="/images/buttons/back_button.png"
+          alt="Back to Destinations"
+          className="w-16 h-16"
+        />
+      </Box>
+
       {/* Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Button */}
-        <Link
-          href="/destinations"
-          className="inline-flex items-center text-gray-600 hover:text-gray-900 mb-6"
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          Back to Destinations
-        </Link>
 
         {/* Location Title */}
-        <Box sx={{ width: '100%', maxWidth: '800px', margin: '0 auto 3rem' }}>
+        <Box sx={{ width: '100%', maxWidth: '800px', margin: '6rem auto 3rem' }}>
           <Box sx={{ position: 'relative', width: '100%', marginBottom: '2rem' }}>
             <Box
               component="img"
