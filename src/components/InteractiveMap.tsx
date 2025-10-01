@@ -27,9 +27,10 @@ interface Place {
 
 interface InteractiveMapProps {
   places: Place[]
+  isDetailView?: boolean
 }
 
-export default function InteractiveMap({ places }: InteractiveMapProps) {
+export default function InteractiveMap({ places, isDetailView = false }: InteractiveMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
@@ -123,23 +124,35 @@ export default function InteractiveMap({ places }: InteractiveMapProps) {
 
     // Fit bounds to show all markers
     if (placesWithCoords.length > 0) {
-      const bounds = L.latLngBounds(placesWithCoords.map(p => [p.lat, p.lng]))
-      map.fitBounds(bounds, {
-        padding: [50, 50],
-        maxZoom: 7
-      })
+      if (isDetailView && placesWithCoords.length === 1) {
+        // For detail view with single location, show continental US view
+        const usBounds = L.latLngBounds(
+          [24.396308, -125.0], // Southwest corner (southern California/Texas)
+          [49.384358, -66.93457] // Northeast corner (northern Maine/Minnesota)
+        )
+        map.fitBounds(usBounds, {
+          padding: [20, 20]
+        })
+      } else {
+        const bounds = L.latLngBounds(placesWithCoords.map(p => [p.lat, p.lng]))
+        map.fitBounds(bounds, {
+          padding: [50, 50],
+          maxZoom: 7
+        })
+      }
     }
 
     // Cleanup
     return () => {
       map.remove()
     }
-  }, [places])
+  }, [places, isDetailView])
 
   return (
     <div
       ref={mapContainerRef}
-      className="w-full h-[600px] rounded-lg overflow-hidden shadow-lg border-4 border-gray-800"
+      style={{ aspectRatio: isDetailView ? '1/1' : undefined }}
+      className={`w-full rounded-lg overflow-hidden shadow-lg border-4 border-gray-800 ${isDetailView ? '' : 'h-[600px]'}`}
     />
   )
 }

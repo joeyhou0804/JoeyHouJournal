@@ -5,6 +5,18 @@ import { useState } from 'react'
 import { Station } from 'src/data/stations'
 import Box from '@mui/material/Box'
 import { Calendar, Train, ArrowLeft, MapPin } from 'lucide-react'
+import dynamic from 'next/dynamic'
+import Footer from 'src/components/Footer'
+
+// Dynamically import the map component to avoid SSR issues
+const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
+      <p className="text-gray-600">Loading map...</p>
+    </div>
+  )
+})
 
 interface DestinationDetailClientProps {
   station: Station | undefined
@@ -201,8 +213,8 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
       </Box>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
+      <div className="pt-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Location Title */}
         <Box sx={{ width: '100%', maxWidth: '800px', margin: '6rem auto 3rem' }}>
           <Box sx={{ position: 'relative', width: '100%', marginBottom: '2rem' }}>
@@ -252,9 +264,12 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
           )}
         </Box>
 
+        </div>
+
         {/* Image Carousel */}
         {station.images && station.images.length > 0 && (
-          <Box sx={{ maxWidth: '800px', margin: '0 auto 3rem' }}>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-36">
+          <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
             {/* Tab Navigation */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               {station.images.map((_, index) => {
@@ -408,7 +423,44 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
             </Box>
             </Box>
           </Box>
+          </div>
         )}
+
+        {/* Map View Section */}
+        <Box
+          component="section"
+          className="w-full py-24"
+          sx={{
+            backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '300px auto',
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-center items-center mb-16 mt-8">
+              <img
+                src="/images/destinations/destination_map_view_title.png"
+                alt="Map View"
+                className="max-w-md w-full h-auto"
+              />
+            </div>
+            <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
+              <Box
+                sx={{
+                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '200px auto',
+                  padding: '1rem',
+                  borderRadius: '1.5rem'
+                }}
+              >
+                <InteractiveMap places={[station]} isDetailView={true} />
+              </Box>
+            </Box>
+          </div>
+        </Box>
+
+        <Footer />
       </div>
     </Box>
   )
