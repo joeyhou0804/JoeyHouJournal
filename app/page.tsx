@@ -61,14 +61,17 @@ export default function Home() {
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
-  // Get latest 8 destinations from stations data (reverse to get most recent first)
-  const recentPlaces = stations.slice(0, 8).reverse().map(station => ({
-    id: station.id,
-    name: station.name,
-    date: station.date,
-    route: station.route,
-    image: station.images && station.images.length > 0 ? station.images[0] : ''
-  }))
+  // Get latest 8 destinations from stations data sorted by date
+  const recentPlaces = [...stations]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 8)
+    .map(station => ({
+      id: station.id,
+      name: station.name,
+      date: station.date,
+      route: station.route,
+      image: station.images && station.images.length > 0 ? station.images[0] : ''
+    }))
 
   const journeyImages = [
     'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_1',
