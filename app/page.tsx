@@ -633,7 +633,6 @@ export default function Home() {
                     component="h3"
                     sx={{
                       fontFamily: 'MarioFontTitle, sans-serif',
-                      fontWeight: 600,
                       fontSize: '40px',
                       color: '#FFD701',
                       margin: 0,

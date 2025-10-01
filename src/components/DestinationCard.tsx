@@ -72,7 +72,6 @@ export default function DestinationCard({ station, index }: DestinationCardProps
               component="h3"
               sx={{
                 fontFamily: 'MarioFontTitle, sans-serif',
-                fontWeight: 600,
                 fontSize: '40px',
                 color: '#373737',
                 margin: 0,
@@ -155,7 +154,6 @@ export default function DestinationCard({ station, index }: DestinationCardProps
               component="h3"
               sx={{
                 fontFamily: 'MarioFontTitle, sans-serif',
-                fontWeight: 600,
                 fontSize: '40px',
                 color: '#373737',
                 margin: 0,

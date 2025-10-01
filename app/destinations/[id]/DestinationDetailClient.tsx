@@ -128,7 +128,6 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
               component="h1"
               sx={{
                 fontFamily: 'MarioFontTitle, sans-serif',
-                fontWeight: 600,
                 fontSize: '48px',
                 color: '#373737',
                 margin: 0,
