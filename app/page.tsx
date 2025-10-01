@@ -8,6 +8,8 @@ import InfiniteCarousel from 'src/components/InfiniteCarousel'
 import Section from 'src/components/Section'
 import Container from 'src/components/Container'
 import Footer from 'src/components/Footer'
+import NavigationMenu from 'src/components/NavigationMenu'
+import HeroSection from 'src/components/HeroSection'
 
 export default function Home() {
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -148,115 +150,14 @@ export default function Home() {
         animation: 'moveRight 60s linear infinite'
       }}
     >
-      {/* Menu Button - Fixed to top right */}
-      {isMenuButtonVisible && (
-        <Box
-          component="button"
-          onClick={openMenu}
-          className={`fixed top-8 right-4 z-50 p-2 hover:scale-105 transition-all duration-150 ${
-            isMenuButtonAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
-          }`}
-        >
-          <Box
-            component="img"
-            src="/images/icons/icon_menu.webp"
-            alt="Menu"
-            className="w-20 h-20"
-          />
-        </Box>
-      )}
-
-      {/* Navigation Drawer */}
-      {isMenuOpen && (
-        <>
-          {/* Backdrop */}
-          <Box
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-            onClick={closeMenu}
-          />
-
-          {/* Drawer */}
-          <Box
-            className={`fixed top-8 right-0 h-96 w-64 z-50 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
-              isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
-            }`}
-            sx={{
-              backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
-              backgroundRepeat: 'repeat',
-              backgroundSize: '200px',
-              borderColor: '#373737'
-            }}
-          >
-            {/* Close Button */}
-            <Box
-              component="button"
-              onClick={closeMenu}
-              className="absolute -top-6 -left-6 hover:scale-105 transition-transform duration-200"
-            >
-              <Box
-                component="img"
-                src="/images/icons/menu_close.webp"
-                alt="Close Menu"
-                className="w-12 h-12"
-              />
-            </Box>
-
-            {/* Navigation Buttons */}
-            <Box className="flex flex-col items-center justify-center h-full space-y-3 px-6">
-              <Link href="/" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/logos/logo_en.png"
-                  alt="Home"
-                  className="h-32 w-auto hover:scale-105 transition-transform duration-200"
-                />
-              </Link>
-              <Link href="/trips" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/buttons/journey_button.png"
-                  alt="Journeys"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/journey_button_hover.png"
-                  alt="Journeys"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Link>
-              <Link href="/destinations" className="group" onClick={closeMenu}>
-                <Box
-                  component="img"
-                  src="/images/buttons/destination_button.png"
-                  alt="Destinations"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/destination_button_hover.png"
-                  alt="Destinations"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Link>
-              <Box component="button" className="group">
-                <Box
-                  component="img"
-                  src="/images/buttons/language_button_en.png"
-                  alt="Language Toggle"
-                  className="w-48 h-auto group-hover:hidden"
-                />
-                <Box
-                  component="img"
-                  src="/images/buttons/language_button_en_hover.png"
-                  alt="Language Toggle"
-                  className="w-48 h-auto hidden group-hover:block"
-                />
-              </Box>
-            </Box>
-          </Box>
-        </>
-      )}
+      <NavigationMenu
+        isMenuOpen={isMenuOpen}
+        isMenuButtonVisible={isMenuButtonVisible}
+        isDrawerAnimating={isDrawerAnimating}
+        isMenuButtonAnimating={isMenuButtonAnimating}
+        openMenu={openMenu}
+        closeMenu={closeMenu}
+      />
       <style jsx>{`
         @keyframes moveRight {
           0% { background-position: 0% 0%; }
@@ -281,134 +182,7 @@ export default function Home() {
         }
       `}</style>
 
-      {/* Video Background Section */}
-      <Section
-        component="section"
-        className="relative w-full overflow-hidden"
-        sx={{ height: '120vh' }}
-      >
-        {/* Video Background */}
-        <Box
-          component="video"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover"
-        >
-          <source src="https://res.cloudinary.com/joey-hou-homepage/video/upload/v1759208440/homepage_title_video_pyiksq.mp4" type="video/mp4" />
-        </Box>
-
-        {/* Logo - Top Left Corner */}
-        <Container className="absolute top-4 left-4 z-10">
-          <Box
-            component="img"
-            src="/images/logos/logo_en.png"
-            alt="Logo"
-            className="w-64 h-auto md:w-80 lg:w-96 xl:w-[28rem]"
-          />
-        </Container>
-      </Section>
-
-      {/* Decorative transition (homepage head mask) */}
-      <Container
-        className="relative z-20 h-[200px] -mb-16"
-        sx={{ marginTop: '-200px' }}
-      >
-        <Container
-          className="absolute inset-0"
-          sx={{
-            WebkitMaskImage: 'url(/images/masks/homepage_head_mask.webp)',
-            maskImage: 'url(/images/masks/homepage_head_mask.webp)',
-            WebkitMaskRepeat: 'no-repeat',
-            maskRepeat: 'no-repeat',
-            WebkitMaskSize: '100% auto',
-            maskSize: '100% auto',
-            WebkitMaskPosition: 'center top',
-            maskPosition: 'center top',
-            overflow: 'hidden'
-          }}
-        >
-          {/* Background layer we align FROM */}
-          <Container
-            innerRef={homepageHeadDecoRef}
-            className="absolute inset-0"
-            sx={{
-              backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
-              backgroundRepeat: 'repeat-y',
-              backgroundSize: '100% auto',
-              backgroundPositionX: 'center',
-            }}
-          />
-        </Container>
-      </Container>
-
-      {/* Section 1 */}
-      <Section
-        component="section"
-        innerRef={section1Ref}
-        className="relative pt-64"
-        sx={{
-          paddingBottom: '8rem',
-          backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
-          backgroundSize: '100% auto',
-          backgroundPositionX: 'center',
-          backgroundRepeat: 'repeat-y'
-        }}
-      >
-        {/* Image 1 + Slogan Row */}
-        <Container className="relative z-20 -mt-64">
-          <Container className="grid grid-cols-12 items-center gap-8">
-            {/* Image 1 — 60% */}
-            <Container className="col-span-12 md:col-span-7 relative z-20">
-              <Box
-                component="img"
-                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_1"
-                alt="Homepage Image 1"
-                className="w-full h-auto"
-              />
-            </Container>
-
-            {/* Slogan — 40% (overlap) */}
-            <Container className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-16 md:-mt-20">
-              <Box
-                component="img"
-                src="/images/homepage/homepage_slogan_en.png"
-                alt="Homepage Slogan"
-                className="w-full max-w-[40rem] h-auto drop-shadow-md"
-                sx={{ transform: 'translateX(-12rem)' }}
-              />
-            </Container>
-
-            {/* Spacer — ~10% */}
-            <Container className="hidden md:block col-span-1" />
-          </Container>
-        </Container>
-
-        {/* Carousel - pulled upward, sits *under* image1 */}
-        <Container className="relative z-20 -mt-24 md:-mt-32 lg:-mt-40">
-          <InfiniteCarousel
-            images={carouselImages}
-            speedPxPerSec={60}
-            className="py-8"
-          />
-        </Container>
-
-        {/* Carousel Text and Image Container */}
-        <Container className="relative z-30 mt-8">
-          {/* Carousel Text - Left Side */}
-          <Container className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <Container className="flex justify-start">
-              <Box
-                component="img"
-                src="/images/homepage/homepage_carousel_text_en.png"
-                alt="Carousel Text"
-                className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
-              />
-            </Container>
-          </Container>
-        </Container>
-      </Section>
+      <HeroSection homepageHeadDecoRef={homepageHeadDecoRef} section1Ref={section1Ref} />
 
       {/* Decorative transition (foot mask; background not flipped) */}
       <Container className="relative z-20 h-[200px] -mt-8">
@@ -1061,18 +835,6 @@ function useSeamlessCarryOver({
 }
 
 /* ---------- Data (unchanged) ---------- */
-
-// Carousel images from title_carousel_1 to title_carousel_8
-const carouselImages = [
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_1',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_2',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_3',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_4',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_5',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_6',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_7',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_8'
-]
 
 // Mock data - we'll replace this with real data later
 const featuredTrips = [
