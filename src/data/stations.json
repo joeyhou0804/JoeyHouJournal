@@ -110,7 +110,7 @@
     "lng": -87.6397835,
     "date": "2020/08/23",
     "route": "Lake Shore Limited",
-    "state": "",
+    "state": "Illinois",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858712/joeyhouhomepage/lxv4zdux1syvd7w5qkl6.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858712/joeyhouhomepage/mxmqa7ignfab1qrtfsdb.jpg",
@@ -126,7 +126,7 @@
     "lng": -87.62451899999999,
     "date": "2020/08/23",
     "route": "Southwest Chief",
-    "state": "",
+    "state": "Illinois",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858779/joeyhouhomepage/e2bfm72tqwlrzw1xgriu.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858779/joeyhouhomepage/qpomw6xzb6o9df1n2cyv.jpg",
@@ -371,7 +371,7 @@
     "lng": -117.1691035,
     "date": "2020/08/25",
     "route": "Pacific Surfliner",
-    "state": "",
+    "state": "California",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636859791/joeyhouhomepage/ycuol2e3k1vij7k03esv.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636859792/joeyhouhomepage/eapxlxsi5flizguqqrpe.jpg",
@@ -648,7 +648,7 @@
     "lng": -87.6397835,
     "date": "2020/08/29",
     "route": "Capitol Limited",
-    "state": "",
+    "state": "Illinois",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636860808/joeyhouhomepage/fwpeen3uphwi7py33xme.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636860808/joeyhouhomepage/cbvv98xyrzxceunpjxms.jpg",
@@ -730,7 +730,7 @@
     "lng": -77.006292,
     "date": "2020/08/30",
     "route": "Capitol Limited",
-    "state": "",
+    "state": "Washington D.C.",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636861142/joeyhouhomepage/hwr0ibnqj22bnngmagll.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636861142/joeyhouhomepage/hrfke5pvs2uujtlamfnw.jpg",
@@ -1432,7 +1432,7 @@
     "lng": -122.26,
     "date": "2021/08/11",
     "route": "Ground Transportation",
-    "state": "",
+    "state": "California",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636411498/joeyhouhomepage/jpqfkzfxvy6m4e2racjw.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636411498/joeyhouhomepage/ibuqbj25phosziahzib2.jpg",
@@ -1866,7 +1866,7 @@
     "lng": -90.063348,
     "date": "2021/08/16",
     "route": "Crescent",
-    "state": "",
+    "state": "Louisiana",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636421161/joeyhouhomepage/ls0tqdrrcqfqmpmfqgs2.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636421161/joeyhouhomepage/oe8mounp5dazkbqg7wrp.jpg",
@@ -2022,7 +2022,7 @@
     "lng": -77.0366,
     "date": "2021/08/17",
     "route": "Crescent",
-    "state": "",
+    "state": "Washington D.C.",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636421767/joeyhouhomepage/vrah1stf4emxgxix3yc5.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636421767/joeyhouhomepage/cxw8mkqzaqfnvtaiwvm8.jpg",
@@ -2293,7 +2293,7 @@
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636267840/joeyhouhomepage/ijcoocotzyvusupic38w.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636340016/joeyhouhomepage/xw3nexodsyu7uyd468a8.jpg"
     ],
-    "description": "从只有树梢一点黄的纽约开始\nStart from NYC with just a bit of yellow on the treetops"
+    "description": "\u4ece\u53ea\u6709\u6811\u68a2\u4e00\u70b9\u9ec4\u7684\u7ebd\u7ea6\u5f00\u59cb\nStart from NYC with just a bit of yellow on the treetops"
   },
   {
     "id": "6188953ff086458f3e4a00b8",
