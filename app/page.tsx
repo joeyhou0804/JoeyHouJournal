@@ -11,6 +11,8 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import HeroSection from 'src/components/HeroSection'
 import { stations } from 'src/data/stations'
+import { journeys } from 'src/data/journeys'
+import stationsData from 'src/data/stations.json'
 
 export default function Home() {
   const sectionRef = useRef<HTMLElement | null>(null)
@@ -341,9 +343,9 @@ export default function Home() {
                   isTransitioning ? '-translate-x-full' : 'translate-x-0'
                 }`}
                 sx={{
-                  backgroundImage: `url(/images/journey/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
-                  backgroundSize: '100% auto',
-                  backgroundPosition: '50% 100%',
+                  backgroundImage: `url(${featuredTrips[currentSlide]?.image || ''})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
                   WebkitMaskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
                   maskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
                   WebkitMaskSize: 'contain',
@@ -359,9 +361,9 @@ export default function Home() {
                 <Container
                   className="absolute top-0 left-0 w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
                   sx={{
-                    backgroundImage: `url(/images/journey/homepage_journey_slide_image_${currentSlide + 1}.jpg)`,
-                    backgroundSize: '100% auto',
-                    backgroundPosition: '50% 100%',
+                    backgroundImage: `url(${featuredTrips[currentSlide]?.image || ''})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                     WebkitMaskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
                     maskImage: 'url(/images/masks/homepage_journey_image_mask.webp)',
                     WebkitMaskSize: 'contain',
@@ -428,13 +430,13 @@ export default function Home() {
                   </Box>
                 </Box>
 
-                {/* Route and Places Count */}
+                {/* Route and Duration */}
                 <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
                   <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
                     {featuredTrips[currentSlide].route}
                   </Box>
                   <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
-                    {featuredTrips[currentSlide].places} destinations
+                    {featuredTrips[currentSlide].duration}
                   </Box>
                 </Box>
               </Box>
@@ -914,21 +916,34 @@ function useSeamlessCarryOver({
 
 /* ---------- Data (unchanged) ---------- */
 
-// Mock data - we'll replace this with real data later
-const featuredTrips = [
-  {
-    name: "California Zephyr",
-    places: 17,
-    description: "Chicago to San Francisco through the Rocky Mountains and Sierra Nevada"
-  },
-  {
-    name: "Empire Builder",
-    places: 16,
-    description: "Chicago to Seattle/Portland through the northern plains and Cascade Mountains"
-  },
-  {
-    name: "Southwest Chief",
-    places: 13,
-    description: "Chicago to Los Angeles through the Southwest deserts"
-  }
-]
+// Get latest 8 journeys (reversed to show most recent first)
+const allStations = stationsData as any[]
+const featuredTrips = journeys
+  .slice()
+  .reverse()
+  .slice(0, 8)
+  .map(journey => {
+    // Find stations for this journey
+    const journeyStations = allStations.filter(
+      station => station.route === journey.name
+    )
+
+    // Get the first image from any station in this journey
+    let imageUrl = null
+    for (const station of journeyStations) {
+      if (station.images && station.images.length > 0) {
+        imageUrl = station.images[0]
+        break
+      }
+    }
+
+    return {
+      name: journey.name,
+      slug: journey.slug,
+      places: journey.totalPlaces,
+      route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
+      duration: journey.duration,
+      description: journey.description,
+      image: imageUrl
+    }
+  })
