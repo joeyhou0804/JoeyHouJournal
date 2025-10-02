@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import { useLanguage } from 'src/contexts/LanguageContext'
 
 // Fix for default marker icon in Next.js
 if (typeof window !== 'undefined') {
@@ -32,6 +33,7 @@ interface InteractiveMapProps {
 }
 
 export default function InteractiveMap({ places, isDetailView = false, routeCoordinates }: InteractiveMapProps) {
+  const { locale } = useLanguage()
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
@@ -182,7 +184,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                     onmouseover="this.style.transform='scale(1.05)'"
                     onmouseout="this.style.transform='scale(1)'"
                   >
-                    <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
+                    <img src="/images/buttons/view_details_button_${locale}.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
                   </a>
                 </div>
                 ` : ''}
@@ -322,7 +324,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   onmouseover="this.style.transform='scale(1.05)'"
                   onmouseout="this.style.transform='scale(1)'"
                 >
-                  <img src="/images/buttons/view_details_button.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
+                  <img src="/images/buttons/view_details_button_${locale}.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
                 </a>
               </div>
               ` : ''}

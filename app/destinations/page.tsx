@@ -7,6 +7,7 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import DestinationCard from 'src/components/DestinationCard'
 import MapViewHint from 'src/components/MapViewHint'
+import { useTranslation } from 'src/hooks/useTranslation'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -19,6 +20,7 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
 })
 
 export default function StationsPage() {
+  const { locale } = useTranslation()
   const [currentPage, setCurrentPage] = useState(1)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
@@ -92,7 +94,7 @@ export default function StationsPage() {
       {/* Station Page Title - Full Width */}
       <div className="w-full">
         <img
-          src="/images/destinations/destination_page_title.png"
+          src={`/images/destinations/destination_page_title_${locale}.png`}
           alt="Stations"
           className="w-full h-auto object-cover"
         />

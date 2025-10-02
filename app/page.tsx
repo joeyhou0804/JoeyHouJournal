@@ -267,14 +267,14 @@ export default function Home() {
             </Container>
             <Box
               component="img"
-              src="/images/journey/journeys_title.png"
+              src={`/images/journey/journeys_title_${locale}.png`}
               alt="Featured Journeys"
               className="h-auto max-w-4xl relative"
               sx={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
             />
             <Box
               component="img"
-              src="/images/journey/journeys_subtitle.png"
+              src={`/images/journey/journeys_subtitle_${locale}.png`}
               alt="Explore my most memorable train adventures"
               className="h-auto max-w-4xl relative"
               sx={{ transform: 'translate(2rem, -16rem)', zIndex: 20 }}
@@ -287,7 +287,7 @@ export default function Home() {
             >
               <Box
                 component="img"
-                src="/images/buttons/button_explore.png"
+                src={`/images/buttons/button_explore_${locale}.png`}
                 alt="Explore Journeys"
                 className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
               />
@@ -451,7 +451,7 @@ export default function Home() {
               >
                 <Box
                   component="img"
-                  src="/images/buttons/view_details_button.png"
+                  src={`/images/buttons/view_details_button_${locale}.png`}
                   alt="View Details"
                   sx={{ height: '70px', width: 'auto', display: 'block' }}
                 />
@@ -560,7 +560,7 @@ export default function Home() {
           <Container className="relative mb-12">
             <Box
               component="img"
-              src="/images/homepage/destinations_title.png"
+              src={`/images/homepage/destinations_title_${locale}.png`}
               alt="Recent Destinations"
               className="h-auto max-w-4xl relative"
               sx={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
@@ -573,7 +573,7 @@ export default function Home() {
             >
               <Box
                 component="img"
-                src="/images/buttons/button_explore.png"
+                src={`/images/buttons/button_explore_${locale}.png`}
                 alt="Explore Places"
                 className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
               />
@@ -728,7 +728,7 @@ export default function Home() {
               >
                 <Box
                   component="img"
-                  src="/images/buttons/view_details_button.png"
+                  src={`/images/buttons/view_details_button_${locale}.png`}
                   alt="View Details"
                   sx={{ height: '70px', width: 'auto', display: 'block' }}
                 />

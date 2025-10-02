@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
 import stationsData from 'src/data/stations.json'
 import { getRouteCoordinates } from 'src/data/routes'
+import { useTranslation } from 'src/hooks/useTranslation'
 
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
@@ -23,6 +24,7 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
 })
 
 export default function JourneysPage() {
+  const { locale } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
@@ -151,7 +153,7 @@ export default function JourneysPage() {
       {/* Journeys Page Title - Full Width */}
       <div className="w-full">
         <img
-          src="/images/journey/journeys_page_title.png"
+          src={`/images/journey/journeys_page_title_${locale}.png`}
           alt="Journeys"
           className="w-full h-auto object-cover"
         />

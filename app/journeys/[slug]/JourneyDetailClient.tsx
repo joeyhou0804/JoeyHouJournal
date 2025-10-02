@@ -10,6 +10,7 @@ import MapViewHint from 'src/components/MapViewHint'
 import DestinationCard from 'src/components/DestinationCard'
 import stationsData from 'src/data/stations.json'
 import { getRouteCoordinates } from 'src/data/routes'
+import { useTranslation } from 'src/hooks/useTranslation'
 
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
@@ -36,6 +37,7 @@ interface JourneyDetailClientProps {
 }
 
 export default function JourneyDetailClient({ journey }: JourneyDetailClientProps) {
+  const { locale } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
@@ -142,7 +144,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
 
       <Box sx={{ position: 'relative', width: '100%' }}>
         <img
-          src="/images/journey/journey_details_page_title.png"
+          src={`/images/journey/journey_details_page_title_${locale}.png`}
           alt="Journey Details"
           className="w-full h-auto object-cover"
         />
