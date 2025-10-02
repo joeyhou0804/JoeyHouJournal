@@ -34,15 +34,32 @@ export default function JourneysPage() {
 
   const itemsPerPage = 5
 
-  // Transform journeys to trips format and add route string
-  const trips = journeys.map(journey => ({
-    name: journey.name,
-    slug: journey.slug,
-    places: journey.totalPlaces,
-    description: journey.description,
-    route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
-    duration: journey.duration
-  }))
+  // Transform journeys to trips format and add route string with images
+  const trips = journeys.map(journey => {
+    // Find stations for this journey
+    const journeyStations = allStations.filter(
+      station => station.route === journey.name
+    )
+
+    // Get the first image from any station in this journey
+    let imageUrl = null
+    for (const station of journeyStations) {
+      if (station.images && station.images.length > 0) {
+        imageUrl = station.images[0]
+        break
+      }
+    }
+
+    return {
+      name: journey.name,
+      slug: journey.slug,
+      places: journey.totalPlaces,
+      description: journey.description,
+      route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
+      duration: journey.duration,
+      image: imageUrl
+    }
+  })
 
   // Get current journey based on index
   const currentJourney = journeys[currentJourneyIndex]

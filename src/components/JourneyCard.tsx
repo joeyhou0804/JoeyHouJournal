@@ -9,6 +9,7 @@ interface Journey {
   description: string
   route: string
   duration: string
+  image?: string | null
 }
 
 interface JourneyCardProps {
@@ -39,9 +40,18 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
             }}
           >
-            <Box sx={{ width: '100%', height: '100%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Image className="h-12 w-12 text-gray-400" />
-            </Box>
+            {journey.image ? (
+              <Box
+                component="img"
+                src={journey.image}
+                alt={journey.name}
+                sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <Box sx={{ width: '100%', height: '100%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Image className="h-12 w-12 text-gray-400" />
+              </Box>
+            )}
           </Box>
 
           {/* Popup Card Background */}
@@ -112,9 +122,18 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
             }}
           >
-            <Box sx={{ width: '100%', height: '100%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Image className="h-12 w-12 text-gray-400" />
-            </Box>
+            {journey.image ? (
+              <Box
+                component="img"
+                src={journey.image}
+                alt={journey.name}
+                sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <Box sx={{ width: '100%', height: '100%', backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Image className="h-12 w-12 text-gray-400" />
+              </Box>
+            )}
           </Box>
 
           {/* Popup Card Background */}
