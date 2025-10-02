@@ -29,6 +29,7 @@ export default function JourneysPage() {
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
+  const [currentJourneyIndex, setCurrentJourneyIndex] = useState(0)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
@@ -43,11 +44,11 @@ export default function JourneysPage() {
     duration: journey.duration
   }))
 
-  // Get places for the first journey (California Zephyr)
-  const firstJourney = journeys[0]
+  // Get current journey based on index
+  const currentJourney = journeys[currentJourneyIndex]
   const allStations = stationsData as any[]
-  const firstJourneyPlaces = allStations.filter(
-    station => station.route === firstJourney.name
+  const currentJourneyPlaces = allStations.filter(
+    station => station.route === currentJourney.name
   ).map((station) => ({
     id: `${station.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${station.date.replace(/\//g, '-')}`,
     name: station.name,
@@ -58,6 +59,14 @@ export default function JourneysPage() {
     lat: station.lat,
     lng: station.lng
   }))
+
+  const handlePrevJourney = () => {
+    setCurrentJourneyIndex((prev) => (prev - 1 + journeys.length) % journeys.length)
+  }
+
+  const handleNextJourney = () => {
+    setCurrentJourneyIndex((prev) => (prev + 1) % journeys.length)
+  }
 
   const sortedTrips = [...trips].sort((a, b) => {
     // Sort by index/order - latest means end of list, earliest means start
@@ -189,8 +198,8 @@ export default function JourneysPage() {
                 }}
               >
                 <InteractiveMap
-                  places={firstJourneyPlaces}
-                  routeCoordinates={getRouteCoordinates(firstJourney.id)}
+                  places={currentJourneyPlaces}
+                  routeCoordinates={getRouteCoordinates(currentJourney.id)}
                 />
               </Box>
 
@@ -209,13 +218,53 @@ export default function JourneysPage() {
                   isJourneyInfo={true}
                   station={{
                     id: '',
-                    name: firstJourney.name,
-                    route: `${firstJourney.startLocation.name} → ${firstJourney.endLocation.name}`,
-                    date: firstJourney.duration,
+                    name: currentJourney.name,
+                    route: `${currentJourney.startLocation.name} → ${currentJourney.endLocation.name}`,
+                    date: currentJourney.duration,
                     images: []
                   }}
                 />
               </Box>
+
+              {/* Previous Button */}
+              <button
+                onClick={handlePrevJourney}
+                disabled={currentJourneyIndex === 0}
+                className={`group absolute left-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentJourneyIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_prev.webp"
+                  alt="Previous Journey"
+                  className={`h-24 w-auto ${currentJourneyIndex === 0 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_prev_hover.webp"
+                  alt="Previous Journey"
+                  className={`h-24 w-auto ${currentJourneyIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNextJourney}
+                disabled={currentJourneyIndex === journeys.length - 1}
+                className={`group absolute right-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentJourneyIndex === journeys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_next.webp"
+                  alt="Next Journey"
+                  className={`h-24 w-auto ${currentJourneyIndex === journeys.length - 1 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_next_hover.webp"
+                  alt="Next Journey"
+                  className={`h-24 w-auto ${currentJourneyIndex === journeys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
             </Box>
           </div>
         </div>
