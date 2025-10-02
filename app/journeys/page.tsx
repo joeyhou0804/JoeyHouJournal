@@ -34,6 +34,9 @@ export default function JourneysPage() {
 
   const itemsPerPage = 5
 
+  // Load all stations data first
+  const allStations = stationsData as any[]
+
   // Transform journeys to trips format and add route string with images
   const trips = journeys.map(journey => {
     // Find stations for this journey
@@ -63,7 +66,6 @@ export default function JourneysPage() {
 
   // Get current journey based on index
   const currentJourney = journeys[currentJourneyIndex]
-  const allStations = stationsData as any[]
   const currentJourneyPlaces = allStations.filter(
     station => station.route === currentJourney.name
   ).map((station) => ({
