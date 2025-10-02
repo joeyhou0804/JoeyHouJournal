@@ -173,33 +173,33 @@ export const journeys = [
     id: "crescent-2020-08",
     slug: "crescent",
     name: "Crescent",
-    description: "Southern route connecting New York City to New Orleans through the Carolinas, Georgia, Alabama, and Mississippi.",
+    description: "Southern route connecting New Orleans through Mississippi, Alabama, Georgia, and the Carolinas to New York City.",
 
-    startDate: "2020-08-14",
-    endDate: "2020-08-13",
-    duration: "1 day",
+    startDate: "2020-08-13",
+    endDate: "2020-08-14",
+    duration: "1 day, 1 night",
 
     startLocation: {
-      name: "New York, NY",
-      coordinates: { lat: 40.7128, lng: -74.0060 }
-    },
-    endLocation: {
       name: "New Orleans, LA",
       coordinates: { lat: 29.9511, lng: -90.0715 }
     },
+    endLocation: {
+      name: "New York, NY",
+      coordinates: { lat: 40.7128, lng: -74.0060 }
+    },
 
     visitedPlaceIds: [
-      "new-york-ny-2020-08-14",
-      "newark-nj-2020-08-14",
-      "trenton-nj-2020-08-14",
-      "philadelphia-pa-2020-08-14",
-      "baltimore-md-2020-08-14",
-      "washington-dc-2020-08-14",
-      "charlottesville-va-2020-08-14",
-      "lynchburg-va-2020-08-14",
-      "greensboro-nc-2020-08-14",
+      "atlanta-ga-2020-08-13",
       "charlotte-nc-2020-08-13",
-      "atlanta-ga-2020-08-13"
+      "greensboro-nc-2020-08-14",
+      "lynchburg-va-2020-08-14",
+      "charlottesville-va-2020-08-14",
+      "washington-dc-2020-08-14",
+      "baltimore-md-2020-08-14",
+      "philadelphia-pa-2020-08-14",
+      "trenton-nj-2020-08-14",
+      "newark-nj-2020-08-14",
+      "new-york-ny-2020-08-14"
     ],
 
     totalPlaces: 11,
