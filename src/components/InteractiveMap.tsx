@@ -129,13 +129,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
 
     // Draw lines connecting places in journey detail view using detailed route coordinates
     if (isDetailView && routeCoordinates && routeCoordinates.length > 1) {
-      // Determine the color based on the marker type
-      // Use orange (#F06001) for single visit routes, golden (#FFD701) for multi-visit
-      const hasMultiVisit = Object.values(groupedPlaces).some(group => group.length > 1)
-      const lineColor = hasMultiVisit ? '#FFD701' : '#F06001'
-
       L.polyline(routeCoordinates, {
-        color: lineColor,
+        color: '#373737',
         weight: 6,
         opacity: 0.9,
         smoothFactor: 1
