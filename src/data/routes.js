@@ -48,10 +48,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // EMPIRE BUILDER (May 2022)
+  // EMPIRE BUILDER (August 2021)
   // ============================================================================
-  "empire-builder-2022-05": {
-    journeyId: "empire-builder-2022-05",
+  "empire-builder-2021-08": {
+    journeyId: "empire-builder-2021-08",
     segments: [
       { order: 1, from: { name: "Portland, OR", lat: 45.5288, lng: -122.6764 }, to: { name: "Vancouver, WA", lat: 45.6387, lng: -122.6615 } },
       { order: 2, from: { name: "Vancouver, WA", lat: 45.6387, lng: -122.6615 }, to: { name: "Bingen-White Salmon, WA", lat: 45.7151, lng: -121.4698 } },
@@ -96,10 +96,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // SOUTHWEST CHIEF (May 2022)
+  // SOUTHWEST CHIEF (August 2021)
   // ============================================================================
-  "southwest-chief-2022-05": {
-    journeyId: "southwest-chief-2022-05",
+  "southwest-chief-2021-08": {
+    journeyId: "southwest-chief-2021-08",
     segments: [
       { order: 1, from: { name: "Chicago, IL", lat: 41.8781, lng: -87.6298 }, to: { name: "Naperville, IL", lat: 41.7508, lng: -88.1535 } },
       { order: 2, from: { name: "Naperville, IL", lat: 41.7508, lng: -88.1535 }, to: { name: "Mendota, IL", lat: 41.5473, lng: -89.1176 } },
@@ -136,10 +136,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // TEXAS EAGLE (June 2022)
+  // TEXAS EAGLE (September 2020)
   // ============================================================================
-  "texas-eagle-2022-06": {
-    journeyId: "texas-eagle-2022-06",
+  "texas-eagle-2020-09": {
+    journeyId: "texas-eagle-2020-09",
     segments: [
       { order: 1, from: { name: "Chicago, IL", lat: 41.8781, lng: -87.6298 }, to: { name: "Joliet, IL", lat: 41.5250, lng: -88.0817 } },
       { order: 2, from: { name: "Joliet, IL", lat: 41.5250, lng: -88.0817 }, to: { name: "Pontiac, IL", lat: 40.8808, lng: -88.6298 } },
@@ -173,10 +173,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // CRESCENT (June 2022)
+  // CRESCENT (August 2020)
   // ============================================================================
-  "crescent-2022-06": {
-    journeyId: "crescent-2022-06",
+  "crescent-2020-08": {
+    journeyId: "crescent-2020-08",
     segments: [
       { order: 1, from: { name: "New York, NY", lat: 40.7128, lng: -74.0060 }, to: { name: "Newark, NJ", lat: 40.7357, lng: -74.1724 } },
       { order: 2, from: { name: "Newark, NJ", lat: 40.7357, lng: -74.1724 }, to: { name: "Metropark, NJ", lat: 40.5662, lng: -74.3218 } },
@@ -206,10 +206,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // SILVER METEOR (July 2022)
+  // SILVER METEOR (August 2020)
   // ============================================================================
-  "silver-meteor-2022-07": {
-    journeyId: "silver-meteor-2022-07",
+  "silver-meteor-2020-08": {
+    journeyId: "silver-meteor-2020-08",
     segments: [
       { order: 1, from: { name: "New York, NY", lat: 40.7128, lng: -74.0060 }, to: { name: "Newark, NJ", lat: 40.7357, lng: -74.1724 } },
       { order: 2, from: { name: "Newark, NJ", lat: 40.7357, lng: -74.1724 }, to: { name: "Trenton, NJ", lat: 40.2206, lng: -74.7597 } },
@@ -247,10 +247,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // LAKE SHORE LIMITED (July 2022)
+  // LAKE SHORE LIMITED (August 2020)
   // ============================================================================
-  "lake-shore-limited-2022-07": {
-    journeyId: "lake-shore-limited-2022-07",
+  "lake-shore-limited-2020-08": {
+    journeyId: "lake-shore-limited-2020-08",
     segments: [
       { order: 1, from: { name: "New York, NY", lat: 40.7128, lng: -74.0060 }, to: { name: "Croton-Harmon, NY", lat: 41.1898, lng: -73.8823 } },
       { order: 2, from: { name: "Croton-Harmon, NY", lat: 41.1898, lng: -73.8823 }, to: { name: "Poughkeepsie, NY", lat: 41.7062, lng: -73.9379 } },
@@ -275,10 +275,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // CAPITOL LIMITED (May 2023)
+  // CAPITOL LIMITED (August 2020)
   // ============================================================================
-  "capitol-limited-2023-05": {
-    journeyId: "capitol-limited-2023-05",
+  "capitol-limited-2020-08": {
+    journeyId: "capitol-limited-2020-08",
     segments: [
       { order: 1, from: { name: "Washington, DC", lat: 38.9072, lng: -77.0369 }, to: { name: "Rockville, MD", lat: 39.0840, lng: -77.1528 } },
       { order: 2, from: { name: "Rockville, MD", lat: 39.0840, lng: -77.1528 }, to: { name: "Harpers Ferry, WV", lat: 39.3254, lng: -77.7386 } },
@@ -299,10 +299,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // VERMONTER (June 2023)
+  // VERMONTER (August 2020)
   // ============================================================================
-  "vermonter-2023-06": {
-    journeyId: "vermonter-2023-06",
+  "vermonter-2020-08": {
+    journeyId: "vermonter-2020-08",
     segments: [
       { order: 1, from: { name: "New York, NY", lat: 40.7128, lng: -74.0060 }, to: { name: "Stamford, CT", lat: 41.0468, lng: -73.5387 } },
       { order: 2, from: { name: "Stamford, CT", lat: 41.0468, lng: -73.5387 }, to: { name: "Bridgeport, CT", lat: 41.1792, lng: -73.1894 } },
@@ -328,10 +328,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // CITY OF NEW ORLEANS (January 2024)
+  // CITY OF NEW ORLEANS (September 2020)
   // ============================================================================
-  "city-of-new-orleans-2024-01": {
-    journeyId: "city-of-new-orleans-2024-01",
+  "city-of-new-orleans-2020-09": {
+    journeyId: "city-of-new-orleans-2020-09",
     segments: [
       { order: 1, from: { name: "Chicago, IL", lat: 41.8781, lng: -87.6298 }, to: { name: "Homewood, IL", lat: 41.5572, lng: -87.6656 } },
       { order: 2, from: { name: "Homewood, IL", lat: 41.5572, lng: -87.6656 }, to: { name: "Kankakee, IL", lat: 41.1200, lng: -87.8612 } },
@@ -356,10 +356,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // PENNSYLVANIAN (May 2024)
+  // PENNSYLVANIAN (August 2020)
   // ============================================================================
-  "pennsylvanian-2024-05": {
-    journeyId: "pennsylvanian-2024-05",
+  "pennsylvanian-2020-08": {
+    journeyId: "pennsylvanian-2020-08",
     segments: [
       { order: 1, from: { name: "New York, NY", lat: 40.7128, lng: -74.0060 }, to: { name: "Newark, NJ", lat: 40.7357, lng: -74.1724 } },
       { order: 2, from: { name: "Newark, NJ", lat: 40.7357, lng: -74.1724 }, to: { name: "Trenton, NJ", lat: 40.2206, lng: -74.7597 } },
@@ -382,10 +382,10 @@ export const routes = {
   },
 
   // ============================================================================
-  // ETHAN ALLEN EXPRESS (May 2024)
+  // ETHAN ALLEN EXPRESS (August 2020)
   // ============================================================================
-  "ethan-allen-express-2024-05": {
-    journeyId: "ethan-allen-express-2024-05",
+  "ethan-allen-express-2020-08": {
+    journeyId: "ethan-allen-express-2020-08",
     segments: [
       { order: 1, from: { name: "Rutland, VT", lat: 43.6106, lng: -72.9726 }, to: { name: "Castleton, VT", lat: 43.6106, lng: -73.1773 } },
       { order: 2, from: { name: "Castleton, VT", lat: 43.6106, lng: -73.1773 }, to: { name: "Fort Edward, NY", lat: 43.2670, lng: -73.5851 } },
