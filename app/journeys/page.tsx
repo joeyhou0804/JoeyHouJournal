@@ -169,11 +169,15 @@ export default function JourneysPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center mb-16 mt-8">
-            <img
-              src="/images/destinations/destination_map_view_title.png"
-              alt="Map View"
-              className="max-w-md w-full h-auto"
-            />
+            <h2 style={{
+              fontFamily: 'MarioFontTitle, sans-serif',
+              fontSize: '64px',
+              color: '#373737',
+              textShadow: '3px 3px 0px #F6F6F6',
+              margin: 0
+            }}>
+              Map View
+            </h2>
           </div>
 
           {/* Map View Hint */}
@@ -301,11 +305,15 @@ export default function JourneysPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center mb-16 mt-8">
-            <img
-              src="/images/journey/list_of_journeys.png"
-              alt="List of Journeys"
-              className="max-w-md w-full h-auto"
-            />
+            <h2 style={{
+              fontFamily: 'MarioFontTitle, sans-serif',
+              fontSize: '64px',
+              color: '#373737',
+              textShadow: '3px 3px 0px #F6F6F6',
+              margin: 0
+            }}>
+              List of Journeys
+            </h2>
           </div>
 
           {/* Sort Buttons */}

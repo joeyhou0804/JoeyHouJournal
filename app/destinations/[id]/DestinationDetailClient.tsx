@@ -337,11 +337,15 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-center items-center mb-16 mt-8">
-              <img
-                src="/images/destinations/destination_map_view_title.png"
-                alt="Map View"
-                className="max-w-md w-full h-auto"
-              />
+              <h2 style={{
+                fontFamily: 'MarioFontTitle, sans-serif',
+                fontSize: '64px',
+                color: '#373737',
+                textShadow: '3px 3px 0px #F6F6F6',
+                margin: 0
+              }}>
+                Map View
+              </h2>
             </div>
             <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
               <Box
