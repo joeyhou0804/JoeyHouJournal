@@ -134,34 +134,34 @@ export const journeys = [
     id: "texas-eagle-2020-09",
     slug: "texas-eagle",
     name: "Texas Eagle",
-    description: "Route through the heart of America from Chicago through Texas to San Antonio.",
+    description: "Cross-country journey from Los Angeles through the Southwest and Texas heartland to Chicago.",
 
     startDate: "2020-09-11",
     endDate: "2020-09-12",
-    duration: "1 day, 1 night",
+    duration: "2 days, 1 night",
 
     startLocation: {
+      name: "Los Angeles, CA",
+      coordinates: { lat: 34.0522, lng: -118.2437 }
+    },
+    endLocation: {
       name: "Chicago, IL",
       coordinates: { lat: 41.8781, lng: -87.6298 }
     },
-    endLocation: {
-      name: "San Antonio, TX",
-      coordinates: { lat: 29.4241, lng: -98.4936 }
-    },
 
     visitedPlaceIds: [
-      "chicago-il-2020-09-11",
-      "bloomington-il-2020-09-11",
-      "springfield-il-2020-09-11",
-      "st-louis-mo-2020-09-11",
-      "poplar-bluff-mo-2020-09-11",
-      "texarkana-tx-2020-09-11",
-      "longview-tx-2020-09-12",
-      "dallas-tx-2020-09-12",
-      "fort-worth-tx-2020-09-12",
-      "temple-tx-2020-09-12",
-      "austin-tx-2020-09-12",
-      "san-marcos-tx-2020-09-12"
+      "san-marcos-tx-2020-09-11",
+      "austin-tx-2020-09-11",
+      "temple-tx-2020-09-11",
+      "fort-worth-tx-2020-09-11",
+      "dallas-tx-2020-09-11",
+      "longview-tx-2020-09-11",
+      "texarkana-tx-2020-09-12",
+      "poplar-bluff-mo-2020-09-12",
+      "st-louis-mo-2020-09-12",
+      "springfield-il-2020-09-12",
+      "bloomington-il-2020-09-12",
+      "chicago-il-2020-09-12"
     ],
 
     totalPlaces: 12,
