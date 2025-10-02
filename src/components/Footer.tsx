@@ -1,11 +1,15 @@
+'use client'
+
 import Link from 'next/link'
 import Box from '@mui/material/Box'
+import { useTranslation } from 'src/hooks/useTranslation'
 
 interface FooterProps {
   currentPage?: 'home' | 'trips' | 'destinations'
 }
 
 export default function Footer({ currentPage }: FooterProps = {}) {
+  const { locale, setLocale } = useTranslation()
   return (
     <Box
       component="footer"
@@ -20,7 +24,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
         <Link href="/" className="hover:scale-105 transition-transform duration-200">
           <Box
             component="img"
-            src="/images/logos/logo_en.png"
+            src={`/images/logos/logo_${locale}.png`}
             alt="Logo"
             className="h-60 w-auto"
           />
@@ -32,7 +36,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
               <Box className="group">
                 <Box
                   component="img"
-                  src="/images/buttons/journey_button_hover.png"
+                  src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Journeys"
                   className="h-20 w-auto"
                 />
@@ -41,13 +45,13 @@ export default function Footer({ currentPage }: FooterProps = {}) {
               <Link href="/journeys" className="group hover:scale-105 transition-transform duration-200">
                 <Box
                   component="img"
-                  src="/images/buttons/journey_button.png"
+                  src={`/images/buttons/journey_button${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Journeys"
                   className="h-20 w-auto group-hover:hidden"
                 />
                 <Box
                   component="img"
-                  src="/images/buttons/journey_button_hover.png"
+                  src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Journeys"
                   className="h-20 w-auto hidden group-hover:block"
                 />
@@ -58,7 +62,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
               <Box className="group">
                 <Box
                   component="img"
-                  src="/images/buttons/destination_button_hover.png"
+                  src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Destinations"
                   className="h-20 w-auto"
                 />
@@ -67,29 +71,33 @@ export default function Footer({ currentPage }: FooterProps = {}) {
               <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200">
                 <Box
                   component="img"
-                  src="/images/buttons/destination_button.png"
+                  src={`/images/buttons/destination_button${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Destinations"
                   className="h-20 w-auto group-hover:hidden"
                 />
                 <Box
                   component="img"
-                  src="/images/buttons/destination_button_hover.png"
+                  src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Destinations"
                   className="h-20 w-auto hidden group-hover:block"
                 />
               </Link>
             )}
 
-            <Box component="button" className="group hover:scale-105 transition-transform duration-200">
+            <Box
+              component="button"
+              className="group hover:scale-105 transition-transform duration-200"
+              onClick={() => setLocale(locale === 'en' ? 'zh' : 'en')}
+            >
               <Box
                 component="img"
-                src="/images/buttons/language_button_en.png"
+                src={`/images/buttons/language_button_${locale}.png`}
                 alt="Language Toggle"
                 className="h-20 w-auto group-hover:hidden"
               />
               <Box
                 component="img"
-                src="/images/buttons/language_button_en_hover.png"
+                src={`/images/buttons/language_button_${locale}_hover.png`}
                 alt="Language Toggle"
                 className="h-20 w-auto hidden group-hover:block"
               />

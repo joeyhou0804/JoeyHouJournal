@@ -1,5 +1,8 @@
+'use client'
+
 import Link from 'next/link'
 import Box from '@mui/material/Box'
+import { useTranslation } from 'src/hooks/useTranslation'
 
 interface NavigationMenuProps {
   isMenuOpen: boolean
@@ -20,6 +23,8 @@ export default function NavigationMenu({
   closeMenu,
   currentPage
 }: NavigationMenuProps) {
+  const { locale, setLocale } = useTranslation()
+
   return (
     <>
       {/* Navigation Drawer */}
@@ -64,7 +69,7 @@ export default function NavigationMenu({
               <Link href="/" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
                 <Box
                   component="img"
-                  src="/images/logos/logo_en.png"
+                  src={`/images/logos/logo_${locale}.png`}
                   alt="Home"
                   className="h-32 w-auto"
                 />
@@ -74,7 +79,7 @@ export default function NavigationMenu({
                 <Box className="group">
                   <Box
                     component="img"
-                    src="/images/buttons/journey_button_hover.png"
+                    src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                     alt="Journeys"
                     className="w-48 h-auto"
                   />
@@ -83,13 +88,13 @@ export default function NavigationMenu({
                 <Link href="/journeys" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
                   <Box
                     component="img"
-                    src="/images/buttons/journey_button.png"
+                    src={`/images/buttons/journey_button${locale === 'zh' ? '_zh' : ''}.png`}
                     alt="Journeys"
                     className="w-48 h-auto group-hover:hidden"
                   />
                   <Box
                     component="img"
-                    src="/images/buttons/journey_button_hover.png"
+                    src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                     alt="Journeys"
                     className="w-48 h-auto hidden group-hover:block"
                   />
@@ -100,7 +105,7 @@ export default function NavigationMenu({
                 <Box className="group">
                   <Box
                     component="img"
-                    src="/images/buttons/destination_button_hover.png"
+                    src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                     alt="Destinations"
                     className="w-48 h-auto"
                   />
@@ -109,29 +114,33 @@ export default function NavigationMenu({
                 <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
                   <Box
                     component="img"
-                    src="/images/buttons/destination_button.png"
+                    src={`/images/buttons/destination_button${locale === 'zh' ? '_zh' : ''}.png`}
                     alt="Destinations"
                     className="w-48 h-auto group-hover:hidden"
                   />
                   <Box
                     component="img"
-                    src="/images/buttons/destination_button_hover.png"
+                    src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                     alt="Destinations"
                     className="w-48 h-auto hidden group-hover:block"
                   />
                 </Link>
               )}
 
-              <Box component="button" className="group hover:scale-105 transition-transform duration-200">
+              <Box
+                component="button"
+                className="group hover:scale-105 transition-transform duration-200"
+                onClick={() => setLocale(locale === 'en' ? 'zh' : 'en')}
+              >
                 <Box
                   component="img"
-                  src="/images/buttons/language_button_en.png"
+                  src={`/images/buttons/language_button_${locale}.png`}
                   alt="Language Toggle"
                   className="w-48 h-auto group-hover:hidden"
                 />
                 <Box
                   component="img"
-                  src="/images/buttons/language_button_en_hover.png"
+                  src={`/images/buttons/language_button_${locale}_hover.png`}
                   alt="Language Toggle"
                   className="w-48 h-auto hidden group-hover:block"
                 />

@@ -13,8 +13,10 @@ import HeroSection from 'src/components/HeroSection'
 import { stations } from 'src/data/stations'
 import { journeys } from 'src/data/journeys'
 import stationsData from 'src/data/stations.json'
+import { useTranslation } from 'src/hooks/useTranslation'
 
 export default function Home() {
+  const { locale } = useTranslation()
   const sectionRef = useRef<HTMLElement | null>(null)
   const decoRef = useRef<HTMLDivElement | null>(null)
 
@@ -589,7 +591,7 @@ export default function Home() {
             />
             <Box
               component="img"
-              src="/images/homepage/homepage_destination_text_en.png"
+              src={`/images/homepage/homepage_destination_text_${locale}.png`}
               alt="Discover the places that shaped my rail journey across America"
               className="h-auto max-w-4xl relative"
               sx={{ transform: 'translate(2rem, 2rem)', zIndex: 20 }}

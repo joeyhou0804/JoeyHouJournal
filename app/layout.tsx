@@ -1,12 +1,7 @@
-import './globals.css'
+'use client'
 
-export const metadata = {
-  title: "Joey Hou's Journal | United States",
-  description: "Welcome to my travel journal site! Enjoy the pictures I take in the US on trains...and more!",
-  icons: {
-    icon: '/favicon.png',
-  },
-}
+import './globals.css'
+import { LanguageProvider } from 'src/contexts/LanguageContext'
 
 export default function RootLayout({
   children,
@@ -15,7 +10,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <head>
+        <title>Joey Hou's Journal | United States</title>
+        <meta name="description" content="Welcome to my travel journal site! Enjoy the pictures I take in the US on trains...and more!" />
+        <link rel="icon" href="/favicon.png" />
+      </head>
+      <body>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+      </body>
     </html>
   )
 }
