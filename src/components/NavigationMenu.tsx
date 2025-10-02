@@ -27,20 +27,22 @@ export default function NavigationMenu({
         <>
           {/* Backdrop */}
           <Box
-            className="fixed inset-0 bg-black bg-opacity-50 z-[9998]"
+            className="fixed inset-0 bg-black bg-opacity-50"
             onClick={closeMenu}
+            sx={{ zIndex: 9998 }}
           />
 
           {/* Drawer */}
           <Box
-            className={`fixed top-8 right-0 h-96 w-64 z-[9999] transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
+            className={`fixed top-8 right-0 h-96 w-64 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
               isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
             }`}
             sx={{
               backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
               backgroundRepeat: 'repeat',
               backgroundSize: '200px',
-              borderColor: '#373737'
+              borderColor: '#373737',
+              zIndex: 9999
             }}
           >
             {/* Close Button */}
@@ -144,9 +146,10 @@ export default function NavigationMenu({
         <Box
           component="button"
           onClick={openMenu}
-          className={`fixed top-8 right-4 z-[9999] p-2 hover:scale-105 transition-all duration-150 ${
+          className={`fixed top-8 right-4 p-2 hover:scale-105 transition-all duration-150 ${
             isMenuButtonAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
           }`}
+          sx={{ zIndex: 9999 }}
         >
           <Box
             component="img"
