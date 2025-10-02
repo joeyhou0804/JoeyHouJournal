@@ -9,6 +9,7 @@ import NavigationMenu from 'src/components/NavigationMenu'
 import MapViewHint from 'src/components/MapViewHint'
 import DestinationCard from 'src/components/DestinationCard'
 import stationsData from 'src/data/stations.json'
+import { getRouteCoordinates } from 'src/data/routes'
 
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
@@ -26,6 +27,8 @@ interface Journey {
   description: string
   route: string
   duration: string
+  visitedPlaceIds?: string[]
+  journeyId?: string
 }
 
 interface JourneyDetailClientProps {
@@ -251,7 +254,11 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               borderRadius: '1.5rem'
             }}
           >
-            <InteractiveMap places={places} />
+            <InteractiveMap
+              places={places}
+              isDetailView={true}
+              routeCoordinates={journey?.journeyId ? getRouteCoordinates(journey.journeyId) : undefined}
+            />
           </Box>
         </div>
       </Box>

@@ -28,9 +28,10 @@ interface Place {
 interface InteractiveMapProps {
   places: Place[]
   isDetailView?: boolean
+  routeCoordinates?: [number, number][] // Array of coordinates for the route path
 }
 
-export default function InteractiveMap({ places, isDetailView = false }: InteractiveMapProps) {
+export default function InteractiveMap({ places, isDetailView = false, routeCoordinates }: InteractiveMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
@@ -125,6 +126,21 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
         return dateA - dateB
       })
     })
+
+    // Draw lines connecting places in journey detail view using detailed route coordinates
+    if (isDetailView && routeCoordinates && routeCoordinates.length > 1) {
+      // Determine the color based on the marker type
+      // Use orange (#F06001) for single visit routes, golden (#FFD701) for multi-visit
+      const hasMultiVisit = Object.values(groupedPlaces).some(group => group.length > 1)
+      const lineColor = hasMultiVisit ? '#FFD701' : '#F06001'
+
+      L.polyline(routeCoordinates, {
+        color: lineColor,
+        weight: 6,
+        opacity: 0.9,
+        smoothFactor: 1
+      }).addTo(map)
+    }
 
     // Add markers for each group
     Object.entries(groupedPlaces).forEach(([key, places]) => {
@@ -352,7 +368,7 @@ export default function InteractiveMap({ places, isDetailView = false }: Interac
     return () => {
       map.remove()
     }
-  }, [places, isDetailView])
+  }, [places, isDetailView, routeCoordinates])
 
   return (
     <div
