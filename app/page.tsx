@@ -270,7 +270,7 @@ export default function Home() {
               src={`/images/journey/journeys_title_${locale}.png`}
               alt="Featured Journeys"
               className="h-auto max-w-4xl relative"
-              sx={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
+              sx={{ transform: locale === 'zh' ? 'translate(-5rem, -6rem)' : 'translate(-5rem, -4rem)', zIndex: 20 }}
             />
             <Box
               component="img"
