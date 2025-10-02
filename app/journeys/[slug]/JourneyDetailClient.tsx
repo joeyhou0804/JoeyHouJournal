@@ -9,6 +9,9 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import MapViewHint from 'src/components/MapViewHint'
 import DestinationCard from 'src/components/DestinationCard'
+import * as stationsDataModule from 'src/data/stations.json'
+
+const stationsData = stationsDataModule as any
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -43,8 +46,20 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
-  // TODO: Replace with actual journey places data
-  const places: any[] = []
+  // Load places for this journey from stations.json
+  const stations = (stationsData.default || stationsData) as any[]
+  const places = journey ? stations.filter(
+    station => station.route === journey.name
+  ).map((station, index) => ({
+    id: `${station.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${station.date.replace(/\//g, '-')}`,
+    name: station.name,
+    date: station.date,
+    route: station.route,
+    state: station.state,
+    images: station.images || [],
+    lat: station.lat,
+    lng: station.lng
+  })) : []
 
   const itemsPerPage = 12
 
@@ -421,6 +436,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         </Box>
 
         <Footer />
+      </Box>
     </Box>
   )
 }
