@@ -277,16 +277,25 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center mb-16 mt-8">
+          <div className="flex flex-col justify-center items-center mb-16 mt-8">
             <h2 style={{
               fontFamily: 'MarioFontTitle, sans-serif',
               fontSize: '64px',
               color: '#373737',
               textShadow: '3px 3px 0px #F6F6F6',
-              margin: 0
+              margin: 0,
+              marginBottom: '16px'
             }}>
               List of Places
             </h2>
+            <p style={{
+              fontFamily: 'MarioFontTitle, sans-serif',
+              fontSize: '28px',
+              color: '#373737',
+              margin: 0
+            }}>
+              Click the cards below to view the details!
+            </p>
           </div>
 
           <div className="flex justify-center items-center gap-4 mb-48">
