@@ -1,16 +1,47 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { MapPin, Calendar, Train, Clock } from 'lucide-react'
 import NavigationMenu from 'src/components/NavigationMenu'
 import Footer from 'src/components/Footer'
+import Box from '@mui/material/Box'
+import JourneyCard from 'src/components/JourneyCard'
 
 export default function JourneysPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
+  const listSectionRef = useRef<HTMLDivElement>(null)
+
+  const itemsPerPage = 5
+
+  const sortedTrips = [...trips].sort((a, b) => {
+    // Sort by index/order - latest means end of list, earliest means start
+    const indexA = trips.indexOf(a)
+    const indexB = trips.indexOf(b)
+    return sortOrder === 'latest' ? indexB - indexA : indexA - indexB
+  })
+
+  const totalPages = Math.ceil(sortedTrips.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const displayedTrips = sortedTrips.slice(startIndex, endIndex)
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page)
+    if (listSectionRef.current) {
+      listSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  const handleSortChange = (order: 'latest' | 'earliest') => {
+    setSortOrder(order)
+    setCurrentPage(1) // Reset to first page when sorting changes
+  }
 
   const openMenu = () => {
     setIsMenuButtonAnimating(true)
@@ -58,92 +89,169 @@ export default function JourneysPage() {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <div className="flex items-center">
-              <Train className="h-8 w-8 text-blue-600 mr-3" />
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900">8</h3>
-                <p className="text-gray-600">Major Routes</p>
-              </div>
-            </div>
+      <Box
+        component="section"
+        ref={listSectionRef}
+        className="w-full py-24"
+        sx={{
+          backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
+          backgroundRepeat: 'repeat-y, repeat',
+          backgroundSize: '100% auto, 400px auto',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center mb-16 mt-8">
+            <img
+              src="/images/journey/list_of_journeys.png"
+              alt="List of Journeys"
+              className="max-w-md w-full h-auto"
+            />
           </div>
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <div className="flex items-center">
-              <MapPin className="h-8 w-8 text-green-600 mr-3" />
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900">147</h3>
-                <p className="text-gray-600">Places Visited</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg p-6 shadow-sm">
-            <div className="flex items-center">
-              <Calendar className="h-8 w-8 text-purple-600 mr-3" />
-              <div>
-                <h3 className="text-2xl font-bold text-gray-900">2020-2021</h3>
-                <p className="text-gray-600">Journey Period</p>
-              </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Trips List */}
-        <div className="space-y-6">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Train Routes & Journeys</h2>
+          {/* Sort Buttons */}
+          <div className="flex justify-center items-center gap-4 mb-48">
+            <button
+              onClick={() => handleSortChange('latest')}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src="/images/buttons/latest_first_button.png"
+                alt="Latest First"
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => handleSortChange('earliest')}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src="/images/buttons/earliest_first_button.png"
+                alt="Earliest First"
+                className="h-16 w-auto"
+              />
+            </button>
+          </div>
 
-          {trips.map((trip, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <div className="p-6">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2 mb-2">
-                      <Train className="h-5 w-5 text-blue-600" />
-                      <h3 className="text-xl font-semibold text-gray-900">{trip.name}</h3>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                        {trip.places} places
-                      </span>
-                    </div>
-                    <p className="text-gray-600 mb-3">{trip.description}</p>
-                    <div className="flex flex-wrap items-center space-x-4 text-sm text-gray-500">
-                      <div className="flex items-center space-x-1">
-                        <MapPin className="h-4 w-4" />
-                        <span>{trip.route}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Clock className="h-4 w-4" />
-                        <span>{trip.duration}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4 lg:mt-0 lg:ml-6">
-                    <Link
-                      href={`/journeys/${trip.slug}`}
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          {/* Journeys Grid */}
+          <div className="grid grid-cols-1 gap-48">
+            {displayedTrips.map((trip, index) => (
+              <JourneyCard key={trip.slug} journey={trip} index={index} />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-48 flex justify-center">
+              <Box
+                sx={{
+                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '200px auto',
+                  padding: '0.5rem',
+                  borderRadius: '1rem'
+                }}
+              >
+                <Box
+                  sx={{
+                    border: '2px solid #F6F6F6',
+                    borderRadius: '0.75rem',
+                    padding: '1.5rem',
+                    backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                    backgroundRepeat: 'repeat',
+                    backgroundSize: '200px auto'
+                  }}
+                >
+                  {/* Page Info */}
+                  <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#F6F6F6' }} className="text-center mb-8">
+                    Page {currentPage} of {totalPages}
+                  </p>
+
+                  {/* Pagination Controls */}
+                  <div className="flex justify-center items-center gap-4">
+                    {/* Previous Button */}
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className={`group transition-transform duration-200 ${currentPage === 1 ? 'opacity-40' : 'hover:scale-105 cursor-pointer'}`}
                     >
-                      View Journey
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+                      <img
+                        src="/images/buttons/arrow_prev.webp"
+                        alt="Previous"
+                        className={`w-16 h-16 ${currentPage === 1 ? '' : 'group-hover:hidden'}`}
+                      />
+                      <img
+                        src="/images/buttons/arrow_prev_hover.webp"
+                        alt="Previous"
+                        className={`w-16 h-16 ${currentPage === 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                      />
+                    </button>
 
-        {/* Map Placeholder */}
-        <div className="mt-12 bg-white rounded-lg shadow-sm p-6">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">Route Overview Map</h3>
-          <div className="h-96 bg-gray-200 rounded-lg flex items-center justify-center">
-            <div className="text-center text-gray-500">
-              <MapPin className="h-12 w-12 mx-auto mb-2" />
-              <p>Interactive map showing all train routes</p>
-              <p className="text-sm">(Coming soon)</p>
+                    {/* Page Numbers */}
+                    <div className="flex gap-2">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                        // Show first page, last page, current page, and pages around current
+                        const showPage =
+                          page === 1 ||
+                          page === totalPages ||
+                          (page >= currentPage - 1 && page <= currentPage + 1)
+
+                        if (!showPage) {
+                          // Show ellipsis
+                          if (page === currentPage - 2 || page === currentPage + 2) {
+                            return (
+                              <span
+                                key={page}
+                                style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#F6F6F6' }}
+                                className="px-2"
+                              >
+                                ...
+                              </span>
+                            )
+                          }
+                          return null
+                        }
+
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => handlePageChange(page)}
+                            style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', width: '3.5rem' }}
+                            className={`py-2 rounded-lg transition-all duration-200 ${
+                              currentPage === page
+                                ? 'bg-[#373737] text-white border-2 border-[#F6F6F6]'
+                                : 'bg-[#F6F6F6] text-[#373737] hover:bg-[#FFD701]'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        )
+                      })}
+                    </div>
+
+                    {/* Next Button */}
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className={`group transition-transform duration-200 ${currentPage === totalPages ? 'opacity-40' : 'hover:scale-105 cursor-pointer'}`}
+                    >
+                      <img
+                        src="/images/buttons/arrow_next.webp"
+                        alt="Next"
+                        className={`w-16 h-16 ${currentPage === totalPages ? '' : 'group-hover:hidden'}`}
+                      />
+                      <img
+                        src="/images/buttons/arrow_next_hover.webp"
+                        alt="Next"
+                        className={`w-16 h-16 ${currentPage === totalPages ? 'hidden' : 'hidden group-hover:block'}`}
+                      />
+                    </button>
+                  </div>
+                </Box>
+              </Box>
             </div>
-          </div>
+          )}
         </div>
-      </div>
+      </Box>
 
       <Footer currentPage="trips" />
     </div>
