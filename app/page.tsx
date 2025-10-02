@@ -318,7 +318,7 @@ export default function Home() {
             />
 
             {/* Train image overlay - top left, above mask */}
-            <Container className="absolute -top-80 left-0" sx={{ zIndex: 20 }}>
+            <Container className="absolute -top-80 left-0" sx={{ zIndex: 35 }}>
               <Box
                 component="img"
                 src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_3"
@@ -328,7 +328,7 @@ export default function Home() {
             </Container>
 
             {/* Masked journey image - left edge */}
-            <Container className="absolute left-0 top-1/2 -translate-y-1/2" sx={{ zIndex: 15 }}>
+            <Container className="absolute left-0 top-1/2 -translate-y-1/2" sx={{ zIndex: 30 }}>
               <Container
                 className={`w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out ${
                   isTransitioning ? '-translate-x-full' : 'translate-x-0'
@@ -368,28 +368,84 @@ export default function Home() {
               )}
             </Container>
 
-            {/* Journey Text Overlay - Center right */}
-            <Container
-              className="absolute right-64 top-1/2 -translate-y-1/2 text-white max-w-md"
-              sx={{ zIndex: 25 }}
+            {/* Journey Card Overlay */}
+            <Box
+              className="absolute left-[250px] top-1/2 -translate-y-1/3"
+              sx={{
+                zIndex: 25,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '24px'
+              }}
             >
-              <Box component="h2" className="text-4xl font-bold mb-4">
-                {featuredTrips[currentSlide].name}
+              {/* Card Background with Title */}
+              <Box sx={{ position: 'relative', width: '1100px' }}>
+                {/* Popup Card Background */}
+                <Box
+                  component="img"
+                  src="/images/destinations/destination_popup_card.webp"
+                  alt="Card"
+                  sx={{
+                    width: '1100px',
+                    height: 'auto',
+                    display: 'block'
+                  }}
+                />
+
+                {/* Title Section */}
+                <Box sx={{ position: 'absolute', top: '0%', left: '70%', transform: 'translate(-50%, -50%)', width: '65%' }}>
+                  <Box
+                    component="img"
+                    src="/images/journey/journeys_map_description_title.webp"
+                    alt="Location"
+                    sx={{ width: '100%', height: 'auto', display: 'block' }}
+                  />
+                  <Box
+                    component="h3"
+                    sx={{
+                      fontFamily: 'MarioFontTitle, sans-serif',
+                      fontSize: '40px',
+                      color: '#373737',
+                      margin: 0,
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      whiteSpace: 'nowrap',
+                      textAlign: 'center',
+                      width: '100%'
+                    }}
+                  >
+                    {featuredTrips[currentSlide].name}
+                  </Box>
+                </Box>
+
+                {/* Route and Places Count */}
+                <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
+                  <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
+                    {featuredTrips[currentSlide].route}
+                  </Box>
+                  <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                    {featuredTrips[currentSlide].places} destinations
+                  </Box>
+                </Box>
               </Box>
-              <Box component="p" className="text-lg mb-6 leading-relaxed opacity-90">
-                {featuredTrips[currentSlide].description}
-              </Box>
-              <Container className="flex items-center mb-6 text-lg">
-                <Box component="span" className="w-3 h-3 bg-white rounded-full mr-3" />
-                {featuredTrips[currentSlide].places} destinations
-              </Container>
+
+              {/* View Details Button */}
               <Box
-                component="button"
-                className="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
+                component="a"
+                href={`/journeys/${featuredTrips[currentSlide].slug}`}
+                className="inline-block ml-[400px] hover:scale-105 transition-transform duration-200"
               >
-                Explore Journey
+                <Box
+                  component="img"
+                  src="/images/buttons/view_details_button.png"
+                  alt="View Details"
+                  sx={{ height: '70px', width: 'auto', display: 'block' }}
+                />
               </Box>
-            </Container>
+            </Box>
 
             {/* Navigation Arrows */}
             <Box
