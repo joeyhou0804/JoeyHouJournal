@@ -8,6 +8,19 @@ import Footer from 'src/components/Footer'
 import Box from '@mui/material/Box'
 import JourneyCard from 'src/components/JourneyCard'
 import { journeys } from 'src/data/journeys'
+import dynamic from 'next/dynamic'
+import MapViewHint from 'src/components/MapViewHint'
+import stationsData from 'src/data/stations.json'
+import { getRouteCoordinates } from 'src/data/routes'
+
+const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
+      <p className="text-gray-600">Loading map...</p>
+    </div>
+  )
+})
 
 export default function JourneysPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -28,6 +41,22 @@ export default function JourneysPage() {
     description: journey.description,
     route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
     duration: journey.duration
+  }))
+
+  // Get places for the first journey (California Zephyr)
+  const firstJourney = journeys[0]
+  const allStations = stationsData as any[]
+  const firstJourneyPlaces = allStations.filter(
+    station => station.route === firstJourney.name
+  ).map((station) => ({
+    id: `${station.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${station.date.replace(/\//g, '-')}`,
+    name: station.name,
+    date: station.date,
+    route: station.route,
+    state: station.state,
+    images: station.images || [],
+    lat: station.lat,
+    lng: station.lng
   }))
 
   const sortedTrips = [...trips].sort((a, b) => {
@@ -99,6 +128,98 @@ export default function JourneysPage() {
           className="w-full h-auto object-cover"
         />
       </div>
+
+      {/* Map View Section */}
+      <Box
+        component="section"
+        className="w-full py-24"
+        sx={{
+          backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '300px auto',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-center items-center mb-16 mt-8">
+            <img
+              src="/images/destinations/destination_map_view_title.png"
+              alt="Map View"
+              className="max-w-md w-full h-auto"
+            />
+          </div>
+
+          {/* Map View Hint */}
+          <div className="my-36">
+            <MapViewHint
+              cardNumber={1}
+              station={{
+                id: '',
+                name: 'Check out the map',
+                route: 'Click on the markers to see the place name.',
+                date: 'You can also view more details with the button.',
+                images: ['/images/destinations/hints/map_view_hint.jpg']
+              }}
+            />
+          </div>
+
+          {/* Second Map View Hint - Image on right */}
+          <div className="my-36" style={{ marginBottom: '300px' }}>
+            <MapViewHint
+              imageOnRight={true}
+              cardNumber={2}
+              station={{
+                id: '',
+                name: 'As for golden markers...',
+                route: 'Golden markers indicate cities with multiple visits.',
+                date: 'Use the side buttons to navigate through them.',
+                images: ['/images/destinations/hints/map_view_hint_2.png']
+              }}
+            />
+          </div>
+
+          <div>
+            <Box style={{ position: 'relative' }}>
+              <Box
+                sx={{
+                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '200px auto',
+                  padding: '1rem',
+                  borderRadius: '1.5rem'
+                }}
+              >
+                <InteractiveMap
+                  places={firstJourneyPlaces}
+                  routeCoordinates={getRouteCoordinates(firstJourney.id)}
+                />
+              </Box>
+
+              {/* Journey Info Card - Top Right Corner */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '-100px',
+                  right: '-600px',
+                  zIndex: 1000
+                }}
+              >
+                <MapViewHint
+                  imageOnRight={true}
+                  cardNumber={2}
+                  isJourneyInfo={true}
+                  station={{
+                    id: '',
+                    name: firstJourney.name,
+                    route: `${firstJourney.startLocation.name} → ${firstJourney.endLocation.name}`,
+                    date: firstJourney.duration,
+                    images: []
+                  }}
+                />
+              </Box>
+            </Box>
+          </div>
+        </div>
+      </Box>
 
       <Box
         component="section"

@@ -127,8 +127,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       })
     })
 
-    // Draw lines connecting places in journey detail view using detailed route coordinates
-    if (isDetailView && routeCoordinates && routeCoordinates.length > 1) {
+    // Draw lines connecting places using detailed route coordinates
+    if (routeCoordinates && routeCoordinates.length > 1) {
       L.polyline(routeCoordinates, {
         color: '#373737',
         weight: 6,

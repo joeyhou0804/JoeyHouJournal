@@ -12,9 +12,10 @@ interface MapViewHintProps {
   station: Station
   imageOnRight?: boolean
   cardNumber?: 1 | 2
+  isJourneyInfo?: boolean
 }
 
-export default function MapViewHint({ station, imageOnRight = false, cardNumber = 1 }: MapViewHintProps) {
+export default function MapViewHint({ station, imageOnRight = false, cardNumber = 1, isJourneyInfo = false }: MapViewHintProps) {
   return (
     <Box sx={{ position: 'relative', width: '100%', maxWidth: '1100px', margin: '0 auto' }}>
         {/* Hint Image - Left or Right side, overlapping, keeping original ratio */}
@@ -44,7 +45,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
         {/* Popup Card Background */}
         <Box
           component="img"
-          src={`/images/destinations/hints/map_view_hint_card_${cardNumber}.webp`}
+          src={isJourneyInfo ? '/images/journey/journeys_map_description_card.webp' : `/images/destinations/hints/map_view_hint_card_${cardNumber}.webp`}
           alt="Card"
           sx={{ width: '100%', height: 'auto', display: 'block' }}
         />
@@ -53,7 +54,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
         <Box sx={{ position: 'absolute', top: '0%', left: imageOnRight ? '30%' : '70%', transform: 'translate(-50%, -50%)', width: '65%' }}>
           <Box
             component="img"
-            src="/images/destinations/hints/map_view_hint_title.webp"
+            src={isJourneyInfo ? '/images/journey/journeys_map_description_title.webp' : '/images/destinations/hints/map_view_hint_title.webp'}
             alt="Location"
             sx={{ width: '100%', height: 'auto', display: 'block' }}
           />
@@ -62,7 +63,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
             sx={{
               fontFamily: 'MarioFontTitle, sans-serif',
               fontSize: '40px',
-              color: '#FFD701',
+              color: isJourneyInfo ? '#373737' : '#FFD701',
               margin: 0,
               position: 'absolute',
               top: '50%',
@@ -78,10 +79,21 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
         </Box>
 
         {/* Body Text */}
-        <Box sx={{ position: 'absolute', top: '60%', left: imageOnRight ? '30%' : '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'left', paddingLeft: imageOnRight ? '0' : '2rem', paddingRight: imageOnRight ? '2rem' : '0' }}>
-          <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
-            {station.route} {station.date}
-          </Box>
+        <Box sx={{ position: 'absolute', top: '60%', left: imageOnRight ? '30%' : '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: isJourneyInfo ? 'center' : 'left', paddingLeft: imageOnRight ? '0' : '2rem', paddingRight: imageOnRight ? '2rem' : '0' }}>
+          {isJourneyInfo ? (
+            <>
+              <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0, lineHeight: '1.4' }}>
+                {station.route}
+              </Box>
+              <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
+                {station.date}
+              </Box>
+            </>
+          ) : (
+            <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
+              {station.route} {station.date}
+            </Box>
+          )}
         </Box>
       </Box>
   )
