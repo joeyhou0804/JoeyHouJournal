@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { Box, TextField, MenuItem } from '@mui/material'
+import { Box, TextField, MenuItem, Drawer, Typography, Button, Alert } from '@mui/material'
+import { Delete as DeleteIcon } from '@mui/icons-material'
 import { journeys } from 'src/data/journeys'
 
 interface DestinationFormData {
@@ -38,8 +39,11 @@ export default function DestinationFormPage() {
   const [uploading, setUploading] = useState(false)
   const [coordinatesEditable, setCoordinatesEditable] = useState(false)
   const [geocodingError, setGeocodingError] = useState<string | null>(null)
+  const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const images = watch('images') || []
   const cityName = watch('name')
+  const destinationName = watch('name')
 
   useEffect(() => {
     if (!isNew) {
@@ -158,7 +162,30 @@ export default function DestinationFormPage() {
     }
   }
 
-  const ActionButtons = () => (
+  const handleDeleteDestination = async () => {
+    if (!id || isNew) return
+
+    setDeleting(true)
+
+    try {
+      const response = await fetch(`/api/admin/destinations?id=${id}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        router.push('/admin/destinations')
+      } else {
+        alert('Failed to delete destination')
+      }
+    } catch (error) {
+      alert('Error deleting destination')
+    } finally {
+      setDeleting(false)
+      setDeleteDrawerOpen(false)
+    }
+  }
+
+  const ActionButtons = ({ insideForm = false }: { insideForm?: boolean }) => (
     <Box sx={{ display: 'flex', gap: '1rem' }}>
       <button
         type="button"
@@ -176,7 +203,8 @@ export default function DestinationFormPage() {
         Cancel
       </button>
       <button
-        type="submit"
+        type={insideForm ? 'submit' : 'button'}
+        onClick={insideForm ? undefined : handleSubmit(onSubmit)}
         disabled={loading}
         style={{
           padding: '0.75rem 2rem',
@@ -634,9 +662,117 @@ export default function DestinationFormPage() {
 
         {/* Form Actions */}
         <Box sx={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
-          <ActionButtons />
+          <ActionButtons insideForm={true} />
         </Box>
       </Box>
+
+      {/* Dangerous Zone - Delete Destination */}
+      {!isNew && (
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            padding: '2rem',
+            borderRadius: '1rem',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            marginTop: '2rem',
+            border: '2px solid #d32f2f'
+          }}
+        >
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontFamily: 'MarioFontTitle, sans-serif',
+                  fontSize: '24px',
+                  color: '#d32f2f',
+                  marginBottom: '0.5rem'
+                }}
+              >
+                ⚠️ Dangerous Zone
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  fontFamily: 'MarioFont, sans-serif',
+                  fontSize: '14px',
+                  color: '#666'
+                }}
+              >
+                Once you delete this destination, there is no going back. Please be certain.
+              </Typography>
+            </Box>
+            <Button
+              variant="outlined"
+              startIcon={<DeleteIcon />}
+              onClick={() => setDeleteDrawerOpen(true)}
+              sx={{
+                color: '#d32f2f',
+                borderColor: '#d32f2f',
+                fontFamily: 'MarioFont, sans-serif',
+                padding: '0.75rem 1.5rem',
+                fontSize: '16px',
+                '&:hover': {
+                  borderColor: '#d32f2f',
+                  backgroundColor: 'rgba(211, 47, 47, 0.04)'
+                }
+              }}
+            >
+              Delete Destination
+            </Button>
+          </Box>
+        </Box>
+      )}
+
+      {/* Delete Confirmation Drawer */}
+      <Drawer
+        anchor="right"
+        open={deleteDrawerOpen}
+        onClose={() => setDeleteDrawerOpen(false)}
+      >
+        <Box sx={{ width: 450, padding: 3 }}>
+          <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 2 }}>
+            Delete Destination: {destinationName}
+          </Typography>
+
+          <Alert severity="error" sx={{ mb: 3 }}>
+            <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+              This action cannot be undone!
+            </Typography>
+          </Alert>
+
+          <Typography variant="body1" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 3 }}>
+            Are you sure you want to delete this destination? All data including images, descriptions, and location information will be permanently removed.
+          </Typography>
+
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+            <Button
+              variant="outlined"
+              onClick={() => setDeleteDrawerOpen(false)}
+              disabled={deleting}
+              sx={{
+                fontFamily: 'MarioFont, sans-serif',
+                color: '#373737',
+                borderColor: '#373737'
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleDeleteDestination}
+              disabled={deleting}
+              sx={{
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#d32f2f',
+                '&:hover': { backgroundColor: '#b71c1c' }
+              }}
+            >
+              {deleting ? 'Deleting...' : 'Confirm Delete'}
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
     </Box>
   )
 }

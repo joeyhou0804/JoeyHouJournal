@@ -1,11 +1,5 @@
 [
   {
-    "id": "61907965adaca0b81e8afe1d",
-    "name": "New York, NY",
-    "lat": 40.7506415,
-    "lng": -73.9936575,
-    "date": "2020/08/22",
-    "state": "New York",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858212/joeyhouhomepage/rnetojfl4loer19tgng4.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858212/joeyhouhomepage/hj3p7yuges6tuxunhfk0.jpg",
@@ -14,12 +8,18 @@
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858212/joeyhouhomepage/aa3q8xzz5w1s58rdiggk.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858212/joeyhouhomepage/dyuyybstdopphfrnk7lx.jpg"
     ],
-    "description": "1-1",
+    "name": "New York, NY",
     "nameCN": "纽约州·纽约",
-    "descriptionCN": "1-1",
-    "journeyId": "lake-shore-limited-2020-08",
+    "state": "New York",
+    "date": "2020/08/22",
     "journeyName": "Lake Shore Limited",
-    "journeyNameCN": "Lake Shore Limited"
+    "journeyNameCN": "Lake Shore Limited",
+    "journeyId": "lake-shore-limited-2020-08",
+    "lat": 40.7506415,
+    "lng": -73.9936575,
+    "description": "1-1\n1-2\n1-3\n1-4",
+    "descriptionCN": "1-1\n1-2\n1-3\n1-4",
+    "id": "61907965adaca0b81e8afe1d"
   },
   {
     "id": "619079c4adaca0b81e8afe32",
@@ -66,24 +66,24 @@
     "id": "61907a30adaca0b81e8afe71"
   },
   {
-    "id": "61907a69adaca0b81e8afe86",
-    "name": "Syracuse, NY",
-    "lat": 43.0481,
-    "lng": -76.1474,
-    "date": "2020/08/22",
-    "state": "New York",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858472/joeyhouhomepage/btkjmpthwkyicfog0mei.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858472/joeyhouhomepage/yiwnmkracoulwvbykpa3.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858472/joeyhouhomepage/cctfvanpmv7vzj1v9zxz.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858472/joeyhouhomepage/essyz78eduwokqhi0yyy.jpg"
     ],
-    "description": "1-4",
-    "nameCN": "纽约州·锡拉丘兹",
-    "descriptionCN": "1-4",
-    "journeyId": "lake-shore-limited-2020-08",
+    "name": "Syracuse, NY",
+    "nameCN": "纽约州·雪城",
+    "state": "New York",
+    "date": "2020/08/22",
     "journeyName": "Lake Shore Limited",
-    "journeyNameCN": "Lake Shore Limited"
+    "journeyNameCN": "Lake Shore Limited",
+    "journeyId": "lake-shore-limited-2020-08",
+    "lat": 43.0481,
+    "lng": -76.1474,
+    "description": "1-4",
+    "descriptionCN": "1-4",
+    "id": "61907a69adaca0b81e8afe86"
   },
   {
     "id": "61907a97adaca0b81e8afe97",
@@ -1076,21 +1076,21 @@
     "journeyNameCN": "Amtrak"
   },
   {
-    "id": "618e0e631d2baa475d30b96d",
-    "name": "Capitol, Albany, NY",
-    "lat": 42.6312584,
-    "lng": -73.8163574,
-    "date": "2021/04/16",
-    "state": "New York",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636699746/joeyhouhomepage/ibza87qgviae0mukrbge.png"
     ],
-    "description": "1",
-    "nameCN": "undefined·奥尔巴尼国会大厦",
-    "descriptionCN": "1",
-    "journeyId": null,
+    "name": "Albany, NY",
+    "nameCN": "纽约州·奥尔巴尼",
+    "state": "New York",
+    "date": "2021/04/16",
     "journeyName": "Amtrak",
-    "journeyNameCN": "Amtrak"
+    "journeyNameCN": "Amtrak",
+    "journeyId": null,
+    "lat": 42.6312584,
+    "lng": -73.8163574,
+    "description": "1",
+    "descriptionCN": "1",
+    "id": "618e0e631d2baa475d30b96d"
   },
   {
     "id": "618ca2d6912161e40e99e763",

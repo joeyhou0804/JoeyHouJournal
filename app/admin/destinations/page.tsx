@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import Box from '@mui/material/Box'
+import { Box, TablePagination } from '@mui/material'
 import { useRouter } from 'next/navigation'
 
 interface Destination {
@@ -19,6 +19,8 @@ export default function DestinationsPage() {
   const [destinations, setDestinations] = useState<Destination[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
   const router = useRouter()
 
   useEffect(() => {
@@ -60,6 +62,20 @@ export default function DestinationsPage() {
     dest.journeyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     dest.state?.toLowerCase().includes(searchTerm.toLowerCase())
   )
+
+  const paginatedDestinations = filteredDestinations.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  )
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
 
   if (loading) {
     return <Box>Loading...</Box>
@@ -122,19 +138,28 @@ export default function DestinationsPage() {
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Journey</th>
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>State</th>
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Images</th>
-              <th style={{ padding: '1rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredDestinations.length === 0 ? (
+            {paginatedDestinations.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
+                <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
                   No destinations found
                 </td>
               </tr>
             ) : (
-              filteredDestinations.map((dest) => (
-                <tr key={dest.id} style={{ borderBottom: '1px solid #e0e0e0' }}>
+              paginatedDestinations.map((dest) => (
+                <tr
+                  key={dest.id}
+                  onClick={() => router.push(`/admin/destinations/${dest.id}`)}
+                  style={{
+                    borderBottom: '1px solid #e0e0e0',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
                     {dest.name}
                     {dest.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{dest.nameCN}</div>}
@@ -145,44 +170,31 @@ export default function DestinationsPage() {
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
                     {dest.images?.length || 0}
                   </td>
-                  <td style={{ padding: '1rem', textAlign: 'center' }}>
-                    <Box sx={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                      <button
-                        onClick={() => router.push(`/admin/destinations/${dest.id}`)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#FFD701',
-                          border: '1px solid #373737',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(dest.id)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#ff4444',
-                          color: 'white',
-                          border: '1px solid #cc0000',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </Box>
-                  </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
+
+        <TablePagination
+          component="div"
+          count={filteredDestinations.length}
+          page={page}
+          onPageChange={handleChangePage}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          sx={{
+            borderTop: '1px solid #e0e0e0',
+            fontFamily: 'MarioFont, sans-serif',
+            '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+              fontFamily: 'MarioFont, sans-serif'
+            },
+            '& .MuiSelect-select': {
+              fontFamily: 'MarioFont, sans-serif'
+            }
+          }}
+        />
       </Box>
     </Box>
   )
