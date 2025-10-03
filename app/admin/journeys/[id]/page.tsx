@@ -10,9 +10,12 @@ import {
   List,
   ListItem,
   ListItemText,
-  Alert
+  Alert,
+  TextField,
+  Checkbox,
+  Chip
 } from '@mui/material'
-import { Delete as DeleteIcon } from '@mui/icons-material'
+import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material'
 import Link from 'next/link'
 import { journeys } from 'src/data/journeys'
 import destinationsData from 'src/data/destinations.json'
@@ -26,6 +29,23 @@ export default function JourneyDetailsPage() {
   const [destinations, setDestinations] = useState<any[]>([])
   const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [addDrawerOpen, setAddDrawerOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedDestinations, setSelectedDestinations] = useState<string[]>([])
+  const [adding, setAdding] = useState(false)
+  const [saving, setSaving] = useState(false)
+
+  // Form state for editable fields
+  const [formData, setFormData] = useState({
+    name: journey?.name || '',
+    nameCN: journey?.nameCN || '',
+    slug: journey?.slug || '',
+    duration: journey?.duration || '',
+    startDate: journey?.startDate || '',
+    endDate: journey?.endDate || '',
+    description: journey?.description || '',
+    descriptionCN: journey?.descriptionCN || ''
+  })
 
   useEffect(() => {
     if (journey) {
@@ -49,48 +69,136 @@ export default function JourneyDetailsPage() {
     setDeleteDrawerOpen(false)
   }
 
+  const handleSaveJourney = () => {
+    alert('Note: Journey data is stored in src/data/journeys.js file and must be edited manually.\n\nYour changes:\n' +
+      Object.entries(formData).map(([key, value]) => `${key}: ${value}`).join('\n') +
+      '\n\nPlease update the journeys.js file with these values.')
+    setSaving(false)
+  }
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  const fetchDestinations = async () => {
+    try {
+      const response = await fetch('/api/admin/destinations')
+      const data = await response.json()
+      if (journey) {
+        const journeyDests = data.filter((d: any) => d.journeyName === journey.name)
+        setDestinations(journeyDests)
+      }
+    } catch (error) {
+      console.error('Failed to fetch destinations:', error)
+    }
+  }
+
+  const allDestinations = destinationsData as any[]
+  const availableDestinations = allDestinations.filter(
+    d => !destinations.find(jd => jd.id === d.id)
+  )
+
+  const filteredAvailableDestinations = availableDestinations.filter(dest =>
+    dest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    dest.state?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    dest.nameCN?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+
+  const handleToggleDestination = (destId: string) => {
+    setSelectedDestinations(prev =>
+      prev.includes(destId)
+        ? prev.filter(id => id !== destId)
+        : [...prev, destId]
+    )
+  }
+
+  const handleAddDestinations = async () => {
+    if (selectedDestinations.length === 0 || !journey) return
+
+    setAdding(true)
+
+    try {
+      // Update each selected destination
+      for (const destId of selectedDestinations) {
+        const dest = allDestinations.find(d => d.id === destId)
+        if (dest) {
+          const updatedDest = {
+            ...dest,
+            journeyId: journey.id,
+            journeyName: journey.name,
+            journeyNameCN: journey.nameCN || ''
+          }
+
+          const response = await fetch('/api/admin/destinations', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedDest)
+          })
+
+          if (!response.ok) {
+            throw new Error(`Failed to update destination ${dest.name}`)
+          }
+        }
+      }
+
+      // Refresh destinations list
+      await fetchDestinations()
+
+      // Close drawer and reset
+      setAddDrawerOpen(false)
+      setSelectedDestinations([])
+      setSearchTerm('')
+    } catch (error) {
+      console.error('Error adding destinations:', error)
+      alert('Failed to add some destinations. Please try again.')
+    } finally {
+      setAdding(false)
+    }
+  }
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '36px', margin: 0 }}>
           {journey.name}
         </h1>
-        <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button
-            variant="outlined"
-            startIcon={<DeleteIcon />}
-            onClick={() => setDeleteDrawerOpen(true)}
-            sx={{
-              color: '#d32f2f',
-              borderColor: '#d32f2f',
-              fontFamily: 'MarioFont, sans-serif',
-              '&:hover': {
-                borderColor: '#d32f2f',
-                backgroundColor: 'rgba(211, 47, 47, 0.04)'
-              }
-            }}
-          >
-            Delete Journey
-          </Button>
-          <Button
-            variant="outlined"
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <button
+            type="button"
             onClick={() => router.push('/admin/journeys')}
-            sx={{
-              color: '#373737',
-              borderColor: '#373737',
+            style={{
+              padding: '0.75rem 2rem',
+              fontSize: '16px',
               fontFamily: 'MarioFont, sans-serif',
-              '&:hover': {
-                borderColor: '#373737',
-                backgroundColor: 'rgba(55, 55, 55, 0.04)'
-              }
+              backgroundColor: 'white',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: 'pointer'
             }}
           >
-            Back to Journeys
-          </Button>
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={handleSaveJourney}
+            disabled={saving}
+            style={{
+              padding: '0.75rem 2rem',
+              fontSize: '16px',
+              fontFamily: 'MarioFont, sans-serif',
+              backgroundColor: '#FFD701',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: saving ? 'not-allowed' : 'pointer',
+              opacity: saving ? 0.6 : 1
+            }}
+          >
+            {saving ? 'Saving...' : 'Save Journey'}
+          </button>
         </Box>
       </Box>
 
-      {/* Journey Details */}
+      {/* Journey Details Form */}
       <Box
         sx={{
           backgroundColor: 'white',
@@ -100,77 +208,236 @@ export default function JourneyDetailsPage() {
           marginBottom: '2rem'
         }}
       >
+        <Alert severity="warning" sx={{ mb: 3 }}>
+          <Typography sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+            Note: Journey data is stored in src/data/journeys.js and must be edited manually in the code.
+          </Typography>
+        </Alert>
+
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+          {/* Journey ID - Read only */}
           <Box>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: '0 0 0.5rem 0' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
               Journey ID
-            </p>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', margin: 0 }}>
-              {journey.id}
-            </p>
+            </label>
+            <input
+              value={journey.id}
+              readOnly
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #e0e0e0',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#f5f5f5',
+                cursor: 'not-allowed'
+              }}
+            />
           </Box>
 
+          {/* Slug */}
           <Box>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: '0 0 0.5rem 0' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
               Slug
-            </p>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', margin: 0 }}>
-              {journey.slug}
-            </p>
+            </label>
+            <input
+              value={formData.slug}
+              onChange={(e) => handleInputChange('slug', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif'
+              }}
+            />
           </Box>
 
+          {/* Name (English) */}
           <Box>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: '0 0 0.5rem 0' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+              Name (English)
+            </label>
+            <input
+              value={formData.name}
+              onChange={(e) => handleInputChange('name', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif'
+              }}
+            />
+          </Box>
+
+          {/* Name (Chinese) */}
+          <Box>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+              Name (Chinese)
+            </label>
+            <input
+              value={formData.nameCN}
+              onChange={(e) => handleInputChange('nameCN', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif'
+              }}
+            />
+          </Box>
+
+          {/* Route - Read only */}
+          <Box>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
               Route
-            </p>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', margin: 0 }}>
-              {journey.startLocation.name} → {journey.endLocation.name}
-            </p>
+            </label>
+            <input
+              value={`${journey.startLocation.name} → ${journey.endLocation.name}`}
+              readOnly
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #e0e0e0',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#f5f5f5',
+                cursor: 'not-allowed'
+              }}
+            />
           </Box>
 
+          {/* Duration */}
           <Box>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: '0 0 0.5rem 0' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
               Duration
-            </p>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', margin: 0 }}>
-              {journey.duration}
-            </p>
+            </label>
+            <input
+              value={formData.duration}
+              onChange={(e) => handleInputChange('duration', e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif'
+              }}
+            />
           </Box>
 
+          {/* Start Date */}
           <Box>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: '0 0 0.5rem 0' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
               Start Date
-            </p>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', margin: 0 }}>
-              {journey.startDate}
-            </p>
+            </label>
+            <input
+              value={formData.startDate}
+              onChange={(e) => handleInputChange('startDate', e.target.value)}
+              placeholder="August 22, 2020"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif'
+              }}
+            />
           </Box>
 
+          {/* End Date */}
           <Box>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: '0 0 0.5rem 0' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
               End Date
-            </p>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', margin: 0 }}>
-              {journey.endDate}
-            </p>
+            </label>
+            <input
+              value={formData.endDate}
+              onChange={(e) => handleInputChange('endDate', e.target.value)}
+              placeholder="August 25, 2020"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif'
+              }}
+            />
           </Box>
 
+          {/* Description (English) */}
           <Box sx={{ gridColumn: '1 / -1' }}>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: '0 0 0.5rem 0' }}>
-              Description
-            </p>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', margin: 0 }}>
-              {journey.description}
-            </p>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+              Description (English)
+            </label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => handleInputChange('description', e.target.value)}
+              rows={4}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif',
+                resize: 'vertical'
+              }}
+            />
+          </Box>
+
+          {/* Description (Chinese) */}
+          <Box sx={{ gridColumn: '1 / -1' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+              Description (Chinese)
+            </label>
+            <textarea
+              value={formData.descriptionCN}
+              onChange={(e) => handleInputChange('descriptionCN', e.target.value)}
+              rows={4}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif',
+                resize: 'vertical'
+              }}
+            />
           </Box>
         </Box>
       </Box>
 
       {/* Associated Destinations */}
       <Box>
-        <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', marginBottom: '1rem' }}>
-          Associated Destinations ({destinations.length})
-        </h2>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0 }}>
+            Associated Destinations ({destinations.length})
+          </h2>
+          <button
+            onClick={() => setAddDrawerOpen(true)}
+            style={{
+              padding: '0.75rem 1.5rem',
+              fontSize: '16px',
+              fontFamily: 'MarioFont, sans-serif',
+              backgroundColor: '#FFD701',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: 'pointer'
+            }}
+          >
+            + Add Destinations
+          </button>
+        </Box>
 
         <Box
           sx={{
@@ -288,30 +555,196 @@ export default function JourneyDetailsPage() {
             </Alert>
           )}
 
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-            <Button
-              variant="outlined"
+          <Box sx={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+            <button
+              type="button"
               onClick={() => setDeleteDrawerOpen(false)}
-              sx={{
+              style={{
+                padding: '0.75rem 2rem',
+                fontSize: '16px',
                 fontFamily: 'MarioFont, sans-serif',
-                color: '#373737',
-                borderColor: '#373737'
+                backgroundColor: 'white',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: 'pointer'
               }}
             >
               Cancel
-            </Button>
-            <Button
-              variant="contained"
+            </button>
+            <button
+              type="button"
               onClick={handleDeleteJourney}
               disabled={deleting}
-              sx={{
+              style={{
+                padding: '0.75rem 2rem',
+                fontSize: '16px',
                 fontFamily: 'MarioFont, sans-serif',
                 backgroundColor: '#d32f2f',
-                '&:hover': { backgroundColor: '#b71c1c' }
+                color: 'white',
+                border: '2px solid #b71c1c',
+                borderRadius: '0.5rem',
+                cursor: deleting ? 'not-allowed' : 'pointer',
+                opacity: deleting ? 0.6 : 1
               }}
             >
               {deleting ? 'Deleting...' : 'Confirm Delete'}
-            </Button>
+            </button>
+          </Box>
+        </Box>
+      </Drawer>
+
+      {/* Add Destinations Drawer */}
+      <Drawer
+        anchor="right"
+        open={addDrawerOpen}
+        onClose={() => {
+          setAddDrawerOpen(false)
+          setSelectedDestinations([])
+          setSearchTerm('')
+        }}
+      >
+        <Box sx={{ width: 500, padding: 3 }}>
+          <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 2 }}>
+            Add Destinations to {journey.name}
+          </Typography>
+
+          {selectedDestinations.length > 0 && (
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 1 }}>
+                Selected: {selectedDestinations.length} destination{selectedDestinations.length !== 1 ? 's' : ''}
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selectedDestinations.map(destId => {
+                  const dest = allDestinations.find(d => d.id === destId)
+                  return dest ? (
+                    <Chip
+                      key={destId}
+                      label={dest.name}
+                      onDelete={() => handleToggleDestination(destId)}
+                      size="small"
+                      sx={{ fontFamily: 'MarioFont, sans-serif' }}
+                    />
+                  ) : null
+                })}
+              </Box>
+            </Box>
+          )}
+
+          <TextField
+            fullWidth
+            placeholder="Search destinations by name, state, or Chinese name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                fontFamily: 'MarioFont, sans-serif',
+                '& fieldset': { borderColor: '#373737', borderWidth: '2px' },
+                '&:hover fieldset': { borderColor: '#373737' },
+                '&.Mui-focused fieldset': { borderColor: '#FFD701', borderWidth: '2px' }
+              },
+              '& .MuiInputBase-input': {
+                fontFamily: 'MarioFont, sans-serif'
+              }
+            }}
+          />
+
+          <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 1, color: '#666' }}>
+            {filteredAvailableDestinations.length} available destination{filteredAvailableDestinations.length !== 1 ? 's' : ''}
+          </Typography>
+
+          <Box sx={{
+            maxHeight: '450px',
+            overflow: 'auto',
+            border: '1px solid #e0e0e0',
+            borderRadius: 1,
+            mb: 3
+          }}>
+            {filteredAvailableDestinations.length === 0 ? (
+              <Box sx={{ padding: 3, textAlign: 'center' }}>
+                <Typography sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
+                  {searchTerm ? 'No destinations match your search' : 'No available destinations'}
+                </Typography>
+              </Box>
+            ) : (
+              <List dense>
+                {filteredAvailableDestinations.map((dest) => (
+                  <ListItem
+                    key={dest.id}
+                    button
+                    onClick={() => handleToggleDestination(dest.id)}
+                    sx={{
+                      borderBottom: '1px solid #f5f5f5',
+                      '&:hover': { backgroundColor: '#f5f5f5' }
+                    }}
+                  >
+                    <Checkbox
+                      checked={selectedDestinations.includes(dest.id)}
+                      sx={{ mr: 1 }}
+                    />
+                    <ListItemText
+                      primary={
+                        <Box>
+                          <span style={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.name}</span>
+                          {dest.nameCN && (
+                            <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                              {dest.nameCN}
+                            </span>
+                          )}
+                        </Box>
+                      }
+                      secondary={
+                        <span style={{ fontFamily: 'MarioFont, sans-serif' }}>
+                          {dest.state} • {dest.date}
+                          {dest.journeyName && <span style={{ color: '#999' }}> • Currently in: {dest.journeyName}</span>}
+                        </span>
+                      }
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+            <button
+              type="button"
+              onClick={() => {
+                setAddDrawerOpen(false)
+                setSelectedDestinations([])
+                setSearchTerm('')
+              }}
+              disabled={adding}
+              style={{
+                padding: '0.75rem 2rem',
+                fontSize: '16px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: 'white',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: adding ? 'not-allowed' : 'pointer',
+                opacity: adding ? 0.6 : 1
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleAddDestinations}
+              disabled={adding || selectedDestinations.length === 0}
+              style={{
+                padding: '0.75rem 2rem',
+                fontSize: '16px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#FFD701',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: (adding || selectedDestinations.length === 0) ? 'not-allowed' : 'pointer',
+                opacity: (adding || selectedDestinations.length === 0) ? 0.6 : 1
+              }}
+            >
+              {adding ? 'Adding...' : selectedDestinations.length > 0 ? `Add ${selectedDestinations.length} Destination${selectedDestinations.length !== 1 ? 's' : ''}` : 'Add Destinations'}
+            </button>
           </Box>
         </Box>
       </Drawer>
