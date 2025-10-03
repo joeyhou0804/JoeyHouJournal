@@ -11,11 +11,17 @@
     "duration": "3 days, 2 nights",
     "startLocation": {
       "name": "Chicago, IL",
-      "coordinates": { "lat": 41.8781, "lng": -87.6298 }
+      "coordinates": {
+        "lat": 41.8781,
+        "lng": -87.6298
+      }
     },
     "endLocation": {
       "name": "San Francisco, CA",
-      "coordinates": { "lat": 37.7749, "lng": -122.4194 }
+      "coordinates": {
+        "lat": 37.7749,
+        "lng": -122.4194
+      }
     },
     "visitedPlaceIds": [
       "naperville-il-2021-08-08",
@@ -51,11 +57,17 @@
     "duration": "2 days, 2 nights",
     "startLocation": {
       "name": "Portland, OR",
-      "coordinates": { "lat": 45.5152, "lng": -122.6784 }
+      "coordinates": {
+        "lat": 45.5152,
+        "lng": -122.6784
+      }
     },
     "endLocation": {
       "name": "Chicago, IL",
-      "coordinates": { "lat": 41.8781, "lng": -87.6298 }
+      "coordinates": {
+        "lat": 41.8781,
+        "lng": -87.6298
+      }
     },
     "visitedPlaceIds": [
       "portland-or-2021-08-12",
@@ -90,11 +102,17 @@
     "duration": "2 days, 2 nights",
     "startLocation": {
       "name": "Chicago, IL",
-      "coordinates": { "lat": 41.8781, "lng": -87.6298 }
+      "coordinates": {
+        "lat": 41.8781,
+        "lng": -87.6298
+      }
     },
     "endLocation": {
       "name": "Los Angeles, CA",
-      "coordinates": { "lat": 34.0522, "lng": -118.2437 }
+      "coordinates": {
+        "lat": 34.0522,
+        "lng": -118.2437
+      }
     },
     "visitedPlaceIds": [
       "joliet-il-2021-08-16",
@@ -126,11 +144,17 @@
     "duration": "2 days, 1 night",
     "startLocation": {
       "name": "Los Angeles, CA",
-      "coordinates": { "lat": 34.0522, "lng": -118.2437 }
+      "coordinates": {
+        "lat": 34.0522,
+        "lng": -118.2437
+      }
     },
     "endLocation": {
       "name": "Chicago, IL",
-      "coordinates": { "lat": 41.8781, "lng": -87.6298 }
+      "coordinates": {
+        "lat": 41.8781,
+        "lng": -87.6298
+      }
     },
     "visitedPlaceIds": [
       "san-marcos-tx-2020-09-11",
@@ -161,11 +185,17 @@
     "duration": "1 day, 1 night",
     "startLocation": {
       "name": "New Orleans, LA",
-      "coordinates": { "lat": 29.9511, "lng": -90.0715 }
+      "coordinates": {
+        "lat": 29.9511,
+        "lng": -90.0715
+      }
     },
     "endLocation": {
       "name": "New York, NY",
-      "coordinates": { "lat": 40.7128, "lng": -74.006 }
+      "coordinates": {
+        "lat": 40.7128,
+        "lng": -74.006
+      }
     },
     "visitedPlaceIds": [
       "atlanta-ga-2020-08-13",
@@ -195,11 +225,17 @@
     "duration": "1 day, 1 night",
     "startLocation": {
       "name": "New York, NY",
-      "coordinates": { "lat": 40.7128, "lng": -74.006 }
+      "coordinates": {
+        "lat": 40.7128,
+        "lng": -74.006
+      }
     },
     "endLocation": {
       "name": "Miami, FL",
-      "coordinates": { "lat": 25.7617, "lng": -80.1918 }
+      "coordinates": {
+        "lat": 25.7617,
+        "lng": -80.1918
+      }
     },
     "visitedPlaceIds": [
       "new-york-ny-2020-08-17",
@@ -228,11 +264,17 @@
     "duration": "1 day, 1 night",
     "startLocation": {
       "name": "New York, NY",
-      "coordinates": { "lat": 40.7128, "lng": -74.006 }
+      "coordinates": {
+        "lat": 40.7128,
+        "lng": -74.006
+      }
     },
     "endLocation": {
       "name": "Chicago, IL",
-      "coordinates": { "lat": 41.8781, "lng": -87.6298 }
+      "coordinates": {
+        "lat": 41.8781,
+        "lng": -87.6298
+      }
     },
     "visitedPlaceIds": [
       "new-york-ny-2020-08-22",
@@ -259,11 +301,17 @@
     "duration": "1 day",
     "startLocation": {
       "name": "Washington, DC",
-      "coordinates": { "lat": 38.9072, "lng": -77.0369 }
+      "coordinates": {
+        "lat": 38.9072,
+        "lng": -77.0369
+      }
     },
     "endLocation": {
       "name": "Chicago, IL",
-      "coordinates": { "lat": 41.8781, "lng": -87.6298 }
+      "coordinates": {
+        "lat": 41.8781,
+        "lng": -87.6298
+      }
     },
     "visitedPlaceIds": [
       "washington-dc-2020-08-20",
@@ -276,7 +324,7 @@
       "south-bend-in-2020-08-19",
       "chicago-il-2020-08-19"
     ],
-    "totalPlaces": 9,
+    "totalPlaces": 6,
     "images": []
   },
   {
@@ -291,11 +339,17 @@
     "duration": "1 day",
     "startLocation": {
       "name": "New York, NY",
-      "coordinates": { "lat": 40.7128, "lng": -74.006 }
+      "coordinates": {
+        "lat": 40.7128,
+        "lng": -74.006
+      }
     },
     "endLocation": {
       "name": "St. Albans, VT",
-      "coordinates": { "lat": 44.8109, "lng": -73.0818 }
+      "coordinates": {
+        "lat": 44.8109,
+        "lng": -73.0818
+      }
     },
     "visitedPlaceIds": [
       "new-york-ny-2020-08-24",
@@ -305,7 +359,7 @@
       "springfield-ma-2020-08-24",
       "holyoke-ma-2020-08-24"
     ],
-    "totalPlaces": 6,
+    "totalPlaces": 0,
     "images": []
   },
   {
@@ -320,11 +374,17 @@
     "duration": "1 day",
     "startLocation": {
       "name": "Chicago, IL",
-      "coordinates": { "lat": 41.8781, "lng": -87.6298 }
+      "coordinates": {
+        "lat": 41.8781,
+        "lng": -87.6298
+      }
     },
     "endLocation": {
       "name": "New Orleans, LA",
-      "coordinates": { "lat": 29.9511, "lng": -90.0715 }
+      "coordinates": {
+        "lat": 29.9511,
+        "lng": -90.0715
+      }
     },
     "visitedPlaceIds": [
       "chicago-il-2020-09-13",
@@ -348,11 +408,17 @@
     "duration": "1 day",
     "startLocation": {
       "name": "New York, NY",
-      "coordinates": { "lat": 40.7128, "lng": -74.006 }
+      "coordinates": {
+        "lat": 40.7128,
+        "lng": -74.006
+      }
     },
     "endLocation": {
       "name": "Pittsburgh, PA",
-      "coordinates": { "lat": 40.4406, "lng": -79.9959 }
+      "coordinates": {
+        "lat": 40.4406,
+        "lng": -79.9959
+      }
     },
     "visitedPlaceIds": [
       "new-york-ny-2020-08-21",
@@ -367,24 +433,30 @@
     "id": "ethan-allen-express-2020-08",
     "slug": "ethan-allen-express",
     "name": "Ethan Allen Express",
-    "nameCN": "",
     "description": "Journey from Rutland, Vermont through the Hudson Valley to New York.",
-    "descriptionCN": "",
     "startDate": "2020-08-25",
     "endDate": "2020-08-25",
     "duration": "1 day",
     "startLocation": {
       "name": "Rutland, VT",
-      "coordinates": { "lat": 43.6106, "lng": -72.9726 }
+      "coordinates": {
+        "lat": 43.6106,
+        "lng": -72.9726
+      }
     },
     "endLocation": {
       "name": "New York, NY",
-      "coordinates": { "lat": 40.7128, "lng": -74.006 }
+      "coordinates": {
+        "lat": 40.7128,
+        "lng": -74.006
+      }
     },
     "visitedPlaceIds": [
       "rutland-vt-2020-08-25"
     ],
-    "totalPlaces": 1,
-    "images": []
+    "totalPlaces": 2,
+    "images": [],
+    "nameCN": "",
+    "descriptionCN": ""
   }
 ]

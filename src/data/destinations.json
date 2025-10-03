@@ -3055,9 +3055,9 @@
     "description": "1234",
     "nameCN": "佛蒙特州·基灵顿峰",
     "descriptionCN": "1234",
-    "journeyId": null,
-    "journeyName": "Ground Transportation",
-    "journeyNameCN": "Ground Transportation"
+    "journeyId": "ethan-allen-express-2020-08",
+    "journeyName": "Ethan Allen Express",
+    "journeyNameCN": ""
   },
   {
     "id": "61889778f086458f3e4a019a",

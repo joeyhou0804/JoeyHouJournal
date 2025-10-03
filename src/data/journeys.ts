@@ -1,21 +1,32 @@
 // Import journeys data from JSON
 import journeysData from './journeys.json'
+import { destinations } from './destinations'
 
-export const journeys = journeysData
+// Calculate totalPlaces dynamically from destinations
+function enrichJourneyWithPlaceCount(journey: any) {
+  const totalPlaces = destinations.filter(d => d.journeyId === journey.id).length
+  console.log(`Journey ${journey.id}: calculated ${totalPlaces} places (was ${journey.totalPlaces})`)
+  return { ...journey, totalPlaces }
+}
+
+// Export journeys with dynamically calculated totalPlaces
+export const journeys = journeysData.map(enrichJourneyWithPlaceCount)
 
 // Helper function to get journey by slug
 export function getJourneyBySlug(slug: string) {
-  return journeys.find(j => j.slug === slug)
+  const journey = journeysData.find(j => j.slug === slug)
+  return journey ? enrichJourneyWithPlaceCount(journey) : undefined
 }
 
 // Helper function to get journey by ID
 export function getJourneyById(id: string) {
-  return journeys.find(j => j.id === id)
+  const journey = journeysData.find(j => j.id === id)
+  return journey ? enrichJourneyWithPlaceCount(journey) : undefined
 }
 
 // Helper function to get all journeys sorted by date
 export function getJourneysSortedByDate(order: 'asc' | 'desc' = 'desc') {
-  return [...journeys].sort((a, b) => {
+  return journeys.sort((a, b) => {
     const dateA = new Date(a.startDate)
     const dateB = new Date(b.startDate)
     return order === 'desc' ? dateB.getTime() - dateA.getTime() : dateA.getTime() - dateB.getTime()

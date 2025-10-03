@@ -29,8 +29,21 @@ export default function DestinationsPage() {
 
   const fetchDestinations = async () => {
     try {
-      const response = await fetch('/api/admin/destinations')
+      const response = await fetch('/api/admin/destinations', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        cache: 'no-store'
+      })
+
+      if (!response.ok) {
+        console.error('Response not OK:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       const data = await response.json()
+      console.log('Fetched destinations:', data.length)
       setDestinations(data)
     } catch (error) {
       console.error('Failed to fetch destinations:', error)

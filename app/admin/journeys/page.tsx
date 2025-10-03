@@ -3,10 +3,17 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
-import { journeys } from 'src/data/journeys'
+import journeysData from 'src/data/journeys.json'
+import { destinations } from 'src/data/destinations'
 
 export default function JourneysPage() {
   const [searchTerm, setSearchTerm] = useState('')
+
+  // Calculate totalPlaces dynamically from destinations
+  const journeys = journeysData.map(journey => ({
+    ...journey,
+    totalPlaces: destinations.filter(d => d.journeyId === journey.id).length
+  }))
 
   const filteredJourneys = journeys.filter(journey =>
     journey.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -72,19 +79,28 @@ export default function JourneysPage() {
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Duration</th>
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Places</th>
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Dates</th>
-              <th style={{ padding: '1rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredJourneys.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
+                <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
                   No journeys found
                 </td>
               </tr>
             ) : (
               filteredJourneys.map((journey) => (
-                <tr key={journey.id} style={{ borderBottom: '1px solid #e0e0e0' }}>
+                <tr
+                  key={journey.id}
+                  style={{
+                    borderBottom: '1px solid #e0e0e0',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onClick={() => window.location.href = `/admin/journeys/${journey.id}`}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                >
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
                     {journey.name}
                   </td>
@@ -99,23 +115,6 @@ export default function JourneysPage() {
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
                     {journey.startDate} to {journey.endDate}
-                  </td>
-                  <td style={{ padding: '1rem', textAlign: 'center' }}>
-                    <Link href={`/admin/journeys/${journey.id}`}>
-                      <button
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#FFD701',
-                          border: '1px solid #373737',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        View Details
-                      </button>
-                    </Link>
                   </td>
                 </tr>
               ))

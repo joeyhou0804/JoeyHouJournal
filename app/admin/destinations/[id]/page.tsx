@@ -64,7 +64,19 @@ export default function DestinationFormPage() {
 
   const fetchDestination = async () => {
     try {
-      const response = await fetch('/api/admin/destinations')
+      const response = await fetch('/api/admin/destinations', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        cache: 'no-store'
+      })
+
+      if (!response.ok) {
+        console.error('Response not OK:', response.status, response.statusText)
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       const destinations = await response.json()
       const destination = destinations.find((d: any) => d.id === id)
 
@@ -72,6 +84,8 @@ export default function DestinationFormPage() {
         Object.keys(destination).forEach((key) => {
           setValue(key as any, destination[key])
         })
+      } else {
+        console.error('Destination not found:', id)
       }
     } catch (error) {
       console.error('Failed to fetch destination:', error)

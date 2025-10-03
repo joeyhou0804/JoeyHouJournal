@@ -8,8 +8,14 @@ export async function GET() {
   try {
     const data = await fs.readFile(destinationsPath, 'utf8')
     const destinations = JSON.parse(data)
-    return NextResponse.json(destinations)
+
+    return NextResponse.json(destinations, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+      }
+    })
   } catch (error) {
+    console.error('Error reading destinations:', error)
     return NextResponse.json({ error: 'Failed to read destinations' }, { status: 500 })
   }
 }

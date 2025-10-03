@@ -4,10 +4,42 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function AdminLogin() {
-  const [password, setPassword] = useState('')
+  const [code, setCode] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
+  const [codeSent, setCodeSent] = useState(false)
   const router = useRouter()
+
+  const handleSendCode = async () => {
+    setLoading(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      const response = await fetch('/api/admin/auth/send-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setCodeSent(true)
+        let message = `Verification code sent to phone ending in ${data.phoneLast4}`
+        if (data.debugCode) {
+          message += ` (Dev Mode: ${data.debugCode})`
+        }
+        setSuccess(message)
+      } else {
+        setError(data.error || 'Failed to send code')
+      }
+    } catch (err) {
+      setError('An error occurred while sending code')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -18,13 +50,15 @@ export default function AdminLogin() {
       const response = await fetch('/api/admin/auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ code })
       })
+
+      const data = await response.json()
 
       if (response.ok) {
         router.push('/admin/dashboard')
       } else {
-        setError('Invalid password')
+        setError(data.error || 'Invalid verification code')
       }
     } catch (err) {
       setError('An error occurred')
@@ -55,53 +89,119 @@ export default function AdminLogin() {
           Admin Login
         </h1>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label htmlFor="password" style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+        {!codeSent ? (
+          <div>
+            <p style={{ fontFamily: 'MarioFont, sans-serif', marginBottom: '1.5rem', textAlign: 'center' }}>
+              Click the button below to receive a 4-digit verification code on your phone.
+            </p>
+
+            {error && (
+              <div style={{ color: 'red', marginBottom: '1rem', fontFamily: 'MarioFont, sans-serif', textAlign: 'center' }}>
+                {error}
+              </div>
+            )}
+
+            <button
+              onClick={handleSendCode}
+              disabled={loading}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '18px',
+                fontFamily: 'MarioFontTitle, sans-serif',
+                backgroundColor: '#FFD701',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.6 : 1
+              }}
+            >
+              {loading ? 'Sending...' : 'Send Verification Code'}
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div style={{ marginBottom: '1.5rem' }}>
+              {success && (
+                <div style={{ color: '#008000', marginBottom: '1rem', fontFamily: 'MarioFont, sans-serif', textAlign: 'center' }}>
+                  {success}
+                </div>
+              )}
+
+              <label htmlFor="code" style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
+                Enter Verification Code
+              </label>
+              <input
+                type="text"
+                id="code"
+                value={code}
+                onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                maxLength={6}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  fontSize: '24px',
+                  border: '2px solid #373737',
+                  borderRadius: '0.5rem',
+                  fontFamily: 'MarioFont, sans-serif',
+                  boxSizing: 'border-box',
+                  textAlign: 'center',
+                  letterSpacing: '0.5rem'
+                }}
+                required
+                autoFocus
+              />
+            </div>
+
+            {error && (
+              <div style={{ color: 'red', marginBottom: '1rem', fontFamily: 'MarioFont, sans-serif', textAlign: 'center' }}>
+                {error}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading || (code.length !== 4 && code.length !== 6)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '18px',
+                fontFamily: 'MarioFontTitle, sans-serif',
+                backgroundColor: '#FFD701',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: (loading || (code.length !== 4 && code.length !== 6)) ? 'not-allowed' : 'pointer',
+                opacity: (loading || (code.length !== 4 && code.length !== 6)) ? 0.6 : 1,
+                marginBottom: '0.75rem'
+              }}
+            >
+              {loading ? 'Verifying...' : 'Verify & Login'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setCodeSent(false)
+                setCode('')
+                setError('')
+                setSuccess('')
+              }}
               style={{
                 width: '100%',
                 padding: '0.75rem',
                 fontSize: '16px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: 'white',
+                color: '#373737',
                 border: '2px solid #373737',
                 borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif',
-                boxSizing: 'border-box'
+                cursor: 'pointer'
               }}
-              required
-            />
-          </div>
-
-          {error && (
-            <div style={{ color: 'red', marginBottom: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
-              {error}
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              fontSize: '18px',
-              fontFamily: 'MarioFontTitle, sans-serif',
-              backgroundColor: '#FFD701',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.6 : 1
-            }}
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
+            >
+              Request New Code
+            </button>
+          </form>
+        )}
       </div>
     </div>
   )
