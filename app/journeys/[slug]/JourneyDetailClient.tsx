@@ -318,7 +318,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               className="hover:scale-105 transition-transform duration-200"
             >
               <img
-                src="/images/buttons/latest_first_button.png"
+                src={`/images/buttons/latest_first_button_${locale}.png`}
                 alt={tr.latestFirst}
                 className="h-16 w-auto"
               />
@@ -328,7 +328,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               className="hover:scale-105 transition-transform duration-200"
             >
               <img
-                src="/images/buttons/earliest_first_button.png"
+                src={`/images/buttons/earliest_first_button_${locale}.png`}
                 alt={tr.earliestFirst}
                 className="h-16 w-auto"
               />

@@ -10,6 +10,7 @@ import Container from 'src/components/Container'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import HeroSection from 'src/components/HeroSection'
+import MixedText from 'src/components/MixedText'
 import { destinations } from 'src/data/destinations'
 import { journeys } from 'src/data/journeys'
 import destinationsData from 'src/data/destinations.json'
@@ -72,6 +73,7 @@ export default function Home() {
     .map(destination => ({
       id: destination.id,
       name: destination.name,
+      nameCN: destination.nameCN,
       date: destination.date,
       journeyName: destination.journeyName,
       journeyNameCN: destination.journeyNameCN,
@@ -413,12 +415,14 @@ export default function Home() {
                     alt="Location"
                     sx={{ width: '100%', height: 'auto', display: 'block' }}
                   />
-                  <Box
+                  <MixedText
+                    text={featuredTrips[currentSlide].name}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="40px"
+                    color="#373737"
                     component="h3"
                     sx={{
-                      fontFamily: 'MarioFontTitle, sans-serif',
-                      fontSize: '40px',
-                      color: '#373737',
                       margin: 0,
                       position: 'absolute',
                       top: '50%',
@@ -428,17 +432,15 @@ export default function Home() {
                       textAlign: 'center',
                       width: '100%'
                     }}
-                  >
-                    {featuredTrips[currentSlide].name}
-                  </Box>
+                  />
                 </Box>
 
                 {/* Route and Duration */}
                 <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-                  <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
+                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
                     {featuredTrips[currentSlide].route}
                   </Box>
-                  <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
                     {featuredTrips[currentSlide].duration}
                   </Box>
                 </Box>
@@ -690,12 +692,14 @@ export default function Home() {
                     alt="Location"
                     sx={{ width: '100%', height: 'auto', display: 'block' }}
                   />
-                  <Box
+                  <MixedText
+                    text={locale === 'zh' && recentPlaces[currentDestSlide].nameCN ? recentPlaces[currentDestSlide].nameCN : recentPlaces[currentDestSlide].name}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="40px"
+                    color="#FFD701"
                     component="h3"
                     sx={{
-                      fontFamily: 'MarioFontTitle, sans-serif',
-                      fontSize: '40px',
-                      color: '#FFD701',
                       margin: 0,
                       position: 'absolute',
                       top: '50%',
@@ -705,17 +709,15 @@ export default function Home() {
                       textAlign: 'center',
                       width: '100%'
                     }}
-                  >
-                    {recentPlaces[currentDestSlide].name}
-                  </Box>
+                  />
                 </Box>
 
                 {/* Route and Date */}
                 <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-                  <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
+                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
                     {locale === 'zh' && recentPlaces[currentDestSlide].journeyNameCN ? recentPlaces[currentDestSlide].journeyNameCN : recentPlaces[currentDestSlide].journeyName}
                   </Box>
-                  <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
                     {recentPlaces[currentDestSlide].date}
                   </Box>
                 </Box>

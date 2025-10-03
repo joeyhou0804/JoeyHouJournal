@@ -162,7 +162,7 @@ export default function NavigationMenu({
         >
           <Box
             component="img"
-            src="/images/icons/icon_menu.webp"
+            src={`/images/icons/icon_menu_${locale}.${locale === 'zh' ? 'png' : 'webp'}`}
             alt="Menu"
             className="w-16 h-16"
           />
