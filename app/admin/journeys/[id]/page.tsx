@@ -715,11 +715,11 @@ export default function JourneyDetailsPage() {
                 {filteredAvailableDestinations.map((dest) => (
                   <ListItem
                     key={dest.id}
-                    button
                     onClick={() => handleToggleDestination(dest.id)}
                     sx={{
                       borderBottom: '1px solid #f5f5f5',
-                      '&:hover': { backgroundColor: '#f5f5f5' }
+                      '&:hover': { backgroundColor: '#f5f5f5' },
+                      cursor: 'pointer'
                     }}
                   >
                     <Checkbox
