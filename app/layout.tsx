@@ -1,5 +1,5 @@
 import './globals.css'
-import { LanguageProvider } from 'src/contexts/LanguageContext'
+import { Providers } from './providers'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -18,9 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <LanguageProvider>
+        <Providers>
           {children}
-        </LanguageProvider>
+        </Providers>
       </body>
     </html>
   )
