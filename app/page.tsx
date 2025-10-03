@@ -267,14 +267,14 @@ export default function Home() {
             </Container>
             <Box
               component="img"
-              src={`/images/journey/journeys_title_${locale}.png`}
+              src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/journeys_title_${locale}`}
               alt="Featured Journeys"
               className="h-auto max-w-4xl relative"
               sx={{ transform: locale === 'zh' ? 'translate(-5rem, -6rem)' : 'translate(-5rem, -4rem)', zIndex: 20 }}
             />
             <Box
               component="img"
-              src={`/images/journey/journeys_subtitle_${locale}.png`}
+              src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/journeys_subtitle_${locale}`}
               alt="Explore my most memorable train adventures"
               className="h-auto max-w-4xl relative"
               sx={{ transform: 'translate(2rem, -16rem)', zIndex: 20 }}
@@ -560,7 +560,7 @@ export default function Home() {
           <Container className="relative mb-12">
             <Box
               component="img"
-              src={`/images/homepage/destinations_title_${locale}.png`}
+              src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/destinations_title_${locale}`}
               alt="Recent Destinations"
               className="h-auto max-w-4xl relative"
               sx={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
@@ -591,7 +591,7 @@ export default function Home() {
             />
             <Box
               component="img"
-              src={`/images/homepage/homepage_destination_text_${locale}.png`}
+              src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_destination_text_${locale}`}
               alt="Discover the places that shaped my rail journey across America"
               className="h-auto max-w-4xl relative"
               sx={{ transform: 'translate(2rem, 2rem)', zIndex: 20 }}
