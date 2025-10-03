@@ -44,12 +44,6 @@
     "journeyNameCN": "Lake Shore Limited"
   },
   {
-    "id": "61907a30adaca0b81e8afe71",
-    "name": "Amtrak, Albany, NY",
-    "lat": 42.64121,
-    "lng": -73.741172,
-    "date": "2020/08/22",
-    "state": "New York",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858414/joeyhouhomepage/lhasmud6inzzm5xrhsg1.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858414/joeyhouhomepage/tuaj07xdxmuwhzhuuyvs.jpg",
@@ -58,12 +52,18 @@
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858415/joeyhouhomepage/vjtiwfmotwqdujieidx4.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636858415/joeyhouhomepage/vdpalvri9qenhvgp0qlz.jpg"
     ],
-    "description": "1-3",
+    "name": "Albany, NY",
     "nameCN": "纽约州·奥尔巴尼",
-    "descriptionCN": "1-3",
-    "journeyId": "lake-shore-limited-2020-08",
+    "state": "New York",
+    "date": "2020/08/22",
     "journeyName": "Lake Shore Limited",
-    "journeyNameCN": "Lake Shore Limited"
+    "journeyNameCN": "Lake Shore Limited",
+    "journeyId": "lake-shore-limited-2020-08",
+    "lat": 42.64121,
+    "lng": -73.741172,
+    "description": "1-3",
+    "descriptionCN": "1-3",
+    "id": "61907a30adaca0b81e8afe71"
   },
   {
     "id": "61907a69adaca0b81e8afe86",
@@ -2928,12 +2928,6 @@
     "journeyNameCN": "56 Vermonter"
   },
   {
-    "id": "61889625f086458f3e4a011c",
-    "name": "St/ Albans, VT",
-    "lat": 44.8109,
-    "lng": -73.0832,
-    "date": "2021/10/08",
-    "state": "Vermont",
     "images": [
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636341284/joeyhouhomepage/vbfv117ma9pkfqitqvij.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636341284/joeyhouhomepage/wniusdckmbbfbeofrccd.jpg",
@@ -2942,12 +2936,18 @@
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636341285/joeyhouhomepage/n1oizvvwtucmdahvi2px.jpg",
       "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1636341285/joeyhouhomepage/kokb1i6zvjddupuezicb.jpg"
     ],
-    "description": "1234",
-    "nameCN": "佛蒙特州·St/ Albans",
-    "descriptionCN": "1234",
-    "journeyId": null,
+    "name": "St. Albans, VT",
+    "nameCN": "佛蒙特州·圣奥尔本斯",
+    "state": "Vermont",
+    "date": "2021/10/08",
     "journeyName": "56 Vermonter",
-    "journeyNameCN": "56 Vermonter"
+    "journeyNameCN": "56 Vermonter",
+    "journeyId": null,
+    "lat": 44.8109,
+    "lng": -73.0832,
+    "description": "1234",
+    "descriptionCN": "1234",
+    "id": "61889625f086458f3e4a011c"
   },
   {
     "id": "61889661f086458f3e4a0131",

@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import Box from '@mui/material/Box'
+import { Box, TextField, MenuItem } from '@mui/material'
+import { journeys } from 'src/data/journeys'
 
 interface DestinationFormData {
   id?: string
@@ -35,13 +36,27 @@ export default function DestinationFormPage() {
 
   const [loading, setLoading] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [coordinatesEditable, setCoordinatesEditable] = useState(false)
+  const [geocodingError, setGeocodingError] = useState<string | null>(null)
   const images = watch('images') || []
+  const cityName = watch('name')
 
   useEffect(() => {
     if (!isNew) {
       fetchDestination()
     }
   }, [id, isNew])
+
+  // Auto-geocode when city name changes
+  useEffect(() => {
+    if (cityName && !coordinatesEditable && isNew) {
+      const timeoutId = setTimeout(() => {
+        geocodeAddress(cityName)
+      }, 1000) // Debounce for 1 second
+
+      return () => clearTimeout(timeoutId)
+    }
+  }, [cityName, coordinatesEditable, isNew])
 
   const fetchDestination = async () => {
     try {
@@ -56,6 +71,29 @@ export default function DestinationFormPage() {
       }
     } catch (error) {
       console.error('Failed to fetch destination:', error)
+    }
+  }
+
+  const geocodeAddress = async (address: string) => {
+    try {
+      setGeocodingError(null)
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+      )
+      const data = await response.json()
+
+      if (data.status === 'OK' && data.results.length > 0) {
+        const location = data.results[0].geometry.location
+        setValue('lat', location.lat)
+        setValue('lng', location.lng)
+      } else {
+        setGeocodingError(`Could not find coordinates for "${address}". Please enter manually.`)
+        setCoordinatesEditable(true)
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error)
+      setGeocodingError('Failed to geocode address. Please enter coordinates manually.')
+      setCoordinatesEditable(true)
     }
   }
 
@@ -120,11 +158,50 @@ export default function DestinationFormPage() {
     }
   }
 
+  const ActionButtons = () => (
+    <Box sx={{ display: 'flex', gap: '1rem' }}>
+      <button
+        type="button"
+        onClick={() => router.push('/admin/destinations')}
+        style={{
+          padding: '0.75rem 2rem',
+          fontSize: '16px',
+          fontFamily: 'MarioFont, sans-serif',
+          backgroundColor: 'white',
+          border: '2px solid #373737',
+          borderRadius: '0.5rem',
+          cursor: 'pointer'
+        }}
+      >
+        Cancel
+      </button>
+      <button
+        type="submit"
+        disabled={loading}
+        style={{
+          padding: '0.75rem 2rem',
+          fontSize: '16px',
+          fontFamily: 'MarioFont, sans-serif',
+          backgroundColor: '#FFD701',
+          border: '2px solid #373737',
+          borderRadius: '0.5rem',
+          cursor: loading ? 'not-allowed' : 'pointer',
+          opacity: loading ? 0.6 : 1
+        }}
+      >
+        {loading ? 'Saving...' : 'Save Destination'}
+      </button>
+    </Box>
+  )
+
   return (
     <Box>
-      <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '36px', marginBottom: '2rem' }}>
-        {isNew ? 'Add Destination' : 'Edit Destination'}
-      </h1>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '36px', margin: 0 }}>
+          {isNew ? 'Add Destination' : 'Edit Destination'}
+        </h1>
+        <ActionButtons />
+      </Box>
 
       <Box
         component="form"
@@ -210,59 +287,144 @@ export default function DestinationFormPage() {
             />
           </Box>
 
-          {/* Journey Name (English) */}
+          {/* Journey Selector */}
+          <Box sx={{ gridColumn: '1 / -1' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+              Select Journey *
+            </label>
+            <TextField
+              select
+              fullWidth
+              value={watch('journeyId') || ''}
+              onChange={(e) => {
+                const selectedJourney = journeys.find(j => j.id === e.target.value)
+                if (selectedJourney) {
+                  setValue('journeyId', selectedJourney.id)
+                  setValue('journeyName', selectedJourney.name)
+                  setValue('journeyNameCN', selectedJourney.nameCN || '')
+                }
+              }}
+              error={!!errors.journeyName}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontFamily: 'MarioFont, sans-serif',
+                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' },
+                  '&:hover fieldset': { borderColor: '#373737' },
+                  '&.Mui-focused fieldset': { borderColor: '#FFD701', borderWidth: '2px' }
+                }
+              }}
+            >
+              <MenuItem value="">
+                <em>Select a journey...</em>
+              </MenuItem>
+              {journeys.map((journey) => (
+                <MenuItem key={journey.id} value={journey.id} sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+                  {journey.name} {journey.nameCN && `(${journey.nameCN})`}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Box>
+
+          {/* Journey Name (English) - Auto-filled, display only */}
           <Box>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Journey Name (English) *
+              Journey Name (English)
             </label>
             <input
               {...register('journeyName', { required: true })}
+              readOnly
               style={{
                 width: '100%',
                 padding: '0.75rem',
                 fontSize: '16px',
-                border: `2px solid ${errors.journeyName ? 'red' : '#373737'}`,
+                border: '2px solid #e0e0e0',
                 borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#f5f5f5',
+                cursor: 'not-allowed'
               }}
             />
           </Box>
 
-          {/* Journey Name (Chinese) */}
+          {/* Journey Name (Chinese) - Auto-filled, display only */}
           <Box>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
               Journey Name (Chinese)
             </label>
             <input
               {...register('journeyNameCN')}
+              readOnly
               style={{
                 width: '100%',
                 padding: '0.75rem',
                 fontSize: '16px',
-                border: '2px solid #373737',
+                border: '2px solid #e0e0e0',
                 borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#f5f5f5',
+                cursor: 'not-allowed'
               }}
             />
           </Box>
 
-          {/* Journey ID */}
-          <Box>
+          {/* Journey ID - Display only */}
+          <Box sx={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Journey ID
+              Journey ID (Auto-generated)
             </label>
             <input
               {...register('journeyId')}
-              placeholder="e.g., california-zephyr-2021-08"
+              readOnly
+              placeholder="Select a journey above"
               style={{
                 width: '100%',
                 padding: '0.75rem',
                 fontSize: '16px',
-                border: '2px solid #373737',
+                border: '2px solid #e0e0e0',
                 borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#f5f5f5',
+                cursor: 'not-allowed'
               }}
             />
+          </Box>
+
+          {/* Coordinates Section */}
+          <Box sx={{ gridColumn: '1 / -1' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+              <label style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+                Coordinates (Auto-generated from city name)
+              </label>
+              <button
+                type="button"
+                onClick={() => setCoordinatesEditable(!coordinatesEditable)}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: coordinatesEditable ? '#FFD701' : 'white',
+                  border: '2px solid #373737',
+                  borderRadius: '0.5rem',
+                  cursor: 'pointer'
+                }}
+              >
+                {coordinatesEditable ? 'Lock' : 'Edit'}
+              </button>
+            </Box>
+            {geocodingError && (
+              <Box sx={{
+                backgroundColor: '#fff3cd',
+                border: '1px solid #ffc107',
+                borderRadius: '0.5rem',
+                padding: '0.75rem',
+                marginBottom: '1rem',
+                fontFamily: 'MarioFont, sans-serif',
+                fontSize: '14px',
+                color: '#856404'
+              }}>
+                ⚠️ {geocodingError}
+              </Box>
+            )}
           </Box>
 
           {/* Latitude */}
@@ -274,13 +436,16 @@ export default function DestinationFormPage() {
               {...register('lat', { required: true, valueAsNumber: true })}
               type="number"
               step="any"
+              readOnly={!coordinatesEditable}
               style={{
                 width: '100%',
                 padding: '0.75rem',
                 fontSize: '16px',
-                border: `2px solid ${errors.lat ? 'red' : '#373737'}`,
+                border: `2px solid ${errors.lat ? 'red' : coordinatesEditable ? '#373737' : '#e0e0e0'}`,
                 borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: coordinatesEditable ? 'white' : '#f5f5f5',
+                cursor: coordinatesEditable ? 'text' : 'not-allowed'
               }}
             />
           </Box>
@@ -294,12 +459,15 @@ export default function DestinationFormPage() {
               {...register('lng', { required: true, valueAsNumber: true })}
               type="number"
               step="any"
+              readOnly={!coordinatesEditable}
               style={{
                 width: '100%',
                 padding: '0.75rem',
                 fontSize: '16px',
-                border: `2px solid ${errors.lng ? 'red' : '#373737'}`,
+                border: `2px solid ${errors.lng ? 'red' : coordinatesEditable ? '#373737' : '#e0e0e0'}`,
                 borderRadius: '0.5rem',
+                backgroundColor: coordinatesEditable ? 'white' : '#f5f5f5',
+                cursor: coordinatesEditable ? 'text' : 'not-allowed',
                 fontFamily: 'MarioFont, sans-serif'
               }}
             />
@@ -348,36 +516,81 @@ export default function DestinationFormPage() {
 
         {/* Images */}
         <Box sx={{ marginTop: '1.5rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-            Images
-          </label>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <label style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+              Images
+            </label>
 
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageUpload}
-            disabled={uploading}
-            style={{
-              marginBottom: '1rem',
-              fontFamily: 'MarioFont, sans-serif'
-            }}
-          />
+            <input
+              type="file"
+              id="image-upload"
+              multiple
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={uploading}
+              style={{ display: 'none' }}
+            />
 
-          {uploading && <p style={{ fontFamily: 'MarioFont, sans-serif' }}>Uploading...</p>}
+            <label
+              htmlFor="image-upload"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.75rem 1.5rem',
+                fontSize: '16px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: uploading ? '#e0e0e0' : '#FFD701',
+                color: '#373737',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: uploading ? 'not-allowed' : 'pointer',
+                fontWeight: 'bold',
+                transition: 'all 0.2s'
+              }}
+            >
+              {uploading ? 'Uploading...' : 'Choose Images'}
+            </label>
+          </Box>
+
+          {uploading && (
+            <Box sx={{
+              marginTop: '1rem',
+              padding: '0.75rem',
+              backgroundColor: '#e3f2fd',
+              border: '1px solid #2196f3',
+              borderRadius: '0.5rem',
+              fontFamily: 'MarioFont, sans-serif',
+              color: '#1976d2'
+            }}>
+              ⏳ Uploading images...
+            </Box>
+          )}
 
           {images.length > 0 && (
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginTop: '1rem' }}>
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
               {images.map((url, index) => (
-                <Box key={index} sx={{ position: 'relative' }}>
+                <Box
+                  key={index}
+                  sx={{
+                    position: 'relative',
+                    paddingBottom: '100%', // Square aspect ratio
+                    overflow: 'hidden',
+                    borderRadius: '0.5rem',
+                    border: '2px solid #e0e0e0',
+                    backgroundColor: '#f5f5f5'
+                  }}
+                >
                   <img
                     src={url}
                     alt={`Image ${index + 1}`}
                     style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
                       width: '100%',
-                      height: '150px',
-                      objectFit: 'cover',
-                      borderRadius: '0.5rem'
+                      height: '100%',
+                      objectFit: 'cover'
                     }}
                   />
                   <button
@@ -387,14 +600,28 @@ export default function DestinationFormPage() {
                       position: 'absolute',
                       top: '0.5rem',
                       right: '0.5rem',
-                      backgroundColor: 'red',
+                      backgroundColor: 'rgba(255, 0, 0, 0.9)',
                       color: 'white',
                       border: 'none',
                       borderRadius: '50%',
-                      width: '24px',
-                      height: '24px',
+                      width: '32px',
+                      height: '32px',
                       cursor: 'pointer',
-                      fontSize: '12px'
+                      fontSize: '20px',
+                      fontWeight: 'bold',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'all 0.2s',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(255, 0, 0, 1)'
+                      e.currentTarget.style.transform = 'scale(1.1)'
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = 'rgba(255, 0, 0, 0.9)'
+                      e.currentTarget.style.transform = 'scale(1)'
                     }}
                   >
                     ×
@@ -406,39 +633,8 @@ export default function DestinationFormPage() {
         </Box>
 
         {/* Form Actions */}
-        <Box sx={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              padding: '0.75rem 2rem',
-              fontSize: '16px',
-              fontFamily: 'MarioFont, sans-serif',
-              backgroundColor: '#FFD701',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.6 : 1
-            }}
-          >
-            {loading ? 'Saving...' : 'Save Destination'}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => router.push('/admin/destinations')}
-            style={{
-              padding: '0.75rem 2rem',
-              fontSize: '16px',
-              fontFamily: 'MarioFont, sans-serif',
-              backgroundColor: 'white',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: 'pointer'
-            }}
-          >
-            Cancel
-          </button>
+        <Box sx={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
+          <ActionButtons />
         </Box>
       </Box>
     </Box>
