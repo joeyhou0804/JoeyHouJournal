@@ -10,7 +10,7 @@ import JourneyCard from 'src/components/JourneyCard'
 import { journeys } from 'src/data/journeys'
 import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
-import stationsData from 'src/data/stations.json'
+import destinationsData from 'src/data/destinations.json'
 import { getRouteCoordinates } from 'src/data/routes'
 import { useTranslation } from 'src/hooks/useTranslation'
 
@@ -36,21 +36,21 @@ export default function JourneysPage() {
 
   const itemsPerPage = 5
 
-  // Load all stations data first
-  const allStations = stationsData as any[]
+  // Load all destinations data first
+  const allDestinations = destinationsData as any[]
 
   // Transform journeys to trips format and add route string with images
   const trips = journeys.map(journey => {
-    // Find stations for this journey
-    const journeyStations = allStations.filter(
-      station => station.route === journey.name
+    // Find destinations for this journey
+    const journeyDestinations = allDestinations.filter(
+      destination => destination.route === journey.name
     )
 
-    // Get the first image from any station in this journey
+    // Get the first image from any destination in this journey
     let imageUrl = null
-    for (const station of journeyStations) {
-      if (station.images && station.images.length > 0) {
-        imageUrl = station.images[0]
+    for (const destination of journeyDestinations) {
+      if (destination.images && destination.images.length > 0) {
+        imageUrl = destination.images[0]
         break
       }
     }
@@ -68,17 +68,17 @@ export default function JourneysPage() {
 
   // Get current journey based on index
   const currentJourney = journeys[currentJourneyIndex]
-  const currentJourneyPlaces = allStations.filter(
-    station => station.route === currentJourney.name
-  ).map((station) => ({
-    id: `${station.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${station.date.replace(/\//g, '-')}`,
-    name: station.name,
-    date: station.date,
-    route: station.route,
-    state: station.state,
-    images: station.images || [],
-    lat: station.lat,
-    lng: station.lng
+  const currentJourneyPlaces = allDestinations.filter(
+    destination => destination.route === currentJourney.name
+  ).map((destination) => ({
+    id: `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`,
+    name: destination.name,
+    date: destination.date,
+    route: destination.route,
+    state: destination.state,
+    images: destination.images || [],
+    lat: destination.lat,
+    lng: destination.lng
   }))
 
   const handlePrevJourney = () => {

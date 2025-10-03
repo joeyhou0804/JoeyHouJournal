@@ -8,7 +8,7 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import MapViewHint from 'src/components/MapViewHint'
 import DestinationCard from 'src/components/DestinationCard'
-import stationsData from 'src/data/stations.json'
+import destinationsData from 'src/data/destinations.json'
 import { getRouteCoordinates } from 'src/data/routes'
 import { useTranslation } from 'src/hooks/useTranslation'
 
@@ -46,19 +46,19 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
-  // Load places for this journey from stations.json
-  const allStations = stationsData as any[]
-  const places = journey ? allStations.filter(
-    station => station.route === journey.name
-  ).map((station) => ({
-    id: `${station.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${station.date.replace(/\//g, '-')}`,
-    name: station.name,
-    date: station.date,
-    route: station.route,
-    state: station.state,
-    images: station.images || [],
-    lat: station.lat,
-    lng: station.lng
+  // Load places for this journey from destinations.json
+  const allDestinations = destinationsData as any[]
+  const places = journey ? allDestinations.filter(
+    destination => destination.route === journey.name
+  ).map((destination) => ({
+    id: `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`,
+    name: destination.name,
+    date: destination.date,
+    route: destination.route,
+    state: destination.state,
+    images: destination.images || [],
+    lat: destination.lat,
+    lng: destination.lng
   })) : []
 
   const itemsPerPage = 12

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { Station } from 'src/data/stations'
+import { Destination } from 'src/data/destinations'
 import Box from '@mui/material/Box'
 import { Calendar, Train, ArrowLeft, MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
@@ -22,7 +22,7 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
 })
 
 interface DestinationDetailClientProps {
-  station: Station | undefined
+  station: Destination | undefined
 }
 
 export default function DestinationDetailClient({ station }: DestinationDetailClientProps) {

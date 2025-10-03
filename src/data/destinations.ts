@@ -1,6 +1,6 @@
-import stationsData from './stations.json'
+import destinationsData from './destinations.json'
 
-export interface Station {
+export interface Destination {
   id: string
   name: string
   nameCN?: string
@@ -15,4 +15,4 @@ export interface Station {
   descriptionCN?: string
 }
 
-export const stations: Station[] = stationsData as Station[]
+export const destinations: Destination[] = destinationsData as Destination[]

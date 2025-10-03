@@ -1,6 +1,6 @@
 'use client'
 import { useState, useRef } from 'react'
-import { stations } from 'src/data/stations'
+import { destinations } from 'src/data/destinations'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
@@ -31,16 +31,16 @@ export default function StationsPage() {
 
   const itemsPerPage = 12
 
-  const sortedStations = [...stations].sort((a, b) => {
+  const sortedDestinations = [...destinations].sort((a, b) => {
     const dateA = new Date(a.date).getTime()
     const dateB = new Date(b.date).getTime()
     return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
   })
 
-  const totalPages = Math.ceil(sortedStations.length / itemsPerPage)
+  const totalPages = Math.ceil(sortedDestinations.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const displayedStations = sortedStations.slice(startIndex, endIndex)
+  const displayedDestinations = sortedDestinations.slice(startIndex, endIndex)
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -161,7 +161,7 @@ export default function StationsPage() {
               borderRadius: '1.5rem'
             }}
           >
-            <InteractiveMap places={stations} />
+            <InteractiveMap places={destinations} />
           </Box>
         </div>
       </Box>
@@ -222,10 +222,10 @@ export default function StationsPage() {
             </button>
           </div>
 
-          {/* Stations Grid */}
+          {/* Destinations Grid */}
           <div className="grid grid-cols-1 gap-48">
-            {displayedStations.map((station, index) => (
-              <DestinationCard key={station.id} station={station} index={index} />
+            {displayedDestinations.map((destination, index) => (
+              <DestinationCard key={destination.id} station={destination} index={index} />
             ))}
         </div>
 

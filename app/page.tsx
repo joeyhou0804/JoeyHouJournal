@@ -10,9 +10,9 @@ import Container from 'src/components/Container'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import HeroSection from 'src/components/HeroSection'
-import { stations } from 'src/data/stations'
+import { destinations } from 'src/data/destinations'
 import { journeys } from 'src/data/journeys'
-import stationsData from 'src/data/stations.json'
+import destinationsData from 'src/data/destinations.json'
 import { useTranslation } from 'src/hooks/useTranslation'
 
 export default function Home() {
@@ -65,16 +65,16 @@ export default function Home() {
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
-  // Get latest 8 destinations from stations data sorted by date
-  const recentPlaces = [...stations]
+  // Get latest 8 destinations from destinations data sorted by date
+  const recentPlaces = [...destinations]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 8)
-    .map(station => ({
-      id: station.id,
-      name: station.name,
-      date: station.date,
-      route: station.route,
-      image: station.images && station.images.length > 0 ? station.images[0] : ''
+    .map(destination => ({
+      id: destination.id,
+      name: destination.name,
+      date: destination.date,
+      route: destination.route,
+      image: destination.images && destination.images.length > 0 ? destination.images[0] : ''
     }))
 
   const journeyImages = [
@@ -919,22 +919,22 @@ function useSeamlessCarryOver({
 /* ---------- Data (unchanged) ---------- */
 
 // Get latest 8 journeys (reversed to show most recent first)
-const allStations = stationsData as any[]
+const allDestinations = destinationsData as any[]
 const featuredTrips = journeys
   .slice()
   .reverse()
   .slice(0, 8)
   .map(journey => {
-    // Find stations for this journey
-    const journeyStations = allStations.filter(
-      station => station.route === journey.name
+    // Find destinations for this journey
+    const journeyDestinations = allDestinations.filter(
+      destination => destination.route === journey.name
     )
 
-    // Get the first image from any station in this journey
+    // Get the first image from any destination in this journey
     let imageUrl = null
-    for (const station of journeyStations) {
-      if (station.images && station.images.length > 0) {
-        imageUrl = station.images[0]
+    for (const destination of journeyDestinations) {
+      if (destination.images && destination.images.length > 0) {
+        imageUrl = destination.images[0]
         break
       }
     }
