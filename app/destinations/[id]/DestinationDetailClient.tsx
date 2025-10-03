@@ -165,30 +165,18 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
           {/* About/Description */}
           {station.description && (
             <Box sx={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
-              {locale === 'zh' && station.descriptionCN ? (
-                <MixedText
-                  text={station.descriptionCN}
-                  chineseFont="MarioFontTitleChinese, sans-serif"
-                  englishFont="MarioFontTitle, sans-serif"
-                  fontSize="24px"
-                  color="#373737"
-                  component="div"
-                  sx={{ whiteSpace: 'pre-line', lineHeight: '1.6' }}
-                />
-              ) : (
-                <Box
-                  component="div"
-                  sx={{
-                    fontFamily: 'MarioFontTitle, sans-serif',
-                    fontSize: '24px',
-                    color: '#373737',
-                    whiteSpace: 'pre-line',
-                    lineHeight: '1.6'
-                  }}
-                >
-                  {station.description}
-                </Box>
-              )}
+              <Box
+                component="div"
+                sx={{
+                  fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+                  fontSize: '24px',
+                  color: '#373737',
+                  whiteSpace: 'pre-line',
+                  lineHeight: '1.6'
+                }}
+              >
+                {locale === 'zh' && station.descriptionCN ? station.descriptionCN : station.description}
+              </Box>
             </Box>
           )}
         </Box>

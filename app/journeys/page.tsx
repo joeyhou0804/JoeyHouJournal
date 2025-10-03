@@ -330,8 +330,8 @@ export default function JourneysPage() {
             />
             <MixedText
               text={tr.clickToViewDetails}
-              chineseFont="MarioFontTitleChinese, sans-serif"
-              englishFont="MarioFontTitle, sans-serif"
+              chineseFont="MarioFontChinese, sans-serif"
+              englishFont="MarioFont, sans-serif"
               fontSize="28px"
               color="#373737"
               component="p"

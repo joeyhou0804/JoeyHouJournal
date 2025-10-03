@@ -103,7 +103,7 @@ export const translations = {
   zh: {
     // Section Headings
     mapView: '地图视图',
-    listOfPlaces: '地点列表',
+    listOfPlaces: '足迹列表',
     listOfJourneys: '旅程列表',
 
     // Instructional Text
@@ -111,14 +111,14 @@ export const translations = {
 
     // Map View Hints
     mapHint1: {
-      title: '查看地图',
-      description1: '点击标记查看地点名称。',
-      description2: '您也可以通过按钮查看更多详情。',
+      title: '地图的查看方法',
+      description1: '点击地图上的橙色标记，查看地点名称。',
+      description2: '之后也可以通过点击按钮了解更多细节。',
     },
     mapHint2: {
-      title: '关于金色标记...',
-      description1: '金色标记表示多次访问的城市。',
-      description2: '使用侧边按钮在它们之间导航。',
+      title: '金黄色的标记是...',
+      description1: '金黄色标记表示去过多次的地点。',
+      description2: '使用侧边的按钮，就可以看到每次旅游的信息了。',
     },
 
     // Error Messages
@@ -142,7 +142,7 @@ export const translations = {
     next: '下一页',
     previousJourney: '上一个旅程',
     nextJourney: '下一个旅程',
-    viewDetails: '查看详情',
+    viewDetails: '了解更多',
     journeyDetails: '旅程详情',
 
     // US States
