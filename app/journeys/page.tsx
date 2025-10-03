@@ -77,6 +77,7 @@ export default function JourneysPage() {
   ).map((destination) => ({
     id: `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`,
     name: destination.name,
+    nameCN: destination.nameCN,
     date: destination.date,
     journeyName: destination.journeyName,
     journeyNameCN: destination.journeyNameCN,
@@ -393,9 +394,15 @@ export default function JourneysPage() {
                   }}
                 >
                   {/* Page Info */}
-                  <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#F6F6F6' }} className="text-center mb-8">
-                    {tr.pageOfPages(currentPage, totalPages)}
-                  </p>
+                  <MixedText
+                    text={tr.pageOfPages(currentPage, totalPages)}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="24px"
+                    color="#F6F6F6"
+                    component="p"
+                    sx={{ textAlign: 'center', marginBottom: '2rem' }}
+                  />
 
                   {/* Pagination Controls */}
                   <div className="flex justify-center items-center gap-4">

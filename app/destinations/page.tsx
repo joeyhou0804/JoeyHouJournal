@@ -263,9 +263,15 @@ export default function StationsPage() {
                 }}
               >
                 {/* Page Info */}
-                <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#F6F6F6' }} className="text-center mb-8">
-                  {tr.pageOfPages(currentPage, totalPages)}
-                </p>
+                <MixedText
+                  text={tr.pageOfPages(currentPage, totalPages)}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize="24px"
+                  color="#F6F6F6"
+                  component="p"
+                  sx={{ textAlign: 'center', marginBottom: '2rem' }}
+                />
 
                 {/* Pagination Controls */}
                 <div className="flex justify-center items-center gap-4">
