@@ -144,7 +144,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
 
       <Box sx={{ position: 'relative', width: '100%' }}>
         <img
-          src={`/images/journey/journey_details_page_title_${locale}.png`}
+          src="/images/journey/journey_details_page_title.png"
           alt="Journey Details"
           className="w-full h-auto object-cover"
         />
