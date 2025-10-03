@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Removed 'output: export' to enable server-side API routes for admin panel
+  // Server-side mode to enable API routes for admin panel
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -12,7 +11,6 @@ const nextConfig = {
       },
     ],
   },
-  trailingSlash: true,
 }
 module.exports = nextConfig
 
