@@ -27,7 +27,7 @@ interface DestinationDetailClientProps {
 }
 
 export default function DestinationDetailClient({ station }: DestinationDetailClientProps) {
-  const { locale } = useTranslation()
+  const { locale, tr } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
@@ -78,9 +78,9 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Station Not Found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{tr.stationNotFound}</h1>
           <Link href="/destinations" className="text-blue-600 hover:text-blue-800">
-            Back to Destinations
+            {tr.backToDestinations}
           </Link>
         </div>
       </div>
@@ -114,7 +114,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
         <Box
           component="img"
           src="/images/buttons/back_button.png"
-          alt="Back to Destinations"
+          alt={tr.backToDestinations}
           className="w-16 h-16"
         />
       </Box>
@@ -378,15 +378,18 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-center items-center mb-16 mt-8">
-              <h2 style={{
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '64px',
-                color: '#373737',
-                textShadow: '3px 3px 0px #F6F6F6',
-                margin: 0
-              }}>
-                Map View
-              </h2>
+              <MixedText
+                text={tr.mapView}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize="64px"
+                color="#373737"
+                component="h2"
+                sx={{
+                  textShadow: '3px 3px 0px #F6F6F6',
+                  margin: 0
+                }}
+              />
             </div>
             <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
               <Box

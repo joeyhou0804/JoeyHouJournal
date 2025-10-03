@@ -10,21 +10,25 @@ import JourneyCard from 'src/components/JourneyCard'
 import { journeys } from 'src/data/journeys'
 import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
+import MixedText from 'src/components/MixedText'
 import destinationsData from 'src/data/destinations.json'
 import { getRouteCoordinates } from 'src/data/routes'
 import { useTranslation } from 'src/hooks/useTranslation'
 
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
-  loading: () => (
-    <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
-      <p className="text-gray-600">Loading map...</p>
-    </div>
-  )
+  loading: () => {
+    const { tr } = useTranslation()
+    return (
+      <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
+        <p className="text-gray-600">{tr.loadingMap}</p>
+      </div>
+    )
+  }
 })
 
 export default function JourneysPage() {
-  const { locale } = useTranslation()
+  const { locale, tr } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
@@ -172,15 +176,18 @@ export default function JourneysPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center mb-16 mt-8">
-            <h2 style={{
-              fontFamily: 'MarioFontTitle, sans-serif',
-              fontSize: '64px',
-              color: '#373737',
-              textShadow: '3px 3px 0px #F6F6F6',
-              margin: 0
-            }}>
-              Map View
-            </h2>
+            <MixedText
+              text={tr.mapView}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize="64px"
+              color="#373737"
+              component="h2"
+              sx={{
+                textShadow: '3px 3px 0px #F6F6F6',
+                margin: 0
+              }}
+            />
           </div>
 
           {/* Map View Hint */}
@@ -189,9 +196,9 @@ export default function JourneysPage() {
               cardNumber={1}
               station={{
                 id: '',
-                name: 'Check out the map',
-                journeyName: 'Click on the markers to see the place name.',
-                date: 'You can also view more details with the button.',
+                name: tr.mapHint1.title,
+                journeyName: tr.mapHint1.description1,
+                date: tr.mapHint1.description2,
                 images: ['/images/destinations/hints/map_view_hint.jpg']
               }}
             />
@@ -204,9 +211,9 @@ export default function JourneysPage() {
               cardNumber={2}
               station={{
                 id: '',
-                name: 'As for golden markers...',
-                journeyName: 'Golden markers indicate cities with multiple visits.',
-                date: 'Use the side buttons to navigate through them.',
+                name: tr.mapHint2.title,
+                journeyName: tr.mapHint2.description1,
+                date: tr.mapHint2.description2,
                 images: ['/images/destinations/hints/map_view_hint_2.png']
               }}
             />
@@ -262,12 +269,12 @@ export default function JourneysPage() {
               >
                 <img
                   src="/images/buttons/tab_prev.webp"
-                  alt="Previous Journey"
+                  alt={tr.previousJourney}
                   className={`h-24 w-auto ${currentJourneyIndex === 0 ? '' : 'group-hover:hidden'}`}
                 />
                 <img
                   src="/images/buttons/tab_prev_hover.webp"
-                  alt="Previous Journey"
+                  alt={tr.previousJourney}
                   className={`h-24 w-auto ${currentJourneyIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
                 />
               </button>
@@ -282,12 +289,12 @@ export default function JourneysPage() {
               >
                 <img
                   src="/images/buttons/tab_next.webp"
-                  alt="Next Journey"
+                  alt={tr.nextJourney}
                   className={`h-24 w-auto ${currentJourneyIndex === journeys.length - 1 ? '' : 'group-hover:hidden'}`}
                 />
                 <img
                   src="/images/buttons/tab_next_hover.webp"
-                  alt="Next Journey"
+                  alt={tr.nextJourney}
                   className={`h-24 w-auto ${currentJourneyIndex === journeys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
                 />
               </button>
@@ -308,24 +315,28 @@ export default function JourneysPage() {
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-center items-center mb-16 mt-8">
-            <h2 style={{
-              fontFamily: 'MarioFontTitle, sans-serif',
-              fontSize: '64px',
-              color: '#373737',
-              textShadow: '3px 3px 0px #F6F6F6',
-              margin: 0,
-              marginBottom: '16px'
-            }}>
-              List of Journeys
-            </h2>
-            <p style={{
-              fontFamily: 'MarioFontTitle, sans-serif',
-              fontSize: '28px',
-              color: '#373737',
-              margin: 0
-            }}>
-              Click the cards below to view the details!
-            </p>
+            <MixedText
+              text={tr.listOfJourneys}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize="64px"
+              color="#373737"
+              component="h2"
+              sx={{
+                textShadow: '3px 3px 0px #F6F6F6',
+                margin: 0,
+                marginBottom: '16px'
+              }}
+            />
+            <MixedText
+              text={tr.clickToViewDetails}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize="28px"
+              color="#373737"
+              component="p"
+              sx={{ margin: 0 }}
+            />
           </div>
 
           {/* Sort Buttons */}
@@ -336,7 +347,7 @@ export default function JourneysPage() {
             >
               <img
                 src="/images/buttons/latest_first_button.png"
-                alt="Latest First"
+                alt={tr.latestFirst}
                 className="h-16 w-auto"
               />
             </button>
@@ -346,7 +357,7 @@ export default function JourneysPage() {
             >
               <img
                 src="/images/buttons/earliest_first_button.png"
-                alt="Earliest First"
+                alt={tr.earliestFirst}
                 className="h-16 w-auto"
               />
             </button>
@@ -383,7 +394,7 @@ export default function JourneysPage() {
                 >
                   {/* Page Info */}
                   <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#F6F6F6' }} className="text-center mb-8">
-                    Page {currentPage} of {totalPages}
+                    {tr.pageOfPages(currentPage, totalPages)}
                   </p>
 
                   {/* Pagination Controls */}
@@ -396,12 +407,12 @@ export default function JourneysPage() {
                     >
                       <img
                         src="/images/buttons/arrow_prev.webp"
-                        alt="Previous"
+                        alt={tr.previous}
                         className={`w-16 h-16 ${currentPage === 1 ? '' : 'group-hover:hidden'}`}
                       />
                       <img
                         src="/images/buttons/arrow_prev_hover.webp"
-                        alt="Previous"
+                        alt={tr.previous}
                         className={`w-16 h-16 ${currentPage === 1 ? 'hidden' : 'hidden group-hover:block'}`}
                       />
                     </button>
@@ -456,12 +467,12 @@ export default function JourneysPage() {
                     >
                       <img
                         src="/images/buttons/arrow_next.webp"
-                        alt="Next"
+                        alt={tr.next}
                         className={`w-16 h-16 ${currentPage === totalPages ? '' : 'group-hover:hidden'}`}
                       />
                       <img
                         src="/images/buttons/arrow_next_hover.webp"
-                        alt="Next"
+                        alt={tr.next}
                         className={`w-16 h-16 ${currentPage === totalPages ? 'hidden' : 'hidden group-hover:block'}`}
                       />
                     </button>

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { useLanguage } from 'src/contexts/LanguageContext'
+import { useTranslation } from 'src/hooks/useTranslation'
 
 // Fix for default marker icon in Next.js
 if (typeof window !== 'undefined') {
@@ -18,6 +18,7 @@ if (typeof window !== 'undefined') {
 interface Place {
   id: string
   name: string
+  nameCN?: string
   date: string
   journeyId?: string | null
   journeyName: string
@@ -35,12 +36,33 @@ interface InteractiveMapProps {
 }
 
 export default function InteractiveMap({ places, isDetailView = false, routeCoordinates }: InteractiveMapProps) {
-  const { locale } = useLanguage()
+  const { locale, tr } = useTranslation()
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (typeof window === 'undefined' || !mapContainerRef.current) return
+
+    // Helper function to generate mixed font HTML
+    const getMixedFontHTML = (text: string, fontSize: string = '20px') => {
+      const chineseRegex = /[\u4e00-\u9fa5]/
+      const segments: { text: string; isChinese: boolean }[] = []
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i]
+        const isChinese = chineseRegex.test(char)
+
+        if (segments.length === 0 || segments[segments.length - 1].isChinese !== isChinese) {
+          segments.push({ text: char, isChinese })
+        } else {
+          segments[segments.length - 1].text += char
+        }
+      }
+
+      return segments.map(seg =>
+        `<span style="font-family: ${seg.isChinese ? 'MarioFontTitleChinese' : 'MarioFontTitle'}, sans-serif; font-size: ${fontSize};">${seg.text}</span>`
+      ).join('')
+    }
 
     // Filter places that have coordinates
     const placesWithCoords = places.filter(p => p.lat && p.lng)
@@ -156,6 +178,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           const place = places[index]
           const isFirst = index === 0
           const isLast = index === places.length - 1
+          const displayName = locale === 'zh' && place.nameCN ? place.nameCN : place.name
+          const displayState = tr.states[place.state] || place.state
 
           return `
             <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
@@ -165,17 +189,17 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   ${place.images && place.images.length > 0 ? `
                     <img
                       src="${place.images[0]}"
-                      alt="${place.name}"
+                      alt="${displayName}"
                       style="position: absolute; top: 8px; left: 8px; width: 130px; height: 130px; object-fit: cover; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
                     />
                   ` : ''}
                   <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
                     <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
-                    <h3 style="font-family: 'MarioFontTitle', sans-serif; font-weight: normal; font-size: 20px; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${place.name}</h3>
+                    <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(displayName, '20px')}</h3>
                   </div>
                   <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
-                    <p style="font-family: 'MarioFont', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${place.state}</p>
-                    <p style="font-family: 'MarioFont', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
                   </div>
                 </div>
                 ${!isDetailView ? `
@@ -186,7 +210,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                     onmouseover="this.style.transform='scale(1.05)'"
                     onmouseout="this.style.transform='scale(1)'"
                   >
-                    <img src="/images/buttons/view_details_button_${locale}.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
+                    <img src="/images/buttons/view_details_button_${locale}.png" alt="${tr.viewDetails}" style="height: 45px; width: auto; display: block;" />
                   </a>
                 </div>
                 ` : ''}
@@ -197,8 +221,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   ${isFirst ? 'disabled' : ''}
                   style="position: absolute; left: 0px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: ${isFirst ? 'default' : 'pointer'}; padding: 0; z-index: 10; opacity: ${isFirst ? '0.4' : '1'};"
                 >
-                  <img src="/images/buttons/tab_prev.webp" alt="Previous" style="height: 60px; width: auto; display: block;" class="default-img" />
-                  <img src="/images/buttons/tab_prev_hover.webp" alt="Previous" style="height: 60px; width: auto; display: none;" class="hover-img" />
+                  <img src="/images/buttons/tab_prev.webp" alt="${tr.previous}" style="height: 60px; width: auto; display: block;" class="default-img" />
+                  <img src="/images/buttons/tab_prev_hover.webp" alt="${tr.previous}" style="height: 60px; width: auto; display: none;" class="hover-img" />
                 </button>
                 <button
                   data-carousel-id="${carouselId}"
@@ -207,8 +231,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   ${isLast ? 'disabled' : ''}
                   style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: ${isLast ? 'default' : 'pointer'}; padding: 0; z-index: 10; opacity: ${isLast ? '0.4' : '1'};"
                 >
-                  <img src="/images/buttons/tab_next.webp" alt="Next" style="height: 60px; width: auto; display: block;" class="default-img" />
-                  <img src="/images/buttons/tab_next_hover.webp" alt="Next" style="height: 60px; width: auto; display: none;" class="hover-img" />
+                  <img src="/images/buttons/tab_next.webp" alt="${tr.next}" style="height: 60px; width: auto; display: block;" class="default-img" />
+                  <img src="/images/buttons/tab_next_hover.webp" alt="${tr.next}" style="height: 60px; width: auto; display: none;" class="hover-img" />
                 </button>
               </div>
             </div>
@@ -297,6 +321,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       } else {
         // Single visit popup (original design)
         const place = places[0]
+        const displayName = locale === 'zh' && place.nameCN ? place.nameCN : place.name
+        const displayState = tr.states[place.state] || place.state
         const popupContent = `
           <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
             <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
@@ -305,17 +331,17 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                 ${place.images && place.images.length > 0 ? `
                   <img
                     src="${place.images[0]}"
-                    alt="${place.name}"
+                    alt="${displayName}"
                     style="position: absolute; top: 8px; left: 8px; width: 130px; height: 130px; object-fit: cover; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
                   />
                 ` : ''}
                 <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
                   <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
-                  <h3 style="font-family: 'MarioFontTitle', sans-serif; font-weight: normal; font-size: 20px; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${place.name}</h3>
+                  <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(displayName, '20px')}</h3>
                 </div>
                 <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
-                  <p style="font-family: 'MarioFont', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${place.state}</p>
-                  <p style="font-family: 'MarioFont', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                  <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
+                  <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
                 </div>
               </div>
               ${!isDetailView ? `
@@ -326,7 +352,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   onmouseover="this.style.transform='scale(1.05)'"
                   onmouseout="this.style.transform='scale(1)'"
                 >
-                  <img src="/images/buttons/view_details_button_${locale}.png" alt="View Details" style="height: 45px; width: auto; display: block;" />
+                  <img src="/images/buttons/view_details_button_${locale}.png" alt="${tr.viewDetails}" style="height: 45px; width: auto; display: block;" />
                 </a>
               </div>
               ` : ''}
