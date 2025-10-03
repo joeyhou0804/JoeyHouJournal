@@ -1,6 +1,10 @@
+'use client'
+
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import { Image } from 'lucide-react'
+import { useTranslation } from 'src/hooks/useTranslation'
+import MixedText from 'src/components/MixedText'
 
 interface Journey {
   name: string
@@ -18,6 +22,7 @@ interface JourneyCardProps {
 }
 
 export default function JourneyCard({ journey, index }: JourneyCardProps) {
+  const { locale } = useTranslation()
   const isEven = index % 2 === 0
 
   if (isEven) {
@@ -70,12 +75,14 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               alt="Location"
               sx={{ width: '100%', height: 'auto', display: 'block' }}
             />
-            <Box
+            <MixedText
+              text={journey.name}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize="40px"
+              color="#373737"
               component="h3"
               sx={{
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '40px',
-                color: '#373737',
                 margin: 0,
                 position: 'absolute',
                 top: '50%',
@@ -85,17 +92,15 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
                 textAlign: 'center',
                 width: '100%'
               }}
-            >
-              {journey.name}
-            </Box>
+            />
           </Box>
 
           {/* Route and Duration */}
           <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-            <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
+            <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
               {journey.route}
             </Box>
-            <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
+            <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
               {journey.duration}
             </Box>
           </Box>
@@ -152,12 +157,14 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               alt="Location"
               sx={{ width: '100%', height: 'auto', display: 'block' }}
             />
-            <Box
+            <MixedText
+              text={journey.name}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize="40px"
+              color="#373737"
               component="h3"
               sx={{
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '40px',
-                color: '#373737',
                 margin: 0,
                 position: 'absolute',
                 top: '50%',
@@ -167,17 +174,15 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
                 textAlign: 'center',
                 width: '100%'
               }}
-            >
-              {journey.name}
-            </Box>
+            />
           </Box>
 
           {/* Route and Duration - moved to left */}
           <Box sx={{ position: 'absolute', top: '60%', left: '30%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-            <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
+            <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
               {journey.route}
             </Box>
-            <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
+            <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
               {journey.duration}
             </Box>
           </Box>

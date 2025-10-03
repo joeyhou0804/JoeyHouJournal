@@ -112,22 +112,10 @@ export default function DestinationCard({ station, index }: DestinationCardProps
 
           {/* Route and Date */}
           <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-            {locale === 'zh' ? (
-              <MixedText
-                text={displayRoute}
-                chineseFont="MarioFontTitleChinese, sans-serif"
-                englishFont="MarioFontTitle, sans-serif"
-                fontSize="28px"
-                color="#F6F6F6"
-                component="p"
-                sx={{ marginBottom: '4px', marginTop: 0 }}
-              />
-            ) : (
-              <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
-                {displayRoute}
-              </Box>
-            )}
-            <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
+            <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
+              {displayRoute}
+            </Box>
+            <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
               {station.date}
             </Box>
           </Box>
@@ -217,22 +205,10 @@ export default function DestinationCard({ station, index }: DestinationCardProps
 
           {/* Route and Date - moved to left */}
           <Box sx={{ position: 'absolute', top: '60%', left: '30%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-            {locale === 'zh' ? (
-              <MixedText
-                text={displayRoute}
-                chineseFont="MarioFontTitleChinese, sans-serif"
-                englishFont="MarioFontTitle, sans-serif"
-                fontSize="28px"
-                color="#F6F6F6"
-                component="p"
-                sx={{ marginBottom: '4px', marginTop: 0 }}
-              />
-            ) : (
-              <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
-                {displayRoute}
-              </Box>
-            )}
-            <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
+            <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
+              {displayRoute}
+            </Box>
+            <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
               {station.date}
             </Box>
           </Box>

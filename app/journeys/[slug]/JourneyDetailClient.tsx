@@ -57,6 +57,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   ).map((destination) => ({
     id: `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`,
     name: destination.name,
+    nameCN: destination.nameCN,
     date: destination.date,
     journeyName: destination.journeyName,
     journeyNameCN: destination.journeyNameCN,
