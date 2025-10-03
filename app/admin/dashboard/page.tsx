@@ -1,7 +1,28 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Box from '@mui/material/Box'
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Grid
+} from '@mui/material'
+import {
+  Add as AddIcon,
+  Visibility as ViewIcon,
+  LocationOn as LocationIcon,
+  Train as TrainIcon,
+  Photo as PhotoIcon
+} from '@mui/icons-material'
 import Link from 'next/link'
 import destinationsData from 'src/data/destinations.json'
 import { journeys } from 'src/data/journeys'
@@ -31,202 +52,187 @@ export default function AdminDashboard() {
 
   return (
     <Box>
-      <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '36px', marginBottom: '2rem' }}>
+      <Typography variant="h4" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 3, color: '#373737' }}>
         Dashboard
-      </h1>
+      </Typography>
 
       {/* Stats Grid */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}>
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            padding: '2rem',
-            borderRadius: '1rem',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: 0 }}>
-            Total Destinations
-          </p>
-          <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '48px', color: '#373737', margin: '0.5rem 0 0 0' }}>
-            {stats.totalDestinations}
-          </p>
-        </Box>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <LocationIcon sx={{ fontSize: 40, color: '#FFD701', mr: 2 }} />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+                    Total Destinations
+                  </Typography>
+                  <Typography variant="h3" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
+                    {stats.totalDestinations}
+                  </Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
 
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            padding: '2rem',
-            borderRadius: '1rem',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: 0 }}>
-            Total Journeys
-          </p>
-          <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '48px', color: '#373737', margin: '0.5rem 0 0 0' }}>
-            {stats.totalJourneys}
-          </p>
-        </Box>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <TrainIcon sx={{ fontSize: 40, color: '#FFD701', mr: 2 }} />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+                    Total Journeys
+                  </Typography>
+                  <Typography variant="h3" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
+                    {stats.totalJourneys}
+                  </Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
 
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            padding: '2rem',
-            borderRadius: '1rem',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-          }}
-        >
-          <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', margin: 0 }}>
-            Total Images
-          </p>
-          <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '48px', color: '#373737', margin: '0.5rem 0 0 0' }}>
-            {stats.totalImages}
-          </p>
-        </Box>
-      </Box>
+        <Grid item xs={12} sm={6} md={4}>
+          <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2 }}>
+            <CardContent>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <PhotoIcon sx={{ fontSize: 40, color: '#FFD701', mr: 2 }} />
+                <Box>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+                    Total Images
+                  </Typography>
+                  <Typography variant="h3" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
+                    {stats.totalImages}
+                  </Typography>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
       {/* Management Links */}
-      <Box sx={{ marginBottom: '3rem' }}>
-        <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', marginBottom: '1rem' }}>
-          Manage Content
-        </h2>
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
-          {/* Destinations Card */}
-          <Box
-            sx={{
-              backgroundColor: 'white',
-              padding: '2rem',
-              borderRadius: '1rem',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-            }}
-          >
-            <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '20px', marginBottom: '1rem' }}>
-              Destinations
-            </h3>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', marginBottom: '1.5rem' }}>
-              Manage all your travel destinations
-            </p>
-            <Box sx={{ display: 'flex', gap: '1rem' }}>
-              <Link href="/admin/destinations" style={{ textDecoration: 'none' }}>
-                <button
-                  style={{
-                    padding: '0.75rem 1.5rem',
-                    fontSize: '16px',
-                    fontFamily: 'MarioFont, sans-serif',
+      <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 2, color: '#373737' }}>
+        Manage Content
+      </Typography>
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        {/* Destinations Card */}
+        <Grid item xs={12} md={6}>
+          <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2, height: '100%' }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 1, color: '#373737' }}>
+                Destinations
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 2 }}>
+                Manage all your travel destinations
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  component={Link}
+                  href="/admin/destinations"
+                  variant="contained"
+                  startIcon={<ViewIcon />}
+                  sx={{
                     backgroundColor: '#FFD701',
-                    border: '2px solid #373737',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer'
+                    color: '#373737',
+                    fontFamily: 'MarioFont, sans-serif',
+                    '&:hover': { backgroundColor: '#E5C001' }
                   }}
                 >
                   View All
-                </button>
-              </Link>
-              <Link href="/admin/destinations/new" style={{ textDecoration: 'none' }}>
-                <button
-                  style={{
-                    padding: '0.75rem 1.5rem',
-                    fontSize: '16px',
+                </Button>
+                <Button
+                  component={Link}
+                  href="/admin/destinations/new"
+                  variant="outlined"
+                  startIcon={<AddIcon />}
+                  sx={{
+                    borderColor: '#373737',
+                    color: '#373737',
                     fontFamily: 'MarioFont, sans-serif',
-                    backgroundColor: 'white',
-                    border: '2px solid #373737',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer'
+                    '&:hover': { borderColor: '#373737', backgroundColor: 'rgba(55, 55, 55, 0.04)' }
                   }}
                 >
-                  + Add New
-                </button>
-              </Link>
-            </Box>
-          </Box>
+                  Add New
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
 
-          {/* Journeys Card */}
-          <Box
-            sx={{
-              backgroundColor: 'white',
-              padding: '2rem',
-              borderRadius: '1rem',
-              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-            }}
-          >
-            <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '20px', marginBottom: '1rem' }}>
-              Journeys
-            </h3>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', marginBottom: '1.5rem' }}>
-              View and manage your train journeys
-            </p>
-            <Box sx={{ display: 'flex', gap: '1rem' }}>
-              <Link href="/admin/journeys" style={{ textDecoration: 'none' }}>
-                <button
-                  style={{
-                    padding: '0.75rem 1.5rem',
-                    fontSize: '16px',
-                    fontFamily: 'MarioFont, sans-serif',
+        {/* Journeys Card */}
+        <Grid item xs={12} md={6}>
+          <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2, height: '100%' }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 1, color: '#373737' }}>
+                Journeys
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 2 }}>
+                View and manage your train journeys
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                  component={Link}
+                  href="/admin/journeys"
+                  variant="contained"
+                  startIcon={<ViewIcon />}
+                  sx={{
                     backgroundColor: '#FFD701',
-                    border: '2px solid #373737',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer'
+                    color: '#373737',
+                    fontFamily: 'MarioFont, sans-serif',
+                    '&:hover': { backgroundColor: '#E5C001' }
                   }}
                 >
                   View All
-                </button>
-              </Link>
-              <Link href="/admin/journeys/new" style={{ textDecoration: 'none' }}>
-                <button
-                  style={{
-                    padding: '0.75rem 1.5rem',
-                    fontSize: '16px',
+                </Button>
+                <Button
+                  component={Link}
+                  href="/admin/journeys/new"
+                  variant="outlined"
+                  startIcon={<AddIcon />}
+                  sx={{
+                    borderColor: '#373737',
+                    color: '#373737',
                     fontFamily: 'MarioFont, sans-serif',
-                    backgroundColor: 'white',
-                    border: '2px solid #373737',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer'
+                    '&:hover': { borderColor: '#373737', backgroundColor: 'rgba(55, 55, 55, 0.04)' }
                   }}
                 >
-                  + Add New
-                </button>
-              </Link>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
+                  Add New
+                </Button>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
       {/* Recent Destinations */}
-      <Box>
-        <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', marginBottom: '1rem' }}>
-          Recent Destinations
-        </h2>
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            overflow: 'hidden'
-          }}
-        >
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ backgroundColor: '#f9f9f9', borderBottom: '2px solid #e0e0e0' }}>
-                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Name</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Date</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Journey</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>State</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stats.recentDestinations.map((dest, index) => (
-                <tr key={index} style={{ borderBottom: '1px solid #e0e0e0' }}>
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.name}</td>
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.date}</td>
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.journeyName}</td>
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Box>
-      </Box>
+      <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 2, color: '#373737' }}>
+        Recent Destinations
+      </Typography>
+      <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2 }}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: '#f9f9f9' }}>
+              <TableCell sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 600 }}>Name</TableCell>
+              <TableCell sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 600 }}>Date</TableCell>
+              <TableCell sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 600 }}>Journey</TableCell>
+              <TableCell sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 600 }}>State</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {stats.recentDestinations.map((dest, index) => (
+              <TableRow key={index} sx={{ '&:last-child td': { border: 0 } }}>
+                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.name}</TableCell>
+                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.date}</TableCell>
+                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.journeyName}</TableCell>
+                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   )
 }
