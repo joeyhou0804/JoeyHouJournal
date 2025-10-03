@@ -5,9 +5,17 @@ import DestinationDetailClient from './DestinationDetailClient'
 export async function generateStaticParams() {
   // Use stations.json to include all station IDs from journeys
   const allStations = stationsData as any[]
-  return allStations.map((station) => ({
-    id: `${station.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${station.date.replace(/\//g, '-')}`,
-  }))
+
+  // Generate params for both MongoDB IDs and name-date based IDs
+  const params = allStations.flatMap((station) => {
+    const nameBasedId = `${station.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${station.date.replace(/\//g, '-')}`
+    return [
+      { id: station.id },
+      { id: nameBasedId }
+    ]
+  })
+
+  return params
 }
 
 export default function DestinationDetailPage({ params }: { params: { id: string } }) {

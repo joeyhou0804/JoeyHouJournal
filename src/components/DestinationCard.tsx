@@ -1,6 +1,10 @@
+'use client'
+
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import { Image } from 'lucide-react'
+import { useTranslation } from 'src/hooks/useTranslation'
+import MixedText from 'src/components/MixedText'
 
 interface Station {
   id: string
@@ -8,6 +12,8 @@ interface Station {
   route: string
   date: string
   images?: string[]
+  nameCN?: string
+  routeCN?: string
 }
 
 interface DestinationCardProps {
@@ -16,7 +22,11 @@ interface DestinationCardProps {
 }
 
 export default function DestinationCard({ station, index }: DestinationCardProps) {
+  const { locale } = useTranslation()
   const isEven = index % 2 === 0
+
+  const displayName = locale === 'zh' && station.nameCN ? station.nameCN : station.name
+  const displayRoute = locale === 'zh' && station.routeCN ? station.routeCN : station.route
 
   if (isEven) {
     // Even index: Image on left, text on right
@@ -69,11 +79,8 @@ export default function DestinationCard({ station, index }: DestinationCardProps
               sx={{ width: '100%', height: 'auto', display: 'block' }}
             />
             <Box
-              component="h3"
+              component="div"
               sx={{
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '40px',
-                color: '#373737',
                 margin: 0,
                 position: 'absolute',
                 top: '50%',
@@ -84,15 +91,41 @@ export default function DestinationCard({ station, index }: DestinationCardProps
                 width: '100%'
               }}
             >
-              {station.name}
+              {locale === 'zh' ? (
+                <MixedText
+                  text={displayName}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize="40px"
+                  color="#373737"
+                  component="h3"
+                  sx={{ margin: 0 }}
+                />
+              ) : (
+                <Box component="h3" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '40px', color: '#373737', margin: 0 }}>
+                  {displayName}
+                </Box>
+              )}
             </Box>
           </Box>
 
           {/* Route and Date */}
           <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-            <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
-              {station.route}
-            </Box>
+            {locale === 'zh' ? (
+              <MixedText
+                text={displayRoute}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize="28px"
+                color="#F6F6F6"
+                component="p"
+                sx={{ marginBottom: '4px', marginTop: 0 }}
+              />
+            ) : (
+              <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
+                {displayRoute}
+              </Box>
+            )}
             <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
               {station.date}
             </Box>
@@ -151,11 +184,8 @@ export default function DestinationCard({ station, index }: DestinationCardProps
               sx={{ width: '100%', height: 'auto', display: 'block' }}
             />
             <Box
-              component="h3"
+              component="div"
               sx={{
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '40px',
-                color: '#373737',
                 margin: 0,
                 position: 'absolute',
                 top: '50%',
@@ -166,15 +196,41 @@ export default function DestinationCard({ station, index }: DestinationCardProps
                 width: '100%'
               }}
             >
-              {station.name}
+              {locale === 'zh' ? (
+                <MixedText
+                  text={displayName}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize="40px"
+                  color="#373737"
+                  component="h3"
+                  sx={{ margin: 0 }}
+                />
+              ) : (
+                <Box component="h3" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '40px', color: '#373737', margin: 0 }}>
+                  {displayName}
+                </Box>
+              )}
             </Box>
           </Box>
 
           {/* Route and Date - moved to left */}
           <Box sx={{ position: 'absolute', top: '60%', left: '30%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-            <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
-              {station.route}
-            </Box>
+            {locale === 'zh' ? (
+              <MixedText
+                text={displayRoute}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize="28px"
+                color="#F6F6F6"
+                component="p"
+                sx={{ marginBottom: '4px', marginTop: 0 }}
+              />
+            ) : (
+              <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0 }}>
+                {displayRoute}
+              </Box>
+            )}
             <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
               {station.date}
             </Box>

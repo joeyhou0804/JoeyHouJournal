@@ -8,6 +8,8 @@ import { Calendar, Train, ArrowLeft, MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
+import { useTranslation } from 'src/hooks/useTranslation'
+import MixedText from 'src/components/MixedText'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -24,6 +26,7 @@ interface DestinationDetailClientProps {
 }
 
 export default function DestinationDetailClient({ station }: DestinationDetailClientProps) {
+  const { locale } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
@@ -125,11 +128,8 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
               sx={{ width: '100%', height: 'auto', display: 'block' }}
             />
             <Box
-              component="h1"
+              component="div"
               sx={{
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '48px',
-                color: '#373737',
                 margin: 0,
                 position: 'absolute',
                 top: '50%',
@@ -140,25 +140,51 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 width: '100%'
               }}
             >
-              {station.name}
+              {locale === 'zh' && station.nameCN ? (
+                <MixedText
+                  text={station.nameCN}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize="48px"
+                  color="#373737"
+                  component="h1"
+                  sx={{ margin: 0 }}
+                />
+              ) : (
+                <Box component="h1" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '48px', color: '#373737', margin: 0 }}>
+                  {station.name}
+                </Box>
+              )}
             </Box>
           </Box>
 
           {/* About/Description */}
           {station.description && (
             <Box sx={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto' }}>
-              <Box
-                component="div"
-                sx={{
-                  fontFamily: 'MarioFontTitle, sans-serif',
-                  fontSize: '24px',
-                  color: '#373737',
-                  whiteSpace: 'pre-line',
-                  lineHeight: '1.6'
-                }}
-              >
-                {station.description}
-              </Box>
+              {locale === 'zh' && station.descriptionCN ? (
+                <MixedText
+                  text={station.descriptionCN}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize="24px"
+                  color="#373737"
+                  component="div"
+                  sx={{ whiteSpace: 'pre-line', lineHeight: '1.6' }}
+                />
+              ) : (
+                <Box
+                  component="div"
+                  sx={{
+                    fontFamily: 'MarioFontTitle, sans-serif',
+                    fontSize: '24px',
+                    color: '#373737',
+                    whiteSpace: 'pre-line',
+                    lineHeight: '1.6'
+                  }}
+                >
+                  {station.description}
+                </Box>
+              )}
             </Box>
           )}
         </Box>
@@ -315,9 +341,20 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Train style={{ color: '#F6F6F6' }} size={24} />
-                <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
-                  {station.route}
-                </Box>
+                {locale === 'zh' && station.routeCN ? (
+                  <MixedText
+                    text={station.routeCN}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="20px"
+                    color="#F6F6F6"
+                    component="span"
+                  />
+                ) : (
+                  <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                    {station.route}
+                  </Box>
+                )}
               </Box>
             </Box>
             </Box>
