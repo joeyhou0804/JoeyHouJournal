@@ -64,16 +64,65 @@ export default function JourneyDetailsPage() {
     )
   }
 
-  const handleDeleteJourney = () => {
-    alert('Note: Journey deletion must be done by editing src/data/journeys.js file directly.\n\nThis action would also need to update destinations.json to remove journey references.')
-    setDeleteDrawerOpen(false)
+  const handleDeleteJourney = async () => {
+    if (!journey) return
+
+    setDeleting(true)
+
+    try {
+      const response = await fetch(`/api/admin/journeys?id=${journey.id}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        alert('Journey deleted successfully! The page will now reload.')
+        router.push('/admin/journeys')
+      } else {
+        alert('Failed to delete journey')
+      }
+    } catch (error) {
+      alert('Error deleting journey')
+    } finally {
+      setDeleting(false)
+      setDeleteDrawerOpen(false)
+    }
   }
 
-  const handleSaveJourney = () => {
-    alert('Note: Journey data is stored in src/data/journeys.js file and must be edited manually.\n\nYour changes:\n' +
-      Object.entries(formData).map(([key, value]) => `${key}: ${value}`).join('\n') +
-      '\n\nPlease update the journeys.js file with these values.')
-    setSaving(false)
+  const handleSaveJourney = async () => {
+    if (!journey) return
+
+    setSaving(true)
+
+    try {
+      const updatedJourney = {
+        ...journey,
+        name: formData.name,
+        nameCN: formData.nameCN,
+        slug: formData.slug,
+        duration: formData.duration,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        description: formData.description,
+        descriptionCN: formData.descriptionCN
+      }
+
+      const response = await fetch('/api/admin/journeys', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedJourney)
+      })
+
+      if (response.ok) {
+        alert('Journey saved successfully! The page will now reload.')
+        window.location.reload()
+      } else {
+        alert('Failed to save journey')
+      }
+    } catch (error) {
+      alert('Error saving journey')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleInputChange = (field: string, value: string) => {
@@ -208,11 +257,6 @@ export default function JourneyDetailsPage() {
           marginBottom: '2rem'
         }}
       >
-        <Alert severity="warning" sx={{ mb: 3 }}>
-          <Typography sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-            Note: Journey data is stored in src/data/journeys.js and must be edited manually in the code.
-          </Typography>
-        </Alert>
 
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
           {/* Journey ID - Read only */}
