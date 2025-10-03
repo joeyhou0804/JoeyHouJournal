@@ -69,7 +69,7 @@ export default function NavigationMenu({
               <Link href="/" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
                 <Box
                   component="img"
-                  src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/logos/logo_${locale}`}
+                  src={`/images/logos/logo_${locale}.png`}
                   alt="Home"
                   className="h-32 w-auto"
                 />

@@ -49,7 +49,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
         <Container className="absolute top-4 left-4 z-10">
           <Box
             component="img"
-            src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/logos/logo_${locale}`}
+            src={`/images/logos/logo_${locale}.png`}
             alt="Logo"
             className="w-64 h-auto md:w-80 lg:w-96 xl:w-[28rem]"
           />
@@ -119,7 +119,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             <Container className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-16 md:-mt-20">
               <Box
                 component="img"
-                src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_slogan_${locale}`}
+                src={`/images/homepage/homepage_slogan_${locale}.png`}
                 alt="Homepage Slogan"
                 className="w-full max-w-[40rem] h-auto drop-shadow-md"
                 sx={{ transform: 'translateX(-12rem)' }}
@@ -147,7 +147,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             <Container className="flex justify-start">
               <Box
                 component="img"
-                src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_carousel_text_${locale}`}
+                src={`/images/homepage/homepage_carousel_text_${locale}.png`}
                 alt="Carousel Text"
                 className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
               />

@@ -94,7 +94,7 @@ export default function StationsPage() {
       {/* Station Page Title - Full Width */}
       <div className="w-full">
         <img
-          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/destinations/destination_page_title_${locale}`}
+          src={`/images/destinations/destination_page_title_${locale}.png`}
           alt="Stations"
           className="w-full h-auto object-cover"
         />

@@ -153,7 +153,7 @@ export default function JourneysPage() {
       {/* Journeys Page Title - Full Width */}
       <div className="w-full">
         <img
-          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/journeys_page_title_${locale}`}
+          src={`/images/journey/journeys_page_title_${locale}.png`}
           alt="Journeys"
           className="w-full h-auto object-cover"
         />

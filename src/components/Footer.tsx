@@ -24,7 +24,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
         <Link href="/" className="hover:scale-105 transition-transform duration-200">
           <Box
             component="img"
-            src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/logos/logo_${locale}`}
+            src={`/images/logos/logo_${locale}.png`}
             alt="Logo"
             className="h-60 w-auto"
           />

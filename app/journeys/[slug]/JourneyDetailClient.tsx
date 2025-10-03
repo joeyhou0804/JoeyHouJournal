@@ -144,7 +144,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
 
       <Box sx={{ position: 'relative', width: '100%' }}>
         <img
-          src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/journey_details_page_title"
+          src="/images/journey/journey_details_page_title.png"
           alt="Journey Details"
           className="w-full h-auto object-cover"
         />
