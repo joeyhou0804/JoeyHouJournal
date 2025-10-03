@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Destination } from 'src/data/destinations'
+import { getJourneyById } from 'src/data/journeyHelpers'
 import Box from '@mui/material/Box'
 import { Calendar, Train, ArrowLeft, MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
@@ -32,6 +33,9 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+
+  // Get journey information if this destination belongs to a journey
+  const journey = station ? getJourneyById(station.journeyId) : undefined
 
   const nextImage = () => {
     if (station && station.images.length > 0) {
@@ -210,8 +214,8 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 let tabSrc = ''
                 if (useMapTab) {
                   tabSrc = isSelected
-                    ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_selected.png'
-                    : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map.png'
+                    ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_selected_${locale}.png`
+                    : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_${locale}.png`
                 } else {
                   tabSrc = isSelected
                     ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_selected.png`
@@ -219,7 +223,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 }
 
                 const hoverSrc = useMapTab
-                  ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_hover.png'
+                  ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_hover_${locale}.png`
                   : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_hover.png`
 
                 return (
@@ -341,9 +345,9 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Train style={{ color: '#F6F6F6' }} size={24} />
-                {locale === 'zh' && station.routeCN ? (
+                {locale === 'zh' && station.journeyNameCN ? (
                   <MixedText
-                    text={station.routeCN}
+                    text={station.journeyNameCN}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
                     fontSize="20px"
@@ -352,7 +356,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                   />
                 ) : (
                   <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
-                    {station.route}
+                    {journey?.name || station.journeyName}
                   </Box>
                 )}
               </Box>

@@ -7,8 +7,9 @@ export interface Destination {
   lat: number
   lng: number
   date: string
-  route: string
-  routeCN?: string
+  journeyId: string | null  // ID of the journey this destination belongs to (null if standalone)
+  journeyName: string        // Display name of the journey/route
+  journeyNameCN?: string     // Chinese name of the journey/route
   state: string
   images: string[]
   description: string

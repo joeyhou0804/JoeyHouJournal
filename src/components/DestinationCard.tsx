@@ -9,11 +9,12 @@ import MixedText from 'src/components/MixedText'
 interface Station {
   id: string
   name: string
-  route: string
+  journeyId?: string | null
+  journeyName: string
+  journeyNameCN?: string
   date: string
   images?: string[]
   nameCN?: string
-  routeCN?: string
 }
 
 interface DestinationCardProps {
@@ -26,7 +27,7 @@ export default function DestinationCard({ station, index }: DestinationCardProps
   const isEven = index % 2 === 0
 
   const displayName = locale === 'zh' && station.nameCN ? station.nameCN : station.name
-  const displayRoute = locale === 'zh' && station.routeCN ? station.routeCN : station.route
+  const displayRoute = locale === 'zh' && station.journeyNameCN ? station.journeyNameCN : station.journeyName
 
   if (isEven) {
     // Even index: Image on left, text on right

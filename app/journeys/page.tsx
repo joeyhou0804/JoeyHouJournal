@@ -43,7 +43,7 @@ export default function JourneysPage() {
   const trips = journeys.map(journey => {
     // Find destinations for this journey
     const journeyDestinations = allDestinations.filter(
-      destination => destination.route === journey.name
+      destination => destination.journeyName === journey.name
     )
 
     // Get the first image from any destination in this journey
@@ -69,12 +69,13 @@ export default function JourneysPage() {
   // Get current journey based on index
   const currentJourney = journeys[currentJourneyIndex]
   const currentJourneyPlaces = allDestinations.filter(
-    destination => destination.route === currentJourney.name
+    destination => destination.journeyName === currentJourney.name
   ).map((destination) => ({
     id: `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`,
     name: destination.name,
     date: destination.date,
-    route: destination.route,
+    journeyName: destination.journeyName,
+    journeyNameCN: destination.journeyNameCN,
     state: destination.state,
     images: destination.images || [],
     lat: destination.lat,
@@ -189,7 +190,7 @@ export default function JourneysPage() {
               station={{
                 id: '',
                 name: 'Check out the map',
-                route: 'Click on the markers to see the place name.',
+                journeyName: 'Click on the markers to see the place name.',
                 date: 'You can also view more details with the button.',
                 images: ['/images/destinations/hints/map_view_hint.jpg']
               }}
@@ -204,7 +205,7 @@ export default function JourneysPage() {
               station={{
                 id: '',
                 name: 'As for golden markers...',
-                route: 'Golden markers indicate cities with multiple visits.',
+                journeyName: 'Golden markers indicate cities with multiple visits.',
                 date: 'Use the side buttons to navigate through them.',
                 images: ['/images/destinations/hints/map_view_hint_2.png']
               }}
@@ -244,7 +245,7 @@ export default function JourneysPage() {
                   station={{
                     id: '',
                     name: currentJourney.name,
-                    route: `${currentJourney.startLocation.name} → ${currentJourney.endLocation.name}`,
+                    journeyName: `${currentJourney.startLocation.name} → ${currentJourney.endLocation.name}`,
                     date: currentJourney.duration,
                     images: []
                   }}

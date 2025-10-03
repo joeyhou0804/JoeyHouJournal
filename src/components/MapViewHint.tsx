@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 interface Station {
   id: string
   name: string
-  route: string
+  journeyName?: string
   date: string
   images?: string[]
 }
@@ -83,7 +83,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
           {isJourneyInfo ? (
             <>
               <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0, lineHeight: '1.4' }}>
-                {station.route}
+                {station.journeyName || station.name}
               </Box>
               <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
                 {station.date}
@@ -91,7 +91,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
             </>
           ) : (
             <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
-              {station.route} {station.date}
+              {station.journeyName ? `${station.journeyName} ${station.date}` : `${station.name} ${station.date}`}
             </Box>
           )}
         </Box>

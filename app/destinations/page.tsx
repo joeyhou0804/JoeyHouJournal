@@ -130,7 +130,7 @@ export default function StationsPage() {
               station={{
                 id: '',
                 name: 'Check out the map',
-                route: 'Click on the markers to see the place name.',
+                journeyName: 'Click on the markers to see the place name.',
                 date: 'You can also view more details with the button.',
                 images: ['/images/destinations/hints/map_view_hint.jpg']
               }}
@@ -145,7 +145,7 @@ export default function StationsPage() {
               station={{
                 id: '',
                 name: 'As for golden markers...',
-                route: 'Golden markers indicate cities with multiple visits.',
+                journeyName: 'Golden markers indicate cities with multiple visits.',
                 date: 'Use the side buttons to navigate through them.',
                 images: ['/images/destinations/hints/map_view_hint_2.png']
               }}

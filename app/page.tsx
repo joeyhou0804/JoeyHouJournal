@@ -73,7 +73,8 @@ export default function Home() {
       id: destination.id,
       name: destination.name,
       date: destination.date,
-      route: destination.route,
+      journeyName: destination.journeyName,
+      journeyNameCN: destination.journeyNameCN,
       image: destination.images && destination.images.length > 0 ? destination.images[0] : ''
     }))
 
@@ -712,7 +713,7 @@ export default function Home() {
                 {/* Route and Date */}
                 <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
                   <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
-                    {recentPlaces[currentDestSlide].route}
+                    {locale === 'zh' && recentPlaces[currentDestSlide].journeyNameCN ? recentPlaces[currentDestSlide].journeyNameCN : recentPlaces[currentDestSlide].journeyName}
                   </Box>
                   <Box component="p" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
                     {recentPlaces[currentDestSlide].date}
@@ -927,7 +928,7 @@ const featuredTrips = journeys
   .map(journey => {
     // Find destinations for this journey
     const journeyDestinations = allDestinations.filter(
-      destination => destination.route === journey.name
+      destination => destination.journeyName === journey.name
     )
 
     // Get the first image from any destination in this journey

@@ -19,7 +19,9 @@ interface Place {
   id: string
   name: string
   date: string
-  route: string
+  journeyId?: string | null
+  journeyName: string
+  journeyNameCN?: string
   state: string
   lat: number
   lng: number

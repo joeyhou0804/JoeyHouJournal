@@ -49,12 +49,13 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   // Load places for this journey from destinations.json
   const allDestinations = destinationsData as any[]
   const places = journey ? allDestinations.filter(
-    destination => destination.route === journey.name
+    destination => destination.journeyName === journey.name
   ).map((destination) => ({
     id: `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`,
     name: destination.name,
     date: destination.date,
-    route: destination.route,
+    journeyName: destination.journeyName,
+    journeyNameCN: destination.journeyNameCN,
     state: destination.state,
     images: destination.images || [],
     lat: destination.lat,
@@ -230,7 +231,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               station={{
                 id: '',
                 name: 'Check out the map',
-                route: 'Click on the markers to see the place name.',
+                journeyName: 'Click on the markers to see the place name.',
                 date: 'You can also view more details with the button.',
                 images: ['/images/destinations/hints/map_view_hint.jpg']
               }}
@@ -244,7 +245,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               station={{
                 id: '',
                 name: 'As for golden markers...',
-                route: 'Golden markers indicate cities with multiple visits.',
+                journeyName: 'Golden markers indicate cities with multiple visits.',
                 date: 'Use the side buttons to navigate through them.',
                 images: ['/images/destinations/hints/map_view_hint_2.png']
               }}
