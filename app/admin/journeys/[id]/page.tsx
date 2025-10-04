@@ -17,7 +17,6 @@ import {
 } from '@mui/material'
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material'
 import Link from 'next/link'
-import { journeys } from 'src/data/journeys'
 import destinationsData from 'src/data/destinations.json'
 
 export default function JourneyDetailsPage() {
@@ -25,7 +24,8 @@ export default function JourneyDetailsPage() {
   const router = useRouter()
   const id = params.id as string
 
-  const journey = journeys.find(j => j.id === id)
+  const [journey, setJourney] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
   const [destinations, setDestinations] = useState<any[]>([])
   const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
@@ -37,15 +37,50 @@ export default function JourneyDetailsPage() {
 
   // Form state for editable fields
   const [formData, setFormData] = useState({
-    name: journey?.name || '',
-    nameCN: journey?.nameCN || '',
-    slug: journey?.slug || '',
-    duration: journey?.duration || '',
-    startDate: journey?.startDate || '',
-    endDate: journey?.endDate || '',
-    description: journey?.description || '',
-    descriptionCN: journey?.descriptionCN || ''
+    name: '',
+    nameCN: '',
+    slug: '',
+    duration: '',
+    startDate: '',
+    endDate: '',
+    description: '',
+    descriptionCN: ''
   })
+
+  // Fetch journey data from API
+  useEffect(() => {
+    const fetchJourney = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/admin/journeys?id=${id}`, {
+          cache: 'no-store'
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setJourney(data)
+          // Update form data with fetched journey
+          setFormData({
+            name: data.name || '',
+            nameCN: data.nameCN || '',
+            slug: data.slug || '',
+            duration: data.duration || '',
+            startDate: data.startDate || '',
+            endDate: data.endDate || '',
+            description: data.description || '',
+            descriptionCN: data.descriptionCN || ''
+          })
+        } else {
+          console.error('Failed to fetch journey')
+        }
+      } catch (error) {
+        console.error('Error fetching journey:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchJourney()
+  }, [id])
 
   useEffect(() => {
     if (journey) {
@@ -54,6 +89,14 @@ export default function JourneyDetailsPage() {
       setDestinations(journeyDests)
     }
   }, [journey])
+
+  if (loading) {
+    return (
+      <Box sx={{ padding: '2rem' }}>
+        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '36px' }}>Loading...</h1>
+      </Box>
+    )
+  }
 
   if (!journey) {
     return (
@@ -113,8 +156,26 @@ export default function JourneyDetailsPage() {
       })
 
       if (response.ok) {
-        alert('Journey saved successfully! The page will now reload.')
-        window.location.reload()
+        // Re-fetch the journey data to get the updated version
+        const fetchResponse = await fetch(`/api/admin/journeys?id=${id}`, {
+          cache: 'no-store'
+        })
+        if (fetchResponse.ok) {
+          const data = await fetchResponse.json()
+          setJourney(data)
+          // Update form data with fetched journey
+          setFormData({
+            name: data.name || '',
+            nameCN: data.nameCN || '',
+            slug: data.slug || '',
+            duration: data.duration || '',
+            startDate: data.startDate || '',
+            endDate: data.endDate || '',
+            description: data.description || '',
+            descriptionCN: data.descriptionCN || ''
+          })
+          alert('Journey saved successfully!')
+        }
       } else {
         alert('Failed to save journey')
       }

@@ -3,9 +3,7 @@
     "id": "california-zephyr-2021-08",
     "slug": "california-zephyr",
     "name": "California Zephyr",
-    "nameCN": "",
     "description": "Cross-country journey from Chicago to San Francisco through the Rocky Mountains and Sierra Nevada, featuring some of America's most spectacular scenery.",
-    "descriptionCN": "",
     "startDate": "2021-08-08",
     "endDate": "2021-08-10",
     "duration": "3 days, 2 nights",
@@ -43,7 +41,9 @@
       "san-francisco-ca-2021-08-10"
     ],
     "totalPlaces": 17,
-    "images": []
+    "images": [],
+    "nameCN": "加州和风",
+    "descriptionCN": ""
   },
   {
     "id": "empire-builder-2021-08",
