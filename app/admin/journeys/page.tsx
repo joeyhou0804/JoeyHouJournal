@@ -115,7 +115,7 @@ export default function JourneysPage() {
                     {journey.startLocation.name} → {journey.endLocation.name}
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-                    {journey.duration}
+                    {journey.days} day{journey.days > 1 ? 's' : ''}{journey.nights > 0 ? `, ${journey.nights} night${journey.nights > 1 ? 's' : ''}` : ''}
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
                     {journey.totalPlaces}
