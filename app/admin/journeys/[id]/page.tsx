@@ -522,13 +522,13 @@ export default function JourneyDetailsPage() {
             />
           </Box>
 
-          {/* Route - Read only */}
+          {/* Route - Auto-generated from route points */}
           <Box>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Route
+              Route (auto-generated from route points)
             </label>
             <input
-              value={`${journey.startLocation.name} → ${journey.endLocation.name}`}
+              value={routePoints.length >= 2 ? `${routePoints[0].name || 'Start'} → ${routePoints[routePoints.length - 1].name || 'End'}` : journey ? `${journey.startLocation.name} → ${journey.endLocation.name}` : 'Not defined'}
               readOnly
               style={{
                 width: '100%',
