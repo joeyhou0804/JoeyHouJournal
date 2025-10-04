@@ -15,6 +15,7 @@ import MixedText from 'src/components/MixedText'
 import destinationsData from 'src/data/destinations.json'
 import { getRouteCoordinates } from 'src/data/routes'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { formatDuration } from 'src/utils/formatDuration'
 
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
@@ -60,12 +61,21 @@ export default function JourneysPage() {
       }
     }
 
+    // Use Chinese location names if locale is Chinese
+    const startLocationName = locale === 'zh' && journey.startLocation.nameCN
+      ? journey.startLocation.nameCN
+      : journey.startLocation.name
+    const endLocationName = locale === 'zh' && journey.endLocation.nameCN
+      ? journey.endLocation.nameCN
+      : journey.endLocation.name
+
     return {
       name: journey.name,
+      nameCN: journey.nameCN,
       slug: journey.slug,
       places: journey.totalPlaces,
       description: journey.description,
-      route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
+      route: `${startLocationName} → ${endLocationName}`,
       duration: journey.duration,
       days: journey.days,
       nights: journey.nights,
@@ -255,9 +265,17 @@ export default function JourneysPage() {
                   isJourneyInfo={true}
                   station={{
                     id: '',
-                    name: currentJourney.name,
-                    journeyName: `${currentJourney.startLocation.name} → ${currentJourney.endLocation.name}`,
-                    date: currentJourney.duration,
+                    name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
+                    journeyName: `${
+                      locale === 'zh' && currentJourney.startLocation.nameCN
+                        ? currentJourney.startLocation.nameCN
+                        : currentJourney.startLocation.name
+                    } → ${
+                      locale === 'zh' && currentJourney.endLocation.nameCN
+                        ? currentJourney.endLocation.nameCN
+                        : currentJourney.endLocation.name
+                    }`,
+                    date: formatDuration(currentJourney.days, currentJourney.nights, tr),
                     images: []
                   }}
                 />

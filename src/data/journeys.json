@@ -12,14 +12,16 @@
       "coordinates": {
         "lat": 41.8781,
         "lng": -87.6298
-      }
+      },
+      "nameCN": "芝加哥"
     },
     "endLocation": {
       "name": "San Francisco, CA",
       "coordinates": {
         "lat": 37.7749,
         "lng": -122.4194
-      }
+      },
+      "nameCN": "旧金山"
     },
     "visitedPlaceIds": [
       "naperville-il-2021-08-08",
@@ -519,14 +521,16 @@
       "coordinates": {
         "lat": 45.5152,
         "lng": -122.6784
-      }
+      },
+      "nameCN": "波特兰"
     },
     "endLocation": {
       "name": "Chicago, IL",
       "coordinates": {
         "lat": 41.8781,
         "lng": -87.6298
-      }
+      },
+      "nameCN": "芝加哥"
     },
     "visitedPlaceIds": [
       "portland-or-2021-08-12",
@@ -1075,14 +1079,16 @@
       "coordinates": {
         "lat": 41.8781,
         "lng": -87.6298
-      }
+      },
+      "nameCN": "芝加哥"
     },
     "endLocation": {
       "name": "Los Angeles, CA",
       "coordinates": {
         "lat": 34.0522,
         "lng": -118.2437
-      }
+      },
+      "nameCN": "洛杉矶"
     },
     "visitedPlaceIds": [
       "joliet-il-2021-08-16",
@@ -1524,14 +1530,16 @@
       "coordinates": {
         "lat": 34.0522,
         "lng": -118.2437
-      }
+      },
+      "nameCN": "洛杉矶"
     },
     "endLocation": {
       "name": "Chicago, IL",
       "coordinates": {
         "lat": 41.8781,
         "lng": -87.6298
-      }
+      },
+      "nameCN": "芝加哥"
     },
     "visitedPlaceIds": [
       "san-marcos-tx-2020-09-11",
@@ -2115,14 +2123,16 @@
       "coordinates": {
         "lat": 29.9511,
         "lng": -90.0715
-      }
+      },
+      "nameCN": "新奥尔良"
     },
     "endLocation": {
       "name": "New York, NY",
       "coordinates": {
         "lat": 40.7128,
         "lng": -74.006
-      }
+      },
+      "nameCN": "纽约"
     },
     "visitedPlaceIds": [
       "atlanta-ga-2020-08-13",
@@ -2588,14 +2598,16 @@
       "coordinates": {
         "lat": 40.7128,
         "lng": -74.006
-      }
+      },
+      "nameCN": "纽约"
     },
     "endLocation": {
       "name": "Miami, FL",
       "coordinates": {
         "lat": 25.7617,
         "lng": -80.1918
-      }
+      },
+      "nameCN": "迈阿密"
     },
     "visitedPlaceIds": [
       "new-york-ny-2020-08-17",
@@ -3047,14 +3059,16 @@
       "coordinates": {
         "lat": 40.7128,
         "lng": -74.006
-      }
+      },
+      "nameCN": "纽约"
     },
     "endLocation": {
       "name": "Chicago, IL",
       "coordinates": {
         "lat": 41.8781,
         "lng": -87.6298
-      }
+      },
+      "nameCN": "芝加哥"
     },
     "visitedPlaceIds": [
       "new-york-ny-2020-08-22",
@@ -3335,14 +3349,16 @@
       "coordinates": {
         "lat": 38.9072,
         "lng": -77.0369
-      }
+      },
+      "nameCN": "华盛顿"
     },
     "endLocation": {
       "name": "Chicago, IL",
       "coordinates": {
         "lat": 41.8781,
         "lng": -87.6298
-      }
+      },
+      "nameCN": "芝加哥"
     },
     "visitedPlaceIds": [
       "washington-dc-2020-08-20",
@@ -3572,14 +3588,16 @@
       "coordinates": {
         "lat": 40.7128,
         "lng": -74.006
-      }
+      },
+      "nameCN": "纽约"
     },
     "endLocation": {
       "name": "St. Albans, VT",
       "coordinates": {
         "lat": 44.8109,
         "lng": -73.0818
-      }
+      },
+      "nameCN": "圣奥尔本斯"
     },
     "visitedPlaceIds": [
       "new-york-ny-2020-08-24",
@@ -3871,14 +3889,16 @@
       "coordinates": {
         "lat": 41.8781,
         "lng": -87.6298
-      }
+      },
+      "nameCN": "芝加哥"
     },
     "endLocation": {
       "name": "New Orleans, LA",
       "coordinates": {
         "lat": 29.9511,
         "lng": -90.0715
-      }
+      },
+      "nameCN": "新奥尔良"
     },
     "visitedPlaceIds": [
       "chicago-il-2020-09-13",
@@ -4156,14 +4176,16 @@
       "coordinates": {
         "lat": 40.7128,
         "lng": -74.006
-      }
+      },
+      "nameCN": "纽约"
     },
     "endLocation": {
       "name": "Pittsburgh, PA",
       "coordinates": {
         "lat": 40.4406,
         "lng": -79.9959
-      }
+      },
+      "nameCN": "匹兹堡"
     },
     "visitedPlaceIds": [
       "new-york-ny-2020-08-21",
@@ -4412,14 +4434,16 @@
       "coordinates": {
         "lat": 43.6106,
         "lng": -72.9726
-      }
+      },
+      "nameCN": "拉特兰"
     },
     "endLocation": {
       "name": "New York, NY",
       "coordinates": {
         "lat": 40.7128,
         "lng": -74.006
-      }
+      },
+      "nameCN": "纽约"
     },
     "visitedPlaceIds": [
       "rutland-vt-2020-08-25"

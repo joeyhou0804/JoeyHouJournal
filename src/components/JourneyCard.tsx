@@ -9,6 +9,7 @@ import { formatDuration } from 'src/utils/formatDuration'
 
 interface Journey {
   name: string
+  nameCN?: string
   slug: string
   places: number
   description: string
@@ -28,6 +29,7 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
   const { locale, tr } = useTranslation()
 
   const durationText = formatDuration(journey.days, journey.nights, tr)
+  const journeyName = locale === 'zh' && journey.nameCN ? journey.nameCN : journey.name
   const isEven = index % 2 === 0
 
   if (isEven) {
@@ -81,7 +83,7 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               sx={{ width: '100%', height: 'auto', display: 'block' }}
             />
             <MixedText
-              text={journey.name}
+              text={journeyName}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize="40px"
@@ -163,7 +165,7 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               sx={{ width: '100%', height: 'auto', display: 'block' }}
             />
             <MixedText
-              text={journey.name}
+              text={journeyName}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize="40px"
