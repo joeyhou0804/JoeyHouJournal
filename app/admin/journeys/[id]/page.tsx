@@ -49,13 +49,8 @@ export default function JourneyDetailsPage() {
     descriptionCN: ''
   })
 
-  // Route segments state - array of segment objects with from/to coordinates
-  const [routeSegments, setRouteSegments] = useState<Array<{
-    order: number
-    from: { name: string; lat: number; lng: number }
-    to: { name: string; lat: number; lng: number }
-  }>>([])
-
+  // Route points state (simplified from segments)
+  const [routePoints, setRoutePoints] = useState<Array<{ name: string; lat: number; lng: number }>>([])
 
   // Fetch journey data from API
   useEffect(() => {
@@ -81,7 +76,6 @@ export default function JourneyDetailsPage() {
           })
           // Load route segments if they exist and convert to points
           if (data.segments && Array.isArray(data.segments) && data.segments.length > 0) {
-            setRouteSegments(data.segments)
             // Convert segments to points
             const points = [data.segments[0].from]
             data.segments.forEach((seg: any) => {
@@ -213,9 +207,6 @@ export default function JourneyDetailsPage() {
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
-
-  // Simplified route points (each segment's "from" is a waypoint)
-  const [routePoints, setRoutePoints] = useState<Array<{ name: string; lat: number; lng: number }>>([])
 
   // Convert routePoints to segments when saving
   const pointsToSegments = (points: Array<{ name: string; lat: number; lng: number }>) => {
