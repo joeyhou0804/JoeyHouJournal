@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import { MapPin, Calendar, Train } from 'lucide-react'
@@ -12,12 +12,13 @@ import NavigationMenu from 'src/components/NavigationMenu'
 import HeroSection from 'src/components/HeroSection'
 import MixedText from 'src/components/MixedText'
 import { destinations } from 'src/data/destinations'
-import { journeys } from 'src/data/journeys'
+import journeysData from 'src/data/journeys.json'
 import destinationsData from 'src/data/destinations.json'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { formatDuration } from 'src/utils/formatDuration'
 
 export default function Home() {
-  const { locale } = useTranslation()
+  const { locale, tr } = useTranslation()
   const sectionRef = useRef<HTMLElement | null>(null)
   const decoRef = useRef<HTMLDivElement | null>(null)
 
@@ -28,6 +29,56 @@ export default function Home() {
   // NEW: refs for the head mask band and the Recent Places section
   const headDecoRef = useRef<HTMLDivElement | null>(null)
   const recentRef = useRef<HTMLElement | null>(null)
+
+  // Get latest 8 journeys sorted by date
+  const featuredTrips = useMemo(() => {
+    const allDestinations = destinationsData as any[]
+    const allJourneys = journeysData as any[]
+
+    // Sort journeys by date (descending)
+    const sortedJourneys = [...allJourneys].sort((a, b) => {
+      const dateA = new Date(a.startDate)
+      const dateB = new Date(b.startDate)
+      return dateB.getTime() - dateA.getTime()
+    })
+
+    return sortedJourneys
+      .slice(0, 8)
+      .map(journey => {
+        // Find destinations for this journey
+        const journeyDestinations = allDestinations.filter(
+          destination => destination.journeyName === journey.name
+        )
+
+        // Get the first image from any destination in this journey
+        let imageUrl = null
+        for (const destination of journeyDestinations) {
+          if (destination.images && destination.images.length > 0) {
+            imageUrl = destination.images[0]
+            break
+          }
+        }
+
+        // Use Chinese location names if locale is Chinese
+        const startLocationName = locale === 'zh' && journey.startLocation.nameCN
+          ? journey.startLocation.nameCN
+          : journey.startLocation.name
+        const endLocationName = locale === 'zh' && journey.endLocation.nameCN
+          ? journey.endLocation.nameCN
+          : journey.endLocation.name
+
+        return {
+          name: journey.name,
+          nameCN: journey.nameCN,
+          slug: journey.slug,
+          places: journey.totalPlaces,
+          route: `${startLocationName} → ${endLocationName}`,
+          duration: formatDuration(journey.days, journey.nights, tr),
+          description: journey.description,
+          image: imageUrl
+        }
+      })
+  }, [locale, tr])
 
   // Tweak this if you want a tiny nudge (e.g., to account for mask feathering)
   const ADJUST_PX_FOOT = 104
@@ -416,7 +467,7 @@ export default function Home() {
                     sx={{ width: '100%', height: 'auto', display: 'block' }}
                   />
                   <MixedText
-                    text={featuredTrips[currentSlide].name}
+                    text={locale === 'zh' && featuredTrips[currentSlide].nameCN ? featuredTrips[currentSlide].nameCN : featuredTrips[currentSlide].name}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
                     fontSize="40px"
@@ -437,12 +488,24 @@ export default function Home() {
 
                 {/* Route and Duration */}
                 <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
-                    {featuredTrips[currentSlide].route}
-                  </Box>
-                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
-                    {featuredTrips[currentSlide].duration}
-                  </Box>
+                  <MixedText
+                    text={featuredTrips[currentSlide].route}
+                    chineseFont="MarioFontChinese, sans-serif"
+                    englishFont="MarioFont, sans-serif"
+                    fontSize="28px"
+                    color="#373737"
+                    component="p"
+                    sx={{ marginBottom: '4px', marginTop: 0 }}
+                  />
+                  <MixedText
+                    text={featuredTrips[currentSlide].duration}
+                    chineseFont="MarioFontChinese, sans-serif"
+                    englishFont="MarioFont, sans-serif"
+                    fontSize="26px"
+                    color="#373737"
+                    component="p"
+                    sx={{ marginBottom: 0, marginTop: 0 }}
+                  />
                 </Box>
               </Box>
 
@@ -918,37 +981,3 @@ function useSeamlessCarryOver({
     }
   }, [ratio, fromRef, toRef, adjustPx])
 }
-
-/* ---------- Data (unchanged) ---------- */
-
-// Get latest 8 journeys (reversed to show most recent first)
-const allDestinations = destinationsData as any[]
-const featuredTrips = journeys
-  .slice()
-  .reverse()
-  .slice(0, 8)
-  .map(journey => {
-    // Find destinations for this journey
-    const journeyDestinations = allDestinations.filter(
-      destination => destination.journeyName === journey.name
-    )
-
-    // Get the first image from any destination in this journey
-    let imageUrl = null
-    for (const destination of journeyDestinations) {
-      if (destination.images && destination.images.length > 0) {
-        imageUrl = destination.images[0]
-        break
-      }
-    }
-
-    return {
-      name: journey.name,
-      slug: journey.slug,
-      places: journey.totalPlaces,
-      route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
-      duration: journey.duration,
-      description: journey.description,
-      image: imageUrl
-    }
-  })
