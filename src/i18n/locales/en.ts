@@ -93,6 +93,10 @@ export const en = {
     totalPlaces: 'Total Places',
     description: 'Description',
     placesVisited: 'Places Visited',
+    days: 'days',
+    day: 'day',
+    nights: 'nights',
+    night: 'night',
   },
 
   // Destination Detail

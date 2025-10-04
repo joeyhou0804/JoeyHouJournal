@@ -32,6 +32,8 @@ interface Journey {
   description: string
   route: string
   duration: string
+  days: number
+  nights: number
   visitedPlaceIds?: string[]
   journeyId?: string
   segments?: Array<{

@@ -95,6 +95,10 @@ export const zh: Translations = {
     totalPlaces: '总地点数',
     description: '描述',
     placesVisited: '访问过的地点',
+    days: '天',
+    day: '天',
+    nights: '晚',
+    night: '晚',
   },
 
   // Destination Detail

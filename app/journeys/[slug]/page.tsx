@@ -18,6 +18,8 @@ const trips = journeys.map(journey => {
     description: journey.description,
     route,
     duration: journey.duration,
+    days: journey.days,
+    nights: journey.nights,
     visitedPlaceIds: journey.visitedPlaceIds,
     journeyId: journey.id,
     segments: journey.segments

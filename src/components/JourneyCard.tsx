@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import { Image } from 'lucide-react'
 import { useTranslation } from 'src/hooks/useTranslation'
 import MixedText from 'src/components/MixedText'
+import { formatDuration } from 'src/utils/formatDuration'
 
 interface Journey {
   name: string
@@ -13,6 +14,8 @@ interface Journey {
   description: string
   route: string
   duration: string
+  days: number
+  nights: number
   image?: string | null
 }
 
@@ -22,7 +25,8 @@ interface JourneyCardProps {
 }
 
 export default function JourneyCard({ journey, index }: JourneyCardProps) {
-  const { locale } = useTranslation()
+  const { locale, tr } = useTranslation()
+  const durationText = formatDuration(journey.days, journey.nights, tr)
   const isEven = index % 2 === 0
 
   if (isEven) {
@@ -101,7 +105,7 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               {journey.route}
             </Box>
             <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
-              {journey.duration}
+              {durationText}
             </Box>
           </Box>
         </Box>
@@ -183,7 +187,7 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               {journey.route}
             </Box>
             <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '26px', color: '#F6F6F6', marginBottom: 0, marginTop: 0 }}>
-              {journey.duration}
+              {durationText}
             </Box>
           </Box>
         </Box>

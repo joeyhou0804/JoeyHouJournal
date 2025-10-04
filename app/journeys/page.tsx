@@ -66,6 +66,8 @@ export default function JourneysPage() {
       description: journey.description,
       route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
       duration: journey.duration,
+      days: journey.days,
+      nights: journey.nights,
       image: imageUrl
     }
   })

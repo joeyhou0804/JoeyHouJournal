@@ -43,6 +43,8 @@ export default function JourneyDetailsPage() {
     nameCN: '',
     slug: '',
     duration: '',
+    days: 1,
+    nights: 0,
     startDate: '',
     endDate: '',
     description: '',
@@ -72,6 +74,8 @@ export default function JourneyDetailsPage() {
             nameCN: data.nameCN || '',
             slug: data.slug || '',
             duration: data.duration || '',
+            days: data.days || 1,
+            nights: data.nights || 0,
             startDate: data.startDate || '',
             endDate: data.endDate || '',
             description: data.description || '',
@@ -165,7 +169,9 @@ export default function JourneyDetailsPage() {
         name: formData.name,
         nameCN: formData.nameCN,
         slug: formData.slug,
-        duration: formData.duration,
+        duration: `${formData.days} day${formData.days > 1 ? 's' : ''}${formData.nights > 0 ? `, ${formData.nights} night${formData.nights > 1 ? 's' : ''}` : ''}`,
+        days: formData.days,
+        nights: formData.nights,
         startDate: formData.startDate,
         endDate: formData.endDate,
         description: formData.description,
@@ -193,6 +199,8 @@ export default function JourneyDetailsPage() {
             nameCN: data.nameCN || '',
             slug: data.slug || '',
             duration: data.duration || '',
+            days: data.days || 1,
+            nights: data.nights || 0,
             startDate: data.startDate || '',
             endDate: data.endDate || '',
             description: data.description || '',
@@ -569,23 +577,46 @@ export default function JourneyDetailsPage() {
             />
           </Box>
 
-          {/* Duration */}
-          <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Duration
-            </label>
-            <input
-              value={formData.duration}
-              onChange={(e) => handleInputChange('duration', e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
-              }}
-            />
+          {/* Duration - Days and Nights */}
+          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <Box>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+                Days
+              </label>
+              <input
+                type="number"
+                min="1"
+                value={formData.days}
+                onChange={(e) => handleInputChange('days', parseInt(e.target.value) || 1)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  fontSize: '16px',
+                  border: '2px solid #373737',
+                  borderRadius: '0.5rem',
+                  fontFamily: 'MarioFont, sans-serif'
+                }}
+              />
+            </Box>
+            <Box>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+                Nights
+              </label>
+              <input
+                type="number"
+                min="0"
+                value={formData.nights}
+                onChange={(e) => handleInputChange('nights', parseInt(e.target.value) || 0)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  fontSize: '16px',
+                  border: '2px solid #373737',
+                  borderRadius: '0.5rem',
+                  fontFamily: 'MarioFont, sans-serif'
+                }}
+              />
+            </Box>
           </Box>
 
           {/* Start Date */}

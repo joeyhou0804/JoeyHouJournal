@@ -9,7 +9,9 @@ export interface Journey {
   descriptionCN?: string
   startDate: string
   endDate: string
-  duration: string
+  duration: string // Deprecated: use days and nights instead
+  days: number
+  nights: number
   startLocation: {
     name: string
     coordinates: { lat: number; lng: number }
