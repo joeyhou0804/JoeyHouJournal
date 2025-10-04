@@ -34,6 +34,8 @@ export default function JourneyDetailsPage() {
   const [selectedDestinations, setSelectedDestinations] = useState<string[]>([])
   const [adding, setAdding] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
 
   // Form state for editable fields
   const [formData, setFormData] = useState({
@@ -602,53 +604,166 @@ export default function JourneyDetailsPage() {
                   </td>
                 </tr>
               ) : (
-                destinations.map((dest) => (
-                  <tr
-                    key={dest.id}
-                    style={{
-                      borderBottom: '1px solid #e0e0e0',
-                      cursor: 'pointer',
-                      transition: 'background-color 0.2s'
-                    }}
-                    onClick={() => router.push(`/admin/destinations/${dest.id}`)}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                  >
-                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
-                      {dest.name}
-                      {dest.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{dest.nameCN}</div>}
-                    </td>
-                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.date}</td>
-                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</td>
-                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
-                      {dest.images?.length || 0}
-                    </td>
-                    <td
-                      style={{ padding: '1rem', textAlign: 'center' }}
-                      onClick={(e) => e.stopPropagation()}
+                destinations
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((dest) => (
+                    <tr
+                      key={dest.id}
+                      style={{
+                        borderBottom: '1px solid #e0e0e0',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onClick={() => router.push(`/admin/destinations/${dest.id}`)}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
-                      <button
-                        onClick={() => handleRemoveDestination(dest.id)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#ff6b6b',
-                          color: 'white',
-                          border: '1px solid #c92a2a',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer'
-                        }}
+                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
+                        {dest.name}
+                        {dest.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{dest.nameCN}</div>}
+                      </td>
+                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.date}</td>
+                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</td>
+                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
+                        {dest.images?.length || 0}
+                      </td>
+                      <td
+                        style={{ padding: '1rem', textAlign: 'center' }}
+                        onClick={(e) => e.stopPropagation()}
                       >
-                        Remove
-                      </button>
-                    </td>
-                  </tr>
-                ))
+                        <button
+                          onClick={() => handleRemoveDestination(dest.id)}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            fontSize: '14px',
+                            fontFamily: 'MarioFont, sans-serif',
+                            backgroundColor: '#ff6b6b',
+                            color: 'white',
+                            border: '1px solid #c92a2a',
+                            borderRadius: '0.25rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))
               )}
             </tbody>
           </table>
         </Box>
+
+        {/* Pagination Controls */}
+        {destinations.length > 0 && (
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '1rem',
+            padding: '1rem',
+            backgroundColor: 'white',
+            borderRadius: '0.5rem',
+            border: '1px solid #e0e0e0'
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
+                Rows per page:
+              </label>
+              <select
+                value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value))
+                  setPage(0)
+                }}
+                style={{
+                  padding: '0.5rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+              </select>
+            </Box>
+
+            <Box sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
+              {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, destinations.length)} of {destinations.length}
+            </Box>
+
+            <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => setPage(0)}
+                disabled={page === 0}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: page === 0 ? 'not-allowed' : 'pointer',
+                  opacity: page === 0 ? 0.5 : 1
+                }}
+              >
+                ««
+              </button>
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 0}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: page === 0 ? 'not-allowed' : 'pointer',
+                  opacity: page === 0 ? 0.5 : 1
+                }}
+              >
+                «
+              </button>
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page >= Math.ceil(destinations.length / rowsPerPage) - 1}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
+                  opacity: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 0.5 : 1
+                }}
+              >
+                »
+              </button>
+              <button
+                onClick={() => setPage(Math.ceil(destinations.length / rowsPerPage) - 1)}
+                disabled={page >= Math.ceil(destinations.length / rowsPerPage) - 1}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
+                  opacity: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 0.5 : 1
+                }}
+              >
+                »»
+              </button>
+            </Box>
+          </Box>
+        )}
       </Box>
 
       {/* Delete Confirmation Drawer */}

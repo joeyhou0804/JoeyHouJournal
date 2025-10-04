@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Box, TablePagination } from '@mui/material'
+import { Box } from '@mui/material'
 import { useRouter } from 'next/navigation'
 
 interface Destination {
@@ -188,27 +188,118 @@ export default function DestinationsPage() {
             )}
           </tbody>
         </table>
-
-        <TablePagination
-          component="div"
-          count={filteredDestinations.length}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          rowsPerPageOptions={[5, 10, 25, 50]}
-          sx={{
-            borderTop: '1px solid #e0e0e0',
-            fontFamily: 'MarioFont, sans-serif',
-            '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
-              fontFamily: 'MarioFont, sans-serif'
-            },
-            '& .MuiSelect-select': {
-              fontFamily: 'MarioFont, sans-serif'
-            }
-          }}
-        />
       </Box>
+
+      {/* Pagination Controls */}
+      {filteredDestinations.length > 0 && (
+        <Box sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginTop: '1rem',
+          padding: '1rem',
+          backgroundColor: 'white',
+          borderRadius: '0.5rem',
+          border: '1px solid #e0e0e0'
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
+              Rows per page:
+            </label>
+            <select
+              value={rowsPerPage}
+              onChange={(e) => {
+                setRowsPerPage(Number(e.target.value))
+                setPage(0)
+              }}
+              style={{
+                padding: '0.5rem',
+                fontSize: '14px',
+                fontFamily: 'MarioFont, sans-serif',
+                border: '2px solid #373737',
+                borderRadius: '0.25rem',
+                cursor: 'pointer'
+              }}
+            >
+              <option value={5}>5</option>
+              <option value={10}>10</option>
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+            </select>
+          </Box>
+
+          <Box sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
+            {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, filteredDestinations.length)} of {filteredDestinations.length}
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+            <button
+              onClick={() => setPage(0)}
+              disabled={page === 0}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '14px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
+                border: '2px solid #373737',
+                borderRadius: '0.25rem',
+                cursor: page === 0 ? 'not-allowed' : 'pointer',
+                opacity: page === 0 ? 0.5 : 1
+              }}
+            >
+              ««
+            </button>
+            <button
+              onClick={() => setPage(page - 1)}
+              disabled={page === 0}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '14px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
+                border: '2px solid #373737',
+                borderRadius: '0.25rem',
+                cursor: page === 0 ? 'not-allowed' : 'pointer',
+                opacity: page === 0 ? 0.5 : 1
+              }}
+            >
+              «
+            </button>
+            <button
+              onClick={() => setPage(page + 1)}
+              disabled={page >= Math.ceil(filteredDestinations.length / rowsPerPage) - 1}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '14px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: page >= Math.ceil(filteredDestinations.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
+                border: '2px solid #373737',
+                borderRadius: '0.25rem',
+                cursor: page >= Math.ceil(filteredDestinations.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
+                opacity: page >= Math.ceil(filteredDestinations.length / rowsPerPage) - 1 ? 0.5 : 1
+              }}
+            >
+              »
+            </button>
+            <button
+              onClick={() => setPage(Math.ceil(filteredDestinations.length / rowsPerPage) - 1)}
+              disabled={page >= Math.ceil(filteredDestinations.length / rowsPerPage) - 1}
+              style={{
+                padding: '0.5rem 1rem',
+                fontSize: '14px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: page >= Math.ceil(filteredDestinations.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
+                border: '2px solid #373737',
+                borderRadius: '0.25rem',
+                cursor: page >= Math.ceil(filteredDestinations.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
+                opacity: page >= Math.ceil(filteredDestinations.length / rowsPerPage) - 1 ? 0.5 : 1
+              }}
+            >
+              »»
+            </button>
+          </Box>
+        </Box>
+      )}
     </Box>
   )
 }
