@@ -52,6 +52,9 @@ export default function JourneyDetailsPage() {
   // Route points state (simplified from segments)
   const [routePoints, setRoutePoints] = useState<Array<{ name: string; lat: number; lng: number }>>([])
 
+  // Transportation methods between points (length = points.length - 1)
+  const [transportMethods, setTransportMethods] = useState<string[]>([])
+
   // Fetch journey data from API
   useEffect(() => {
     const fetchJourney = async () => {
@@ -78,10 +81,13 @@ export default function JourneyDetailsPage() {
           if (data.segments && Array.isArray(data.segments) && data.segments.length > 0) {
             // Convert segments to points
             const points = [data.segments[0].from]
+            const methods: string[] = []
             data.segments.forEach((seg: any) => {
               points.push(seg.to)
+              methods.push(seg.method || 'train') // Load transportation method or default to train
             })
             setRoutePoints(points)
+            setTransportMethods(methods)
           }
         } else {
           console.error('Failed to fetch journey')
@@ -217,7 +223,8 @@ export default function JourneyDetailsPage() {
       segments.push({
         order: i + 1,
         from: points[i],
-        to: points[i + 1]
+        to: points[i + 1],
+        method: transportMethods[i] || 'train' // Include transportation method
       })
     }
     return segments
@@ -226,6 +233,10 @@ export default function JourneyDetailsPage() {
   // Route points management functions
   const addPoint = () => {
     setRoutePoints([...routePoints, { name: '', lat: 0, lng: 0 }])
+    // Add default transportation method for the new segment
+    if (routePoints.length > 0) {
+      setTransportMethods([...transportMethods, 'train'])
+    }
   }
 
   const removePoint = (index: number) => {
@@ -235,6 +246,17 @@ export default function JourneyDetailsPage() {
     }
     const newPoints = routePoints.filter((_, i) => i !== index)
     setRoutePoints(newPoints)
+
+    // Remove the corresponding transportation method
+    // If removing last point, remove last method
+    // Otherwise remove the method at this index
+    const newMethods = [...transportMethods]
+    if (index === routePoints.length - 1) {
+      newMethods.pop()
+    } else {
+      newMethods.splice(index, 1)
+    }
+    setTransportMethods(newMethods)
   }
 
   const updatePoint = (index: number, subfield: 'name' | 'lat' | 'lng', value: string | number) => {
@@ -784,7 +806,47 @@ export default function JourneyDetailsPage() {
                 </Box>
 
                 {index < routePoints.length - 1 && (
-                  <Box sx={{ display: 'flex', justifyContent: 'center', padding: '0.5rem' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '1rem', gap: '1rem' }}>
+                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
+                    <Box sx={{
+                      backgroundColor: '#fff3cd',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '0.5rem',
+                      border: '2px solid #ffc107',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', fontWeight: 'bold' }}>
+                        Travel by:
+                      </label>
+                      <select
+                        value={transportMethods[index] || 'train'}
+                        onChange={(e) => {
+                          const newMethods = [...transportMethods]
+                          newMethods[index] = e.target.value
+                          setTransportMethods(newMethods)
+                        }}
+                        style={{
+                          padding: '0.5rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          border: '2px solid #373737',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer',
+                          backgroundColor: 'white'
+                        }}
+                      >
+                        <option value="train">🚂 Train</option>
+                        <option value="bus">🚌 Bus</option>
+                        <option value="subway">🚇 Subway</option>
+                        <option value="plane">✈️ Plane</option>
+                        <option value="ferry">⛴️ Ferry</option>
+                        <option value="walk">🚶 Walk</option>
+                        <option value="cruise">🚢 Cruise</option>
+                        <option value="drive">🚗 Drive</option>
+                      </select>
+                    </Box>
                     <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
                   </Box>
                 )}

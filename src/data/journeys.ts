@@ -59,5 +59,6 @@ export interface Journey {
     order: number
     from: { name: string; lat: number; lng: number }
     to: { name: string; lat: number; lng: number }
+    method?: string // Transportation method: train, bus, subway, plane, ferry, walk, cruise, drive
   }>
 }
