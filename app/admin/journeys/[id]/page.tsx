@@ -668,207 +668,6 @@ export default function JourneyDetailsPage() {
         </Box>
       </Box>
 
-      {/* Route Points */}
-      <Box
-        sx={{
-          backgroundColor: 'white',
-          padding: '2rem',
-          borderRadius: '1rem',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-          marginTop: '2rem'
-        }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0 }}>
-            Route Points ({routePoints.length} points = {routePoints.length > 1 ? routePoints.length - 1 : 0} segments)
-          </h2>
-          <button
-            type="button"
-            onClick={addPoint}
-            style={{
-              padding: '0.5rem 1rem',
-              fontSize: '14px',
-              fontFamily: 'MarioFont, sans-serif',
-              backgroundColor: '#FFD701',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: 'pointer'
-            }}
-          >
-            + Add Point
-          </button>
-        </Box>
-
-        {routePoints.length === 0 ? (
-          <Box sx={{ padding: '2rem', textAlign: 'center', backgroundColor: '#f5f5f5', borderRadius: '0.5rem' }}>
-            <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', margin: 0 }}>
-              No route points defined. Click "+ Add Point" to create the journey route for the map.
-            </p>
-          </Box>
-        ) : (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {routePoints.map((point, index) => (
-              <Box key={index}>
-                <Box
-                  sx={{
-                    padding: '1.5rem',
-                    border: '2px solid #e0e0e0',
-                    borderRadius: '0.75rem',
-                    backgroundColor: index === 0 ? '#e8f5e9' : index === routePoints.length - 1 ? '#ffebee' : '#fafafa'
-                  }}
-                >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <h3 style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', margin: 0 }}>
-                      {index === 0 ? '🚩 Start' : index === routePoints.length - 1 ? '🏁 End' : `📍 Stop ${index}`}
-                    </h3>
-                    <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-                      <button
-                        type="button"
-                        onClick={() => geocodePoint(index)}
-                        style={{
-                          padding: '0.25rem 0.75rem',
-                          fontSize: '12px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#4CAF50',
-                          color: 'white',
-                          border: '1px solid #388E3C',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        🌍 Get Coords
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => removePoint(index)}
-                        disabled={routePoints.length <= 2}
-                        style={{
-                          padding: '0.25rem 0.75rem',
-                          fontSize: '12px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: routePoints.length <= 2 ? '#e0e0e0' : '#ff6b6b',
-                          color: 'white',
-                          border: '1px solid #373737',
-                          borderRadius: '0.25rem',
-                          cursor: routePoints.length <= 2 ? 'not-allowed' : 'pointer',
-                          opacity: routePoints.length <= 2 ? 0.5 : 1
-                        }}
-                      >
-                        ✕
-                      </button>
-                    </Box>
-                  </Box>
-
-                  <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem' }}>
-                    <input
-                      value={point.name}
-                      onChange={(e) => updatePoint(index, 'name', e.target.value)}
-                      placeholder={index === 0 ? 'Start location (e.g., Chicago, IL)' : index === routePoints.length - 1 ? 'End location' : 'Stop location'}
-                      style={{
-                        padding: '0.75rem',
-                        fontSize: '14px',
-                        border: '2px solid #373737',
-                        borderRadius: '0.5rem',
-                        fontFamily: 'MarioFont, sans-serif'
-                      }}
-                    />
-                    <input
-                      type="number"
-                      step="0.0001"
-                      value={point.lat}
-                      onChange={(e) => updatePoint(index, 'lat', parseFloat(e.target.value) || 0)}
-                      placeholder="Latitude"
-                      style={{
-                        padding: '0.75rem',
-                        fontSize: '14px',
-                        border: '2px solid #e0e0e0',
-                        borderRadius: '0.5rem',
-                        fontFamily: 'MarioFont, sans-serif',
-                        backgroundColor: '#f5f5f5'
-                      }}
-                    />
-                    <input
-                      type="number"
-                      step="0.0001"
-                      value={point.lng}
-                      onChange={(e) => updatePoint(index, 'lng', parseFloat(e.target.value) || 0)}
-                      placeholder="Longitude"
-                      style={{
-                        padding: '0.75rem',
-                        fontSize: '14px',
-                        border: '2px solid #e0e0e0',
-                        borderRadius: '0.5rem',
-                        fontFamily: 'MarioFont, sans-serif',
-                        backgroundColor: '#f5f5f5'
-                      }}
-                    />
-                  </Box>
-                </Box>
-
-                {index < routePoints.length - 1 && (
-                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '1rem', gap: '1rem' }}>
-                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
-                    <Box sx={{
-                      backgroundColor: '#fff3cd',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '0.5rem',
-                      border: '2px solid #ffc107',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}>
-                      <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', fontWeight: 'bold' }}>
-                        Travel by:
-                      </label>
-                      <select
-                        value={transportMethods[index] || 'train'}
-                        onChange={(e) => {
-                          const newMethods = [...transportMethods]
-                          newMethods[index] = e.target.value
-                          setTransportMethods(newMethods)
-                        }}
-                        style={{
-                          padding: '0.5rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          border: '2px solid #373737',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer',
-                          backgroundColor: 'white'
-                        }}
-                      >
-                        <option value="train">🚂 Train</option>
-                        <option value="bus">🚌 Bus</option>
-                        <option value="subway">🚇 Subway</option>
-                        <option value="plane">✈️ Plane</option>
-                        <option value="ferry">⛴️ Ferry</option>
-                        <option value="walk">🚶 Walk</option>
-                        <option value="cruise">🚢 Cruise</option>
-                        <option value="drive">🚗 Drive</option>
-                      </select>
-                    </Box>
-                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
-                  </Box>
-                )}
-              </Box>
-            ))}
-          </Box>
-        )}
-
-        <Box sx={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '1px solid #2196f3' }}>
-          <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', margin: 0, marginBottom: '0.5rem' }}>
-            <strong>How to use Route Points:</strong>
-          </p>
-          <ul style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '13px', marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
-            <li>Each point represents a location on your journey</li>
-            <li>Points automatically connect to create route segments (Point 1 → Point 2, Point 2 → Point 3, etc.)</li>
-            <li>Enter location names and click "Get Coords" to auto-fill coordinates</li>
-            <li>Coordinates can be manually edited if needed</li>
-            <li>Current route: {routePoints.length >= 2 ? `${routePoints[0].name || 'Start'} → ${routePoints[routePoints.length - 1].name || 'End'}` : 'Add at least 2 points'}</li>
-          </ul>
-        </Box>
-      </Box>
-
       {/* Associated Destinations */}
       <Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -1077,6 +876,207 @@ export default function JourneyDetailsPage() {
             </Box>
           </Box>
         )}
+      </Box>
+
+      {/* Route Points */}
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: '2rem',
+          borderRadius: '1rem',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          marginTop: '2rem'
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0 }}>
+            Route Points ({routePoints.length} points = {routePoints.length > 1 ? routePoints.length - 1 : 0} segments)
+          </h2>
+          <button
+            type="button"
+            onClick={addPoint}
+            style={{
+              padding: '0.5rem 1rem',
+              fontSize: '14px',
+              fontFamily: 'MarioFont, sans-serif',
+              backgroundColor: '#FFD701',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: 'pointer'
+            }}
+          >
+            + Add Point
+          </button>
+        </Box>
+
+        {routePoints.length === 0 ? (
+          <Box sx={{ padding: '2rem', textAlign: 'center', backgroundColor: '#f5f5f5', borderRadius: '0.5rem' }}>
+            <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', margin: 0 }}>
+              No route points defined. Click "+ Add Point" to create the journey route for the map.
+            </p>
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {routePoints.map((point, index) => (
+              <Box key={index}>
+                <Box
+                  sx={{
+                    padding: '1.5rem',
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '0.75rem',
+                    backgroundColor: index === 0 ? '#e8f5e9' : index === routePoints.length - 1 ? '#ffebee' : '#fafafa'
+                  }}
+                >
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                    <h3 style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '16px', margin: 0 }}>
+                      {index === 0 ? '🚩 Start' : index === routePoints.length - 1 ? '🏁 End' : `📍 Stop ${index}`}
+                    </h3>
+                    <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => geocodePoint(index)}
+                        style={{
+                          padding: '0.25rem 0.75rem',
+                          fontSize: '12px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          backgroundColor: '#4CAF50',
+                          color: 'white',
+                          border: '1px solid #388E3C',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        🌍 Get Coords
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removePoint(index)}
+                        disabled={routePoints.length <= 2}
+                        style={{
+                          padding: '0.25rem 0.75rem',
+                          fontSize: '12px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          backgroundColor: routePoints.length <= 2 ? '#e0e0e0' : '#ff6b6b',
+                          color: 'white',
+                          border: '1px solid #373737',
+                          borderRadius: '0.25rem',
+                          cursor: routePoints.length <= 2 ? 'not-allowed' : 'pointer',
+                          opacity: routePoints.length <= 2 ? 0.5 : 1
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem' }}>
+                    <input
+                      value={point.name}
+                      onChange={(e) => updatePoint(index, 'name', e.target.value)}
+                      placeholder={index === 0 ? 'Start location (e.g., Chicago, IL)' : index === routePoints.length - 1 ? 'End location' : 'Stop location'}
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                    <input
+                      type="number"
+                      step="0.0001"
+                      value={point.lat}
+                      onChange={(e) => updatePoint(index, 'lat', parseFloat(e.target.value) || 0)}
+                      placeholder="Latitude"
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif',
+                        backgroundColor: '#f5f5f5'
+                      }}
+                    />
+                    <input
+                      type="number"
+                      step="0.0001"
+                      value={point.lng}
+                      onChange={(e) => updatePoint(index, 'lng', parseFloat(e.target.value) || 0)}
+                      placeholder="Longitude"
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #e0e0e0',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif',
+                        backgroundColor: '#f5f5f5'
+                      }}
+                    />
+                  </Box>
+                </Box>
+
+                {index < routePoints.length - 1 && (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '1rem', gap: '1rem' }}>
+                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
+                    <Box sx={{
+                      backgroundColor: '#fff3cd',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '0.5rem',
+                      border: '2px solid #ffc107',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', fontWeight: 'bold' }}>
+                        Travel by:
+                      </label>
+                      <select
+                        value={transportMethods[index] || 'train'}
+                        onChange={(e) => {
+                          const newMethods = [...transportMethods]
+                          newMethods[index] = e.target.value
+                          setTransportMethods(newMethods)
+                        }}
+                        style={{
+                          padding: '0.5rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          border: '2px solid #373737',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer',
+                          backgroundColor: 'white'
+                        }}
+                      >
+                        <option value="train">🚂 Train</option>
+                        <option value="bus">🚌 Bus</option>
+                        <option value="subway">🚇 Subway</option>
+                        <option value="plane">✈️ Plane</option>
+                        <option value="ferry">⛴️ Ferry</option>
+                        <option value="walk">🚶 Walk</option>
+                        <option value="cruise">🚢 Cruise</option>
+                        <option value="drive">🚗 Drive</option>
+                      </select>
+                    </Box>
+                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
+                  </Box>
+                )}
+              </Box>
+            ))}
+          </Box>
+        )}
+
+        <Box sx={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '1px solid #2196f3' }}>
+          <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', margin: 0, marginBottom: '0.5rem' }}>
+            <strong>How to use Route Points:</strong>
+          </p>
+          <ul style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '13px', marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
+            <li>Each point represents a location on your journey</li>
+            <li>Points automatically connect to create route segments (Point 1 → Point 2, Point 2 → Point 3, etc.)</li>
+            <li>Enter location names and click "Get Coords" to auto-fill coordinates</li>
+            <li>Coordinates can be manually edited if needed</li>
+            <li>Current route: {routePoints.length >= 2 ? `${routePoints[0].name || 'Start'} → ${routePoints[routePoints.length - 1].name || 'End'}` : 'Add at least 2 points'}</li>
+          </ul>
+        </Box>
       </Box>
 
       {/* Delete Confirmation Drawer */}
