@@ -26,6 +26,7 @@ interface JourneyCardProps {
 
 export default function JourneyCard({ journey, index }: JourneyCardProps) {
   const { locale, tr } = useTranslation()
+
   const durationText = formatDuration(journey.days, journey.nights, tr)
   const isEven = index % 2 === 0
 

@@ -2,7 +2,8 @@
 import journeysDataRaw from './journeys.json'
 
 // Export journeys directly - ensure we preserve ALL fields from JSON
-export const journeys = journeysDataRaw as any[]
+// Force TypeScript to treat this as any to preserve all fields
+export const journeys: any[] = JSON.parse(JSON.stringify(journeysDataRaw))
 
 // Helper function to get journey by slug
 export function getJourneyBySlug(slug: string) {

@@ -7,7 +7,8 @@ import NavigationMenu from 'src/components/NavigationMenu'
 import Footer from 'src/components/Footer'
 import Box from '@mui/material/Box'
 import JourneyCard from 'src/components/JourneyCard'
-import { journeys } from 'src/data/journeys'
+// import { journeys } from 'src/data/journeys'
+import journeysData from 'src/data/journeys.json'
 import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
 import MixedText from 'src/components/MixedText'
@@ -44,7 +45,7 @@ export default function JourneysPage() {
   const allDestinations = destinationsData as any[]
 
   // Transform journeys to trips format and add route string with images
-  const trips = journeys.map(journey => {
+  const trips = (journeysData as any[]).map((journey: any) => {
     // Find destinations for this journey
     const journeyDestinations = allDestinations.filter(
       destination => destination.journeyName === journey.name
@@ -73,7 +74,7 @@ export default function JourneysPage() {
   })
 
   // Get current journey based on index
-  const currentJourney = journeys[currentJourneyIndex]
+  const currentJourney = (journeysData as any[])[currentJourneyIndex]
   const currentJourneyPlaces = allDestinations.filter(
     destination => destination.journeyName === currentJourney.name
   ).map((destination) => ({
@@ -90,11 +91,11 @@ export default function JourneysPage() {
   }))
 
   const handlePrevJourney = () => {
-    setCurrentJourneyIndex((prev) => (prev - 1 + journeys.length) % journeys.length)
+    setCurrentJourneyIndex((prev) => (prev - 1 + journeysData.length) % journeysData.length)
   }
 
   const handleNextJourney = () => {
-    setCurrentJourneyIndex((prev) => (prev + 1) % journeys.length)
+    setCurrentJourneyIndex((prev) => (prev + 1) % journeysData.length)
   }
 
   const sortedTrips = [...trips].sort((a, b) => {
@@ -285,20 +286,20 @@ export default function JourneysPage() {
               {/* Next Button */}
               <button
                 onClick={handleNextJourney}
-                disabled={currentJourneyIndex === journeys.length - 1}
+                disabled={currentJourneyIndex === journeysData.length - 1}
                 className={`group absolute right-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
-                  currentJourneyIndex === journeys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                  currentJourneyIndex === journeysData.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
                 <img
                   src="/images/buttons/tab_next.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === journeys.length - 1 ? '' : 'group-hover:hidden'}`}
+                  className={`h-24 w-auto ${currentJourneyIndex === journeysData.length - 1 ? '' : 'group-hover:hidden'}`}
                 />
                 <img
                   src="/images/buttons/tab_next_hover.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === journeys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                  className={`h-24 w-auto ${currentJourneyIndex === journeysData.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
                 />
               </button>
             </Box>
