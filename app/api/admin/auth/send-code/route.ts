@@ -56,11 +56,12 @@ export async function POST(request: NextRequest) {
     verificationCodes.set(ADMIN_PHONE, { code, expiresAt })
 
     // Clean up expired codes
-    for (const [phone, data] of verificationCodes.entries()) {
-      if (data.expiresAt < Date.now()) {
+    const now = Date.now()
+    verificationCodes.forEach((data, phone) => {
+      if (data.expiresAt < now) {
         verificationCodes.delete(phone)
       }
-    }
+    })
 
     console.log(`Dev mode: Verification code ${code} for ${ADMIN_PHONE}`)
 
