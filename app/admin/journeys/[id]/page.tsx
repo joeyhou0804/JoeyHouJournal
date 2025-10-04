@@ -49,6 +49,11 @@ export default function JourneyDetailsPage() {
     descriptionCN: ''
   })
 
+  // Route info state - array of {location: string, transportation: string}
+  const [routeSegments, setRouteSegments] = useState<Array<{location: string, transportation?: string}>>([
+    { location: '', transportation: 'train' }
+  ])
+
   // Fetch journey data from API
   useEffect(() => {
     const fetchJourney = async () => {
@@ -71,6 +76,16 @@ export default function JourneyDetailsPage() {
             description: data.description || '',
             descriptionCN: data.descriptionCN || ''
           })
+          // Load route segments if they exist
+          if (data.route && Array.isArray(data.route) && data.route.length > 0) {
+            setRouteSegments(data.route)
+          } else {
+            // Initialize with start and end locations
+            setRouteSegments([
+              { location: data.startLocation?.name || '', transportation: 'train' },
+              { location: data.endLocation?.name || '' }
+            ])
+          }
         } else {
           console.error('Failed to fetch journey')
         }
@@ -139,6 +154,10 @@ export default function JourneyDetailsPage() {
     setSaving(true)
 
     try {
+      // Update start and end locations from route
+      const startLocation = routeSegments.length > 0 ? routeSegments[0].location : journey.startLocation?.name
+      const endLocation = routeSegments.length > 0 ? routeSegments[routeSegments.length - 1].location : journey.endLocation?.name
+
       const updatedJourney = {
         ...journey,
         name: formData.name,
@@ -148,7 +167,17 @@ export default function JourneyDetailsPage() {
         startDate: formData.startDate,
         endDate: formData.endDate,
         description: formData.description,
-        descriptionCN: formData.descriptionCN
+        descriptionCN: formData.descriptionCN,
+        route: routeSegments,
+        // Update start/end location names from route
+        startLocation: {
+          ...journey.startLocation,
+          name: startLocation
+        },
+        endLocation: {
+          ...journey.endLocation,
+          name: endLocation
+        }
       }
 
       const response = await fetch('/api/admin/journeys', {
@@ -190,6 +219,32 @@ export default function JourneyDetailsPage() {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
+  // Route management functions
+  const addRouteSegment = () => {
+    setRouteSegments([...routeSegments, { location: '', transportation: 'train' }])
+  }
+
+  const removeRouteSegment = (index: number) => {
+    if (routeSegments.length <= 2) {
+      alert('You must have at least 2 locations (start and end)')
+      return
+    }
+    const newSegments = routeSegments.filter((_, i) => i !== index)
+    setRouteSegments(newSegments)
+  }
+
+  const updateRouteLocation = (index: number, location: string) => {
+    const newSegments = [...routeSegments]
+    newSegments[index] = { ...newSegments[index], location }
+    setRouteSegments(newSegments)
+  }
+
+  const updateRouteTransportation = (index: number, transportation: string) => {
+    const newSegments = [...routeSegments]
+    newSegments[index] = { ...newSegments[index], transportation }
+    setRouteSegments(newSegments)
   }
 
   const fetchDestinations = async () => {
@@ -553,6 +608,114 @@ export default function JourneyDetailsPage() {
               }}
             />
           </Box>
+        </Box>
+      </Box>
+
+      {/* Route Information */}
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: '2rem',
+          borderRadius: '1rem',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          marginTop: '2rem'
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0 }}>
+            Route Information
+          </h2>
+          <button
+            type="button"
+            onClick={addRouteSegment}
+            style={{
+              padding: '0.5rem 1rem',
+              fontSize: '14px',
+              fontFamily: 'MarioFont, sans-serif',
+              backgroundColor: '#FFD701',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: 'pointer'
+            }}
+          >
+            + Add Stop
+          </button>
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {routeSegments.map((segment, index) => (
+            <Box key={index} sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <Box sx={{ flex: 1 }}>
+                <input
+                  value={segment.location}
+                  onChange={(e) => updateRouteLocation(index, e.target.value)}
+                  placeholder={index === 0 ? 'Start Location' : index === routeSegments.length - 1 ? 'End Location' : 'Stop Location'}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    fontSize: '16px',
+                    border: '2px solid #373737',
+                    borderRadius: '0.5rem',
+                    fontFamily: 'MarioFont, sans-serif'
+                  }}
+                />
+              </Box>
+
+              {index < routeSegments.length - 1 && (
+                <>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>→</span>
+                    <select
+                      value={segment.transportation || 'train'}
+                      onChange={(e) => updateRouteTransportation(index, e.target.value)}
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '16px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif',
+                        cursor: 'pointer',
+                        minWidth: '150px'
+                      }}
+                    >
+                      <option value="train">🚂 Train</option>
+                      <option value="bus">🚌 Bus</option>
+                      <option value="plane">✈️ Plane</option>
+                      <option value="car">🚗 Car</option>
+                      <option value="ferry">⛴️ Ferry</option>
+                      <option value="walk">🚶 Walk</option>
+                    </select>
+                  </Box>
+                </>
+              )}
+
+              <button
+                type="button"
+                onClick={() => removeRouteSegment(index)}
+                disabled={routeSegments.length <= 2}
+                style={{
+                  padding: '0.75rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: routeSegments.length <= 2 ? '#e0e0e0' : '#ff6b6b',
+                  color: 'white',
+                  border: '2px solid #373737',
+                  borderRadius: '0.5rem',
+                  cursor: routeSegments.length <= 2 ? 'not-allowed' : 'pointer',
+                  opacity: routeSegments.length <= 2 ? 0.5 : 1
+                }}
+              >
+                ✕
+              </button>
+            </Box>
+          ))}
+        </Box>
+
+        <Box sx={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '1px solid #2196f3' }}>
+          <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', margin: 0 }}>
+            <strong>Note:</strong> Route segments are connected sequentially. The first location is the start, and the last is the end.
+            The transportation method shows how you travel FROM each location TO the next one.
+          </p>
         </Box>
       </Box>
 
