@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { Destination } from 'src/data/destinations'
-import { getJourneyById } from 'src/data/journeyHelpers'
+import { getJourneyById } from 'src/data/journeys'
 import Box from '@mui/material/Box'
 import { Calendar, Train, ArrowLeft, MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
@@ -11,6 +11,7 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import { useTranslation } from 'src/hooks/useTranslation'
 import MixedText from 'src/components/MixedText'
+import { translations } from 'src/locales/translations'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -321,32 +322,25 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
             <Box sx={{ padding: '2rem', display: 'flex', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <MapPin style={{ color: '#F6F6F6' }} size={24} />
-                <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
-                  {station.state}
+                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                  {locale === 'zh' && translations.zh.states[station.state]
+                    ? translations.zh.states[station.state]
+                    : station.state}
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Calendar style={{ color: '#F6F6F6' }} size={24} />
-                <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
                   {station.date}
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Train style={{ color: '#F6F6F6' }} size={24} />
-                {locale === 'zh' && station.journeyNameCN ? (
-                  <MixedText
-                    text={station.journeyNameCN}
-                    chineseFont="MarioFontTitleChinese, sans-serif"
-                    englishFont="MarioFontTitle, sans-serif"
-                    fontSize="20px"
-                    color="#F6F6F6"
-                    component="span"
-                  />
-                ) : (
-                  <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
-                    {journey?.name || station.journeyName}
-                  </Box>
-                )}
+                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                  {locale === 'zh' && station.journeyNameCN && station.journeyNameCN !== station.journeyName
+                    ? station.journeyNameCN
+                    : journey?.name || station.journeyName}
+                </Box>
               </Box>
             </Box>
             </Box>

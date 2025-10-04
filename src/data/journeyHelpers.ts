@@ -4,7 +4,9 @@ export interface Journey {
   id: string
   slug: string
   name: string
+  nameCN?: string
   description: string
+  descriptionCN?: string
   startDate: string
   endDate: string
   duration: string

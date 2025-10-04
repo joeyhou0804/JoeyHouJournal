@@ -1,27 +1,17 @@
 // Import journeys data from JSON
-import journeysData from './journeys.json'
-import { destinations } from './destinations'
+import journeysDataRaw from './journeys.json'
 
-// Calculate totalPlaces dynamically from destinations
-function enrichJourneyWithPlaceCount(journey: any) {
-  const totalPlaces = destinations.filter(d => d.journeyId === journey.id).length
-  console.log(`Journey ${journey.id}: calculated ${totalPlaces} places (was ${journey.totalPlaces})`)
-  return { ...journey, totalPlaces }
-}
-
-// Export journeys with dynamically calculated totalPlaces
-export const journeys = journeysData.map(enrichJourneyWithPlaceCount)
+// Export journeys directly - ensure we preserve ALL fields from JSON
+export const journeys = journeysDataRaw as any[]
 
 // Helper function to get journey by slug
 export function getJourneyBySlug(slug: string) {
-  const journey = journeysData.find(j => j.slug === slug)
-  return journey ? enrichJourneyWithPlaceCount(journey) : undefined
+  return journeys.find((j: any) => j.slug === slug)
 }
 
 // Helper function to get journey by ID
 export function getJourneyById(id: string) {
-  const journey = journeysData.find(j => j.id === id)
-  return journey ? enrichJourneyWithPlaceCount(journey) : undefined
+  return journeys.find((j: any) => j.id === id)
 }
 
 // Helper function to get all journeys sorted by date
