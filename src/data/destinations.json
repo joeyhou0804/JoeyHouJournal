@@ -2746,9 +2746,9 @@
     "description": "14",
     "nameCN": "佛罗里达州·迈阿密海滩",
     "descriptionCN": "14",
-    "journeyId": null,
-    "journeyName": "Ground Transportation",
-    "journeyNameCN": "Ground Transportation"
+    "journeyId": "",
+    "journeyName": "",
+    "journeyNameCN": ""
   },
   {
     "id": "618c52f440d9f48e47cb970f",

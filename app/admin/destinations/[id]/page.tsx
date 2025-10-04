@@ -313,11 +313,11 @@ export default function DestinationFormPage() {
           {/* Date */}
           <Box>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Date (YYYY/MM/DD) *
+              Date *
             </label>
             <input
+              type="date"
               {...register('date', { required: true })}
-              placeholder="2024/01/01"
               style={{
                 width: '100%',
                 padding: '0.75rem',

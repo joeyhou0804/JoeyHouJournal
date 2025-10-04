@@ -266,6 +266,38 @@ export default function JourneyDetailsPage() {
     }
   }
 
+  const handleRemoveDestination = async (destId: string) => {
+    if (!confirm('Remove this destination from the journey?')) return
+
+    try {
+      const dest = allDestinations.find(d => d.id === destId)
+      if (dest) {
+        const updatedDest = {
+          ...dest,
+          journeyId: '',
+          journeyName: '',
+          journeyNameCN: ''
+        }
+
+        const response = await fetch('/api/admin/destinations', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedDest)
+        })
+
+        if (response.ok) {
+          // Refresh destinations list
+          await fetchDestinations()
+        } else {
+          alert('Failed to remove destination from journey')
+        }
+      }
+    } catch (error) {
+      console.error('Error removing destination:', error)
+      alert('Error removing destination from journey')
+    }
+  }
+
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
@@ -444,9 +476,9 @@ export default function JourneyDetailsPage() {
               Start Date
             </label>
             <input
+              type="date"
               value={formData.startDate}
               onChange={(e) => handleInputChange('startDate', e.target.value)}
-              placeholder="August 22, 2020"
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -464,9 +496,9 @@ export default function JourneyDetailsPage() {
               End Date
             </label>
             <input
+              type="date"
               value={formData.endDate}
               onChange={(e) => handleInputChange('endDate', e.target.value)}
-              placeholder="August 25, 2020"
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -582,21 +614,38 @@ export default function JourneyDetailsPage() {
                       {dest.images?.length || 0}
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <Link href={`/admin/destinations/${dest.id}`}>
+                      <Box sx={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                        <Link href={`/admin/destinations/${dest.id}`}>
+                          <button
+                            style={{
+                              padding: '0.5rem 1rem',
+                              fontSize: '14px',
+                              fontFamily: 'MarioFont, sans-serif',
+                              backgroundColor: '#FFD701',
+                              border: '1px solid #373737',
+                              borderRadius: '0.25rem',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            Edit
+                          </button>
+                        </Link>
                         <button
+                          onClick={() => handleRemoveDestination(dest.id)}
                           style={{
                             padding: '0.5rem 1rem',
                             fontSize: '14px',
                             fontFamily: 'MarioFont, sans-serif',
-                            backgroundColor: '#FFD701',
-                            border: '1px solid #373737',
+                            backgroundColor: '#ff6b6b',
+                            color: 'white',
+                            border: '1px solid #c92a2a',
                             borderRadius: '0.25rem',
                             cursor: 'pointer'
                           }}
                         >
-                          Edit
+                          Remove
                         </button>
-                      </Link>
+                      </Box>
                     </td>
                   </tr>
                 ))
