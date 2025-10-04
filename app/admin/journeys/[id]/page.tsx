@@ -261,7 +261,11 @@ export default function JourneyDetailsPage() {
 
   const updatePoint = (index: number, subfield: 'name' | 'lat' | 'lng', value: string | number) => {
     const newPoints = [...routePoints]
-    newPoints[index][subfield] = value as any
+    if (subfield === 'name') {
+      newPoints[index][subfield] = value as string
+    } else {
+      newPoints[index][subfield] = value as number
+    }
     setRoutePoints(newPoints)
   }
 
