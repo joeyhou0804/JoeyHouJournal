@@ -1,6 +1,6 @@
 import { translations } from 'src/locales/translations'
 
-type TranslationObject = typeof translations.en
+type TranslationObject = typeof translations.en | typeof translations.zh
 
 /**
  * Format journey duration with proper pluralization and localization
