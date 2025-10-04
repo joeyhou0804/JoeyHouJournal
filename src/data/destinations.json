@@ -1809,9 +1809,9 @@
     "description": "5-2",
     "nameCN": "加利福尼亚州·旧金山",
     "descriptionCN": "5-2",
-    "journeyId": null,
-    "journeyName": "Airplane",
-    "journeyNameCN": "Airplane"
+    "journeyId": "test-2025-10-03",
+    "journeyName": "test",
+    "journeyNameCN": "测试"
   },
   {
     "id": "6189a980efae22e1cf780df5",

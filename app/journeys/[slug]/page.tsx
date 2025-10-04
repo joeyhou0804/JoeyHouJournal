@@ -1,8 +1,8 @@
 import JourneyDetailClient from './JourneyDetailClient'
-import { journeys } from 'src/data/journeys'
+import journeysData from 'src/data/journeys.json'
 
 // Transform journeys to trips format for the detail page
-const trips = journeys.map(journey => {
+const trips = (journeysData as any[]).map((journey: any) => {
   // Generate route from segments if available, otherwise use startLocation/endLocation
   let route = `${journey.startLocation.name} → ${journey.endLocation.name}`
   if (journey.segments && journey.segments.length > 0) {

@@ -1114,6 +1114,62 @@ export default function JourneyDetailsPage() {
         </Box>
       </Box>
 
+      {/* Dangerous Zone - Delete Journey */}
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: '2rem',
+          borderRadius: '1rem',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          marginTop: '2rem',
+          border: '2px solid #d32f2f'
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box>
+            <Typography
+              variant="h6"
+              sx={{
+                fontFamily: 'MarioFontTitle, sans-serif',
+                fontSize: '24px',
+                color: '#d32f2f',
+                marginBottom: '0.5rem'
+              }}
+            >
+              ⚠️ Dangerous Zone
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontFamily: 'MarioFont, sans-serif',
+                fontSize: '14px',
+                color: '#666'
+              }}
+            >
+              Once you delete this journey, there is no going back. Please be certain.
+            </Typography>
+          </Box>
+          <Button
+            variant="outlined"
+            startIcon={<DeleteIcon />}
+            onClick={() => setDeleteDrawerOpen(true)}
+            sx={{
+              color: '#d32f2f',
+              borderColor: '#d32f2f',
+              fontFamily: 'MarioFont, sans-serif',
+              padding: '0.75rem 1.5rem',
+              fontSize: '16px',
+              '&:hover': {
+                borderColor: '#d32f2f',
+                backgroundColor: 'rgba(211, 47, 47, 0.04)'
+              }
+            }}
+          >
+            Delete Journey
+          </Button>
+        </Box>
+      </Box>
+
       {/* Delete Confirmation Drawer */}
       <Drawer
         anchor="right"
