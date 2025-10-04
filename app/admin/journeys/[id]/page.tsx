@@ -603,7 +603,17 @@ export default function JourneyDetailsPage() {
                 </tr>
               ) : (
                 destinations.map((dest) => (
-                  <tr key={dest.id} style={{ borderBottom: '1px solid #e0e0e0' }}>
+                  <tr
+                    key={dest.id}
+                    style={{
+                      borderBottom: '1px solid #e0e0e0',
+                      cursor: 'pointer',
+                      transition: 'background-color 0.2s'
+                    }}
+                    onClick={() => router.push(`/admin/destinations/${dest.id}`)}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                  >
                     <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
                       {dest.name}
                       {dest.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{dest.nameCN}</div>}
@@ -613,39 +623,25 @@ export default function JourneyDetailsPage() {
                     <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
                       {dest.images?.length || 0}
                     </td>
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <Box sx={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-                        <Link href={`/admin/destinations/${dest.id}`}>
-                          <button
-                            style={{
-                              padding: '0.5rem 1rem',
-                              fontSize: '14px',
-                              fontFamily: 'MarioFont, sans-serif',
-                              backgroundColor: '#FFD701',
-                              border: '1px solid #373737',
-                              borderRadius: '0.25rem',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            Edit
-                          </button>
-                        </Link>
-                        <button
-                          onClick={() => handleRemoveDestination(dest.id)}
-                          style={{
-                            padding: '0.5rem 1rem',
-                            fontSize: '14px',
-                            fontFamily: 'MarioFont, sans-serif',
-                            backgroundColor: '#ff6b6b',
-                            color: 'white',
-                            border: '1px solid #c92a2a',
-                            borderRadius: '0.25rem',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Remove
-                        </button>
-                      </Box>
+                    <td
+                      style={{ padding: '1rem', textAlign: 'center' }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        onClick={() => handleRemoveDestination(dest.id)}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          backgroundColor: '#ff6b6b',
+                          color: 'white',
+                          border: '1px solid #c92a2a',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Remove
+                      </button>
                     </td>
                   </tr>
                 ))

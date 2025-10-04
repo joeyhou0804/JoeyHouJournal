@@ -82,7 +82,12 @@ export default function DestinationFormPage() {
 
       if (destination) {
         Object.keys(destination).forEach((key) => {
-          setValue(key as any, destination[key])
+          // Convert date format from YYYY/MM/DD to YYYY-MM-DD for date input
+          if (key === 'date' && destination[key]) {
+            setValue(key as any, destination[key].replace(/\//g, '-'))
+          } else {
+            setValue(key as any, destination[key])
+          }
         })
       } else {
         console.error('Destination not found:', id)
@@ -153,15 +158,44 @@ export default function DestinationFormPage() {
     setValue('images', newImages)
   }
 
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', index.toString())
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+  }
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    e.preventDefault()
+    const dragIndex = parseInt(e.dataTransfer.getData('text/plain'))
+
+    if (dragIndex === dropIndex) return
+
+    const newImages = [...images]
+    const [draggedImage] = newImages.splice(dragIndex, 1)
+    newImages.splice(dropIndex, 0, draggedImage)
+
+    setValue('images', newImages)
+  }
+
   const onSubmit = async (data: DestinationFormData) => {
     setLoading(true)
 
     try {
+      // Convert date format from YYYY-MM-DD to YYYY/MM/DD for storage
+      const formattedData = {
+        ...data,
+        date: data.date ? data.date.replace(/-/g, '/') : data.date
+      }
+
       const method = isNew ? 'POST' : 'PUT'
       const response = await fetch('/api/admin/destinations', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(formattedData)
       })
 
       if (response.ok) {
@@ -614,15 +648,36 @@ export default function DestinationFormPage() {
               {images.map((url, index) => (
                 <Box
                   key={index}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={handleDragOver}
+                  onDrop={(e) => handleDrop(e, index)}
                   sx={{
                     position: 'relative',
                     paddingBottom: '100%', // Square aspect ratio
                     overflow: 'hidden',
                     borderRadius: '0.5rem',
                     border: '2px solid #e0e0e0',
-                    backgroundColor: '#f5f5f5'
+                    backgroundColor: '#f5f5f5',
+                    cursor: 'move'
                   }}
                 >
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '0.5rem',
+                      left: '0.5rem',
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                      color: 'white',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      fontSize: '12px',
+                      fontFamily: 'MarioFont, sans-serif',
+                      zIndex: 1
+                    }}
+                  >
+                    {index + 1}
+                  </Box>
                   <img
                     src={url}
                     alt={`Image ${index + 1}`}
@@ -632,7 +687,8 @@ export default function DestinationFormPage() {
                       left: 0,
                       width: '100%',
                       height: '100%',
-                      objectFit: 'cover'
+                      objectFit: 'cover',
+                      pointerEvents: 'none'
                     }}
                   />
                   <button
@@ -655,7 +711,8 @@ export default function DestinationFormPage() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       transition: 'all 0.2s',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                      zIndex: 2
                     }}
                     onMouseOver={(e) => {
                       e.currentTarget.style.backgroundColor = 'rgba(255, 0, 0, 1)'
