@@ -49,10 +49,13 @@ export default function JourneyDetailsPage() {
     descriptionCN: ''
   })
 
-  // Route info state - array of {location: string, transportation: string}
-  const [routeSegments, setRouteSegments] = useState<Array<{location: string, transportation?: string}>>([
-    { location: '', transportation: 'train' }
-  ])
+  // Route segments state - array of segment objects with from/to coordinates
+  const [routeSegments, setRouteSegments] = useState<Array<{
+    order: number
+    from: { name: string; lat: number; lng: number }
+    to: { name: string; lat: number; lng: number }
+  }>>([])
+
 
   // Fetch journey data from API
   useEffect(() => {
@@ -77,14 +80,8 @@ export default function JourneyDetailsPage() {
             descriptionCN: data.descriptionCN || ''
           })
           // Load route segments if they exist
-          if (data.route && Array.isArray(data.route) && data.route.length > 0) {
-            setRouteSegments(data.route)
-          } else {
-            // Initialize with start and end locations
-            setRouteSegments([
-              { location: data.startLocation?.name || '', transportation: 'train' },
-              { location: data.endLocation?.name || '' }
-            ])
+          if (data.segments && Array.isArray(data.segments) && data.segments.length > 0) {
+            setRouteSegments(data.segments)
           }
         } else {
           console.error('Failed to fetch journey')
@@ -154,10 +151,6 @@ export default function JourneyDetailsPage() {
     setSaving(true)
 
     try {
-      // Update start and end locations from route
-      const startLocation = routeSegments.length > 0 ? routeSegments[0].location : journey.startLocation?.name
-      const endLocation = routeSegments.length > 0 ? routeSegments[routeSegments.length - 1].location : journey.endLocation?.name
-
       const updatedJourney = {
         ...journey,
         name: formData.name,
@@ -168,16 +161,7 @@ export default function JourneyDetailsPage() {
         endDate: formData.endDate,
         description: formData.description,
         descriptionCN: formData.descriptionCN,
-        route: routeSegments,
-        // Update start/end location names from route
-        startLocation: {
-          ...journey.startLocation,
-          name: startLocation
-        },
-        endLocation: {
-          ...journey.endLocation,
-          name: endLocation
-        }
+        segments: routeSegments.length > 0 ? routeSegments : undefined
       }
 
       const response = await fetch('/api/admin/journeys', {
@@ -221,29 +205,39 @@ export default function JourneyDetailsPage() {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  // Route management functions
-  const addRouteSegment = () => {
-    setRouteSegments([...routeSegments, { location: '', transportation: 'train' }])
+  // Route segments management functions
+  const addSegment = () => {
+    const newOrder = routeSegments.length + 1
+    const lastSegment = routeSegments[routeSegments.length - 1]
+
+    setRouteSegments([
+      ...routeSegments,
+      {
+        order: newOrder,
+        from: lastSegment ? { ...lastSegment.to } : { name: '', lat: 0, lng: 0 },
+        to: { name: '', lat: 0, lng: 0 }
+      }
+    ])
   }
 
-  const removeRouteSegment = (index: number) => {
-    if (routeSegments.length <= 2) {
-      alert('You must have at least 2 locations (start and end)')
+  const removeSegment = (index: number) => {
+    if (routeSegments.length <= 1) {
+      alert('You must have at least 1 segment')
       return
     }
     const newSegments = routeSegments.filter((_, i) => i !== index)
+    // Re-order the remaining segments
+    newSegments.forEach((seg, i) => {
+      seg.order = i + 1
+    })
     setRouteSegments(newSegments)
   }
 
-  const updateRouteLocation = (index: number, location: string) => {
+  const updateSegment = (index: number, field: 'from' | 'to', subfield: 'name' | 'lat' | 'lng', value: string | number) => {
     const newSegments = [...routeSegments]
-    newSegments[index] = { ...newSegments[index], location }
-    setRouteSegments(newSegments)
-  }
-
-  const updateRouteTransportation = (index: number, transportation: string) => {
-    const newSegments = [...routeSegments]
-    newSegments[index] = { ...newSegments[index], transportation }
+    if (field === 'from' || field === 'to') {
+      newSegments[index][field][subfield] = value as any
+    }
     setRouteSegments(newSegments)
   }
 
@@ -611,7 +605,7 @@ export default function JourneyDetailsPage() {
         </Box>
       </Box>
 
-      {/* Route Information */}
+      {/* Route Segments */}
       <Box
         sx={{
           backgroundColor: 'white',
@@ -623,11 +617,11 @@ export default function JourneyDetailsPage() {
       >
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0 }}>
-            Route Information
+            Route Segments ({routeSegments.length})
           </h2>
           <button
             type="button"
-            onClick={addRouteSegment}
+            onClick={addSegment}
             style={{
               padding: '0.5rem 1rem',
               fontSize: '14px',
@@ -638,84 +632,168 @@ export default function JourneyDetailsPage() {
               cursor: 'pointer'
             }}
           >
-            + Add Stop
+            + Add Segment
           </button>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {routeSegments.map((segment, index) => (
-            <Box key={index} sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <Box sx={{ flex: 1 }}>
-                <input
-                  value={segment.location}
-                  onChange={(e) => updateRouteLocation(index, e.target.value)}
-                  placeholder={index === 0 ? 'Start Location' : index === routeSegments.length - 1 ? 'End Location' : 'Stop Location'}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    fontSize: '16px',
-                    border: '2px solid #373737',
-                    borderRadius: '0.5rem',
-                    fontFamily: 'MarioFont, sans-serif'
-                  }}
-                />
-              </Box>
-
-              {index < routeSegments.length - 1 && (
-                <>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>→</span>
-                    <select
-                      value={segment.transportation || 'train'}
-                      onChange={(e) => updateRouteTransportation(index, e.target.value)}
-                      style={{
-                        padding: '0.75rem',
-                        fontSize: '16px',
-                        border: '2px solid #373737',
-                        borderRadius: '0.5rem',
-                        fontFamily: 'MarioFont, sans-serif',
-                        cursor: 'pointer',
-                        minWidth: '150px'
-                      }}
-                    >
-                      <option value="train">🚂 Train</option>
-                      <option value="bus">🚌 Bus</option>
-                      <option value="plane">✈️ Plane</option>
-                      <option value="car">🚗 Car</option>
-                      <option value="ferry">⛴️ Ferry</option>
-                      <option value="walk">🚶 Walk</option>
-                    </select>
-                  </Box>
-                </>
-              )}
-
-              <button
-                type="button"
-                onClick={() => removeRouteSegment(index)}
-                disabled={routeSegments.length <= 2}
-                style={{
-                  padding: '0.75rem',
-                  fontSize: '14px',
-                  fontFamily: 'MarioFont, sans-serif',
-                  backgroundColor: routeSegments.length <= 2 ? '#e0e0e0' : '#ff6b6b',
-                  color: 'white',
-                  border: '2px solid #373737',
-                  borderRadius: '0.5rem',
-                  cursor: routeSegments.length <= 2 ? 'not-allowed' : 'pointer',
-                  opacity: routeSegments.length <= 2 ? 0.5 : 1
+        {routeSegments.length === 0 ? (
+          <Box sx={{ padding: '2rem', textAlign: 'center', backgroundColor: '#f5f5f5', borderRadius: '0.5rem' }}>
+            <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', margin: 0 }}>
+              No route segments defined. Click "+ Add Segment" to create the journey route for the map.
+            </p>
+          </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {routeSegments.map((segment, index) => (
+              <Box
+                key={index}
+                sx={{
+                  padding: '1.5rem',
+                  border: '2px solid #e0e0e0',
+                  borderRadius: '0.75rem',
+                  backgroundColor: '#fafafa'
                 }}
               >
-                ✕
-              </button>
-            </Box>
-          ))}
-        </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h3 style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '18px', margin: 0 }}>
+                    Segment {segment.order}
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => removeSegment(index)}
+                    disabled={routeSegments.length <= 1}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      fontSize: '14px',
+                      fontFamily: 'MarioFont, sans-serif',
+                      backgroundColor: routeSegments.length <= 1 ? '#e0e0e0' : '#ff6b6b',
+                      color: 'white',
+                      border: '2px solid #373737',
+                      borderRadius: '0.5rem',
+                      cursor: routeSegments.length <= 1 ? 'not-allowed' : 'pointer',
+                      opacity: routeSegments.length <= 1 ? 0.5 : 1
+                    }}
+                  >
+                    Delete
+                  </button>
+                </Box>
 
-        <Box sx={{ marginTop: '1rem', padding: '1rem', backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '1px solid #2196f3' }}>
-          <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', margin: 0 }}>
-            <strong>Note:</strong> Route segments are connected sequentially. The first location is the start, and the last is the end.
-            The transportation method shows how you travel FROM each location TO the next one.
+                {/* From Location */}
+                <Box sx={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', fontSize: '14px' }}>
+                    From Location
+                  </label>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem' }}>
+                    <input
+                      value={segment.from.name}
+                      onChange={(e) => updateSegment(index, 'from', 'name', e.target.value)}
+                      placeholder="Location name (e.g., Chicago, IL)"
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                    <input
+                      type="number"
+                      step="0.0001"
+                      value={segment.from.lat}
+                      onChange={(e) => updateSegment(index, 'from', 'lat', parseFloat(e.target.value) || 0)}
+                      placeholder="Latitude"
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                    <input
+                      type="number"
+                      step="0.0001"
+                      value={segment.from.lng}
+                      onChange={(e) => updateSegment(index, 'from', 'lng', parseFloat(e.target.value) || 0)}
+                      placeholder="Longitude"
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                  </Box>
+                </Box>
+
+                {/* Arrow */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', margin: '0.5rem 0' }}>
+                  <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '24px', color: '#666' }}>↓</span>
+                </Box>
+
+                {/* To Location */}
+                <Box>
+                  <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', fontSize: '14px' }}>
+                    To Location
+                  </label>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem' }}>
+                    <input
+                      value={segment.to.name}
+                      onChange={(e) => updateSegment(index, 'to', 'name', e.target.value)}
+                      placeholder="Location name (e.g., Naperville, IL)"
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                    <input
+                      type="number"
+                      step="0.0001"
+                      value={segment.to.lat}
+                      onChange={(e) => updateSegment(index, 'to', 'lat', parseFloat(e.target.value) || 0)}
+                      placeholder="Latitude"
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                    <input
+                      type="number"
+                      step="0.0001"
+                      value={segment.to.lng}
+                      onChange={(e) => updateSegment(index, 'to', 'lng', parseFloat(e.target.value) || 0)}
+                      placeholder="Longitude"
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                  </Box>
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        )}
+
+        <Box sx={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '1px solid #2196f3' }}>
+          <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', margin: 0, marginBottom: '0.5rem' }}>
+            <strong>Note:</strong> Route segments define the journey path shown on the map.
           </p>
+          <ul style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '13px', marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
+            <li>Each segment connects two locations with coordinates (latitude/longitude)</li>
+            <li>Segments should connect sequentially: Segment 1's "To" should match Segment 2's "From"</li>
+            <li>The route displayed on the journey page is: {routeSegments.length > 0 ? `${routeSegments[0].from.name} → ${routeSegments[routeSegments.length - 1].to.name}` : 'Not defined'}</li>
+          </ul>
         </Box>
       </Box>
 

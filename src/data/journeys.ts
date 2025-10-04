@@ -55,4 +55,9 @@ export interface Journey {
   visitedPlaceIds: string[]
   totalPlaces: number
   images: string[]
+  segments?: Array<{
+    order: number
+    from: { name: string; lat: number; lng: number }
+    to: { name: string; lat: number; lng: number }
+  }>
 }

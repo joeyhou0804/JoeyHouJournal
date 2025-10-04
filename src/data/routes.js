@@ -431,11 +431,24 @@ export function getRouteByJourneyId(journeyId) {
 }
 
 // Helper function to get route coordinates for map visualization
-export function getRouteCoordinates(journeyId) {
+// Now reads from journey.segments instead of routes object
+export function getRouteCoordinates(journeyId, journeySegments) {
+  // If segments are provided directly (new approach), use them
+  if (journeySegments && Array.isArray(journeySegments) && journeySegments.length > 0) {
+    const coordinates = []
+    journeySegments.forEach((segment, index) => {
+      if (index === 0) {
+        coordinates.push([segment.from.lat, segment.from.lng])
+      }
+      coordinates.push([segment.to.lat, segment.to.lng])
+    })
+    return coordinates
+  }
+
+  // Fallback to old routes object for backwards compatibility
   const route = routes[journeyId]
   if (!route || !route.segments) return []
 
-  // Build path from segments
   const coordinates = []
   route.segments.forEach((segment, index) => {
     if (index === 0) {

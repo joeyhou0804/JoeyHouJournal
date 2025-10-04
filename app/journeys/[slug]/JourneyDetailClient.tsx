@@ -34,6 +34,11 @@ interface Journey {
   duration: string
   visitedPlaceIds?: string[]
   journeyId?: string
+  segments?: Array<{
+    order: number
+    from: { name: string; lat: number; lng: number }
+    to: { name: string; lat: number; lng: number }
+  }>
 }
 
 interface JourneyDetailClientProps {
@@ -271,7 +276,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
           >
             <InteractiveMap
               places={places}
-              routeCoordinates={journey?.journeyId ? getRouteCoordinates(journey.journeyId) : undefined}
+              routeCoordinates={journey?.segments ? getRouteCoordinates(journey.journeyId, journey.segments) : journey?.journeyId ? getRouteCoordinates(journey.journeyId) : undefined}
             />
           </Box>
         </div>

@@ -10,7 +10,8 @@ const trips = journeys.map(journey => ({
   route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
   duration: journey.duration,
   visitedPlaceIds: journey.visitedPlaceIds,
-  journeyId: journey.id
+  journeyId: journey.id,
+  segments: journey.segments // Pass segments to the client
 }))
 
 export async function generateStaticParams() {
