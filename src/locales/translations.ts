@@ -99,6 +99,14 @@ export const translations = {
       'Michigan': 'Michigan',
       'Maine': 'Maine',
     } as Record<string, string>,
+
+    // Duration
+    journeyDetail: {
+      day: 'day',
+      days: 'days',
+      night: 'night',
+      nights: 'nights',
+    },
   },
   zh: {
     // Section Headings
@@ -197,6 +205,14 @@ export const translations = {
       'Michigan': '密歇根州',
       'Maine': '缅因州',
     } as Record<string, string>,
+
+    // Duration
+    journeyDetail: {
+      day: '天',
+      days: '天',
+      night: '晚',
+      nights: '晚',
+    },
   },
 } as const
 
