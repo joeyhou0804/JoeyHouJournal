@@ -241,6 +241,45 @@ export default function JourneyDetailsPage() {
     setRouteSegments(newSegments)
   }
 
+  // Geocode location name to get coordinates
+  const geocodeLocation = async (index: number, field: 'from' | 'to') => {
+    const locationName = routeSegments[index][field].name
+    if (!locationName.trim()) {
+      alert('Please enter a location name first')
+      return
+    }
+
+    try {
+      // Using Nominatim (OpenStreetMap) geocoding API
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationName)}&limit=1`,
+        {
+          headers: {
+            'User-Agent': 'JoeyHouJournal/1.0'
+          }
+        }
+      )
+      const data = await response.json()
+
+      if (data && data.length > 0) {
+        const lat = parseFloat(data[0].lat)
+        const lng = parseFloat(data[0].lon)
+
+        const newSegments = [...routeSegments]
+        newSegments[index][field].lat = lat
+        newSegments[index][field].lng = lng
+        setRouteSegments(newSegments)
+
+        alert(`✓ Found coordinates for "${locationName}": ${lat.toFixed(4)}, ${lng.toFixed(4)}`)
+      } else {
+        alert(`Could not find coordinates for "${locationName}". Please enter them manually.`)
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error)
+      alert('Failed to geocode location. Please enter coordinates manually.')
+    }
+  }
+
   const fetchDestinations = async () => {
     try {
       const response = await fetch('/api/admin/destinations')
@@ -680,9 +719,27 @@ export default function JourneyDetailsPage() {
 
                 {/* From Location */}
                 <Box sx={{ marginBottom: '1rem' }}>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', fontSize: '14px' }}>
-                    From Location
-                  </label>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <label style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', fontSize: '14px' }}>
+                      From Location
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => geocodeLocation(index, 'from')}
+                      style={{
+                        padding: '0.25rem 0.75rem',
+                        fontSize: '12px',
+                        fontFamily: 'MarioFont, sans-serif',
+                        backgroundColor: '#4CAF50',
+                        color: 'white',
+                        border: '1px solid #388E3C',
+                        borderRadius: '0.25rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      🌍 Get Coordinates
+                    </button>
+                  </Box>
                   <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem' }}>
                     <input
                       value={segment.from.name}
@@ -705,9 +762,10 @@ export default function JourneyDetailsPage() {
                       style={{
                         padding: '0.75rem',
                         fontSize: '14px',
-                        border: '2px solid #373737',
+                        border: '2px solid #e0e0e0',
                         borderRadius: '0.5rem',
-                        fontFamily: 'MarioFont, sans-serif'
+                        fontFamily: 'MarioFont, sans-serif',
+                        backgroundColor: '#f5f5f5'
                       }}
                     />
                     <input
@@ -719,11 +777,17 @@ export default function JourneyDetailsPage() {
                       style={{
                         padding: '0.75rem',
                         fontSize: '14px',
-                        border: '2px solid #373737',
+                        border: '2px solid #e0e0e0',
                         borderRadius: '0.5rem',
-                        fontFamily: 'MarioFont, sans-serif'
+                        fontFamily: 'MarioFont, sans-serif',
+                        backgroundColor: '#f5f5f5'
                       }}
                     />
+                  </Box>
+                  <Box sx={{ marginTop: '0.25rem' }}>
+                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '11px', color: '#666' }}>
+                      💡 Enter location name and click "Get Coordinates" to auto-fill lat/lng
+                    </span>
                   </Box>
                 </Box>
 
@@ -734,9 +798,27 @@ export default function JourneyDetailsPage() {
 
                 {/* To Location */}
                 <Box>
-                  <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', fontSize: '14px' }}>
-                    To Location
-                  </label>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <label style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', fontSize: '14px' }}>
+                      To Location
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => geocodeLocation(index, 'to')}
+                      style={{
+                        padding: '0.25rem 0.75rem',
+                        fontSize: '12px',
+                        fontFamily: 'MarioFont, sans-serif',
+                        backgroundColor: '#4CAF50',
+                        color: 'white',
+                        border: '1px solid #388E3C',
+                        borderRadius: '0.25rem',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      🌍 Get Coordinates
+                    </button>
+                  </Box>
                   <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem' }}>
                     <input
                       value={segment.to.name}
@@ -759,9 +841,10 @@ export default function JourneyDetailsPage() {
                       style={{
                         padding: '0.75rem',
                         fontSize: '14px',
-                        border: '2px solid #373737',
+                        border: '2px solid #e0e0e0',
                         borderRadius: '0.5rem',
-                        fontFamily: 'MarioFont, sans-serif'
+                        fontFamily: 'MarioFont, sans-serif',
+                        backgroundColor: '#f5f5f5'
                       }}
                     />
                     <input
@@ -773,11 +856,17 @@ export default function JourneyDetailsPage() {
                       style={{
                         padding: '0.75rem',
                         fontSize: '14px',
-                        border: '2px solid #373737',
+                        border: '2px solid #e0e0e0',
                         borderRadius: '0.5rem',
-                        fontFamily: 'MarioFont, sans-serif'
+                        fontFamily: 'MarioFont, sans-serif',
+                        backgroundColor: '#f5f5f5'
                       }}
                     />
+                  </Box>
+                  <Box sx={{ marginTop: '0.25rem' }}>
+                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '11px', color: '#666' }}>
+                      💡 Enter location name and click "Get Coordinates" to auto-fill lat/lng
+                    </span>
                   </Box>
                 </Box>
               </Box>
@@ -787,12 +876,13 @@ export default function JourneyDetailsPage() {
 
         <Box sx={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '1px solid #2196f3' }}>
           <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', margin: 0, marginBottom: '0.5rem' }}>
-            <strong>Note:</strong> Route segments define the journey path shown on the map.
+            <strong>How to use Route Segments:</strong>
           </p>
           <ul style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '13px', marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
-            <li>Each segment connects two locations with coordinates (latitude/longitude)</li>
+            <li>Enter location names (e.g., "Chicago, IL") and click "Get Coordinates" to auto-fill latitude/longitude</li>
+            <li>Coordinates can be manually edited if geocoding fails or needs adjustment</li>
             <li>Segments should connect sequentially: Segment 1's "To" should match Segment 2's "From"</li>
-            <li>The route displayed on the journey page is: {routeSegments.length > 0 ? `${routeSegments[0].from.name} → ${routeSegments[routeSegments.length - 1].to.name}` : 'Not defined'}</li>
+            <li>Current route: {routeSegments.length > 0 ? `${routeSegments[0].from.name} → ${routeSegments[routeSegments.length - 1].to.name}` : 'Not defined'}</li>
           </ul>
         </Box>
       </Box>
