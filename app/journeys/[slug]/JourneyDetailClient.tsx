@@ -278,6 +278,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
           >
             <InteractiveMap
               places={places}
+              routeSegments={journey?.segments}
               routeCoordinates={journey?.segments ? getRouteCoordinates(journey.journeyId, journey.segments) : journey?.journeyId ? getRouteCoordinates(journey.journeyId) : undefined}
             />
           </Box>
