@@ -57,6 +57,9 @@ export default function JourneyDetailsPage() {
   // Transportation methods between points (length = points.length - 1)
   const [transportMethods, setTransportMethods] = useState<string[]>([])
 
+  // Track which coordinates are editable
+  const [editableCoords, setEditableCoords] = useState<boolean[]>([])
+
   // Fetch journey data from API
   useEffect(() => {
     const fetchJourney = async () => {
@@ -92,6 +95,7 @@ export default function JourneyDetailsPage() {
             })
             setRoutePoints(points)
             setTransportMethods(methods)
+            setEditableCoords(new Array(points.length).fill(false))
           }
         } else {
           console.error('Failed to fetch journey')
@@ -241,6 +245,7 @@ export default function JourneyDetailsPage() {
   // Route points management functions
   const addPoint = () => {
     setRoutePoints([...routePoints, { name: '', lat: 0, lng: 0 }])
+    setEditableCoords([...editableCoords, false])
     // Add default transportation method for the new segment
     if (routePoints.length > 0) {
       setTransportMethods([...transportMethods, 'train'])
@@ -254,6 +259,9 @@ export default function JourneyDetailsPage() {
     }
     const newPoints = routePoints.filter((_, i) => i !== index)
     setRoutePoints(newPoints)
+
+    const newEditable = editableCoords.filter((_, i) => i !== index)
+    setEditableCoords(newEditable)
 
     // Remove the corresponding transportation method
     // If removing last point, remove last method
@@ -271,10 +279,47 @@ export default function JourneyDetailsPage() {
     const newPoints = [...routePoints]
     if (subfield === 'name') {
       newPoints[index][subfield] = value as string
+      // Auto-geocode when name changes (if coordinates not manually editable)
+      if (!editableCoords[index]) {
+        // Debounce geocoding
+        setTimeout(() => {
+          geocodePointSilently(index, value as string)
+        }, 1000)
+      }
     } else {
       newPoints[index][subfield] = value as number
     }
     setRoutePoints(newPoints)
+  }
+
+  // Silent geocoding without alerts
+  const geocodePointSilently = async (index: number, locationName: string) => {
+    if (!locationName.trim() || editableCoords[index]) return
+
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(locationName)}&language=en&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+      )
+      const data = await response.json()
+
+      if (data.status === 'OK' && data.results.length > 0) {
+        const location = data.results[0].geometry.location
+        const newPoints = [...routePoints]
+        if (newPoints[index].name === locationName) { // Check if name hasn't changed
+          newPoints[index].lat = location.lat
+          newPoints[index].lng = location.lng
+          setRoutePoints(newPoints)
+        }
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error)
+    }
+  }
+
+  const toggleEditableCoords = (index: number) => {
+    const newEditable = [...editableCoords]
+    newEditable[index] = !newEditable[index]
+    setEditableCoords(newEditable)
   }
 
   // Geocode location name to get coordinates
@@ -969,19 +1014,19 @@ export default function JourneyDetailsPage() {
                     <Box sx={{ display: 'flex', gap: '0.5rem' }}>
                       <button
                         type="button"
-                        onClick={() => geocodePoint(index)}
+                        onClick={() => toggleEditableCoords(index)}
                         style={{
                           padding: '0.25rem 0.75rem',
                           fontSize: '12px',
                           fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#4CAF50',
-                          color: 'white',
-                          border: '1px solid #388E3C',
+                          backgroundColor: editableCoords[index] ? '#FFD701' : '#4CAF50',
+                          color: editableCoords[index] ? '#373737' : 'white',
+                          border: `1px solid ${editableCoords[index] ? '#373737' : '#388E3C'}`,
                           borderRadius: '0.25rem',
                           cursor: 'pointer'
                         }}
                       >
-                        🌍 Get Coords
+                        {editableCoords[index] ? '🔒 Lock' : '✏️ Edit'}
                       </button>
                       <button
                         type="button"
@@ -1023,13 +1068,15 @@ export default function JourneyDetailsPage() {
                       value={point.lat}
                       onChange={(e) => updatePoint(index, 'lat', parseFloat(e.target.value) || 0)}
                       placeholder="Latitude"
+                      readOnly={!editableCoords[index]}
                       style={{
                         padding: '0.75rem',
                         fontSize: '14px',
-                        border: '2px solid #e0e0e0',
+                        border: `2px solid ${editableCoords[index] ? '#373737' : '#e0e0e0'}`,
                         borderRadius: '0.5rem',
                         fontFamily: 'MarioFont, sans-serif',
-                        backgroundColor: '#f5f5f5'
+                        backgroundColor: editableCoords[index] ? 'white' : '#f5f5f5',
+                        cursor: editableCoords[index] ? 'text' : 'not-allowed'
                       }}
                     />
                     <input
@@ -1038,13 +1085,15 @@ export default function JourneyDetailsPage() {
                       value={point.lng}
                       onChange={(e) => updatePoint(index, 'lng', parseFloat(e.target.value) || 0)}
                       placeholder="Longitude"
+                      readOnly={!editableCoords[index]}
                       style={{
                         padding: '0.75rem',
                         fontSize: '14px',
-                        border: '2px solid #e0e0e0',
+                        border: `2px solid ${editableCoords[index] ? '#373737' : '#e0e0e0'}`,
                         borderRadius: '0.5rem',
                         fontFamily: 'MarioFont, sans-serif',
-                        backgroundColor: '#f5f5f5'
+                        backgroundColor: editableCoords[index] ? 'white' : '#f5f5f5',
+                        cursor: editableCoords[index] ? 'text' : 'not-allowed'
                       }}
                     />
                   </Box>
@@ -1107,8 +1156,8 @@ export default function JourneyDetailsPage() {
           <ul style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '13px', marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
             <li>Each point represents a location on your journey</li>
             <li>Points automatically connect to create route segments (Point 1 → Point 2, Point 2 → Point 3, etc.)</li>
-            <li>Enter location names and click "Get Coords" to auto-fill coordinates</li>
-            <li>Coordinates can be manually edited if needed</li>
+            <li>Coordinates are automatically generated when you enter a location name</li>
+            <li>Click "Edit" to manually adjust coordinates when the location is invalid or needs customization</li>
             <li>Current route: {routePoints.length >= 2 ? `${routePoints[0].name || 'Start'} → ${routePoints[routePoints.length - 1].name || 'End'}` : 'Add at least 2 points'}</li>
           </ul>
         </Box>
