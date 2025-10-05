@@ -92,7 +92,7 @@ export default function AdminLogin() {
         {!codeSent ? (
           <div>
             <p style={{ fontFamily: 'MarioFont, sans-serif', marginBottom: '1.5rem', textAlign: 'center' }}>
-              Click the button below to receive a 4-digit verification code on your phone.
+              Click the button below to receive a 6-digit verification code on your phone.
             </p>
 
             {error && (
@@ -161,7 +161,7 @@ export default function AdminLogin() {
 
             <button
               type="submit"
-              disabled={loading || (code.length !== 4 && code.length !== 6)}
+              disabled={loading || code.length !== 6}
               style={{
                 width: '100%',
                 padding: '0.75rem',
@@ -170,8 +170,8 @@ export default function AdminLogin() {
                 backgroundColor: '#FFD701',
                 border: '2px solid #373737',
                 borderRadius: '0.5rem',
-                cursor: (loading || (code.length !== 4 && code.length !== 6)) ? 'not-allowed' : 'pointer',
-                opacity: (loading || (code.length !== 4 && code.length !== 6)) ? 0.6 : 1,
+                cursor: (loading || code.length !== 6) ? 'not-allowed' : 'pointer',
+                opacity: (loading || code.length !== 6) ? 0.6 : 1,
                 marginBottom: '0.75rem'
               }}
             >

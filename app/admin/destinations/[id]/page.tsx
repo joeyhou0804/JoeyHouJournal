@@ -62,6 +62,17 @@ export default function DestinationFormPage() {
     }
   }, [cityName, coordinatesEditable, isNew])
 
+  // Auto-extract state from destination name
+  useEffect(() => {
+    if (destinationName && isNew) {
+      const timeoutId = setTimeout(() => {
+        extractStateFromName(destinationName)
+      }, 500) // Debounce for 0.5 second
+
+      return () => clearTimeout(timeoutId)
+    }
+  }, [destinationName, isNew])
+
   const fetchDestination = async () => {
     try {
       const response = await fetch('/api/admin/destinations', {
@@ -117,6 +128,31 @@ export default function DestinationFormPage() {
       console.error('Geocoding error:', error)
       setGeocodingError('Failed to geocode address. Please enter coordinates manually.')
       setCoordinatesEditable(true)
+    }
+  }
+
+  const extractStateFromName = async (name: string) => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(name)}&language=en&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+      )
+      const data = await response.json()
+
+      if (data.status === 'OK' && data.results.length > 0) {
+        const addressComponents = data.results[0].address_components
+
+        // Find the state component (administrative_area_level_1)
+        const stateComponent = addressComponents.find((component: any) =>
+          component.types.includes('administrative_area_level_1')
+        )
+
+        if (stateComponent) {
+          // Use long_name for full state name (e.g., "California" instead of "CA")
+          setValue('state', stateComponent.long_name)
+        }
+      }
+    } catch (error) {
+      console.error('State extraction error:', error)
     }
   }
 

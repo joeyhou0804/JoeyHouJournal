@@ -155,11 +155,33 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
 
     // Draw lines connecting places using detailed route coordinates
     if (routeCoordinates && routeCoordinates.length > 1) {
+      // Draw border (darker outline)
       L.polyline(routeCoordinates, {
         color: '#373737',
-        weight: 6,
-        opacity: 0.9,
+        weight: 5,
+        opacity: 1,
         smoothFactor: 1
+      }).addTo(map)
+
+      // Create dashed pattern for train routes: alternating #373737 and #F6F6F6
+      L.polyline(routeCoordinates, {
+        color: '#373737',
+        weight: 3,
+        opacity: 1,
+        smoothFactor: 1,
+        dashArray: '10, 10',
+        lineCap: 'butt'
+      }).addTo(map)
+
+      // Add white dashes offset by 10 to create alternating pattern
+      L.polyline(routeCoordinates, {
+        color: '#F6F6F6',
+        weight: 3,
+        opacity: 1,
+        smoothFactor: 1,
+        dashArray: '10, 10',
+        dashOffset: '10',
+        lineCap: 'butt'
       }).addTo(map)
     }
 
