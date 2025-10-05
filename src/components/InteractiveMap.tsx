@@ -162,78 +162,102 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
 
     // Draw lines connecting places using detailed route segments or coordinates
     if (routeSegments && routeSegments.length > 0) {
+      // Group consecutive segments by transport method
+      const segmentGroups: Array<{ method: string; segments: RouteSegment[] }> = []
+      let currentGroup: { method: string; segments: RouteSegment[] } | null = null
+
       routeSegments.forEach(segment => {
-        const coords: [number, number][] = [
-          [segment.from.lat, segment.from.lng],
-          [segment.to.lat, segment.to.lng]
-        ]
         const method = segment.method || 'train'
+        if (!currentGroup || currentGroup.method !== method) {
+          currentGroup = { method, segments: [segment] }
+          segmentGroups.push(currentGroup)
+        } else {
+          currentGroup.segments.push(segment)
+        }
+      })
 
-        if (method === 'plane') {
-          // For plane routes: curved dashed line in orange (#F06001)
-          // Create a bezier curve by adding a control point
-          const lat1 = segment.from.lat
-          const lng1 = segment.from.lng
-          const lat2 = segment.to.lat
-          const lng2 = segment.to.lng
+      // Draw each group
+      segmentGroups.forEach(group => {
+        if (group.method === 'plane') {
+          // Draw each plane segment individually (they should be curved)
+          group.segments.forEach(segment => {
+            const coords: [number, number][] = [
+              [segment.from.lat, segment.from.lng],
+              [segment.to.lat, segment.to.lng]
+            ]
+            // For plane routes: curved dashed line in orange (#F06001)
+            // Create a bezier curve by adding a control point
+            const lat1 = segment.from.lat
+            const lng1 = segment.from.lng
+            const lat2 = segment.to.lat
+            const lng2 = segment.to.lng
 
-          // Calculate the midpoint
-          const midLat = (lat1 + lat2) / 2
-          const midLng = (lng1 + lng2) / 2
+            // Calculate the midpoint
+            const midLat = (lat1 + lat2) / 2
+            const midLng = (lng1 + lng2) / 2
 
-          // Calculate the perpendicular offset for the curve
-          // The control point is offset perpendicular to the line
-          const dx = lng2 - lng1
-          const dy = lat2 - lat1
-          const distance = Math.sqrt(dx * dx + dy * dy)
+            // Calculate the perpendicular offset for the curve
+            // The control point is offset perpendicular to the line
+            const dx = lng2 - lng1
+            const dy = lat2 - lat1
+            const distance = Math.sqrt(dx * dx + dy * dy)
 
-          // Offset by 20% of the distance, perpendicular to the line
-          const offsetFactor = 0.2
-          const controlLat = midLat - (dx * offsetFactor)
-          const controlLng = midLng + (dy * offsetFactor)
+            // Offset by 20% of the distance, perpendicular to the line
+            const offsetFactor = 0.2
+            const controlLat = midLat - (dx * offsetFactor)
+            const controlLng = midLng + (dy * offsetFactor)
 
-          // Create curved path with multiple interpolated points
-          const curvedCoords: [number, number][] = []
-          const numPoints = 50
-          for (let i = 0; i <= numPoints; i++) {
-            const t = i / numPoints
-            // Quadratic Bezier curve formula
-            const lat = (1 - t) * (1 - t) * lat1 + 2 * (1 - t) * t * controlLat + t * t * lat2
-            const lng = (1 - t) * (1 - t) * lng1 + 2 * (1 - t) * t * controlLng + t * t * lng2
-            curvedCoords.push([lat, lng])
-          }
+            // Create curved path with multiple interpolated points
+            const curvedCoords: [number, number][] = []
+            const numPoints = 50
+            for (let i = 0; i <= numPoints; i++) {
+              const t = i / numPoints
+              // Quadratic Bezier curve formula
+              const lat = (1 - t) * (1 - t) * lat1 + 2 * (1 - t) * t * controlLat + t * t * lat2
+              const lng = (1 - t) * (1 - t) * lng1 + 2 * (1 - t) * t * controlLng + t * t * lng2
+              curvedCoords.push([lat, lng])
+            }
 
-          L.polyline(curvedCoords, {
-            color: '#F06001',
-            weight: 3,
-            opacity: 1,
-            smoothFactor: 1,
-            dashArray: '10, 10',
-            lineCap: 'round'
-          }).addTo(map)
+            L.polyline(curvedCoords, {
+              color: '#F06001',
+              weight: 3,
+              opacity: 1,
+              smoothFactor: 1,
+              dashArray: '10, 10',
+              lineCap: 'round'
+            }).addTo(map)
 
-          // Add plane icon at the midpoint of the curve
-          const midPointIndex = Math.floor(numPoints / 2)
+            // Add plane icon at the midpoint of the curve
+            const midPointIndex = Math.floor(numPoints / 2)
 
-          // Calculate the tangent angle at the midpoint
-          const prevPoint = curvedCoords[midPointIndex - 1] || curvedCoords[midPointIndex]
-          const nextPoint = curvedCoords[midPointIndex + 1] || curvedCoords[midPointIndex]
-          const angle = Math.atan2(nextPoint[1] - prevPoint[1], nextPoint[0] - prevPoint[0]) * 180 / Math.PI
+            // Calculate the tangent angle at the midpoint
+            const prevPoint = curvedCoords[midPointIndex - 1] || curvedCoords[midPointIndex]
+            const nextPoint = curvedCoords[midPointIndex + 1] || curvedCoords[midPointIndex]
+            const angle = Math.atan2(nextPoint[1] - prevPoint[1], nextPoint[0] - prevPoint[0]) * 180 / Math.PI
 
-          const planeIcon = L.divIcon({
-            html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(${angle}deg);">
-              <path d="M21 16V14L13 9V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V9L2 14V16L10 13.5V19L8 20.5V22L11.5 21L15 22V20.5L13 19V13.5L21 16Z" fill="#F06001"/>
-            </svg>`,
-            className: 'plane-icon',
-            iconSize: [24, 24],
-            iconAnchor: [12, 12]
+            const planeIcon = L.divIcon({
+              html: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(${angle}deg);">
+                <path d="M21 16V14L13 9V3.5C13 2.67 12.33 2 11.5 2C10.67 2 10 2.67 10 3.5V9L2 14V16L10 13.5V19L8 20.5V22L11.5 21L15 22V20.5L13 19V13.5L21 16Z" fill="#F06001"/>
+              </svg>`,
+              className: 'plane-icon',
+              iconSize: [24, 24],
+              iconAnchor: [12, 12]
+            })
+
+            L.marker(curvedCoords[midPointIndex], { icon: planeIcon }).addTo(map)
+          })
+        } else if (group.method === 'bus' || group.method === 'drive') {
+          // For bus/drive routes: draw all segments as one continuous line
+          const allCoords: [number, number][] = []
+          group.segments.forEach((segment, index) => {
+            if (index === 0) {
+              allCoords.push([segment.from.lat, segment.from.lng])
+            }
+            allCoords.push([segment.to.lat, segment.to.lng])
           })
 
-          L.marker(curvedCoords[midPointIndex], { icon: planeIcon }).addTo(map)
-        } else if (method === 'bus' || method === 'drive') {
-          // For bus/drive routes: straight line in #373737 with thin dashed #F6F6F6 center
           // Draw border (darker outline)
-          L.polyline(coords, {
+          L.polyline(allCoords, {
             color: '#373737',
             weight: 6,
             opacity: 1,
@@ -241,7 +265,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           }).addTo(map)
 
           // Draw solid line in #373737
-          L.polyline(coords, {
+          L.polyline(allCoords, {
             color: '#373737',
             weight: 4,
             opacity: 1,
@@ -249,7 +273,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           }).addTo(map)
 
           // Draw thin dashed line in #F6F6F6 on top
-          L.polyline(coords, {
+          L.polyline(allCoords, {
             color: '#F6F6F6',
             weight: 1,
             opacity: 1,
@@ -257,9 +281,17 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
             dashArray: '5, 5'
           }).addTo(map)
         } else {
-          // For train routes: alternating dashed pattern with border
+          // For train routes: draw all segments as one continuous line
+          const allCoords: [number, number][] = []
+          group.segments.forEach((segment, index) => {
+            if (index === 0) {
+              allCoords.push([segment.from.lat, segment.from.lng])
+            }
+            allCoords.push([segment.to.lat, segment.to.lng])
+          })
+
           // Draw border (darker outline)
-          L.polyline(coords, {
+          L.polyline(allCoords, {
             color: '#373737',
             weight: 5,
             opacity: 1,
@@ -267,7 +299,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           }).addTo(map)
 
           // Create dashed pattern for train routes: alternating #373737 and #F6F6F6
-          L.polyline(coords, {
+          L.polyline(allCoords, {
             color: '#373737',
             weight: 3,
             opacity: 1,
@@ -277,7 +309,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           }).addTo(map)
 
           // Add white dashes offset by 10 to create alternating pattern
-          L.polyline(coords, {
+          L.polyline(allCoords, {
             color: '#F6F6F6',
             weight: 3,
             opacity: 1,
