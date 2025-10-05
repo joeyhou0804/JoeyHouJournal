@@ -230,6 +230,32 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           })
 
           L.marker(curvedCoords[midPointIndex], { icon: planeIcon }).addTo(map)
+        } else if (method === 'bus' || method === 'drive') {
+          // For bus/drive routes: straight line in #373737 with thin dashed #F6F6F6 center
+          // Draw border (darker outline)
+          L.polyline(coords, {
+            color: '#373737',
+            weight: 6,
+            opacity: 1,
+            smoothFactor: 1
+          }).addTo(map)
+
+          // Draw solid line in #373737
+          L.polyline(coords, {
+            color: '#373737',
+            weight: 4,
+            opacity: 1,
+            smoothFactor: 1
+          }).addTo(map)
+
+          // Draw thin dashed line in #F6F6F6 on top
+          L.polyline(coords, {
+            color: '#F6F6F6',
+            weight: 1,
+            opacity: 1,
+            smoothFactor: 1,
+            dashArray: '5, 5'
+          }).addTo(map)
         } else {
           // For train routes: alternating dashed pattern with border
           // Draw border (darker outline)
