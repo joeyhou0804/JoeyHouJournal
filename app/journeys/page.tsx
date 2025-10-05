@@ -246,6 +246,7 @@ export default function JourneysPage() {
               >
                 <InteractiveMap
                   places={currentJourneyPlaces}
+                  routeSegments={currentJourney?.segments}
                   routeCoordinates={getRouteCoordinates(currentJourney.id)}
                 />
               </Box>
