@@ -106,122 +106,139 @@ export default function AdminDashboard() {
         </Card>
       </Box>
 
-      {/* Management Links */}
+      {/* Workflow Guide */}
       <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 2, color: '#373737' }}>
-        Manage Content
+        Content Creation Workflow
       </Typography>
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3, mb: 4 }}>
-        {/* Destinations Card */}
-        <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2, height: '100%' }}>
-          <CardContent>
-            <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 1, color: '#373737' }}>
-              Destinations
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 2 }}>
-              Manage all your travel destinations
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                component={Link}
-                href="/admin/destinations"
-                variant="contained"
-                startIcon={<ViewIcon />}
-                sx={{
-                  backgroundColor: '#FFD701',
-                  color: '#373737',
-                  fontFamily: 'MarioFont, sans-serif',
-                  '&:hover': { backgroundColor: '#E5C001' }
-                }}
-              >
-                View All
-              </Button>
-              <Button
-                component={Link}
-                href="/admin/destinations/new"
-                variant="outlined"
-                startIcon={<AddIcon />}
-                sx={{
-                  borderColor: '#373737',
-                  color: '#373737',
-                  fontFamily: 'MarioFont, sans-serif',
-                  '&:hover': { borderColor: '#373737', backgroundColor: 'rgba(55, 55, 55, 0.04)' }
-                }}
-              >
-                Add New
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
+      <Card elevation={0} sx={{ border: '2px solid #FFD701', borderRadius: 2, mb: 4, backgroundColor: '#FFFEF7' }}>
+        <CardContent>
+          <Typography variant="body1" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 3, color: '#373737' }}>
+            Follow these steps to add new content to your travel journal:
+          </Typography>
 
-        {/* Journeys Card */}
-        <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2, height: '100%' }}>
-          <CardContent>
-            <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 1, color: '#373737' }}>
-              Journeys
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 2 }}>
-              View and manage your train journeys
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Button
-                component={Link}
-                href="/admin/journeys"
-                variant="contained"
-                startIcon={<ViewIcon />}
-                sx={{
-                  backgroundColor: '#FFD701',
-                  color: '#373737',
-                  fontFamily: 'MarioFont, sans-serif',
-                  '&:hover': { backgroundColor: '#E5C001' }
-                }}
-              >
-                View All
-              </Button>
-              <Button
-                component={Link}
-                href="/admin/journeys/new"
-                variant="outlined"
-                startIcon={<AddIcon />}
-                sx={{
-                  borderColor: '#373737',
-                  color: '#373737',
-                  fontFamily: 'MarioFont, sans-serif',
-                  '&:hover': { borderColor: '#373737', backgroundColor: 'rgba(55, 55, 55, 0.04)' }
-                }}
-              >
-                Add New
-              </Button>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+            {/* Step 1 */}
+            <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
+              <Box sx={{
+                minWidth: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: '#FFD701',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'MarioFontTitle, sans-serif',
+                fontSize: '20px',
+                color: '#373737'
+              }}>
+                1
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', mb: 1 }}>
+                  Create Destinations
+                </Typography>
+                <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666', mb: 2 }}>
+                  Start by adding individual destinations (cities, stations, places) with their details, coordinates, and images.
+                </Typography>
+                <Button
+                  component={Link}
+                  href="/admin/destinations/new"
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  sx={{
+                    backgroundColor: '#FFD701',
+                    color: '#373737',
+                    fontFamily: 'MarioFont, sans-serif',
+                    '&:hover': { backgroundColor: '#E5C001' }
+                  }}
+                >
+                  Add Destination
+                </Button>
+              </Box>
             </Box>
-          </CardContent>
-        </Card>
-      </Box>
 
-      {/* Recent Destinations */}
-      <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 2, color: '#373737' }}>
-        Recent Destinations
-      </Typography>
-      <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2 }}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#f9f9f9' }}>
-              <TableCell sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 600 }}>Name</TableCell>
-              <TableCell sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 600 }}>Date</TableCell>
-              <TableCell sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 600 }}>Journey</TableCell>
-              <TableCell sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 600 }}>State</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {stats.recentDestinations.map((dest, index) => (
-              <TableRow key={index} sx={{ '&:last-child td': { border: 0 } }}>
-                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.name}</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.date}</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.journeyName}</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            {/* Step 2 */}
+            <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
+              <Box sx={{
+                minWidth: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: '#FFD701',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'MarioFontTitle, sans-serif',
+                fontSize: '20px',
+                color: '#373737'
+              }}>
+                2
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', mb: 1 }}>
+                  Create a Journey
+                </Typography>
+                <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666', mb: 2 }}>
+                  Create a journey with route information, dates, and transportation segments (train, plane, bus, drive).
+                </Typography>
+                <Button
+                  component={Link}
+                  href="/admin/journeys/new"
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  sx={{
+                    backgroundColor: '#FFD701',
+                    color: '#373737',
+                    fontFamily: 'MarioFont, sans-serif',
+                    '&:hover': { backgroundColor: '#E5C001' }
+                  }}
+                >
+                  Add Journey
+                </Button>
+              </Box>
+            </Box>
+
+            {/* Step 3 */}
+            <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
+              <Box sx={{
+                minWidth: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                backgroundColor: '#FFD701',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontFamily: 'MarioFontTitle, sans-serif',
+                fontSize: '20px',
+                color: '#373737'
+              }}>
+                3
+              </Box>
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', mb: 1 }}>
+                  Link Destinations to Journey
+                </Typography>
+                <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666', mb: 2 }}>
+                  Go to the journey details page and add the destinations you created to complete your travel story.
+                </Typography>
+                <Button
+                  component={Link}
+                  href="/admin/journeys"
+                  variant="outlined"
+                  startIcon={<ViewIcon />}
+                  sx={{
+                    borderColor: '#373737',
+                    color: '#373737',
+                    fontFamily: 'MarioFont, sans-serif',
+                    '&:hover': { borderColor: '#373737', backgroundColor: 'rgba(55, 55, 55, 0.04)' }
+                  }}
+                >
+                  View Journeys
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
     </Box>
   )
 }
