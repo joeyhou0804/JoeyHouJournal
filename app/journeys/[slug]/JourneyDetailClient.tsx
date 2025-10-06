@@ -159,29 +159,34 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         <img
           src="/images/journey/journey_details_page_title.png"
           alt={tr.journeyDetails}
-          className="w-full h-auto object-cover"
+          className="w-full h-auto object-cover xs:hidden"
+        />
+        <img
+          src="/images/journey/journey_details_page_title_xs.png"
+          alt={tr.journeyDetails}
+          className="hidden xs:block w-full h-auto object-cover"
         />
 
         <Box
           sx={{
             position: 'absolute',
-            top: '50%',
-            left: '10%',
+            top: { xs: '40%', sm: '50%' },
+            left: { xs: '5%', sm: '10%' },
             transform: 'translateY(-50%)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '0.5rem'
+            gap: { xs: '0.25rem', sm: '0.5rem' }
           }}
         >
           <Box
             component="h1"
             sx={{
               fontFamily: 'MarioFontTitle, sans-serif',
-              fontSize: '96px',
+              fontSize: { xs: '32px', sm: '96px' },
               color: '#373737',
               margin: 0,
               textAlign: 'left',
-              textShadow: '4px 4px 0px rgba(246, 246, 246, 1)'
+              textShadow: { xs: '2px 2px 0px rgba(246, 246, 246, 1)', sm: '4px 4px 0px rgba(246, 246, 246, 1)' }
             }}
           >
             {journey.name}
@@ -190,14 +195,17 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             component="p"
             sx={{
               fontFamily: 'MarioFontTitle, sans-serif',
-              fontSize: '48px',
+              fontSize: { xs: '20px', sm: '48px' },
               color: '#373737',
               margin: 0,
               textAlign: 'left',
-              textShadow: '4px 4px 0px rgba(246, 246, 246, 1)'
+              textShadow: { xs: '1px 1px 0px rgba(246, 246, 246, 1)', sm: '4px 4px 0px rgba(246, 246, 246, 1)' }
             }}
           >
-            {journey.route}
+            <span className="xs:hidden">{journey.route}</span>
+            <span className="hidden xs:inline">
+              {journey.route.split(' → ')[0]}<br />↓<br />{journey.route.split(' → ')[1]}
+            </span>
           </Box>
         </Box>
       </Box>

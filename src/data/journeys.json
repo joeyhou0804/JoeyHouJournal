@@ -4599,53 +4599,5 @@
     ],
     "days": 1,
     "nights": 0
-  },
-  {
-    "id": "test-2025-10-04",
-    "name": "test",
-    "nameCN": "测试",
-    "slug": "test",
-    "duration": "1 day",
-    "days": 1,
-    "nights": 0,
-    "startDate": "2025-10-04",
-    "endDate": "2025-10-04",
-    "description": "",
-    "descriptionCN": "",
-    "startLocation": {
-      "name": "New York, NY",
-      "nameCN": "",
-      "coordinates": {
-        "lat": 40.7127281,
-        "lng": -74.0060152
-      }
-    },
-    "endLocation": {
-      "name": "San Francisco, CA",
-      "nameCN": "",
-      "coordinates": {
-        "lat": 37.7792588,
-        "lng": -122.4193286
-      }
-    },
-    "visitedPlaceIds": [],
-    "totalPlaces": 0,
-    "images": [],
-    "segments": [
-      {
-        "order": 1,
-        "from": {
-          "name": "New York, NY",
-          "lat": 40.7127281,
-          "lng": -74.0060152
-        },
-        "to": {
-          "name": "San Francisco, CA",
-          "lat": 37.7792588,
-          "lng": -122.4193286
-        },
-        "method": "plane"
-      }
-    ]
   }
 ]

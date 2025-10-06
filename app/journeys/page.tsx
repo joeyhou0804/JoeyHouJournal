@@ -174,7 +174,12 @@ export default function JourneysPage() {
         <img
           src={`/images/journey/journeys_page_title_${locale}.png`}
           alt="Journeys"
-          className="w-full h-auto object-cover"
+          className="w-full h-auto object-cover xs:hidden"
+        />
+        <img
+          src={`/images/journey/journey_page_title_xs_${locale}.png`}
+          alt="Journeys"
+          className="hidden xs:block w-full h-auto object-cover"
         />
       </div>
 

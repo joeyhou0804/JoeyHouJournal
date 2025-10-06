@@ -100,7 +100,12 @@ export default function StationsPage() {
         <img
           src={`/images/destinations/destination_page_title_${locale}.png`}
           alt="Stations"
-          className="w-full h-auto object-cover"
+          className="w-full h-auto object-cover xs:hidden"
+        />
+        <img
+          src={`/images/destinations/destination_page_title_xs_${locale}.png`}
+          alt="Stations"
+          className="hidden xs:block w-full h-auto object-cover"
         />
       </div>
 
