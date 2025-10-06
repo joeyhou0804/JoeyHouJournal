@@ -100,22 +100,24 @@ export default function DestinationsPage() {
         <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', margin: 0 }}>
           Destinations ({destinations.length})
         </h1>
-        <Link href="/admin/destinations/new" style={{ width: '100%', maxWidth: { xs: '100%', sm: 'auto' } }}>
-          <button
-            style={{
-              width: '100%',
-              padding: '0.75rem 1.5rem',
-              fontSize: '16px',
-              fontFamily: 'MarioFont, sans-serif',
-              backgroundColor: '#FFD701',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: 'pointer'
-            }}
-          >
-            + Add Destination
-          </button>
-        </Link>
+        <Box sx={{ width: { xs: '100%', sm: 'auto' } }}>
+          <Link href="/admin/destinations/new">
+            <button
+              style={{
+                width: '100%',
+                padding: '0.75rem 1.5rem',
+                fontSize: '16px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#FFD701',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: 'pointer'
+              }}
+            >
+              + Add Destination
+            </button>
+          </Link>
+        </Box>
       </Box>
 
       <Box sx={{ marginBottom: '1.5rem' }}>
