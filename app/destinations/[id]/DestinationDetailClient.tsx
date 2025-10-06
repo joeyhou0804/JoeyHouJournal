@@ -150,13 +150,13 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                   text={station.nameCN}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
-                  fontSize="48px"
+                  fontSize={{ xs: '28px', sm: '48px' }}
                   color="#373737"
                   component="h1"
                   sx={{ margin: 0 }}
                 />
               ) : (
-                <Box component="h1" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '48px', color: '#373737', margin: 0 }}>
+                <Box component="h1" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '28px', sm: '48px' }, color: '#373737', margin: 0 }}>
                   {station.name}
                 </Box>
               )}
@@ -170,7 +170,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 component="div"
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                  fontSize: '24px',
+                  fontSize: { xs: '16px', sm: '24px' },
                   color: '#373737',
                   whiteSpace: 'pre-line',
                   lineHeight: '1.6'
@@ -322,7 +322,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
             <Box sx={{ padding: '2rem', display: 'flex', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <MapPin style={{ color: '#F6F6F6' }} size={24} />
-                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
                   {locale === 'zh' && translations.zh.states[station.state]
                     ? translations.zh.states[station.state]
                     : station.state}
@@ -330,13 +330,13 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Calendar style={{ color: '#F6F6F6' }} size={24} />
-                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
                   {station.date}
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Train style={{ color: '#F6F6F6' }} size={24} />
-                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '20px', color: '#F6F6F6' }}>
+                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
                   {locale === 'zh' && station.journeyNameCN && station.journeyNameCN !== station.journeyName
                     ? station.journeyNameCN
                     : journey?.name || station.journeyName}
