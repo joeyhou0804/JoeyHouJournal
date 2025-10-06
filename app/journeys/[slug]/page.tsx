@@ -3,20 +3,18 @@ import journeysData from 'src/data/journeys.json'
 
 // Transform journeys to trips format for the detail page
 const trips = (journeysData as any[]).map((journey: any) => {
-  // Generate route from segments if available, otherwise use startLocation/endLocation
-  let route = `${journey.startLocation.name} → ${journey.endLocation.name}`
-  if (journey.segments && journey.segments.length > 0) {
-    const firstSegment = journey.segments[0]
-    const lastSegment = journey.segments[journey.segments.length - 1]
-    route = `${firstSegment.from.name} → ${lastSegment.to.name}`
-  }
+  // Always use startLocation/endLocation for route (they have Chinese names)
+  const route = `${journey.startLocation.name} → ${journey.endLocation.name}`
+  const routeCN = `${journey.startLocation.nameCN || journey.startLocation.name} → ${journey.endLocation.nameCN || journey.endLocation.name}`
 
   return {
     name: journey.name,
+    nameCN: journey.nameCN,
     slug: journey.slug,
     places: journey.totalPlaces,
     description: journey.description,
     route,
+    routeCN,
     duration: journey.duration,
     days: journey.days,
     nights: journey.nights,

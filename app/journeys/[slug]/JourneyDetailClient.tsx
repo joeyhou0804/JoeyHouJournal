@@ -27,10 +27,12 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
 
 interface Journey {
   name: string
+  nameCN?: string
   slug: string
   places: number
   description: string
   route: string
+  routeCN?: string
   duration: string
   days: number
   nights: number
@@ -178,34 +180,41 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             gap: { xs: '0.25rem', sm: '0.5rem' }
           }}
         >
-          <Box
+          <MixedText
+            text={locale === 'zh' && journey.nameCN ? journey.nameCN : journey.name}
+            chineseFont="MarioFontTitleChinese, sans-serif"
+            englishFont="MarioFontTitle, sans-serif"
+            fontSize={{ xs: '40px', sm: '96px' }}
+            color="#373737"
             component="h1"
             sx={{
-              fontFamily: 'MarioFontTitle, sans-serif',
-              fontSize: { xs: '32px', sm: '96px' },
-              color: '#373737',
               margin: 0,
               textAlign: 'left',
               textShadow: { xs: '2px 2px 0px rgba(246, 246, 246, 1)', sm: '4px 4px 0px rgba(246, 246, 246, 1)' }
             }}
-          >
-            {journey.name}
-          </Box>
+          />
           <Box
             component="p"
             sx={{
-              fontFamily: 'MarioFontTitle, sans-serif',
-              fontSize: { xs: '20px', sm: '48px' },
+              fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+              fontSize: { xs: '24px', sm: '48px' },
               color: '#373737',
               margin: 0,
               textAlign: 'left',
               textShadow: { xs: '1px 1px 0px rgba(246, 246, 246, 1)', sm: '4px 4px 0px rgba(246, 246, 246, 1)' }
             }}
           >
-            <span className="xs:hidden">{journey.route}</span>
-            <span className="hidden xs:inline">
-              {journey.route.split(' → ')[0]}<br />↓<br />{journey.route.split(' → ')[1]}
-            </span>
+            {(() => {
+              const displayRoute = locale === 'zh' && journey.routeCN ? journey.routeCN : journey.route
+              return (
+                <>
+                  <span className="xs:hidden">{displayRoute}</span>
+                  <span className="hidden xs:inline">
+                    {displayRoute.split(' → ')[0]}<br />↓<br />{displayRoute.split(' → ')[1]}
+                  </span>
+                </>
+              )
+            })()}
           </Box>
         </Box>
       </Box>
