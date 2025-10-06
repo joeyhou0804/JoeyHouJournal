@@ -186,7 +186,7 @@ export default function JourneysPage() {
       {/* Map View Section */}
       <Box
         component="section"
-        className="w-full py-24"
+        className="w-full py-24 xs:py-12"
         sx={{
           backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
           backgroundRepeat: 'repeat',
@@ -194,16 +194,16 @@ export default function JourneysPage() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center mb-16 mt-8">
+          <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
             <MixedText
               text={tr.mapView}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="64px"
+              fontSize={{ xs: '40px', sm: '64px' }}
               color="#373737"
               component="h2"
               sx={{
-                textShadow: '3px 3px 0px #F6F6F6',
+                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
                 margin: 0
               }}
             />
@@ -334,7 +334,7 @@ export default function JourneysPage() {
       <Box
         component="section"
         ref={listSectionRef}
-        className="w-full py-24"
+        className="w-full py-24 xs:py-12"
         sx={{
           backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
           backgroundRepeat: 'repeat-y, repeat',
@@ -342,16 +342,16 @@ export default function JourneysPage() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-center items-center mb-16 mt-8">
+          <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
             <MixedText
               text={tr.listOfJourneys}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="64px"
+              fontSize={{ xs: '40px', sm: '64px' }}
               color="#373737"
               component="h2"
               sx={{
-                textShadow: '3px 3px 0px #F6F6F6',
+                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
                 margin: 0,
                 marginBottom: '16px'
               }}
@@ -360,7 +360,7 @@ export default function JourneysPage() {
               text={tr.clickToViewDetails}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
-              fontSize="28px"
+              fontSize={{ xs: '20px', sm: '28px' }}
               color="#373737"
               component="p"
               sx={{ margin: 0 }}
