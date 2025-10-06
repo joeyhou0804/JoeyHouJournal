@@ -234,7 +234,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
 
       <Box
         component="section"
-        className="w-full py-24"
+        className="w-full py-24 xs:py-12"
         sx={{
           backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
           backgroundRepeat: 'repeat',
@@ -242,22 +242,22 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center mb-16 mt-8">
+          <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
             <MixedText
               text={tr.mapView}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="64px"
+              fontSize={{ xs: '40px', sm: '64px' }}
               color="#373737"
               component="h2"
               sx={{
-                textShadow: '3px 3px 0px #F6F6F6',
+                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
                 margin: 0
               }}
             />
           </div>
 
-          <div className="my-36">
+          <div className="my-36 xs:my-12">
             <MapViewHint
               cardNumber={1}
               station={{
@@ -270,7 +270,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             />
           </div>
 
-          <div className="my-36">
+          <div className="my-36 xs:my-12">
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}
@@ -305,7 +305,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
       <Box
         component="section"
         ref={listSectionRef}
-        className="w-full py-24"
+        className="w-full py-24 xs:py-12"
         sx={{
           backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
           backgroundRepeat: 'repeat-y, repeat',
@@ -313,16 +313,16 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-center items-center mb-16 mt-8">
+          <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
             <MixedText
               text={tr.listOfPlaces}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="64px"
+              fontSize={{ xs: '40px', sm: '64px' }}
               color="#373737"
               component="h2"
               sx={{
-                textShadow: '3px 3px 0px #F6F6F6',
+                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
                 margin: 0,
                 marginBottom: '16px'
               }}
@@ -331,14 +331,14 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               text={tr.clickToViewDetails}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
-              fontSize="28px"
+              fontSize={{ xs: '20px', sm: '28px' }}
               color="#373737"
               component="p"
               sx={{ margin: 0 }}
             />
           </div>
 
-          <div className="flex justify-center items-center gap-4 mb-48">
+          <div className="flex justify-center items-center gap-4 mb-48 xs:mb-12">
             <button
               onClick={() => handleSortChange('latest')}
               className="hover:scale-105 transition-transform duration-200"
@@ -346,7 +346,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               <img
                 src={`/images/buttons/latest_first_button_${locale}.png`}
                 alt={tr.latestFirst}
-                className="h-16 w-auto"
+                className="h-16 w-auto xs:h-auto xs:w-48"
               />
             </button>
             <button
@@ -356,19 +356,19 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               <img
                 src={`/images/buttons/earliest_first_button_${locale}.png`}
                 alt={tr.earliestFirst}
-                className="h-16 w-auto"
+                className="h-16 w-auto xs:h-auto xs:w-48"
               />
             </button>
           </div>
 
-          <div className={`grid grid-cols-1 gap-48 ${totalPages <= 1 ? 'mb-48' : ''}`}>
+          <div className={`grid grid-cols-1 gap-48 xs:gap-12 ${totalPages <= 1 ? 'mb-48 xs:mb-12' : ''}`}>
             {displayedPlaces.map((place, index) => (
               <DestinationCard key={place.id} station={place} index={index} />
             ))}
           </div>
 
           {totalPages > 1 && (
-            <div className="mt-48 flex justify-center">
+            <div className="mt-48 xs:mt-12 flex justify-center">
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',

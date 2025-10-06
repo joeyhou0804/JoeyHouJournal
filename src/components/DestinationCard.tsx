@@ -127,7 +127,7 @@ export default function DestinationCard({ station, index }: DestinationCardProps
           </Box>
 
           {/* Route and Date */}
-          <Box sx={{ position: 'absolute', top: { xs: '12%', sm: '60%' }, left: { xs: '50%', sm: '70%' }, transform: 'translate(-50%, -50%)', width: { xs: '80%', sm: '50%' }, textAlign: { xs: 'left', sm: 'center' }, paddingLeft: { xs: '0', sm: '0' }, paddingRight: { xs: '0', sm: '0' } }}>
+          <Box sx={{ position: 'absolute', top: { xs: '12%', sm: '60%' }, left: { xs: '50%', sm: '70%' }, transform: 'translate(-50%, -50%)', width: { xs: '80%', sm: '50%' }, textAlign: 'center', paddingLeft: { xs: '0', sm: '0' }, paddingRight: { xs: '0', sm: '0' } }}>
             <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#F6F6F6', marginBottom: '4px', marginTop: 0, lineHeight: '1.4' }}>
               {displayRoute}
             </Box>
@@ -236,7 +236,7 @@ export default function DestinationCard({ station, index }: DestinationCardProps
           </Box>
 
           {/* Route and Date - moved to left */}
-          <Box sx={{ position: 'absolute', top: { xs: '12%', sm: '60%' }, left: { xs: '50%', sm: '30%' }, transform: 'translate(-50%, -50%)', width: { xs: '80%', sm: '50%' }, textAlign: { xs: 'left', sm: 'center' }, paddingLeft: { xs: '0', sm: '0' }, paddingRight: { xs: '0', sm: '0' } }}>
+          <Box sx={{ position: 'absolute', top: { xs: '12%', sm: '60%' }, left: { xs: '50%', sm: '30%' }, transform: 'translate(-50%, -50%)', width: { xs: '80%', sm: '50%' }, textAlign: 'center', paddingLeft: { xs: '0', sm: '0' }, paddingRight: { xs: '0', sm: '0' } }}>
             <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#F6F6F6', marginBottom: '4px', marginTop: 0, lineHeight: '1.4' }}>
               {displayRoute}
             </Box>
