@@ -471,15 +471,16 @@ export default function JourneyDetailsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '36px', margin: 0 }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, marginBottom: '2rem', gap: { xs: 2, sm: 0 } }}>
+        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(20px, 5vw, 36px)', margin: 0, wordBreak: 'break-word' }}>
           {journey.name}
         </h1>
-        <Box sx={{ display: 'flex', gap: '1rem' }}>
+        <Box sx={{ display: 'flex', gap: '1rem', width: { xs: '100%', sm: 'auto' } }}>
           <button
             type="button"
             onClick={() => router.push('/admin/journeys')}
             style={{
+              flex: 1,
               padding: '0.75rem 2rem',
               fontSize: '16px',
               fontFamily: 'MarioFont, sans-serif',
@@ -496,6 +497,7 @@ export default function JourneyDetailsPage() {
             onClick={handleSaveJourney}
             disabled={saving}
             style={{
+              flex: 1,
               padding: '0.75rem 2rem',
               fontSize: '16px',
               fontFamily: 'MarioFont, sans-serif',
@@ -515,7 +517,7 @@ export default function JourneyDetailsPage() {
       <Box
         sx={{
           backgroundColor: 'white',
-          padding: '2rem',
+          padding: { xs: '1rem', sm: '2rem' },
           borderRadius: '1rem',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           marginBottom: '2rem'
