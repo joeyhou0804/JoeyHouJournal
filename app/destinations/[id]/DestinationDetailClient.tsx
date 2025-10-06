@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Destination } from 'src/data/destinations'
 import { getJourneyById } from 'src/data/journeys'
 import Box from '@mui/material/Box'
@@ -34,9 +34,30 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const tabContainerRef = useRef<HTMLDivElement>(null)
 
   // Get journey information if this destination belongs to a journey
   const journey = station ? getJourneyById(station.journeyId) : undefined
+
+  // Auto-scroll to center the selected tab on xs screens
+  useEffect(() => {
+    if (tabContainerRef.current && typeof window !== 'undefined' && window.innerWidth < 640) {
+      const container = tabContainerRef.current
+      const selectedTab = container.children[currentImageIndex] as HTMLElement
+
+      if (selectedTab) {
+        const tabLeft = selectedTab.offsetLeft
+        const tabWidth = selectedTab.offsetWidth
+        const containerWidth = container.offsetWidth
+        const scrollPosition = tabLeft - (containerWidth / 2) + (tabWidth / 2)
+
+        container.scrollTo({
+          left: scrollPosition,
+          behavior: 'smooth'
+        })
+      }
+    }
+  }, [currentImageIndex])
 
   const nextImage = () => {
     if (station && station.images.length > 0) {
@@ -189,7 +210,23 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
           <div className="max-w-7xl mx-auto px-2 xs:px-2 sm:px-6 lg:px-8 mb-36 xs:mb-12">
           <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
             {/* Tab Navigation */}
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box
+              ref={tabContainerRef}
+              sx={{
+                display: 'flex',
+                justifyContent: { xs: 'flex-start', sm: 'center' },
+                overflowX: { xs: 'auto', sm: 'visible' },
+                overflowY: 'hidden',
+                WebkitOverflowScrolling: 'touch',
+                scrollBehavior: 'smooth',
+                '&::-webkit-scrollbar': {
+                  display: 'none'
+                },
+                msOverflowStyle: 'none',
+                scrollbarWidth: 'none',
+                paddingBottom: { xs: '0.5rem', sm: '0' }
+              }}
+            >
               {station.images.map((_, index) => {
                 // Hidden boolean to control if single image should use tab_1 instead of tab_map
                 const useSingleImageAsMap = true
@@ -221,7 +258,13 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                     component="button"
                     onClick={() => setCurrentImageIndex(index)}
                     className="group hover:scale-105 transition-transform duration-200"
-                    sx={{ padding: 0, border: 'none', background: 'none', cursor: 'pointer' }}
+                    sx={{
+                      padding: 0,
+                      border: 'none',
+                      background: 'none',
+                      cursor: 'pointer',
+                      flexShrink: 0
+                    }}
                   >
                     <Box
                       component="img"
