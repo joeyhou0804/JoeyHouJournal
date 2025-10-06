@@ -82,8 +82,16 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         ]
       : [39.8283, -98.5795] // Geographic center of USA
 
+    // Determine initial zoom level based on screen size and view type
+    const isSmallScreen = typeof window !== 'undefined' && window.innerWidth < 640
+    const initialZoom = (isDetailView && isSmallScreen) ? 6 : 5
+
     // Initialize map
-    const map = L.map(mapContainerRef.current).setView(center, 5)
+    const map = L.map(mapContainerRef.current, {
+      center: center,
+      zoom: initialZoom,
+      zoomControl: true
+    })
     mapRef.current = map
 
     // Add tile layer with light gray theme
@@ -561,14 +569,20 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     // Fit bounds to show all markers
     if (placesWithCoords.length > 0) {
       if (isDetailView && placesWithCoords.length === 1) {
-        // For detail view with single location, show continental US view
-        const usBounds = L.latLngBounds(
-          [24.396308, -125.0], // Southwest corner (southern California/Texas)
-          [49.384358, -66.93457] // Northeast corner (northern Maine/Minnesota)
-        )
-        map.fitBounds(usBounds, {
-          padding: [20, 20]
-        })
+        // For detail view with single location
+        if (isSmallScreen) {
+          // On xs screens, keep the centered marker view (already set in initialization)
+          // Do not call fitBounds to avoid resetting the view
+        } else {
+          // On larger screens, show continental US view
+          const usBounds = L.latLngBounds(
+            [24.396308, -125.0], // Southwest corner (southern California/Texas)
+            [49.384358, -66.93457] // Northeast corner (northern Maine/Minnesota)
+          )
+          map.fitBounds(usBounds, {
+            padding: [20, 20]
+          })
+        }
       } else {
         const bounds = L.latLngBounds(placesWithCoords.map(p => [p.lat, p.lng]))
         map.fitBounds(bounds, {
