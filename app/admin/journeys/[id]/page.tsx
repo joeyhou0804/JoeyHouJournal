@@ -1169,20 +1169,20 @@ export default function JourneyDetailsPage() {
       <Box
         sx={{
           backgroundColor: 'white',
-          padding: '2rem',
+          padding: { xs: '1.5rem', sm: '2rem' },
           borderRadius: '1rem',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           marginTop: '2rem',
           border: '2px solid #d32f2f'
         }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: { xs: '1.5rem', sm: 0 } }}>
           <Box>
             <Typography
               variant="h6"
               sx={{
                 fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '24px',
+                fontSize: 'clamp(20px, 5vw, 24px)',
                 color: '#d32f2f',
                 marginBottom: '0.5rem'
               }}
@@ -1210,6 +1210,7 @@ export default function JourneyDetailsPage() {
               fontFamily: 'MarioFont, sans-serif',
               padding: '0.75rem 1.5rem',
               fontSize: '16px',
+              width: { xs: '100%', sm: 'auto' },
               '&:hover': {
                 borderColor: '#d32f2f',
                 backgroundColor: 'rgba(211, 47, 47, 0.04)'
