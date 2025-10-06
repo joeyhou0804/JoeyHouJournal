@@ -368,7 +368,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Sort Buttons */}
-          <div className="flex justify-center items-center gap-4 mb-48">
+          <div className="flex justify-center items-center gap-4 mb-48 xs:mb-12">
             <button
               onClick={() => handleSortChange('latest')}
               className="hover:scale-105 transition-transform duration-200"
@@ -392,7 +392,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Journeys Grid */}
-          <div className="grid grid-cols-1 gap-48">
+          <div className="grid grid-cols-1 gap-48 xs:gap-12">
             {displayedTrips.map((trip, index) => (
               <JourneyCard key={trip.slug} journey={trip} index={index} />
             ))}
@@ -400,7 +400,7 @@ export default function JourneysPage() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="mt-48 flex justify-center">
+            <div className="mt-48 xs:mt-12 flex justify-center">
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
