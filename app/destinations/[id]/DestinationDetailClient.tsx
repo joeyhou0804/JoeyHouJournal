@@ -74,6 +74,48 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
     }
   }, [currentImageIndex])
 
+  // Handle touch swipe on tab container for xs screens
+  useEffect(() => {
+    if (!tabContainerRef.current || !isXsScreen) return
+
+    const container = tabContainerRef.current
+    let touchStartX = 0
+    let touchEndX = 0
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartX = e.touches[0].clientX
+    }
+
+    const handleTouchMove = (e: TouchEvent) => {
+      touchEndX = e.touches[0].clientX
+    }
+
+    const handleTouchEnd = () => {
+      const swipeThreshold = 50
+      const diff = touchStartX - touchEndX
+
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          // Swiped left, go to next
+          nextImage()
+        } else {
+          // Swiped right, go to previous
+          prevImage()
+        }
+      }
+    }
+
+    container.addEventListener('touchstart', handleTouchStart)
+    container.addEventListener('touchmove', handleTouchMove)
+    container.addEventListener('touchend', handleTouchEnd)
+
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart)
+      container.removeEventListener('touchmove', handleTouchMove)
+      container.removeEventListener('touchend', handleTouchEnd)
+    }
+  }, [isXsScreen, station])
+
   const nextImage = () => {
     if (station && station.images.length > 0) {
       setCurrentImageIndex((prev) => (prev + 1) % station.images.length)
@@ -231,7 +273,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 display: 'flex',
                 gap: { xs: '0.5rem', sm: '0' },
                 justifyContent: { xs: 'flex-start', sm: 'center' },
-                overflowX: { xs: 'auto', sm: 'visible' },
+                overflowX: { xs: 'hidden', sm: 'visible' },
                 overflowY: 'hidden',
                 WebkitOverflowScrolling: 'touch',
                 scrollBehavior: 'smooth',
@@ -286,14 +328,15 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                   <Box
                     key={index}
                     component="button"
-                    onClick={() => setCurrentImageIndex(index)}
+                    onClick={() => !isXsScreen && setCurrentImageIndex(index)}
                     className={isXsScreen ? '' : 'group hover:scale-105 transition-transform duration-200'}
                     sx={{
                       padding: 0,
                       border: 'none',
                       background: 'none',
-                      cursor: 'pointer',
-                      flexShrink: 0
+                      cursor: isXsScreen ? 'default' : 'pointer',
+                      flexShrink: 0,
+                      pointerEvents: isXsScreen ? 'none' : 'auto'
                     }}
                   >
                     <Box
