@@ -35,6 +35,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isXsScreen, setIsXsScreen] = useState(false)
+  const [isTabsReady, setIsTabsReady] = useState(false)
   const tabContainerRef = useRef<HTMLDivElement>(null)
 
   // Get journey information if this destination belongs to a journey
@@ -54,25 +55,38 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
+  // Mark tabs as ready after screen size is detected
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Small delay to ensure tabs are rendered
+      setTimeout(() => {
+        setIsTabsReady(true)
+      }, 50)
+    }
+  }, [isXsScreen])
+
   // Auto-scroll to center the selected tab on xs screens
   useEffect(() => {
-    if (tabContainerRef.current && typeof window !== 'undefined' && window.innerWidth < 640) {
+    if (tabContainerRef.current && isXsScreen && isTabsReady) {
       const container = tabContainerRef.current
       const selectedTab = container.children[currentImageIndex] as HTMLElement
 
       if (selectedTab) {
-        const tabLeft = selectedTab.offsetLeft
-        const tabWidth = selectedTab.offsetWidth
-        const containerWidth = container.offsetWidth
-        const scrollPosition = tabLeft - (containerWidth / 2) + (tabWidth / 2)
+        // Use setTimeout to ensure DOM is fully rendered
+        setTimeout(() => {
+          const tabLeft = selectedTab.offsetLeft
+          const tabWidth = selectedTab.offsetWidth
+          const containerWidth = container.offsetWidth
+          const scrollPosition = tabLeft - (containerWidth / 2) + (tabWidth / 2)
 
-        container.scrollTo({
-          left: scrollPosition,
-          behavior: 'smooth'
-        })
+          container.scrollTo({
+            left: scrollPosition,
+            behavior: 'smooth'
+          })
+        }, 0)
       }
     }
-  }, [currentImageIndex])
+  }, [currentImageIndex, isXsScreen, isTabsReady])
 
   // Handle touch swipe on tab container for xs screens
   useEffect(() => {
