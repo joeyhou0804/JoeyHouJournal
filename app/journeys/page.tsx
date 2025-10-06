@@ -316,7 +316,7 @@ export default function JourneysPage() {
               <button
                 onClick={handlePrevJourney}
                 disabled={currentJourneyIndex === 0}
-                className={`group absolute left-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                className={`group absolute left-4 xs:left-0 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
                   currentJourneyIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
@@ -336,7 +336,7 @@ export default function JourneysPage() {
               <button
                 onClick={handleNextJourney}
                 disabled={currentJourneyIndex === journeysData.length - 1}
-                className={`group absolute right-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                className={`group absolute right-4 xs:right-0 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
                   currentJourneyIndex === journeysData.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
