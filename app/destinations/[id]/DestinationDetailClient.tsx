@@ -186,7 +186,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
 
         {/* Image Carousel */}
         {station.images && station.images.length > 0 && (
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-36">
+          <div className="max-w-7xl mx-auto px-2 xs:px-2 sm:px-6 lg:px-8 mb-36">
           <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
             {/* Tab Navigation */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -247,8 +247,8 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                 backgroundRepeat: 'repeat',
                 backgroundSize: '200px auto',
-                padding: '1rem',
-                borderRadius: '1.5rem'
+                padding: { xs: '0.5rem', sm: '1rem' },
+                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
               }}
             >
             <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1' }}>
@@ -260,7 +260,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  borderRadius: '1rem'
+                  borderRadius: { xs: '0.5rem', sm: '1rem' }
                 }}
               />
 
@@ -271,7 +271,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                     component="button"
                     onClick={prevImage}
                     disabled={currentImageIndex === 0}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 group"
+                    className="absolute left-0 xs:left-[-1rem] top-1/2 -translate-y-1/2 group z-10"
                   >
                     <Box
                       component="img"
@@ -292,7 +292,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                     component="button"
                     onClick={nextImage}
                     disabled={currentImageIndex === station.images.length - 1}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 group"
+                    className="absolute right-0 xs:right-[-1rem] top-1/2 -translate-y-1/2 group z-10"
                   >
                     <Box
                       component="img"
@@ -319,7 +319,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
             </Box>
 
             {/* Station Info Below Image */}
-            <Box sx={{ padding: '2rem', display: 'flex', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap' }}>
+            <Box sx={{ padding: '2rem', display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: { xs: 'flex-start', sm: 'center' }, alignItems: { xs: 'flex-start', sm: 'center' }, gap: { xs: '1rem', sm: '3rem' } }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <MapPin style={{ color: '#F6F6F6' }} size={24} />
                 <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
