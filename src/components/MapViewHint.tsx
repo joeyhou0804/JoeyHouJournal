@@ -43,6 +43,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
             overflow: 'hidden',
             zIndex: 10,
             boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+            border: '4px solid #373737',
             marginBottom: { xs: '0', sm: '0' },
             marginTop: { xs: '-3rem', sm: '0' },
             marginLeft: { xs: '0.5rem', sm: '0' },
@@ -108,7 +109,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
         </Box>
 
         {/* Body Text */}
-        <Box sx={{ position: 'absolute', top: { xs: isJourneyInfo ? '50%' : '20%', sm: '60%' }, left: { xs: '50%', sm: imageOnRight ? '30%' : '70%' }, transform: 'translate(-50%, -50%)', width: { xs: '80%', sm: '50%' }, textAlign: { xs: 'center', sm: isJourneyInfo ? 'center' : 'left' }, paddingLeft: { xs: '0', sm: imageOnRight ? '0' : '2rem' }, paddingRight: { xs: '0', sm: imageOnRight ? '2rem' : '0' } }}>
+        <Box sx={{ position: 'absolute', top: { xs: isJourneyInfo ? '50%' : '20%', sm: '60%' }, left: { xs: '50%', sm: imageOnRight ? '30%' : '70%' }, transform: 'translate(-50%, -50%)', width: { xs: '80%', sm: '50%' }, textAlign: 'left', paddingLeft: { xs: '0', sm: imageOnRight ? '0' : '2rem' }, paddingRight: { xs: '0', sm: imageOnRight ? '2rem' : '0' } }}>
           {isJourneyInfo ? (
             <>
               <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: { xs: '16px', sm: '26px' }, color: '#F6F6F6', marginBottom: '4px', marginTop: 0, lineHeight: '1.4' }}>
