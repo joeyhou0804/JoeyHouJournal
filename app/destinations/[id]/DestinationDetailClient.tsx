@@ -186,7 +186,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
 
         {/* Image Carousel */}
         {station.images && station.images.length > 0 && (
-          <div className="max-w-7xl mx-auto px-2 xs:px-2 sm:px-6 lg:px-8 mb-36">
+          <div className="max-w-7xl mx-auto px-2 xs:px-2 sm:px-6 lg:px-8 mb-36 xs:mb-12">
           <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
             {/* Tab Navigation */}
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -358,7 +358,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
             backgroundSize: '300px auto',
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-4 xs:px-2 sm:px-6 lg:px-8">
             <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
               <MixedText
                 text={tr.mapView}
@@ -373,7 +373,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 }}
               />
             </div>
-            <Box sx={{ maxWidth: '800px', margin: '0 auto' }} className="xs:mx-[-0.5rem]">
+            <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
