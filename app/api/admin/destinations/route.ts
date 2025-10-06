@@ -1,15 +1,65 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { promises as fs } from 'fs'
-import path from 'path'
+import {
+  getAllDestinations,
+  getDestinationById,
+  createDestination,
+  updateDestination,
+  deleteDestination,
+} from '@/lib/db'
 
-const destinationsPath = path.join(process.cwd(), 'src/data/destinations.json')
+// Helper to convert DB format to API format
+function dbToApi(destination: any) {
+  return {
+    id: destination.id,
+    name: destination.name,
+    nameCN: destination.name_cn,
+    state: destination.state,
+    country: destination.country,
+    date: destination.date,
+    coordinates: destination.coordinates,
+    journeyId: destination.journey_id,
+    journeyName: destination.journey_name,
+    journeyNameCN: destination.journey_name_cn,
+    images: destination.images,
+    description: destination.description,
+    descriptionCN: destination.description_cn,
+  }
+}
 
-export async function GET() {
+// Helper to convert API format to DB format
+function apiToDb(destination: any) {
+  return {
+    id: destination.id,
+    name: destination.name,
+    name_cn: destination.nameCN || null,
+    state: destination.state || null,
+    country: destination.country || null,
+    date: destination.date,
+    coordinates: destination.coordinates,
+    journey_id: destination.journeyId || null,
+    journey_name: destination.journeyName || null,
+    journey_name_cn: destination.journeyNameCN || null,
+    images: destination.images || [],
+    description: destination.description || null,
+    description_cn: destination.descriptionCN || null,
+  }
+}
+
+export async function GET(request: NextRequest) {
   try {
-    const data = await fs.readFile(destinationsPath, 'utf8')
-    const destinations = JSON.parse(data)
+    const { searchParams } = new URL(request.url)
+    const id = searchParams.get('id')
 
-    return NextResponse.json(destinations, {
+    if (id) {
+      const destination = await getDestinationById(id)
+      if (!destination) {
+        return NextResponse.json({ error: 'Destination not found' }, { status: 404 })
+      }
+      return NextResponse.json(dbToApi(destination))
+    }
+
+    const destinations = await getAllDestinations()
+    return NextResponse.json(destinations.map(dbToApi), {
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate',
       }
@@ -24,23 +74,17 @@ export async function POST(request: NextRequest) {
   try {
     const newDestination = await request.json()
 
-    // Read existing destinations
-    const data = await fs.readFile(destinationsPath, 'utf8')
-    const destinations = JSON.parse(data)
-
     // Generate ID if not provided
     if (!newDestination.id) {
       newDestination.id = Date.now().toString(16)
     }
 
-    // Add new destination
-    destinations.push(newDestination)
+    const dbDestination = apiToDb(newDestination)
+    const created = await createDestination(dbDestination)
 
-    // Write back to file
-    await fs.writeFile(destinationsPath, JSON.stringify(destinations, null, 2))
-
-    return NextResponse.json(newDestination)
+    return NextResponse.json(dbToApi(created))
   } catch (error) {
+    console.error('Error creating destination:', error)
     return NextResponse.json({ error: 'Failed to create destination' }, { status: 500 })
   }
 }
@@ -48,24 +92,16 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const updatedDestination = await request.json()
+    const dbDestination = apiToDb(updatedDestination)
+    const updated = await updateDestination(updatedDestination.id, dbDestination)
 
-    // Read existing destinations
-    const data = await fs.readFile(destinationsPath, 'utf8')
-    const destinations = JSON.parse(data)
-
-    // Find and update destination
-    const index = destinations.findIndex((d: any) => d.id === updatedDestination.id)
-    if (index === -1) {
+    if (!updated) {
       return NextResponse.json({ error: 'Destination not found' }, { status: 404 })
     }
 
-    destinations[index] = updatedDestination
-
-    // Write back to file
-    await fs.writeFile(destinationsPath, JSON.stringify(destinations, null, 2))
-
-    return NextResponse.json(updatedDestination)
+    return NextResponse.json(dbToApi(updated))
   } catch (error) {
+    console.error('Error updating destination:', error)
     return NextResponse.json({ error: 'Failed to update destination' }, { status: 500 })
   }
 }
@@ -79,22 +115,10 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 })
     }
 
-    // Read existing destinations
-    const data = await fs.readFile(destinationsPath, 'utf8')
-    const destinations = JSON.parse(data)
-
-    // Filter out the destination
-    const filtered = destinations.filter((d: any) => d.id !== id)
-
-    if (filtered.length === destinations.length) {
-      return NextResponse.json({ error: 'Destination not found' }, { status: 404 })
-    }
-
-    // Write back to file
-    await fs.writeFile(destinationsPath, JSON.stringify(filtered, null, 2))
-
+    await deleteDestination(id)
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('Error deleting destination:', error)
     return NextResponse.json({ error: 'Failed to delete destination' }, { status: 500 })
   }
 }

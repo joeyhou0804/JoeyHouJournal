@@ -1,8 +1,57 @@
 import { NextResponse } from 'next/server'
-import { promises as fs } from 'fs'
-import path from 'path'
+import {
+  getAllJourneys,
+  getJourneyById,
+  createJourney,
+  updateJourney,
+  deleteJourney,
+} from '@/lib/db'
 
-const journeysFilePath = path.join(process.cwd(), 'src/data/journeys.json')
+// Helper to convert DB format to API format
+function dbToApi(journey: any) {
+  return {
+    id: journey.id,
+    slug: journey.slug,
+    name: journey.name,
+    nameCN: journey.name_cn,
+    description: journey.description,
+    descriptionCN: journey.description_cn,
+    startDate: journey.start_date,
+    endDate: journey.end_date,
+    duration: journey.duration,
+    days: journey.days,
+    nights: journey.nights,
+    startLocation: journey.start_location,
+    endLocation: journey.end_location,
+    visitedPlaceIds: journey.visited_place_ids,
+    totalPlaces: journey.total_places,
+    images: journey.images,
+    segments: journey.segments,
+  }
+}
+
+// Helper to convert API format to DB format
+function apiToDb(journey: any) {
+  return {
+    id: journey.id,
+    slug: journey.slug,
+    name: journey.name,
+    name_cn: journey.nameCN || null,
+    description: journey.description || null,
+    description_cn: journey.descriptionCN || null,
+    start_date: journey.startDate,
+    end_date: journey.endDate,
+    duration: journey.duration,
+    days: journey.days || 1,
+    nights: journey.nights || 0,
+    start_location: journey.startLocation,
+    end_location: journey.endLocation,
+    visited_place_ids: journey.visitedPlaceIds || [],
+    total_places: journey.totalPlaces || null,
+    images: journey.images || [],
+    segments: journey.segments || null,
+  }
+}
 
 // GET - Fetch all journeys or a specific journey by ID
 export async function GET(request: Request) {
@@ -10,18 +59,16 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id')
 
-    const fileContents = await fs.readFile(journeysFilePath, 'utf8')
-    const journeys = JSON.parse(fileContents)
-
     if (id) {
-      const journey = journeys.find((j: any) => j.id === id)
+      const journey = await getJourneyById(id)
       if (!journey) {
         return NextResponse.json({ error: 'Journey not found' }, { status: 404 })
       }
-      return NextResponse.json(journey)
+      return NextResponse.json(dbToApi(journey))
     }
 
-    return NextResponse.json(journeys)
+    const journeys = await getAllJourneys()
+    return NextResponse.json(journeys.map(dbToApi))
   } catch (error) {
     console.error('Error reading journeys:', error)
     return NextResponse.json({ error: 'Failed to read journeys' }, { status: 500 })
@@ -32,16 +79,10 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const newJourney = await request.json()
+    const dbJourney = apiToDb(newJourney)
+    const created = await createJourney(dbJourney)
 
-    const fileContents = await fs.readFile(journeysFilePath, 'utf8')
-    const journeys = JSON.parse(fileContents)
-
-    // Add the new journey
-    journeys.push(newJourney)
-
-    await fs.writeFile(journeysFilePath, JSON.stringify(journeys, null, 2), 'utf8')
-
-    return NextResponse.json({ success: true, journey: newJourney })
+    return NextResponse.json({ success: true, journey: dbToApi(created) })
   } catch (error) {
     console.error('Error creating journey:', error)
     return NextResponse.json({ error: 'Failed to create journey' }, { status: 500 })
@@ -52,20 +93,14 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const updatedJourney = await request.json()
+    const dbJourney = apiToDb(updatedJourney)
+    const updated = await updateJourney(updatedJourney.id, dbJourney)
 
-    const fileContents = await fs.readFile(journeysFilePath, 'utf8')
-    const journeys = JSON.parse(fileContents)
-
-    const index = journeys.findIndex((j: any) => j.id === updatedJourney.id)
-    if (index === -1) {
+    if (!updated) {
       return NextResponse.json({ error: 'Journey not found' }, { status: 404 })
     }
 
-    journeys[index] = updatedJourney
-
-    await fs.writeFile(journeysFilePath, JSON.stringify(journeys, null, 2), 'utf8')
-
-    return NextResponse.json({ success: true, journey: updatedJourney })
+    return NextResponse.json({ success: true, journey: dbToApi(updated) })
   } catch (error) {
     console.error('Error updating journey:', error)
     return NextResponse.json({ error: 'Failed to update journey' }, { status: 500 })
@@ -82,17 +117,7 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'Journey ID is required' }, { status: 400 })
     }
 
-    const fileContents = await fs.readFile(journeysFilePath, 'utf8')
-    const journeys = JSON.parse(fileContents)
-
-    const filteredJourneys = journeys.filter((j: any) => j.id !== id)
-
-    if (filteredJourneys.length === journeys.length) {
-      return NextResponse.json({ error: 'Journey not found' }, { status: 404 })
-    }
-
-    await fs.writeFile(journeysFilePath, JSON.stringify(filteredJourneys, null, 2), 'utf8')
-
+    await deleteJourney(id)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting journey:', error)
