@@ -239,6 +239,30 @@ export default function JourneysPage() {
           </div>
 
           <div>
+            {/* Journey Info Card - Above map on xs screens */}
+            <div className="block sm:hidden mb-12">
+              <MapViewHint
+                imageOnRight={true}
+                cardNumber={2}
+                isJourneyInfo={true}
+                station={{
+                  id: '',
+                  name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
+                  journeyName: `${
+                    locale === 'zh' && currentJourney.startLocation.nameCN
+                      ? currentJourney.startLocation.nameCN
+                      : currentJourney.startLocation.name
+                  } → ${
+                    locale === 'zh' && currentJourney.endLocation.nameCN
+                      ? currentJourney.endLocation.nameCN
+                      : currentJourney.endLocation.name
+                  }`,
+                  date: formatDuration(currentJourney.days, currentJourney.nights, tr),
+                  images: []
+                }}
+              />
+            </div>
+
             <Box style={{ position: 'relative' }}>
               <Box
                 sx={{
@@ -256,14 +280,13 @@ export default function JourneysPage() {
                 />
               </Box>
 
-              {/* Journey Info Card - Top Right Corner */}
+              {/* Journey Info Card - Top Right Corner on desktop only */}
               <Box
                 sx={{
-                  position: { xs: 'relative', sm: 'absolute' },
-                  top: { xs: 'auto', sm: '-100px' },
-                  right: { xs: 'auto', sm: '-600px' },
-                  marginBottom: { xs: '1rem', sm: '0' },
-                  marginTop: { xs: '-3rem', sm: '0' },
+                  display: { xs: 'none', sm: 'block' },
+                  position: 'absolute',
+                  top: '-100px',
+                  right: '-600px',
                   zIndex: 1000
                 }}
               >
