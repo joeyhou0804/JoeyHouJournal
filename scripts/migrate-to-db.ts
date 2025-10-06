@@ -28,9 +28,9 @@ async function migrate() {
         nights INTEGER NOT NULL DEFAULT 0,
         start_location JSONB NOT NULL,
         end_location JSONB NOT NULL,
-        visited_place_ids TEXT[],
+        visited_place_ids JSONB,
         total_places INTEGER,
-        images TEXT[],
+        images JSONB,
         segments JSONB,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
@@ -49,7 +49,7 @@ async function migrate() {
         journey_id TEXT,
         journey_name TEXT,
         journey_name_cn TEXT,
-        images TEXT[],
+        images JSONB,
         description TEXT,
         description_cn TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
@@ -91,12 +91,12 @@ async function migrate() {
           ${journey.duration},
           ${(journey as any).days || 1},
           ${(journey as any).nights || 0},
-          ${JSON.stringify(journey.startLocation)},
-          ${JSON.stringify(journey.endLocation)},
-          ${journey.visitedPlaceIds || []},
+          ${JSON.stringify(journey.startLocation)}::jsonb,
+          ${JSON.stringify(journey.endLocation)}::jsonb,
+          ${JSON.stringify(journey.visitedPlaceIds || [])}::jsonb,
           ${journey.totalPlaces || null},
-          ${journey.images || []},
-          ${JSON.stringify((journey as any).segments || null)}
+          ${JSON.stringify(journey.images || [])}::jsonb,
+          ${JSON.stringify((journey as any).segments || null)}::jsonb
         )
         ON CONFLICT (id) DO UPDATE SET
           slug = EXCLUDED.slug,
@@ -142,11 +142,11 @@ async function migrate() {
           ${dest.state || null},
           ${dest.country || null},
           ${dest.date},
-          ${JSON.stringify(coordinates)},
+          ${JSON.stringify(coordinates)}::jsonb,
           ${(dest as any).journeyId || null},
           ${(dest as any).journeyName || null},
           ${(dest as any).journeyNameCN || null},
-          ${dest.images || []},
+          ${JSON.stringify(dest.images || [])}::jsonb,
           ${(dest as any).description || null},
           ${(dest as any).descriptionCN || null}
         )

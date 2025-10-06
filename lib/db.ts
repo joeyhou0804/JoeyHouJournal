@@ -59,9 +59,9 @@ export async function initDatabase() {
         nights INTEGER NOT NULL DEFAULT 0,
         start_location JSONB NOT NULL,
         end_location JSONB NOT NULL,
-        visited_place_ids TEXT[],
+        visited_place_ids JSONB,
         total_places INTEGER,
-        images TEXT[],
+        images JSONB,
         segments JSONB,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
@@ -81,7 +81,7 @@ export async function initDatabase() {
         journey_id TEXT,
         journey_name TEXT,
         journey_name_cn TEXT,
-        images TEXT[],
+        images JSONB,
         description TEXT,
         description_cn TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
@@ -115,8 +115,8 @@ export async function getJourneyById(id: string): Promise<Journey | null> {
 }
 
 export async function createJourney(journey: Partial<Journey>): Promise<Journey> {
-  const visitedPlaceIds = journey.visited_place_ids || []
-  const images = journey.images || []
+  const visitedPlaceIds = JSON.stringify(journey.visited_place_ids || [])
+  const images = JSON.stringify(journey.images || [])
 
   const { rows } = await sql<Journey>`
     INSERT INTO journeys (
@@ -131,8 +131,10 @@ export async function createJourney(journey: Partial<Journey>): Promise<Journey>
       ${journey.days}, ${journey.nights},
       ${JSON.stringify(journey.start_location)}::jsonb,
       ${JSON.stringify(journey.end_location)}::jsonb,
-      ${visitedPlaceIds}::text[], ${journey.total_places},
-      ${images}::text[], ${JSON.stringify(journey.segments)}::jsonb
+      ${visitedPlaceIds}::jsonb,
+      ${journey.total_places},
+      ${images}::jsonb,
+      ${JSON.stringify(journey.segments)}::jsonb
     )
     RETURNING *
   `
@@ -140,8 +142,8 @@ export async function createJourney(journey: Partial<Journey>): Promise<Journey>
 }
 
 export async function updateJourney(id: string, journey: Partial<Journey>): Promise<Journey> {
-  const visitedPlaceIds = journey.visited_place_ids || []
-  const images = journey.images || []
+  const visitedPlaceIds = JSON.stringify(journey.visited_place_ids || [])
+  const images = JSON.stringify(journey.images || [])
 
   const { rows } = await sql<Journey>`
     UPDATE journeys SET
@@ -157,9 +159,9 @@ export async function updateJourney(id: string, journey: Partial<Journey>): Prom
       nights = ${journey.nights},
       start_location = ${JSON.stringify(journey.start_location)}::jsonb,
       end_location = ${JSON.stringify(journey.end_location)}::jsonb,
-      visited_place_ids = ${visitedPlaceIds}::text[],
+      visited_place_ids = ${visitedPlaceIds}::jsonb,
       total_places = ${journey.total_places},
-      images = ${images}::text[],
+      images = ${images}::jsonb,
       segments = ${JSON.stringify(journey.segments)}::jsonb,
       updated_at = NOW()
     WHERE id = ${id}
@@ -190,7 +192,7 @@ export async function getDestinationsByJourneyId(journeyId: string): Promise<Des
 }
 
 export async function createDestination(destination: Partial<Destination>): Promise<Destination> {
-  const images = destination.images || []
+  const images = JSON.stringify(destination.images || [])
 
   const { rows } = await sql<Destination>`
     INSERT INTO destinations (
@@ -202,7 +204,7 @@ export async function createDestination(destination: Partial<Destination>): Prom
       ${destination.state}, ${destination.country}, ${destination.date},
       ${JSON.stringify(destination.coordinates)}::jsonb,
       ${destination.journey_id}, ${destination.journey_name}, ${destination.journey_name_cn},
-      ${images}::text[], ${destination.description}, ${destination.description_cn}
+      ${images}::jsonb, ${destination.description}, ${destination.description_cn}
     )
     RETURNING *
   `
@@ -210,7 +212,7 @@ export async function createDestination(destination: Partial<Destination>): Prom
 }
 
 export async function updateDestination(id: string, destination: Partial<Destination>): Promise<Destination> {
-  const images = destination.images || []
+  const images = JSON.stringify(destination.images || [])
 
   const { rows } = await sql<Destination>`
     UPDATE destinations SET
@@ -223,7 +225,7 @@ export async function updateDestination(id: string, destination: Partial<Destina
       journey_id = ${destination.journey_id},
       journey_name = ${destination.journey_name},
       journey_name_cn = ${destination.journey_name_cn},
-      images = ${images}::text[],
+      images = ${images}::jsonb,
       description = ${destination.description},
       description_cn = ${destination.description_cn},
       updated_at = NOW()
