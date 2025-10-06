@@ -38,6 +38,7 @@ export default function JourneysPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const [currentJourneyIndex, setCurrentJourneyIndex] = useState(0)
+  const [xsDisplayCount, setXsDisplayCount] = useState(5)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
@@ -130,7 +131,15 @@ export default function JourneysPage() {
   const handleSortChange = (order: 'latest' | 'earliest') => {
     setSortOrder(order)
     setCurrentPage(1) // Reset to first page when sorting changes
+    setXsDisplayCount(itemsPerPage) // Reset xs display count when sorting changes
   }
+
+  const handleShowMore = () => {
+    setXsDisplayCount(prev => prev + itemsPerPage)
+  }
+
+  // For xs screens, use xsDisplayCount; for larger screens, use pagination
+  const displayedTripsXs = sortedTrips.slice(0, xsDisplayCount)
 
   const openMenu = () => {
     setIsMenuButtonAnimating(true)
@@ -416,16 +425,39 @@ export default function JourneysPage() {
             </button>
           </div>
 
-          {/* Journeys Grid */}
-          <div className="grid grid-cols-1 gap-48 xs:gap-12">
+          {/* Journeys Grid - Desktop with pagination */}
+          <div className="hidden sm:grid grid-cols-1 gap-48">
             {displayedTrips.map((trip, index) => (
               <JourneyCard key={trip.slug} journey={trip} index={index} />
             ))}
           </div>
 
-          {/* Pagination */}
+          {/* Journeys Grid - XS with show more */}
+          <div className="grid sm:hidden grid-cols-1 gap-12">
+            {displayedTripsXs.map((trip, index) => (
+              <JourneyCard key={trip.slug} journey={trip} index={index} />
+            ))}
+          </div>
+
+          {/* Show More Button - XS only */}
+          {xsDisplayCount < sortedTrips.length && (
+            <div className="mt-12 flex sm:hidden justify-center">
+              <button
+                onClick={handleShowMore}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={`/images/buttons/show_more_xs_${locale}.png`}
+                  alt="Show more"
+                  className="h-12 w-auto"
+                />
+              </button>
+            </div>
+          )}
+
+          {/* Pagination - Desktop only */}
           {totalPages > 1 && (
-            <div className="mt-48 xs:mt-12 flex justify-center">
+            <div className="mt-48 hidden sm:flex justify-center">
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
