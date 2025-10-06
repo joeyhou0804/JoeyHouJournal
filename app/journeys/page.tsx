@@ -263,7 +263,7 @@ export default function JourneysPage() {
               />
             </div>
 
-            <Box style={{ position: 'relative' }}>
+            <Box style={{ position: 'relative' }} className="xs:mt-[-3rem]">
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
