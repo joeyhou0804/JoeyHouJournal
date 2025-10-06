@@ -5,7 +5,7 @@ interface MixedTextProps {
   text: string
   chineseFont: string
   englishFont: string
-  fontSize?: string
+  fontSize?: string | { xs?: string; sm?: string; md?: string; lg?: string; xl?: string }
   color?: string
   sx?: any
   component?: any
