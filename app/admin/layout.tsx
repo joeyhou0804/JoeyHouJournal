@@ -219,7 +219,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </AppBar>
 
       {/* Main Content */}
-      <Container maxWidth="xl" sx={{ flex: 1, py: 4 }}>
+      <Container maxWidth="xl" sx={{ flex: 1, py: { xs: 2, sm: 4 }, px: { xs: 2, sm: 3 } }}>
         {children}
       </Container>
     </Box>

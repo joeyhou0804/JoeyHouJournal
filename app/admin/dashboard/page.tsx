@@ -118,7 +118,7 @@ export default function AdminDashboard() {
 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
             {/* Step 1 */}
-            <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'start', gap: 2 }}>
               <Box sx={{
                 minWidth: '40px',
                 height: '40px',
@@ -133,7 +133,7 @@ export default function AdminDashboard() {
               }}>
                 1
               </Box>
-              <Box sx={{ flex: 1 }}>
+              <Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
                 <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', mb: 1 }}>
                   Create Destinations
                 </Typography>
@@ -144,12 +144,14 @@ export default function AdminDashboard() {
                   component={Link}
                   href="/admin/destinations/new"
                   variant="contained"
+                  fullWidth
                   startIcon={<AddIcon />}
                   sx={{
                     backgroundColor: '#FFD701',
                     color: '#373737',
                     fontFamily: 'MarioFont, sans-serif',
-                    '&:hover': { backgroundColor: '#E5C001' }
+                    '&:hover': { backgroundColor: '#E5C001' },
+                    width: { xs: '100%', sm: 'auto' }
                   }}
                 >
                   Add Destination
@@ -158,7 +160,7 @@ export default function AdminDashboard() {
             </Box>
 
             {/* Step 2 */}
-            <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'start', gap: 2 }}>
               <Box sx={{
                 minWidth: '40px',
                 height: '40px',
@@ -173,7 +175,7 @@ export default function AdminDashboard() {
               }}>
                 2
               </Box>
-              <Box sx={{ flex: 1 }}>
+              <Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
                 <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', mb: 1 }}>
                   Create a Journey
                 </Typography>
@@ -189,7 +191,8 @@ export default function AdminDashboard() {
                     backgroundColor: '#FFD701',
                     color: '#373737',
                     fontFamily: 'MarioFont, sans-serif',
-                    '&:hover': { backgroundColor: '#E5C001' }
+                    '&:hover': { backgroundColor: '#E5C001' },
+                    width: { xs: '100%', sm: 'auto' }
                   }}
                 >
                   Add Journey
@@ -198,7 +201,7 @@ export default function AdminDashboard() {
             </Box>
 
             {/* Step 3 */}
-            <Box sx={{ display: 'flex', alignItems: 'start', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'start', gap: 2 }}>
               <Box sx={{
                 minWidth: '40px',
                 height: '40px',
@@ -213,7 +216,7 @@ export default function AdminDashboard() {
               }}>
                 3
               </Box>
-              <Box sx={{ flex: 1 }}>
+              <Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
                 <Typography variant="h6" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', mb: 1 }}>
                   Link Destinations to Journey
                 </Typography>
@@ -229,7 +232,8 @@ export default function AdminDashboard() {
                     borderColor: '#373737',
                     color: '#373737',
                     fontFamily: 'MarioFont, sans-serif',
-                    '&:hover': { borderColor: '#373737', backgroundColor: 'rgba(55, 55, 55, 0.04)' }
+                    '&:hover': { borderColor: '#373737', backgroundColor: 'rgba(55, 55, 55, 0.04)' },
+                    width: { xs: '100%', sm: 'auto' }
                   }}
                 >
                   View Journeys

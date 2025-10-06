@@ -75,17 +75,18 @@ export default function AdminLogin() {
       justifyContent: 'center',
       backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
       backgroundRepeat: 'repeat',
-      backgroundSize: '400px auto'
+      backgroundSize: '400px auto',
+      padding: '1rem'
     }}>
       <div style={{
         backgroundColor: 'white',
-        padding: '3rem',
+        padding: 'clamp(1.5rem, 5vw, 3rem)',
         borderRadius: '1rem',
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
         width: '100%',
         maxWidth: '400px'
       }}>
-        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '32px', marginBottom: '2rem', textAlign: 'center' }}>
+        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 32px)', marginBottom: '2rem', textAlign: 'center' }}>
           Admin Login
         </h1>
 

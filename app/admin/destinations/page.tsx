@@ -96,13 +96,14 @@ export default function DestinationsPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '36px', margin: 0 }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, marginBottom: '2rem', gap: { xs: 2, sm: 0 } }}>
+        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', margin: 0 }}>
           Destinations ({destinations.length})
         </h1>
-        <Link href="/admin/destinations/new">
+        <Link href="/admin/destinations/new" style={{ width: '100%', maxWidth: { xs: '100%', sm: 'auto' } }}>
           <button
             style={{
+              width: '100%',
               padding: '0.75rem 1.5rem',
               fontSize: '16px',
               fontFamily: 'MarioFont, sans-serif',
@@ -125,7 +126,6 @@ export default function DestinationsPage() {
           onChange={(e) => setSearchTerm(e.target.value)}
           style={{
             width: '100%',
-            maxWidth: '400px',
             padding: '0.75rem',
             fontSize: '16px',
             border: '2px solid #373737',
@@ -135,8 +135,50 @@ export default function DestinationsPage() {
         />
       </Box>
 
+      {/* Mobile Card View */}
+      <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+        {paginatedDestinations.length === 0 ? (
+          <Box sx={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif', backgroundColor: 'white', borderRadius: '1rem' }}>
+            No destinations found
+          </Box>
+        ) : (
+          paginatedDestinations.map((dest) => (
+            <Box
+              key={dest.id}
+              onClick={() => router.push(`/admin/destinations/${dest.id}`)}
+              sx={{
+                backgroundColor: 'white',
+                borderRadius: '1rem',
+                padding: '1rem',
+                marginBottom: '1rem',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                cursor: 'pointer',
+                '&:hover': { backgroundColor: '#f5f5f5' }
+              }}
+            >
+              <Box sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '0.5rem', color: '#373737' }}>
+                {dest.name}
+              </Box>
+              {dest.nameCN && (
+                <Box sx={{ fontSize: '14px', color: '#666', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
+                  {dest.nameCN}
+                </Box>
+              )}
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
+                <Box><strong>Date:</strong> {dest.date}</Box>
+                <Box><strong>State:</strong> {dest.state}</Box>
+                <Box sx={{ gridColumn: '1 / -1' }}><strong>Journey:</strong> {dest.journeyName}</Box>
+                <Box><strong>Images:</strong> {dest.images?.length || 0}</Box>
+              </Box>
+            </Box>
+          ))
+        )}
+      </Box>
+
+      {/* Desktop Table View */}
       <Box
         sx={{
+          display: { xs: 'none', md: 'block' },
           backgroundColor: 'white',
           borderRadius: '1rem',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
@@ -194,15 +236,17 @@ export default function DestinationsPage() {
       {filteredDestinations.length > 0 && (
         <Box sx={{
           display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
           justifyContent: 'space-between',
-          alignItems: 'center',
+          alignItems: { xs: 'stretch', sm: 'center' },
           marginTop: '1rem',
           padding: '1rem',
           backgroundColor: 'white',
           borderRadius: '0.5rem',
-          border: '1px solid #e0e0e0'
+          border: '1px solid #e0e0e0',
+          gap: { xs: '1rem', sm: 0 }
         }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: { xs: 'space-between', sm: 'flex-start' } }}>
             <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
               Rows per page:
             </label>
