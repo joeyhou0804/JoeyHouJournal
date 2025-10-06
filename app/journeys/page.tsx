@@ -376,7 +376,7 @@ export default function JourneysPage() {
               <img
                 src={`/images/buttons/latest_first_button_${locale}.png`}
                 alt={tr.latestFirst}
-                className="h-16 w-auto"
+                className="h-16 w-auto xs:h-auto xs:w-48"
               />
             </button>
             <button
@@ -386,7 +386,7 @@ export default function JourneysPage() {
               <img
                 src={`/images/buttons/earliest_first_button_${locale}.png`}
                 alt={tr.earliestFirst}
-                className="h-16 w-auto"
+                className="h-16 w-auto xs:h-auto xs:w-48"
               />
             </button>
           </div>
