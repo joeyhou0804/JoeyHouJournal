@@ -34,10 +34,25 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isXsScreen, setIsXsScreen] = useState(false)
   const tabContainerRef = useRef<HTMLDivElement>(null)
 
   // Get journey information if this destination belongs to a journey
   const journey = station ? getJourneyById(station.journeyId) : undefined
+
+  // Detect xs screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsXsScreen(window.innerWidth < 640)
+    }
+
+    // Check on mount
+    checkScreenSize()
+
+    // Add resize listener
+    window.addEventListener('resize', checkScreenSize)
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
 
   // Auto-scroll to center the selected tab on xs screens
   useEffect(() => {
@@ -214,6 +229,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
               ref={tabContainerRef}
               sx={{
                 display: 'flex',
+                gap: { xs: '0.5rem', sm: '0' },
                 justifyContent: { xs: 'flex-start', sm: 'center' },
                 overflowX: { xs: 'auto', sm: 'visible' },
                 overflowY: 'hidden',
@@ -224,7 +240,9 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 },
                 msOverflowStyle: 'none',
                 scrollbarWidth: 'none',
-                paddingBottom: { xs: '0.5rem', sm: '0' }
+                paddingBottom: { xs: '0.5rem', sm: '0' },
+                paddingLeft: { xs: 'calc(50vw - 24px)', sm: '0' },
+                paddingRight: { xs: 'calc(50vw - 24px)', sm: '0' }
               }}
             >
               {station.images.map((_, index) => {
@@ -238,26 +256,38 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 const isSelected = currentImageIndex === index
 
                 let tabSrc = ''
-                if (useMapTab) {
-                  tabSrc = isSelected
-                    ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_selected_${locale}.png`
-                    : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_${locale}.png`
-                } else {
-                  tabSrc = isSelected
-                    ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_selected.png`
-                    : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}.png`
-                }
+                let hoverSrc = ''
 
-                const hoverSrc = useMapTab
-                  ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_hover_${locale}.png`
-                  : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_hover.png`
+                if (isXsScreen) {
+                  // Use xs-specific images from public root (no selected/hover states)
+                  if (useMapTab) {
+                    tabSrc = `/tab_xs_map_${locale}.png`
+                  } else {
+                    tabSrc = `/tab_xs_${tabNumber}_${locale}.png`
+                  }
+                } else {
+                  // Desktop logic with Cloudinary URLs and selected/hover states
+                  if (useMapTab) {
+                    tabSrc = isSelected
+                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_selected_${locale}.png`
+                      : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_${locale}.png`
+                  } else {
+                    tabSrc = isSelected
+                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_selected.png`
+                      : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}.png`
+                  }
+
+                  hoverSrc = useMapTab
+                    ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_hover_${locale}.png`
+                    : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_hover.png`
+                }
 
                 return (
                   <Box
                     key={index}
                     component="button"
                     onClick={() => setCurrentImageIndex(index)}
-                    className="group hover:scale-105 transition-transform duration-200"
+                    className={isXsScreen ? '' : 'group hover:scale-105 transition-transform duration-200'}
                     sx={{
                       padding: 0,
                       border: 'none',
@@ -270,9 +300,9 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                       component="img"
                       src={tabSrc}
                       alt={`Tab ${tabNumber}`}
-                      className={isSelected ? 'h-12 w-auto' : 'h-12 w-auto group-hover:hidden'}
+                      className={isXsScreen || isSelected ? 'h-12 w-auto' : 'h-12 w-auto group-hover:hidden'}
                     />
-                    {!isSelected && (
+                    {!isXsScreen && !isSelected && (
                       <Box
                         component="img"
                         src={hoverSrc}
