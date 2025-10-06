@@ -315,11 +315,11 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
                 let hoverSrc = ''
 
                 if (isXsScreen) {
-                  // Use xs-specific images from public root (no selected/hover states)
+                  // Use xs-specific images from public/images/buttons/tabs (no selected/hover states)
                   if (useMapTab) {
-                    tabSrc = `/tab_xs_map_${locale}.png`
+                    tabSrc = `/images/buttons/tabs/tab_xs_map_${locale}.png`
                   } else {
-                    tabSrc = `/tab_xs_${tabNumber}_${locale}.png`
+                    tabSrc = `/images/buttons/tabs/tab_xs_${tabNumber}_${locale}.png`
                   }
                 } else {
                   // Desktop logic with Cloudinary URLs and selected/hover states
