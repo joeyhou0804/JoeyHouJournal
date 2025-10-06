@@ -351,7 +351,7 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
         {/* Map View Section */}
         <Box
           component="section"
-          className="w-full py-24"
+          className="w-full py-24 xs:py-12"
           sx={{
             backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
             backgroundRepeat: 'repeat',
@@ -359,28 +359,28 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
           }}
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-center items-center mb-16 mt-8">
+            <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
               <MixedText
                 text={tr.mapView}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize="64px"
+                fontSize={{ xs: '40px', sm: '64px' }}
                 color="#373737"
                 component="h2"
                 sx={{
-                  textShadow: '3px 3px 0px #F6F6F6',
+                  textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
                   margin: 0
                 }}
               />
             </div>
-            <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
+            <Box sx={{ maxWidth: '800px', margin: '0 auto' }} className="xs:mx-[-0.5rem]">
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
                   backgroundSize: '200px auto',
-                  padding: '1rem',
-                  borderRadius: '1.5rem'
+                  padding: { xs: '0.5rem', sm: '1rem' },
+                  borderRadius: { xs: '0.75rem', sm: '1.5rem' }
                 }}
               >
                 <InteractiveMap places={[station]} isDetailView={true} />

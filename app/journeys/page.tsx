@@ -393,7 +393,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Sort Buttons */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:mb-12">
+          <div className="flex justify-center items-center gap-4 mb-48 xs:mb-12 xs:flex-col">
             <button
               onClick={() => handleSortChange('latest')}
               className="hover:scale-105 transition-transform duration-200"
@@ -401,7 +401,7 @@ export default function JourneysPage() {
               <img
                 src={`/images/buttons/latest_first_button_${locale}.png`}
                 alt={tr.latestFirst}
-                className="h-16 w-auto xs:h-auto xs:w-48"
+                className="h-16 w-auto xs:h-12"
               />
             </button>
             <button
@@ -411,7 +411,7 @@ export default function JourneysPage() {
               <img
                 src={`/images/buttons/earliest_first_button_${locale}.png`}
                 alt={tr.earliestFirst}
-                className="h-16 w-auto xs:h-auto xs:w-48"
+                className="h-16 w-auto xs:h-12"
               />
             </button>
           </div>
