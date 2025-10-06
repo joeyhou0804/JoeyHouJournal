@@ -36,7 +36,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
               <Box className="group">
                 <Box
                   component="img"
-                  src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/journey_button_current_${locale}.png`}
                   alt="Journeys"
                   className="h-20 w-auto xs:h-auto xs:w-64"
                 />
@@ -62,7 +62,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
               <Box className="group">
                 <Box
                   component="img"
-                  src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/destination_button_current_${locale}.png`}
                   alt="Destinations"
                   className="h-20 w-auto xs:h-auto xs:w-64"
                 />

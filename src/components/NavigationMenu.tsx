@@ -79,7 +79,7 @@ export default function NavigationMenu({
                 <Box className="group">
                   <Box
                     component="img"
-                    src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
+                    src={`/images/buttons/journey_button_current_${locale}.png`}
                     alt="Journeys"
                     className="w-48 h-auto"
                   />
@@ -105,7 +105,7 @@ export default function NavigationMenu({
                 <Box className="group">
                   <Box
                     component="img"
-                    src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
+                    src={`/images/buttons/destination_button_current_${locale}.png`}
                     alt="Destinations"
                     className="w-48 h-auto"
                   />
