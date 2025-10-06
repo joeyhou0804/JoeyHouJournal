@@ -10,6 +10,11 @@ async function migrate() {
   console.log('Starting migration...')
 
   try {
+    // Drop existing tables to recreate with new schema
+    console.log('Dropping existing tables...')
+    await sql`DROP TABLE IF EXISTS destinations`
+    await sql`DROP TABLE IF EXISTS journeys`
+
     // Initialize tables
     console.log('Creating tables...')
 
@@ -64,11 +69,6 @@ async function migrate() {
     await sql`CREATE INDEX IF NOT EXISTS idx_destinations_date ON destinations(date)`
 
     console.log('Tables created successfully')
-
-    // Clear existing data
-    console.log('Clearing existing data...')
-    await sql`DELETE FROM destinations`
-    await sql`DELETE FROM journeys`
 
     // Import journeys
     console.log(`Importing ${journeysData.length} journeys...`)
