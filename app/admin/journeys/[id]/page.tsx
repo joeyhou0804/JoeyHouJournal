@@ -168,6 +168,25 @@ export default function JourneyDetailsPage() {
       // Convert points to segments before saving
       const segments = pointsToSegments(routePoints)
 
+      // Update startLocation and endLocation from route points if available
+      const startLocation = routePoints.length > 0 ? {
+        name: routePoints[0].name,
+        coordinates: {
+          lat: routePoints[0].lat,
+          lng: routePoints[0].lng
+        },
+        nameCN: journey.startLocation?.nameCN || ''
+      } : journey.startLocation
+
+      const endLocation = routePoints.length > 1 ? {
+        name: routePoints[routePoints.length - 1].name,
+        coordinates: {
+          lat: routePoints[routePoints.length - 1].lat,
+          lng: routePoints[routePoints.length - 1].lng
+        },
+        nameCN: journey.endLocation?.nameCN || ''
+      } : journey.endLocation
+
       const updatedJourney = {
         ...journey,
         name: formData.name,
@@ -180,7 +199,9 @@ export default function JourneyDetailsPage() {
         endDate: formData.endDate,
         description: formData.description,
         descriptionCN: formData.descriptionCN,
-        segments: segments.length > 0 ? segments : undefined
+        startLocation,
+        endLocation,
+        ...(segments.length > 0 && { segments })
       }
 
       const response = await fetch('/api/admin/journeys', {
