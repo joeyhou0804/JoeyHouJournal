@@ -585,7 +585,7 @@ export default function NewJourneyPage() {
                   </Box>
                 </Box>
 
-                <Box sx={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '0.75rem' }}>
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '2fr 1fr 1fr' }, gap: '0.75rem' }}>
                   <input
                     value={point.name}
                     onChange={(e) => updatePoint(index, 'name', e.target.value)}
