@@ -20,25 +20,25 @@ export default function Footer({ currentPage }: FooterProps = {}) {
         backgroundSize: '200px'
       }}
     >
-      <div className="flex items-center justify-between">
-        <Link href="/" className="hover:scale-105 transition-transform duration-200">
+      <div className="flex items-center justify-between xs:flex-col xs:gap-4">
+        <Link href="/" className="hover:scale-105 transition-transform duration-200 xs:w-full xs:flex xs:justify-center">
           <Box
             component="img"
             src={`/images/logos/logo_${locale}.png`}
             alt="Logo"
-            className="h-60 w-auto"
+            className="h-60 w-auto xs:h-auto xs:w-80"
           />
         </Link>
-        <div className="flex-1 flex flex-col items-center justify-center">
+        <div className="flex-1 flex flex-col items-center justify-center xs:w-full">
           {/* Button Row */}
-          <div className="flex items-center space-x-4 mb-4">
+          <div className="flex items-center space-x-4 mb-4 xs:flex-col xs:space-x-0 xs:space-y-4 xs:w-full xs:items-center">
             {currentPage === 'trips' ? (
               <Box className="group">
                 <Box
                   component="img"
                   src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Journeys"
-                  className="h-20 w-auto"
+                  className="h-20 w-auto xs:h-auto xs:w-64"
                 />
               </Box>
             ) : (
@@ -47,13 +47,13 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                   component="img"
                   src={`/images/buttons/journey_button${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Journeys"
-                  className="h-20 w-auto group-hover:hidden"
+                  className="h-20 w-auto group-hover:hidden xs:h-auto xs:w-64"
                 />
                 <Box
                   component="img"
                   src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Journeys"
-                  className="h-20 w-auto hidden group-hover:block"
+                  className="h-20 w-auto hidden group-hover:block xs:h-auto xs:w-64"
                 />
               </Link>
             )}
@@ -64,7 +64,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                   component="img"
                   src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Destinations"
-                  className="h-20 w-auto"
+                  className="h-20 w-auto xs:h-auto xs:w-64"
                 />
               </Box>
             ) : (
@@ -73,13 +73,13 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                   component="img"
                   src={`/images/buttons/destination_button${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Destinations"
-                  className="h-20 w-auto group-hover:hidden"
+                  className="h-20 w-auto group-hover:hidden xs:h-auto xs:w-64"
                 />
                 <Box
                   component="img"
                   src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Destinations"
-                  className="h-20 w-auto hidden group-hover:block"
+                  className="h-20 w-auto hidden group-hover:block xs:h-auto xs:w-64"
                 />
               </Link>
             )}
@@ -93,13 +93,13 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                 component="img"
                 src={`/images/buttons/language_button_${locale}.png`}
                 alt="Language Toggle"
-                className="h-20 w-auto group-hover:hidden"
+                className="h-20 w-auto group-hover:hidden xs:h-auto xs:w-64"
               />
               <Box
                 component="img"
                 src={`/images/buttons/language_button_${locale}_hover.png`}
                 alt="Language Toggle"
-                className="h-20 w-auto hidden group-hover:block"
+                className="h-20 w-auto hidden group-hover:block xs:h-auto xs:w-64"
               />
             </Box>
           </div>
