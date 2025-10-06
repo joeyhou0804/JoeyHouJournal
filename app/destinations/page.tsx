@@ -164,16 +164,18 @@ export default function StationsPage() {
             />
           </div>
 
-          <Box
-            sx={{
-              backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
-              backgroundRepeat: 'repeat',
-              backgroundSize: '200px auto',
-              padding: '1rem',
-              borderRadius: '1.5rem'
-            }}
-          >
-            <InteractiveMap places={destinations} />
+          <Box className="xs:mx-[-0.5rem]">
+            <Box
+              sx={{
+                backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                backgroundRepeat: 'repeat',
+                backgroundSize: '200px auto',
+                padding: { xs: '0.5rem', sm: '1rem' },
+                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+              }}
+            >
+              <InteractiveMap places={destinations} />
+            </Box>
           </Box>
         </div>
       </Box>
