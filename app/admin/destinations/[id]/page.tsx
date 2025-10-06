@@ -325,7 +325,7 @@ export default function DestinationFormPage() {
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
         }}
       >
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '1.5rem' }}>
           {/* Name (English) */}
           <Box>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
