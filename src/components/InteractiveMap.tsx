@@ -588,7 +588,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     <div
       ref={mapContainerRef}
       style={{ aspectRatio: isDetailView ? '1/1' : undefined }}
-      className={`w-full rounded-lg overflow-hidden shadow-lg border-4 border-gray-800 ${isDetailView ? '' : 'h-[600px]'}`}
+      className={`w-full rounded-lg overflow-hidden shadow-lg border-4 border-gray-800 ${isDetailView ? '' : 'h-[600px] xs:h-auto xs:aspect-square'}`}
     />
   )
 }

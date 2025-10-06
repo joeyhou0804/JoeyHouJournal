@@ -224,7 +224,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Second Map View Hint - Image on right */}
-          <div className="my-36 xs:my-12" style={{ marginBottom: '300px' }}>
+          <div className="my-36 sm:mb-[300px] xs:mt-12 xs:mb-12">
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}
@@ -263,14 +263,14 @@ export default function JourneysPage() {
               />
             </div>
 
-            <Box style={{ position: 'relative' }} className="xs:mt-[-3rem]">
+            <Box style={{ position: 'relative' }} className="xs:mt-[-3rem] xs:mx-[-0.5rem]">
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
                   backgroundSize: '200px auto',
-                  padding: '1rem',
-                  borderRadius: '1.5rem'
+                  padding: { xs: '0.5rem', sm: '1rem' },
+                  borderRadius: { xs: '0.75rem', sm: '1.5rem' }
                 }}
               >
                 <InteractiveMap
