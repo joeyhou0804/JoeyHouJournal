@@ -25,7 +25,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
     ? '/images/journey/journeys_map_description_card.webp'
     : `/images/destinations/hints/map_view_hint_card_${cardNumber}.webp`
   const cardImageSrcXs = isJourneyInfo
-    ? '/images/journey/journeys_map_description_card.webp'
+    ? '/images/destinations/destination_card_xs_even.webp'
     : `/images/destinations/hints/map_view_hint_card_xs_${cardNumber}.webp`
 
   return (

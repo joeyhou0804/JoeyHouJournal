@@ -259,9 +259,11 @@ export default function JourneysPage() {
               {/* Journey Info Card - Top Right Corner */}
               <Box
                 sx={{
-                  position: 'absolute',
-                  top: '-100px',
-                  right: '-600px',
+                  position: { xs: 'relative', sm: 'absolute' },
+                  top: { xs: 'auto', sm: '-100px' },
+                  right: { xs: 'auto', sm: '-600px' },
+                  marginBottom: { xs: '1rem', sm: '0' },
+                  marginTop: { xs: '-3rem', sm: '0' },
                   zIndex: 1000
                 }}
               >
