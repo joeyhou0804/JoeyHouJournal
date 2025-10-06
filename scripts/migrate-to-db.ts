@@ -1,6 +1,10 @@
+import { config } from 'dotenv'
 import { sql } from '@vercel/postgres'
 import journeysData from '../src/data/journeys.json'
 import destinationsData from '../src/data/destinations.json'
+
+// Load environment variables from .env.local
+config({ path: '.env.local' })
 
 async function migrate() {
   console.log('Starting migration...')
@@ -119,6 +123,13 @@ async function migrate() {
     // Import destinations
     console.log(`Importing ${destinationsData.length} destinations...`)
     for (const dest of destinationsData) {
+      // Handle both coordinate formats: {coordinates: {lat, lng}} or {lat, lng}
+      const coordinates = (dest as any).coordinates
+        ? (dest as any).coordinates
+        : ((dest as any).lat !== undefined && (dest as any).lng !== undefined)
+          ? { lat: (dest as any).lat, lng: (dest as any).lng }
+          : { lat: 0, lng: 0 } // Default if no coordinates
+
       await sql`
         INSERT INTO destinations (
           id, name, name_cn, state, country, date, coordinates,
@@ -131,7 +142,7 @@ async function migrate() {
           ${dest.state || null},
           ${dest.country || null},
           ${dest.date},
-          ${JSON.stringify(dest.coordinates)},
+          ${JSON.stringify(coordinates)},
           ${(dest as any).journeyId || null},
           ${(dest as any).journeyName || null},
           ${(dest as any).journeyNameCN || null},

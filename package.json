@@ -16,6 +16,7 @@
     "@mui/material": "^7.3.2",
     "@vercel/postgres": "^0.10.0",
     "cloudinary": "^2.7.0",
+    "dotenv": "^17.2.3",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.263.1",
     "next": "14.1.3",
