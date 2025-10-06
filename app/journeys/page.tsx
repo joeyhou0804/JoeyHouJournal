@@ -210,7 +210,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Map View Hint */}
-          <div className="my-36">
+          <div className="my-36 xs:my-12">
             <MapViewHint
               cardNumber={1}
               station={{
@@ -224,7 +224,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Second Map View Hint - Image on right */}
-          <div className="my-36" style={{ marginBottom: '300px' }}>
+          <div className="my-36 xs:my-12" style={{ marginBottom: '300px' }}>
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}

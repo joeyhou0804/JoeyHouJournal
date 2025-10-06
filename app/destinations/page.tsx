@@ -136,7 +136,7 @@ export default function StationsPage() {
           </div>
 
           {/* Map View Hint */}
-          <div className="my-36">
+          <div className="my-36 xs:my-12">
             <MapViewHint
               cardNumber={1}
               station={{
@@ -150,7 +150,7 @@ export default function StationsPage() {
           </div>
 
           {/* Second Map View Hint - Image on right */}
-          <div className="my-36">
+          <div className="my-36 xs:my-12">
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}
