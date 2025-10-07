@@ -342,7 +342,7 @@ export default function Home() {
           <Container className="relative mb-12">
             <Container
               className="absolute right-0"
-              sx={{ transform: 'translate(-44rem, 2rem)', zIndex: 5 }}
+              sx={{ transform: { xs: 'translate(-25rem, 2rem)', md: 'translate(-44rem, 2rem)' }, zIndex: 5 }}
             >
               {journeyImages.map((image, index) => (
                 <Box
@@ -350,7 +350,7 @@ export default function Home() {
                   component="img"
                   src={image}
                   alt={`Featured Journey ${index + 1}`}
-                  className={`h-auto max-w-5xl absolute top-0 left-0 transition-opacity duration-1000 ${
+                  className={`h-auto max-w-xl md:max-w-5xl absolute top-0 left-0 transition-opacity duration-1000 ${
                     index === currentIndex ? 'opacity-100' : 'opacity-0'
                   }`}
                 />

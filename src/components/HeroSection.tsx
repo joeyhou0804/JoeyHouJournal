@@ -154,10 +154,10 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
                 alt="Carousel Text"
                 className="hidden md:block w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
               />
-              {/* Mobile version - only zh has xs version */}
+              {/* Mobile version - xs version available for both locales */}
               <Box
                 component="img"
-                src={locale === 'zh' ? '/images/homepage/homepage_carousel_text_xs_zh.png' : `/images/homepage/homepage_carousel_text_${locale}.png`}
+                src={`/images/homepage/homepage_carousel_text_xs_${locale}.png`}
                 alt="Carousel Text"
                 className="block md:hidden w-full h-auto"
               />
