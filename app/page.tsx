@@ -396,8 +396,133 @@ export default function Home() {
           </Container>
 
           {/* Journey Carousel */}
+          {/* Train image - XS only, positioned between journey images and carousel */}
+          <Container className="block md:hidden w-full relative mt-32 -mb-16" sx={{ zIndex: 5 }}>
+            <Box
+              component="img"
+              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_3"
+              alt="Train Journey"
+              className="w-full h-auto object-cover"
+            />
+          </Container>
+
+          {/* XS Layout - JourneyCard Style */}
+          <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw] mt-8" sx={{ minHeight: '500px', zIndex: 10, padding: 0 }}>
+            <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column', overflow: 'visible' }}>
+              {/* Card Background */}
+              <Box>
+                <Box
+                  component="img"
+                  src={currentSlide % 2 === 0 ? '/images/destinations/destination_card_xs_odd.webp' : '/images/destinations/destination_card_xs_even.webp'}
+                  alt="Card"
+                  sx={{ width: '100vw', height: 'auto', display: 'block' }}
+                />
+              </Box>
+
+              {/* Journey Image - Rounded Square */}
+              <Box
+                sx={{
+                  position: 'relative',
+                  width: 'calc(100% - 1rem)',
+                  aspectRatio: '1',
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  zIndex: 1,
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                  marginTop: '-3rem',
+                  marginLeft: '0.5rem',
+                  marginRight: '0.5rem'
+                }}
+              >
+                <Box
+                  component="img"
+                  src={featuredTrips[currentSlide]?.image || ''}
+                  alt={featuredTrips[currentSlide]?.name}
+                  sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </Box>
+
+              {/* Title Section */}
+              <Box sx={{ position: 'absolute', top: '0%', left: '50%', transform: 'translate(-50%, -50%)', width: '90%', overflow: 'visible', zIndex: 15 }}>
+                <Box
+                  component="img"
+                  src="/images/destinations/destination_location_title.webp"
+                  alt="Location"
+                  sx={{ width: '100%', height: 'auto', display: 'block' }}
+                />
+                <MixedText
+                  text={locale === 'zh' && featuredTrips[currentSlide].nameCN ? featuredTrips[currentSlide].nameCN : featuredTrips[currentSlide].name}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize="28px"
+                  color="#373737"
+                  component="h3"
+                  sx={{
+                    margin: 0,
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    whiteSpace: 'nowrap',
+                    textAlign: 'center',
+                    width: '100%'
+                  }}
+                />
+              </Box>
+
+              {/* Route and Duration */}
+              <Box sx={{ position: 'absolute', top: '15%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', textAlign: 'center', zIndex: 15 }}>
+                <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0, lineHeight: '1.4' }}>
+                  {featuredTrips[currentSlide].route}
+                </Box>
+                <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', color: '#F6F6F6', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
+                  {featuredTrips[currentSlide].duration}
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Navigation Arrows */}
+            <Box
+              component="button"
+              onClick={prevSlide}
+              disabled={currentSlide === 0}
+              className={`group absolute left-8 top-1/2 -translate-y-1/2 p-6 transition-transform duration-200 ${currentSlide === 0 ? 'opacity-40' : 'hover:scale-110'}`}
+              sx={{ zIndex: 30 }}
+            >
+              <Box component="img" src="/images/buttons/arrow_prev.webp" alt="Previous" className={`w-12 h-12 ${currentSlide === 0 ? '' : 'group-hover:hidden'}`} />
+              <Box component="img" src="/images/buttons/arrow_prev_hover.webp" alt="Previous" className={`w-12 h-12 ${currentSlide === 0 ? 'hidden' : 'hidden group-hover:block'}`} />
+            </Box>
+            <Box
+              component="button"
+              onClick={nextSlide}
+              disabled={currentSlide === featuredTrips.length - 1}
+              className={`group absolute right-8 top-1/2 -translate-y-1/2 p-6 transition-transform duration-200 ${currentSlide === featuredTrips.length - 1 ? 'opacity-40' : 'hover:scale-110'}`}
+              sx={{ zIndex: 30 }}
+            >
+              <Box component="img" src="/images/buttons/arrow_next.webp" alt="Next" className={`w-12 h-12 ${currentSlide === featuredTrips.length - 1 ? '' : 'group-hover:hidden'}`} />
+              <Box component="img" src="/images/buttons/arrow_next_hover.webp" alt="Next" className={`w-12 h-12 ${currentSlide === featuredTrips.length - 1 ? 'hidden' : 'hidden group-hover:block'}`} />
+            </Box>
+
+            {/* Slide Indicators */}
+            <Container className="absolute bottom-8 left-1/2 -translate-x-1/2" sx={{ zIndex: 25 }}>
+              <Container className="flex justify-center space-x-2">
+                {featuredTrips.map((_, index) => (
+                  <Box
+                    key={index}
+                    component="button"
+                    onClick={() => setCurrentSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                      index === currentSlide ? 'bg-white' : 'bg-white/50'
+                    }`}
+                  />
+                ))}
+              </Container>
+            </Container>
+          </Container>
+
+          {/* MD+ Layout - Original Carousel */}
           <Container
-            className="relative w-screen left-1/2 -ml-[50vw] mt-96"
+            className="hidden md:block relative w-screen left-1/2 -ml-[50vw] mt-96"
             sx={{ aspectRatio: '1920/800' }}
           >
             {/* Background with mask */}
@@ -418,8 +543,8 @@ export default function Home() {
               }}
             />
 
-            {/* Train image overlay - top left, above mask */}
-            <Container className="absolute -top-80 left-0" sx={{ zIndex: 35 }}>
+            {/* Train image overlay - top left, above mask (only md+) */}
+            <Container className="hidden md:block absolute -top-80 left-0" sx={{ zIndex: 35 }}>
               <Box
                 component="img"
                 src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_3"
