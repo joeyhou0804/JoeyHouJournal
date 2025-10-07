@@ -119,9 +119,9 @@ function CarouselRow({
           className={`flex-shrink-0 carousel-image-container ${imageClassName}`}
           style={{
             marginLeft: i === 0 ? '0' : '-50px',
-            width: '450px',
+            width: '400px',
             height: 'auto',
-            minWidth: '450px'
+            minWidth: '400px'
           }}
         >
           <img
@@ -148,9 +148,9 @@ function CarouselRow({
           to   { transform: translateX(0); }
         }
         .carousel-image-container {
-          width: 450px !important;
+          width: 400px !important;
           height: auto !important;
-          min-width: 450px !important;
+          min-width: 400px !important;
         }
         @media (min-width: 640px) {
           .carousel-image-container {

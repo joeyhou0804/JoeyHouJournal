@@ -278,6 +278,11 @@ export default function Home() {
           50% { transform: translate(24.5rem, -14.3rem); }
           100% { transform: translate(24rem, -14.2rem); }
         }
+        @keyframes moveJourneysArrowXs {
+          0% { transform: translate(14rem, -10.4rem); }
+          50% { transform: translate(14.5rem, -10.5rem); }
+          100% { transform: translate(14rem, -10.4rem); }
+        }
         .animate-slide-in {
           animation: slide-in 0.3s ease-in-out forwards;
         }
@@ -289,9 +294,9 @@ export default function Home() {
       <Container className="relative overflow-visible">
       {/* Decorative transition (foot mask; background not flipped) */}
       <Container className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full" sx={{ transform: 'translateY(calc(99.5%))' }}>
-        {/* Homepage Image 2 - Right edge, overlapping section above */}
+        {/* Homepage Image 2 - Right edge, overlapping section above (hidden on xs) */}
         <Container
-          className="absolute top-0 right-0"
+          className="hidden md:block absolute top-0 right-0"
           sx={{ transform: 'translate(0, -700px)', zIndex: 30 }}
         >
           <Box
@@ -355,38 +360,37 @@ export default function Home() {
               component="img"
               src={`/images/journey/journeys_title_${locale}.png`}
               alt="Featured Journeys"
-              className="h-auto max-w-4xl relative"
-              sx={{ transform: locale === 'zh' ? 'translate(-5rem, -6rem)' : 'translate(-5rem, -4rem)', zIndex: 20 }}
+              className="h-auto w-full md:max-w-4xl md:w-auto relative"
+              sx={{ transform: { xs: 'translate(0, -8rem)', md: locale === 'zh' ? 'translate(-5rem, -6rem)' : 'translate(-5rem, -4rem)' }, zIndex: 20 }}
             />
             <Box
               component="img"
               src={`/images/journey/journeys_subtitle_${locale}.png`}
               alt="Explore my most memorable train adventures"
-              className="h-auto max-w-4xl relative"
-              sx={{ transform: 'translate(2rem, -16rem)', zIndex: 20 }}
+              className="h-auto w-full md:max-w-4xl md:w-auto relative"
+              sx={{ transform: { xs: 'translate(0, -12rem)', md: 'translate(2rem, -16rem)' }, zIndex: 20 }}
             />
             <Box
               component={Link}
               href="/journeys"
               className="absolute"
-              sx={{ transform: 'translate(2rem, -17rem)', zIndex: 20 }}
+              sx={{ transform: { xs: 'translate(0, -12rem)', md: 'translate(2rem, -17rem)' }, zIndex: 20 }}
             >
               <Box
                 component="img"
                 src={`/images/buttons/button_explore_${locale}.png`}
                 alt="Explore Journeys"
-                className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
+                className="h-auto w-72 md:w-[28rem] hover:scale-105 transition-transform duration-200"
               />
             </Box>
             <Box
               component="img"
               src="/images/buttons/button_explore_arrow.webp"
               alt="Arrow"
-              className="absolute h-auto w-8"
+              className="absolute h-auto w-6 md:w-8"
               sx={{
-                transform: 'translate(24rem, -14.2rem)',
                 zIndex: 20,
-                animation: 'moveJourneysArrow 0.5s ease-in-out infinite'
+                animation: { xs: 'moveJourneysArrowXs 0.5s ease-in-out infinite', md: 'moveJourneysArrow 0.5s ease-in-out infinite' }
               }}
             />
           </Container>

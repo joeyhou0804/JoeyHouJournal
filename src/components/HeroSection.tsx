@@ -95,7 +95,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
       <Section
         component="section"
         innerRef={section1Ref}
-        className="relative pt-64"
+        className="relative pt-64 overflow-visible"
         sx={{
           paddingBottom: '8rem',
           backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
@@ -162,6 +162,16 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
                 className="block md:hidden w-full h-auto"
               />
             </Container>
+          </Container>
+
+          {/* Homepage Image 2 - Only visible on xs screens, positioned below carousel text */}
+          <Container className="block md:hidden relative mt-8 -mb-32">
+            <Box
+              component="img"
+              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_2"
+              alt="Homepage Image 2"
+              className="w-full h-auto"
+            />
           </Container>
         </Container>
       </Section>
