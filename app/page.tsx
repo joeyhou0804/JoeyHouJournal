@@ -283,6 +283,11 @@ export default function Home() {
           50% { transform: translate(14.5rem, -10.5rem); }
           100% { transform: translate(14rem, -10.4rem); }
         }
+        @keyframes moveDestinationsArrowXs {
+          0% { transform: translate(14rem, 5.6rem); }
+          50% { transform: translate(14.5rem, 5.5rem); }
+          100% { transform: translate(14rem, 5.6rem); }
+        }
         .animate-slide-in {
           animation: slide-in 0.3s ease-in-out forwards;
         }
@@ -796,13 +801,13 @@ export default function Home() {
         {/* Homepage Image 4 - Top right corner, overlapping decorative section */}
         <Container
           className="absolute top-0 right-0"
-          sx={{ transform: 'translate(0, -18rem)', zIndex: 30 }}
+          sx={{ transform: { xs: 'translate(0, -12rem)', md: 'translate(0, -18rem)' }, zIndex: 20 }}
         >
           <Box
             component="img"
             src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_4"
             alt="Homepage Image 4"
-            className="w-80 h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
+            className="w-full h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
           />
         </Container>
 
@@ -812,31 +817,30 @@ export default function Home() {
               component="img"
               src={`/images/homepage/destinations_title_${locale}.png`}
               alt="Recent Destinations"
-              className="h-auto max-w-4xl relative"
-              sx={{ transform: 'translate(-5rem, -4rem)', zIndex: 20 }}
+              className="h-auto w-full md:max-w-4xl md:w-auto relative"
+              sx={{ transform: { xs: 'translate(0, 4rem)', md: 'translate(-5rem, -4rem)' }, zIndex: 30 }}
             />
             <Box
               component={Link}
               href="/destinations"
               className="absolute"
-              sx={{ transform: 'translate(2rem, -8rem)', zIndex: 20 }}
+              sx={{ transform: { xs: 'translate(0, 4rem)', md: 'translate(2rem, -8rem)' }, zIndex: 30 }}
             >
               <Box
                 component="img"
                 src={`/images/buttons/button_explore_${locale}.png`}
                 alt="Explore Places"
-                className="h-auto w-[28rem] hover:scale-105 transition-transform duration-200"
+                className="h-auto w-72 md:w-[28rem] hover:scale-105 transition-transform duration-200"
               />
             </Box>
             <Box
               component="img"
               src="/images/buttons/button_explore_arrow.webp"
               alt="Arrow"
-              className="absolute h-auto w-8"
+              className="absolute h-auto w-6 md:w-8"
               sx={{
-                transform: 'translate(26rem, -5rem)',
-                zIndex: 20,
-                animation: 'moveArrow 0.5s ease-in-out infinite'
+                zIndex: 30,
+                animation: { xs: 'moveDestinationsArrowXs 0.5s ease-in-out infinite', md: 'moveArrow 0.5s ease-in-out infinite' }
               }}
             />
             {/* Desktop version */}
