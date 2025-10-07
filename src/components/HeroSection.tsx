@@ -41,7 +41,16 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             loop
             muted
             playsInline
+            preload="auto"
             className="absolute top-0 left-0 w-full h-full object-cover"
+            sx={{
+              '&::-webkit-media-controls': {
+                display: 'none !important'
+              },
+              '&::-webkit-media-controls-enclosure': {
+                display: 'none !important'
+              }
+            }}
           >
             <source src="https://res.cloudinary.com/joey-hou-homepage/video/upload/v1759208440/homepage_title_video_pyiksq.mp4" type="video/mp4" />
           </Box>
