@@ -586,6 +586,44 @@ export default function DestinationFormPage() {
               }}
             />
           </Box>
+
+          {/* Detect Coordinates Button */}
+          <Box sx={{ gridColumn: '1 / -1', display: 'flex', gap: 2, alignItems: 'center' }}>
+            <Button
+              variant="outlined"
+              onClick={() => {
+                const name = watch('name')
+                if (name) {
+                  geocodeAddress(name)
+                } else {
+                  setGeocodingError('Please enter a destination name first')
+                }
+              }}
+              sx={{
+                fontFamily: 'MarioFont, sans-serif',
+                textTransform: 'none',
+                borderColor: '#373737',
+                color: '#373737',
+                '&:hover': {
+                  borderColor: '#373737',
+                  backgroundColor: 'rgba(55, 55, 55, 0.04)'
+                }
+              }}
+            >
+              Detect Coordinates
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => setCoordinatesEditable(!coordinatesEditable)}
+              sx={{
+                fontFamily: 'MarioFont, sans-serif',
+                textTransform: 'none',
+                color: '#373737'
+              }}
+            >
+              {coordinatesEditable ? 'Lock Coordinates' : 'Edit Manually'}
+            </Button>
+          </Box>
         </Box>
 
         {/* Description (English) */}

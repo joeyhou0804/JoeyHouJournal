@@ -19,6 +19,8 @@ interface ImportRequest {
   destinationState: string
   destinationCountry: string
   destinationDate: string
+  lat: number
+  lng: number
   description: string
   descriptionCn: string
   mediaUrls: string[] // Instagram media URLs to import
@@ -42,6 +44,8 @@ export async function POST(request: NextRequest) {
       destinationState,
       destinationCountry,
       destinationDate,
+      lat,
+      lng,
       description,
       descriptionCn,
       mediaUrls,
@@ -90,7 +94,7 @@ export async function POST(request: NextRequest) {
       state: destinationState || null,
       country: destinationCountry || null,
       date: formattedDate,
-      coordinates: { lat: 0, lng: 0 }, // Placeholder - can be updated later
+      coordinates: { lat: lat || 0, lng: lng || 0 },
       journey_id: null,
       journey_name: null,
       journey_name_cn: null,

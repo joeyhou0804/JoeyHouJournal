@@ -80,6 +80,9 @@ export default function InstagramImportPage() {
   const [destinationCountry, setDestinationCountry] = useState('USA')
   const [destinationDate, setDestinationDate] = useState('')
   const [isEditingCountry, setIsEditingCountry] = useState(false)
+  const [lat, setLat] = useState<number>(0)
+  const [lng, setLng] = useState<number>(0)
+  const [isDetectingCoords, setIsDetectingCoords] = useState(false)
 
   const destinations: Destination[] = destinationsData as Destination[]
 
@@ -186,6 +189,8 @@ export default function InstagramImportPage() {
           destinationState,
           destinationCountry,
           destinationDate,
+          lat,
+          lng,
           description: english,
           descriptionCn: chinese,
           mediaUrls,
@@ -212,6 +217,8 @@ export default function InstagramImportPage() {
       setDestinationState('')
       setDestinationCountry('USA')
       setDestinationDate('')
+      setLat(0)
+      setLng(0)
       setIsEditingCountry(false)
 
       // Remove imported post from list
@@ -287,6 +294,27 @@ export default function InstagramImportPage() {
     'DC': 'District of Columbia'
   }
 
+  // Geocode address to get coordinates
+  const geocodeAddress = async (address: string) => {
+    setIsDetectingCoords(true)
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+      )
+      const data = await response.json()
+
+      if (data.status === 'OK' && data.results.length > 0) {
+        const location = data.results[0].geometry.location
+        setLat(location.lat)
+        setLng(location.lng)
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error)
+    } finally {
+      setIsDetectingCoords(false)
+    }
+  }
+
   // Parse destination name to extract state abbreviation and convert to full name
   const handleDestinationNameChange = (name: string) => {
     setDestinationName(name)
@@ -298,6 +326,11 @@ export default function InstagramImportPage() {
       setDestinationState(stateMap[abbr] || abbr)
     } else {
       setDestinationState('')
+    }
+
+    // Auto-detect coordinates
+    if (name) {
+      geocodeAddress(name)
     }
   }
 
@@ -691,6 +724,31 @@ export default function InstagramImportPage() {
                 </FormControl>
               </Box>
 
+              {/* Coordinates Display */}
+              <Box sx={{ mb: 2, p: 2, backgroundColor: '#f9f9f9', borderRadius: '4px', border: '1px solid #ddd' }}>
+                <Typography variant="body2" sx={{ mb: 1, fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', color: '#666' }}>
+                  Coordinates {isDetectingCoords && '(Detecting...)'}
+                </Typography>
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#999' }}>
+                      Latitude
+                    </Typography>
+                    <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
+                      {lat ? lat.toFixed(6) : '—'}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="caption" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#999' }}>
+                      Longitude
+                    </Typography>
+                    <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
+                      {lng ? lng.toFixed(6) : '—'}
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
+
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <Typography variant="body2" sx={{ mb: 0.5, fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
                   Date *
@@ -718,6 +776,8 @@ export default function InstagramImportPage() {
                   setDestinationState('')
                   setDestinationCountry('USA')
                   setDestinationDate('')
+                  setLat(0)
+                  setLng(0)
                   setIsEditingCountry(false)
                 }}
                 startIcon={<CancelIcon />}
