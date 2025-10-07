@@ -410,10 +410,10 @@ export default function Home() {
           <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw] mt-8" sx={{ minHeight: '500px', zIndex: 10, padding: 0 }}>
             <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column', overflow: 'visible' }}>
               {/* Card Background */}
-              <Box>
+              <Box sx={{ position: 'relative', zIndex: 5 }}>
                 <Box
                   component="img"
-                  src={currentSlide % 2 === 0 ? '/images/destinations/destination_card_xs_odd.webp' : '/images/destinations/destination_card_xs_even.webp'}
+                  src="/images/destinations/destination_card_xs_odd.webp"
                   alt="Card"
                   sx={{ width: '100vw', height: 'auto', display: 'block' }}
                 />
@@ -479,6 +479,18 @@ export default function Home() {
                   {featuredTrips[currentSlide].duration}
                 </Box>
               </Box>
+
+              {/* View Details Button */}
+              <Link href={`/journeys/${featuredTrips[currentSlide].slug}`}>
+                <Box sx={{ position: 'absolute', top: '25%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 15 }}>
+                  <Box
+                    component="img"
+                    src={`/images/buttons/view_details_button_${locale}.png`}
+                    alt="View Details"
+                    className="w-56 h-auto hover:scale-105 transition-transform duration-200"
+                  />
+                </Box>
+              </Link>
             </Box>
 
             {/* Navigation Arrows */}
@@ -486,21 +498,29 @@ export default function Home() {
               component="button"
               onClick={prevSlide}
               disabled={currentSlide === 0}
-              className={`group absolute left-8 top-1/2 -translate-y-1/2 p-6 transition-transform duration-200 ${currentSlide === 0 ? 'opacity-40' : 'hover:scale-110'}`}
-              sx={{ zIndex: 30 }}
+              className={`absolute left-2 ${currentSlide === 0 ? 'opacity-40' : ''}`}
+              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)', width: '48px', height: '48px' }}
             >
-              <Box component="img" src="/images/buttons/arrow_prev.webp" alt="Previous" className={`w-12 h-12 ${currentSlide === 0 ? '' : 'group-hover:hidden'}`} />
-              <Box component="img" src="/images/buttons/arrow_prev_hover.webp" alt="Previous" className={`w-12 h-12 ${currentSlide === 0 ? 'hidden' : 'hidden group-hover:block'}`} />
+              <Box
+                component="img"
+                src="/images/buttons/arrow_prev.webp"
+                alt="Previous"
+                sx={{ width: '48px', height: '48px', display: 'block' }}
+              />
             </Box>
             <Box
               component="button"
               onClick={nextSlide}
               disabled={currentSlide === featuredTrips.length - 1}
-              className={`group absolute right-8 top-1/2 -translate-y-1/2 p-6 transition-transform duration-200 ${currentSlide === featuredTrips.length - 1 ? 'opacity-40' : 'hover:scale-110'}`}
-              sx={{ zIndex: 30 }}
+              className={`absolute right-2 ${currentSlide === featuredTrips.length - 1 ? 'opacity-40' : ''}`}
+              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)', width: '48px', height: '48px' }}
             >
-              <Box component="img" src="/images/buttons/arrow_next.webp" alt="Next" className={`w-12 h-12 ${currentSlide === featuredTrips.length - 1 ? '' : 'group-hover:hidden'}`} />
-              <Box component="img" src="/images/buttons/arrow_next_hover.webp" alt="Next" className={`w-12 h-12 ${currentSlide === featuredTrips.length - 1 ? 'hidden' : 'hidden group-hover:block'}`} />
+              <Box
+                component="img"
+                src="/images/buttons/arrow_next.webp"
+                alt="Next"
+                sx={{ width: '48px', height: '48px', display: 'block' }}
+              />
             </Box>
 
             {/* Slide Indicators */}
