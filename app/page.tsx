@@ -247,7 +247,7 @@ export default function Home() {
         backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
         backgroundRepeat: 'repeat',
         backgroundSize: '200px auto',
-        animation: 'moveRight 60s linear infinite'
+        animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
       }}
     >
       <NavigationMenu
@@ -856,7 +856,7 @@ export default function Home() {
               component="img"
               src={locale === 'en' ? '/images/homepage/homepage_destination_text_xs_en.png' : `/images/homepage/homepage_destination_text_${locale}.png`}
               alt="Discover the places that shaped my rail journey across America"
-              className="block md:hidden h-auto w-full relative px-4"
+              className="block md:hidden h-auto w-full relative"
               sx={{ transform: 'translate(0, 12rem)', zIndex: 20 }}
             />
           </Container>
