@@ -852,10 +852,10 @@ export default function Home() {
               className="hidden md:block h-auto max-w-4xl relative"
               sx={{ transform: 'translate(2rem, 2rem)', zIndex: 20 }}
             />
-            {/* Mobile version - only en has xs version */}
+            {/* Mobile version - xs version for both locales */}
             <Box
               component="img"
-              src={locale === 'en' ? '/images/homepage/homepage_destination_text_xs_en.png' : `/images/homepage/homepage_destination_text_${locale}.png`}
+              src={`/images/homepage/homepage_destination_text_xs_${locale}.png`}
               alt="Discover the places that shaped my rail journey across America"
               className="block md:hidden h-auto w-full relative"
               sx={{ transform: 'translate(0, 12rem)', zIndex: 20 }}
