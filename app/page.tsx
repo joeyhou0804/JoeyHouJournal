@@ -790,8 +790,8 @@ export default function Home() {
         component="section"
         innerRef={recentRef}
         className="py-16 px-4 relative"
-        sx={{ marginTop: { xs: '-8rem', md: '-2rem' } }}
         sx={{
+          marginTop: { xs: '-8rem', md: '-2rem' },
           backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
           backgroundRepeat: 'repeat-y',
           backgroundSize: '100% auto',
