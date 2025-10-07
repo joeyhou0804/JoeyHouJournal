@@ -3083,5 +3083,61 @@
     "journeyId": "ethan-allen-express-2020-08",
     "journeyName": "Ethan Allen Express",
     "journeyNameCN": "Ethan Allen Express"
+  },
+  {
+    "id": "new-york-ny",
+    "name": "New York, NY",
+    "name_cn": "纽约州·纽约市",
+    "state": "New York",
+    "country": "USA",
+    "date": "2025-09-21",
+    "coordinates": {
+      "lat": 0,
+      "lng": 0
+    },
+    "journeyId": null,
+    "journeyName": null,
+    "journeyName_cn": null,
+    "images": [
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870874/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_0.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870876/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_1.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870877/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_2.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870879/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_3.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870881/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_4.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870882/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_5.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870884/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_6.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870885/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_7.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870887/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_8.jpg"
+    ],
+    "description": "Some part of New York (and New Jersey) that I’ve not seen\nFinally I’ve becomes a tourist here\nAlthough I saw a lot of scenery that not discovered 3 years ago\nBut it also seems that I’m farther and farther away from being a student *sigh*",
+    "description_cn": "一些没看过的纽约🗽（和新泽西\n终于还是变成这里的游客了🙈\n虽然看到了很多三年前没发现的景色\n但也觉得自己离学生越来越远了啊啊啊"
+  },
+  {
+    "id": "new-york-ny",
+    "name": "New York, NY",
+    "name_cn": "纽约州·纽约市",
+    "state": "New York",
+    "country": "USA",
+    "date": "2025-09-21",
+    "coordinates": {
+      "lat": 0,
+      "lng": 0
+    },
+    "journeyId": null,
+    "journeyName": null,
+    "journeyName_cn": null,
+    "images": [
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870874/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_0.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870876/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_1.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870877/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_2.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870879/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_3.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870881/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_4.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870882/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_5.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870884/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_6.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870885/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_7.jpg",
+      "https://res.cloudinary.com/joey-hou-homepage/image/upload/v1759870887/joeyhoujournal/destinations/new-york-ny/instagram_17855976927530995_8.jpg"
+    ],
+    "description": "Some part of New York (and New Jersey) that I’ve not seen\nFinally I’ve becomes a tourist here\nAlthough I saw a lot of scenery that not discovered 3 years ago\nBut it also seems that I’m farther and farther away from being a student *sigh*",
+    "description_cn": "一些没看过的纽约🗽（和新泽西\n终于还是变成这里的游客了🙈\n虽然看到了很多三年前没发现的景色\n但也觉得自己离学生越来越远了啊啊啊"
   }
 ]

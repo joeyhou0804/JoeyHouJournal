@@ -239,3 +239,61 @@ export async function deleteDestination(id: string): Promise<boolean> {
   await sql`DELETE FROM destinations WHERE id = ${id}`
   return true
 }
+
+// Instagram token operations
+export interface InstagramToken {
+  id: number
+  access_token: string
+  user_id: string
+  created_at: Date
+  updated_at: Date
+}
+
+export async function initInstagramTokensTable() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS instagram_tokens (
+      id SERIAL PRIMARY KEY,
+      access_token TEXT NOT NULL,
+      user_id TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW(),
+      updated_at TIMESTAMP DEFAULT NOW()
+    )
+  `
+}
+
+export async function upsertInstagramToken(accessToken: string, userId: string) {
+  try {
+    console.log('DB: Upserting Instagram token for userId:', userId)
+
+    // Delete existing token (we only store one)
+    const deleteResult = await sql`DELETE FROM instagram_tokens`
+    console.log('DB: Deleted existing tokens:', deleteResult.rowCount)
+
+    // Insert new token
+    const insertResult = await sql`
+      INSERT INTO instagram_tokens (access_token, user_id, created_at, updated_at)
+      VALUES (${accessToken}, ${userId}, NOW(), NOW())
+      RETURNING *
+    `
+    console.log('DB: Inserted new token:', insertResult.rows[0] ? { id: insertResult.rows[0].id, user_id: insertResult.rows[0].user_id } : 'none')
+
+    return insertResult.rows[0]
+  } catch (error) {
+    console.error('DB: Error upserting Instagram token:', error)
+    throw error
+  }
+}
+
+export async function getInstagramToken(): Promise<InstagramToken | null> {
+  const result = await sql<InstagramToken>`
+    SELECT * FROM instagram_tokens
+    ORDER BY created_at DESC
+    LIMIT 1
+  `
+
+  return result.rows[0] || null
+}
+
+export async function deleteInstagramToken() {
+  await sql`DELETE FROM instagram_tokens`
+}

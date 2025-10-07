@@ -18,7 +18,8 @@ import {
   LocationOn as LocationIcon,
   Train as TrainIcon,
   AccountCircle,
-  Menu as MenuIcon
+  Menu as MenuIcon,
+  Instagram as InstagramIcon
 } from '@mui/icons-material'
 import Link from 'next/link'
 
@@ -99,7 +100,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const navItems = [
     { label: 'Dashboard', path: '/admin/dashboard', icon: <DashboardIcon /> },
     { label: 'Destinations', path: '/admin/destinations', icon: <LocationIcon /> },
-    { label: 'Journeys', path: '/admin/journeys', icon: <TrainIcon /> }
+    { label: 'Journeys', path: '/admin/journeys', icon: <TrainIcon /> },
+    { label: 'Instagram Import', path: '/admin/instagram-import', icon: <InstagramIcon /> }
   ]
 
   return (
