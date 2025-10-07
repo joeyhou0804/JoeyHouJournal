@@ -16,6 +16,8 @@ function dbToApi(destination: any) {
     state: destination.state,
     country: destination.country,
     date: destination.date,
+    lat: destination.coordinates?.lat || 0,
+    lng: destination.coordinates?.lng || 0,
     coordinates: destination.coordinates,
     journeyId: destination.journey_id,
     journeyName: destination.journey_name,
@@ -28,6 +30,15 @@ function dbToApi(destination: any) {
 
 // Helper to convert API format to DB format
 function apiToDb(destination: any) {
+  // Handle coordinates - accept either {lat, lng} fields or coordinates object
+  let coordinates = destination.coordinates
+  if (!coordinates && (destination.lat !== undefined || destination.lng !== undefined)) {
+    coordinates = {
+      lat: destination.lat || 0,
+      lng: destination.lng || 0
+    }
+  }
+
   return {
     id: destination.id,
     name: destination.name,
@@ -35,7 +46,7 @@ function apiToDb(destination: any) {
     state: destination.state || null,
     country: destination.country || null,
     date: destination.date,
-    coordinates: destination.coordinates,
+    coordinates: coordinates,
     journey_id: destination.journeyId || null,
     journey_name: destination.journeyName || null,
     journey_name_cn: destination.journeyNameCN || null,
