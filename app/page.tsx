@@ -81,7 +81,7 @@ export default function Home() {
   }, [locale, tr])
 
   // Tweak this if you want a tiny nudge (e.g., to account for mask feathering)
-  const ADJUST_PX_FOOT = 104
+  const ADJUST_PX_FOOT = 200
   const ADJUST_PX_HEAD = -32
   const ADJUST_PX_HOMEPAGE_HEAD = 0
 
@@ -285,8 +285,10 @@ export default function Home() {
 
       <HeroSection homepageHeadDecoRef={homepageHeadDecoRef} section1Ref={section1Ref} />
 
+      {/* Section 1 Footer Container */}
+      <Container className="relative overflow-visible">
       {/* Decorative transition (foot mask; background not flipped) */}
-      <Container className="relative z-20 h-[200px] -mt-8">
+      <Container className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full" sx={{ transform: 'translateY(calc(99.5%))' }}>
         {/* Homepage Image 2 - Right edge, overlapping section above */}
         <Container
           className="absolute top-0 right-0"
@@ -308,8 +310,8 @@ export default function Home() {
             maskRepeat: 'no-repeat',
             WebkitMaskSize: '100% auto',
             maskSize: '100% auto',
-            WebkitMaskPosition: 'center bottom',
-            maskPosition: 'center bottom',
+            WebkitMaskPosition: 'center top',
+            maskPosition: 'center top',
             overflow: 'hidden'
           }}
         >
@@ -326,6 +328,7 @@ export default function Home() {
             }}
           />
         </Container>
+      </Container>
       </Container>
 
       {/* Featured Trips */}
@@ -594,8 +597,10 @@ export default function Home() {
         </Container>
       </Section>
 
+      {/* Featured Trips Footer Container */}
+      <Container className="relative overflow-visible">
       {/* Decorative transition (head mask; background not flipped) */}
-      <Container className="relative z-20 h-[200px] -mt-8">
+      <Container className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full" sx={{ transform: 'translateY(calc(0.1%))' }}>
         <Container
           className="absolute inset-0"
           sx={{
@@ -605,8 +610,8 @@ export default function Home() {
             maskRepeat: 'no-repeat',
             WebkitMaskSize: '100% auto',
             maskSize: '100% auto',
-            WebkitMaskPosition: 'center top',
-            maskPosition: 'center top',
+            WebkitMaskPosition: 'center bottom',
+            maskPosition: 'center bottom',
             overflow: 'hidden'
           }}
         >
@@ -623,6 +628,7 @@ export default function Home() {
             }}
           />
         </Container>
+      </Container>
       </Container>
 
       {/* Recent Places */}
