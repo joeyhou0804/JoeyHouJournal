@@ -82,7 +82,7 @@ export default function Home() {
 
   // Tweak this if you want a tiny nudge (e.g., to account for mask feathering)
   const ADJUST_PX_FOOT = 200
-  const ADJUST_PX_HEAD = -32
+  const ADJUST_PX_HEAD = 0
   const ADJUST_PX_HOMEPAGE_HEAD = 0
 
   // Carry over tile alignment from the homepage head mask to Section 1
@@ -754,7 +754,7 @@ export default function Home() {
       {/* Featured Trips Footer Container */}
       <Container className="relative overflow-visible mt-32">
       {/* Decorative transition (head mask; background not flipped) */}
-      <Container className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full" sx={{ transform: 'translateY(calc(0.1%))' }}>
+      <Container className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full" sx={{ transform: 'translateY(calc(0.5%))' }}>
         <Container
           className="absolute inset-0"
           sx={{
@@ -789,7 +789,8 @@ export default function Home() {
       <Section
         component="section"
         innerRef={recentRef}
-        className="py-16 px-4 -mt-8 relative"
+        className="py-16 px-4 relative"
+        sx={{ marginTop: { xs: '-8rem', md: '-2rem' } }}
         sx={{
           backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
           backgroundRepeat: 'repeat-y',
