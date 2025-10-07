@@ -27,39 +27,41 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
 
   return (
     <>
-      {/* Video Background Section */}
-      <Section
-        component="section"
-        className="relative w-full overflow-hidden h-screen md:h-[120vh]"
-      >
-        {/* Video Background */}
-        <Box
-          component="video"
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute top-0 left-0 w-full h-full object-cover"
+      {/* Video Section Container */}
+      <Container className="relative overflow-visible">
+        {/* Video Background Section */}
+        <Section
+          component="section"
+          className="relative w-full overflow-hidden h-[120vh]"
         >
-          <source src="https://res.cloudinary.com/joey-hou-homepage/video/upload/v1759208440/homepage_title_video_pyiksq.mp4" type="video/mp4" />
-        </Box>
-
-        {/* Logo - Full width with padding on xs, Top Left on md+ */}
-        <Container className="absolute top-8 left-0 right-0 px-4 md:top-4 md:left-4 md:right-auto md:px-0 z-10">
+          {/* Video Background */}
           <Box
-            component="img"
-            src={`/images/logos/logo_${locale}.png`}
-            alt="Logo"
-            className="w-full h-auto md:w-80 lg:w-96 xl:w-[28rem]"
-          />
-        </Container>
-      </Section>
+            component="video"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute top-0 left-0 w-full h-full object-cover"
+          >
+            <source src="https://res.cloudinary.com/joey-hou-homepage/video/upload/v1759208440/homepage_title_video_pyiksq.mp4" type="video/mp4" />
+          </Box>
 
-      {/* Decorative transition (homepage head mask) */}
-      <Container
-        className="relative z-20 h-[200px] -mb-16"
-        sx={{ marginTop: '-200px' }}
-      >
+          {/* Logo - Full width with padding on xs, Top Left on md+ */}
+          <Container className="absolute top-8 left-0 right-0 px-4 md:top-4 md:left-4 md:right-auto md:px-0 z-10">
+            <Box
+              component="img"
+              src={`/images/logos/logo_${locale}.png`}
+              alt="Logo"
+              className="w-full h-auto md:w-80 lg:w-96 xl:w-[28rem]"
+            />
+          </Container>
+        </Section>
+
+        {/* Decorative transition (homepage head mask) */}
+        <Container
+          className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full"
+          sx={{ transform: 'translateY(calc(0.1%))' }}
+        >
         <Container
           className="absolute inset-0"
           sx={{
@@ -69,8 +71,8 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             maskRepeat: 'no-repeat',
             WebkitMaskSize: '100% auto',
             maskSize: '100% auto',
-            WebkitMaskPosition: 'center top',
-            maskPosition: 'center top',
+            WebkitMaskPosition: 'center bottom',
+            maskPosition: 'center bottom',
             overflow: 'hidden'
           }}
         >
@@ -86,6 +88,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             }}
           />
         </Container>
+      </Container>
       </Container>
 
       {/* Section 1 */}

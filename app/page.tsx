@@ -83,7 +83,7 @@ export default function Home() {
   // Tweak this if you want a tiny nudge (e.g., to account for mask feathering)
   const ADJUST_PX_FOOT = 104
   const ADJUST_PX_HEAD = -32
-  const ADJUST_PX_HOMEPAGE_HEAD = -64
+  const ADJUST_PX_HOMEPAGE_HEAD = 0
 
   // Carry over tile alignment from the homepage head mask to Section 1
   useSeamlessCarryOver({
@@ -156,8 +156,8 @@ export default function Home() {
         return
       }
 
-      // Video height is 100vh on xs, so 50% is 50vh
-      const videoHalfHeight = window.innerHeight * 0.5
+      // Video height is 120vh, so 50% is 60vh
+      const videoHalfHeight = window.innerHeight * 0.6
       const scrolled = window.scrollY
 
       setIsMenuButtonVisible(scrolled >= videoHalfHeight)
