@@ -30,8 +30,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
       {/* Video Background Section */}
       <Section
         component="section"
-        className="relative w-full overflow-hidden"
-        sx={{ height: '120vh' }}
+        className="relative w-full overflow-hidden h-screen md:h-[120vh]"
       >
         {/* Video Background */}
         <Box

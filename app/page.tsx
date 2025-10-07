@@ -156,8 +156,8 @@ export default function Home() {
         return
       }
 
-      // Video height is 120vh, so 50% is 60vh
-      const videoHalfHeight = window.innerHeight * 0.6
+      // Video height is 100vh on xs, so 50% is 50vh
+      const videoHalfHeight = window.innerHeight * 0.5
       const scrolled = window.scrollY
 
       setIsMenuButtonVisible(scrolled >= videoHalfHeight)
