@@ -690,12 +690,21 @@ export default function Home() {
                 animation: 'moveArrow 0.5s ease-in-out infinite'
               }}
             />
+            {/* Desktop version */}
             <Box
               component="img"
               src={`/images/homepage/homepage_destination_text_${locale}.png`}
               alt="Discover the places that shaped my rail journey across America"
-              className="h-auto max-w-4xl relative"
+              className="hidden md:block h-auto max-w-4xl relative"
               sx={{ transform: 'translate(2rem, 2rem)', zIndex: 20 }}
+            />
+            {/* Mobile version - only en has xs version */}
+            <Box
+              component="img"
+              src={locale === 'en' ? '/images/homepage/homepage_destination_text_xs_en.png' : `/images/homepage/homepage_destination_text_${locale}.png`}
+              alt="Discover the places that shaped my rail journey across America"
+              className="block md:hidden h-auto w-full relative px-4"
+              sx={{ transform: 'translate(0, 2rem)', zIndex: 20 }}
             />
           </Container>
 

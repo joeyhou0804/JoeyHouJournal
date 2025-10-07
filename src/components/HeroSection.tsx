@@ -105,7 +105,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
         }}
       >
         {/* Image 1 + Slogan Row */}
-        <Container className="relative z-20 -mt-64">
+        <Container className="relative z-20 -mt-96 md:-mt-64">
           <Container className="grid grid-cols-12 items-center gap-8">
             {/* Image 1 — 60% */}
             <Container className="col-span-12 md:col-span-7 relative z-20">
@@ -118,13 +118,13 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             </Container>
 
             {/* Slogan — 40% (overlap) */}
-            <Container className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-16 md:-mt-20">
+            <Container className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-24 md:-mt-20">
               <Box
                 component="img"
                 src={`/images/homepage/homepage_slogan_${locale}.png`}
                 alt="Homepage Slogan"
                 className="w-full max-w-[40rem] h-auto drop-shadow-md"
-                sx={{ transform: 'translateX(-12rem)' }}
+                sx={{ transform: { xs: 'translateX(0)', md: 'translateX(-12rem)' } }}
               />
             </Container>
 
@@ -134,7 +134,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
         </Container>
 
         {/* Carousel - pulled upward, sits *under* image1 */}
-        <Container className="relative z-20 -mt-24 md:-mt-32 lg:-mt-40">
+        <Container className="relative z-10 -mt-24 md:-mt-32 lg:-mt-40">
           <InfiniteCarousel
             images={carouselImages}
             speedPxPerSec={60}
@@ -147,11 +147,19 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
           {/* Carousel Text - Left Side */}
           <Container className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Container className="flex justify-start">
+              {/* Desktop version */}
               <Box
                 component="img"
                 src={`/images/homepage/homepage_carousel_text_${locale}.png`}
                 alt="Carousel Text"
-                className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
+                className="hidden md:block w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
+              />
+              {/* Mobile version - only zh has xs version */}
+              <Box
+                component="img"
+                src={locale === 'zh' ? '/images/homepage/homepage_carousel_text_xs_zh.png' : `/images/homepage/homepage_carousel_text_${locale}.png`}
+                alt="Carousel Text"
+                className="block md:hidden w-full h-auto"
               />
             </Container>
           </Container>
