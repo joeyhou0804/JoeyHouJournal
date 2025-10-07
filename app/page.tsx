@@ -113,7 +113,7 @@ export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [currentDestSlide, setCurrentDestSlide] = useState(0)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
+  const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(false)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
@@ -146,6 +146,35 @@ export default function Home() {
     }, 3000)
     return () => clearInterval(interval)
   }, [journeyImages.length])
+
+  // Show menu button on xs screens after scrolling past 50% of video height
+  useEffect(() => {
+    const handleScroll = () => {
+      // Only apply on xs screens (< 768px)
+      if (window.innerWidth >= 768) {
+        setIsMenuButtonVisible(true)
+        return
+      }
+
+      // Video height is 120vh, so 50% is 60vh
+      const videoHalfHeight = window.innerHeight * 0.6
+      const scrolled = window.scrollY
+
+      setIsMenuButtonVisible(scrolled >= videoHalfHeight)
+    }
+
+    // Initial check
+    handleScroll()
+
+    // Listen to scroll and resize events
+    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('resize', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleScroll)
+    }
+  }, [])
 
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [isDestTransitioning, setIsDestTransitioning] = useState(false)

@@ -151,23 +151,24 @@ export default function NavigationMenu({
       )}
 
       {/* Menu Button */}
-      {isMenuButtonVisible && (
+      <Box
+        component="button"
+        onClick={openMenu}
+        className={`fixed top-8 right-4 p-2 hover:scale-105 transition-all duration-300 ease-in-out ${
+          isMenuButtonVisible && !isMenuButtonAnimating ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+        }`}
+        sx={{
+          zIndex: 9999,
+          pointerEvents: isMenuButtonVisible && !isMenuButtonAnimating ? 'auto' : 'none'
+        }}
+      >
         <Box
-          component="button"
-          onClick={openMenu}
-          className={`fixed top-8 right-4 p-2 hover:scale-105 transition-all duration-150 ${
-            isMenuButtonAnimating ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'
-          }`}
-          sx={{ zIndex: 9999 }}
-        >
-          <Box
-            component="img"
-            src={`/images/icons/icon_menu_${locale}.${locale === 'zh' ? 'png' : 'webp'}`}
-            alt="Menu"
-            className="w-16 h-16"
-          />
-        </Box>
-      )}
+          component="img"
+          src={`/images/icons/icon_menu_${locale}.${locale === 'zh' ? 'png' : 'webp'}`}
+          alt="Menu"
+          className="w-16 h-16"
+        />
+      </Box>
     </>
   )
 }
