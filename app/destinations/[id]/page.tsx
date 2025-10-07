@@ -1,33 +1,15 @@
-import { destinations } from 'src/data/destinations'
-import destinationsData from 'src/data/destinations.json'
+import { getDestinationById } from '@/lib/db'
+import { transformDestination } from '@/lib/transform'
 import DestinationDetailClient from './DestinationDetailClient'
 
-export async function generateStaticParams() {
-  // Use destinations.json to include all destination IDs from journeys
-  const allDestinations = destinationsData as any[]
+export const dynamic = 'force-dynamic'
 
-  // Generate params for both MongoDB IDs and name-date based IDs
-  const params = allDestinations.flatMap((destination) => {
-    const nameBasedId = `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`
-    return [
-      { id: destination.id },
-      { id: nameBasedId }
-    ]
-  })
+export default async function DestinationDetailPage({ params }: { params: { id: string } }) {
+  // Fetch destination from database
+  const destinationFromDb = await getDestinationById(params.id)
 
-  return params
-}
-
-export default function DestinationDetailPage({ params }: { params: { id: string } }) {
-  // Try to find in destinations.json first (for journey places)
-  const allDestinations = destinationsData as any[]
-  const destinationFromJson = allDestinations.find((d: any) => {
-    const generatedId = `${d.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${d.date.replace(/\//g, '-')}`
-    return generatedId === params.id
-  })
-
-  // If found in destinations.json, use it; otherwise fall back to destinations data
-  const destination = destinationFromJson || destinations.find(d => d.id === params.id)
+  // Transform to app format (snake_case to camelCase)
+  const destination = destinationFromDb ? transformDestination(destinationFromDb) : undefined
 
   return <DestinationDetailClient station={destination} />
 }
