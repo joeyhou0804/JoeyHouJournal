@@ -114,6 +114,11 @@ export async function getJourneyById(id: string): Promise<Journey | null> {
   return rows[0] || null
 }
 
+export async function getJourneyBySlug(slug: string): Promise<Journey | null> {
+  const { rows } = await sql<Journey>`SELECT * FROM journeys WHERE slug = ${slug}`
+  return rows[0] || null
+}
+
 export async function createJourney(journey: Partial<Journey>): Promise<Journey> {
   const visitedPlaceIds = JSON.stringify(journey.visited_place_ids || [])
   const images = JSON.stringify(journey.images || [])

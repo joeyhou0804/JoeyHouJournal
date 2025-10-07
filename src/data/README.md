@@ -4,28 +4,54 @@
 
 This project is currently in a **hybrid state** with data stored in both JSON files and a PostgreSQL database on Vercel.
 
-## Current State (As of October 2025)
+## Current State (As of October 2025) - IN MIGRATION
+
+### Status: Partial Migration to Database
+
+**✅ Completed:**
+- PostgreSQL database schema created and populated
+- API routes created (`/api/destinations`, `/api/journeys`)
+- Transform layer to convert database format to app format
+- Homepage migrated to fetch from API
+- Database migrated with 12 journeys and 148 destinations
+
+**🚧 In Progress:**
+- Migrating individual page components to use database
+
+**❌ Pending:**
+- Destinations pages
+- Journeys pages
+- Admin dashboard page
 
 ### Active Data Sources
 
-#### 1. **PostgreSQL Database (Vercel)** - Primary for Admin Operations
+#### 1. **PostgreSQL Database (Vercel)** - Primary Source
 - Location: Vercel Postgres
 - Tables: `destinations`, `journeys`, `instagram_tokens`
-- Used by: Admin panel operations (create, update, delete)
+- Used by: API routes, Admin panel operations
 - Migration script: `/scripts/migrate-to-db.ts`
+- Access via: `/lib/db.ts` functions
 
-#### 2. **JSON Files** - Currently Used by Public Pages
-- `destinations.json` (148 KB) - Destination data with coordinates, images, descriptions
-- `journeys.json` (95 KB) - Journey routes with dates, segments, visited places
-- Used by: All public-facing pages (homepage, journeys, destinations)
+#### 2. **API Routes** - NEW
+- `/api/destinations` - Fetch all destinations
+- `/api/destinations/[id]` - Fetch single destination
+- `/api/journeys` - Fetch all journeys
+- `/api/journeys/[slug]` - Fetch single journey
+- Returns: camelCase format (via `/lib/transform.ts`)
 
-#### 3. **Route Data**
-- `routes.js` (49 KB) - Map polyline coordinates for journey visualization
+#### 3. **JSON Files** - Legacy (Still Required)
+- `destinations.json` (148 KB) - Destination data
+- `journeys.json` (95 KB) - Journey routes
+- Used by: Pages not yet migrated to database
+- **DO NOT DELETE** until all pages migrated
+
+#### 4. **Route Data**
+- `routes.js` (49 KB) - Map polyline coordinates
 - Still actively used by map components
 
-#### 4. **TypeScript Exports**
-- `destinations.ts` - Exports destinations array and Destination interface
-- `journeys.ts` - Exports journeys array, helper functions, Journey interface
+#### 5. **TypeScript Exports**
+- `destinations.ts` - Exports destinations array and interface
+- `journeys.ts` - Exports journeys array and helper functions
 
 ### Archived Files (in `/archive/`)
 

@@ -11,9 +11,6 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import HeroSection from 'src/components/HeroSection'
 import MixedText from 'src/components/MixedText'
-import { destinations } from 'src/data/destinations'
-import journeysData from 'src/data/journeys.json'
-import destinationsData from 'src/data/destinations.json'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { formatDuration } from 'src/utils/formatDuration'
 
@@ -30,17 +27,40 @@ export default function Home() {
   const headDecoRef = useRef<HTMLDivElement | null>(null)
   const recentRef = useRef<HTMLElement | null>(null)
 
+  // Fetch data from API
+  const [journeysData, setJourneysData] = useState<any[]>([])
+  const [destinationsData, setDestinationsData] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [journeysRes, destinationsRes] = await Promise.all([
+          fetch('/api/journeys'),
+          fetch('/api/destinations')
+        ])
+        const journeys = await journeysRes.json()
+        const destinations = await destinationsRes.json()
+        setJourneysData(journeys)
+        setDestinationsData(destinations)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
   // Get latest 8 journeys sorted by date
   const featuredTrips = useMemo(() => {
-    const allDestinations = destinationsData as any[]
-    const allJourneys = journeysData as any[]
+    if (!journeysData.length || !destinationsData.length) return []
 
-    // Sort journeys by date (descending)
-    const sortedJourneys = [...allJourneys].sort((a, b) => {
-      const dateA = new Date(a.startDate)
-      const dateB = new Date(b.startDate)
-      return dateB.getTime() - dateA.getTime()
-    })
+    const allDestinations = destinationsData
+    const allJourneys = journeysData
+
+    // Sort journeys by date (descending) - already sorted from API
+    const sortedJourneys = allJourneys
 
     return sortedJourneys
       .slice(0, 8)
@@ -78,7 +98,7 @@ export default function Home() {
           image: imageUrl
         }
       })
-  }, [locale, tr])
+  }, [locale, tr, journeysData, destinationsData])
 
   // Tweak this if you want a tiny nudge (e.g., to account for mask feathering)
   const ADJUST_PX_FOOT = 200
@@ -118,18 +138,21 @@ export default function Home() {
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
   // Get latest 8 destinations from destinations data sorted by date
-  const recentPlaces = [...destinations]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 8)
-    .map(destination => ({
-      id: destination.id,
-      name: destination.name,
-      nameCN: destination.nameCN,
-      date: destination.date,
-      journeyName: destination.journeyName,
-      journeyNameCN: destination.journeyNameCN,
-      image: destination.images && destination.images.length > 0 ? destination.images[0] : ''
-    }))
+  const recentPlaces = useMemo(() => {
+    if (!destinationsData.length) return []
+
+    return destinationsData
+      .slice(0, 8)
+      .map(destination => ({
+        id: destination.id,
+        name: destination.name,
+        nameCN: destination.nameCN,
+        date: destination.date,
+        journeyName: destination.journeyName,
+        journeyNameCN: destination.journeyNameCN,
+        image: destination.images && destination.images.length > 0 ? destination.images[0] : ''
+      }))
+  }, [destinationsData])
 
   const journeyImages = [
     'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_1',
