@@ -332,7 +332,7 @@ export default function Home() {
       </Container>
 
       {/* Featured Trips */}
-      <Section component="section" className="py-16 px-4 relative">
+      <Section component="section" className="pt-32 pb-16 px-4 relative">
         <Container className="max-w-7xl mx-auto">
           <Container className="relative mb-12">
             <Container
@@ -598,7 +598,7 @@ export default function Home() {
       </Section>
 
       {/* Featured Trips Footer Container */}
-      <Container className="relative overflow-visible">
+      <Container className="relative overflow-visible mt-32">
       {/* Decorative transition (head mask; background not flipped) */}
       <Container className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full" sx={{ transform: 'translateY(calc(0.1%))' }}>
         <Container
