@@ -263,6 +263,30 @@ export default function Home() {
     }, 150)
   }
 
+  // Show loading state while data is being fetched
+  if (isLoading || featuredTrips.length === 0 || recentPlaces.length === 0) {
+    return (
+      <Box sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#F6F6F6'
+      }}>
+        <Box sx={{ textAlign: 'center' }}>
+          <Box sx={{
+            fontFamily: 'MarioFont, sans-serif',
+            fontSize: '24px',
+            color: '#373737',
+            marginBottom: '20px'
+          }}>
+            Loading...
+          </Box>
+        </Box>
+      </Box>
+    )
+  }
+
   return (
     <Box
       className="min-h-screen relative overflow-x-hidden"
