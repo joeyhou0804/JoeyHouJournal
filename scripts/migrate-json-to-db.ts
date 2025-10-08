@@ -1,20 +1,26 @@
 /**
  * Migration script to import JSON data into the database
- * Run with: npx tsx scripts/migrate-json-to-db.ts
+ * Run with: POSTGRES_URL='...' npx tsx scripts/migrate-json-to-db.ts
  */
 
 import * as dotenv from 'dotenv'
 import { resolve } from 'path'
 
-// Load environment variables
-dotenv.config({ path: resolve(__dirname, '../.env.local') })
+// Load environment variables from .env.local only if POSTGRES_URL is not already set
+if (!process.env.POSTGRES_URL) {
+  dotenv.config({ path: resolve(__dirname, '../.env.local') })
+}
 
 import { sql } from '@vercel/postgres'
 import journeysData from '../src/data/journeys.json'
 import destinationsData from '../src/data/destinations.json'
 
 async function migrate() {
+  const dbUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
+  const host = dbUrl.match(/@([^/]+)/)?.[1] || 'unknown'
   console.log('Starting migration from JSON to database...')
+  console.log(`Target database: ${host}`)
+  console.log('')
 
   try {
     // Migrate journeys
