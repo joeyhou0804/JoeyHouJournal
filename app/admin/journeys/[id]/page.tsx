@@ -60,6 +60,37 @@ export default function JourneyDetailsPage() {
   // Track which coordinates are editable
   const [editableCoords, setEditableCoords] = useState<boolean[]>([])
 
+  // Calculate route display using the same logic as the main site
+  const getRouteDisplay = () => {
+    if (routePoints.length < 2) {
+      return journey ? `${journey.startLocation.name} → ${journey.endLocation.name}` : 'Not defined'
+    }
+
+    const startPoint = routePoints[0]
+    const endPoint = routePoints[routePoints.length - 1]
+
+    // If start and end are the same (round trip from home)
+    if (startPoint.name === endPoint.name) {
+      // Extract unique intermediate destinations from route points (excluding start/end)
+      const intermediatePlaces = routePoints
+        .slice(1, -1)
+        .filter((point, index, arr) =>
+          arr.findIndex(p => p.name === point.name) === index
+        )
+
+      if (intermediatePlaces.length === 1) {
+        // Single destination: "Home → [Place]"
+        return `Home → ${intermediatePlaces[0].name}`
+      } else if (intermediatePlaces.length > 1) {
+        // Multiple destinations: First → Last (excluding home)
+        return `${intermediatePlaces[0].name} → ${intermediatePlaces[intermediatePlaces.length - 1].name}`
+      }
+    }
+
+    // Default: start → end
+    return `${startPoint.name || 'Start'} → ${endPoint.name || 'End'}`
+  }
+
   // Fetch journey data from API
   useEffect(() => {
     const fetchJourney = async () => {
@@ -640,7 +671,7 @@ export default function JourneyDetailsPage() {
               Route (auto-generated from route points)
             </label>
             <input
-              value={routePoints.length >= 2 ? `${routePoints[0].name || 'Start'} → ${routePoints[routePoints.length - 1].name || 'End'}` : journey ? `${journey.startLocation.name} → ${journey.endLocation.name}` : 'Not defined'}
+              value={getRouteDisplay()}
               readOnly
               style={{
                 width: '100%',
@@ -1206,7 +1237,7 @@ export default function JourneyDetailsPage() {
             <li>Points automatically connect to create route segments (Point 1 → Point 2, Point 2 → Point 3, etc.)</li>
             <li>Coordinates are automatically generated when you enter a location name</li>
             <li>Click "Edit" to manually adjust coordinates when the location is invalid or needs customization</li>
-            <li>Current route: {routePoints.length >= 2 ? `${routePoints[0].name || 'Start'} → ${routePoints[routePoints.length - 1].name || 'End'}` : 'Add at least 2 points'}</li>
+            <li>Current route: {routePoints.length >= 2 ? getRouteDisplay() : 'Add at least 2 points'}</li>
           </ul>
         </Box>
       </Box>
