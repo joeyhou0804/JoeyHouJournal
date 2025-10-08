@@ -186,8 +186,20 @@ export default function JourneysPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600" style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '24px' }}>
+      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-8">
+        {/* Spinner */}
+        <div
+          style={{
+            width: '60px',
+            height: '60px',
+            border: '6px solid rgba(240, 96, 1, 0.2)',
+            borderTop: '6px solid #F06001',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}
+        />
+        {/* Loading text */}
+        <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '32px', color: '#373737', margin: 0 }}>
           Loading journeys...
         </p>
       </div>
