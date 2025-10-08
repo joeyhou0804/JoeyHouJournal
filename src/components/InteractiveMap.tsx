@@ -510,13 +510,19 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     Object.entries(groupedPlaces).forEach(([key, places]) => {
       const isMultiVisit = places.length > 1
 
-      // Check if this location is a home location
-      const isAtHome = homeLocations.some(home =>
-        Math.abs(home.lat - places[0].lat) < 0.0001 &&
-        Math.abs(home.lng - places[0].lng) < 0.0001
-      )
+      // Check if this location was home at the time of the visit(s)
+      // For multi-visit locations, check if ANY of the visits occurred while this was home
+      const isAtHome = places.some(place => {
+        const visitDate = place.date
+        return homeLocations.some(home =>
+          Math.abs(home.lat - place.lat) < 0.0001 &&
+          Math.abs(home.lng - place.lng) < 0.0001 &&
+          visitDate >= home.startDate &&
+          visitDate <= home.endDate
+        )
+      })
 
-      // Use home icon if at home location, otherwise use regular icons
+      // Use home icon if at home location during the visit, otherwise use regular icons
       let icon: L.Icon
       if (isAtHome) {
         icon = isMultiVisit ? goldenHomeIcon : homeIcon
