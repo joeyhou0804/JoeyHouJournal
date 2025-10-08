@@ -39,6 +39,7 @@ import {
   CloudUpload as UploadIcon,
 } from '@mui/icons-material'
 import destinationsData from 'src/data/destinations.json'
+import AdminLoading from 'src/components/AdminLoading'
 
 interface InstagramPost {
   id: string
@@ -64,6 +65,7 @@ interface Destination {
 export default function InstagramImportPage() {
   const router = useRouter()
   const [isConnected, setIsConnected] = useState(false)
+  const [checkingConnection, setCheckingConnection] = useState(true)
   const [loading, setLoading] = useState(false)
   const [posts, setPosts] = useState<InstagramPost[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -94,6 +96,7 @@ export default function InstagramImportPage() {
 
   const checkConnection = async () => {
     try {
+      setCheckingConnection(true)
       console.log('Checking Instagram connection...')
       const response = await fetch('/api/admin/instagram/status')
       console.log('Connection check response:', response.status)
@@ -108,6 +111,8 @@ export default function InstagramImportPage() {
     } catch (err) {
       console.error('Failed to check connection:', err)
       setIsConnected(false)
+    } finally {
+      setCheckingConnection(false)
     }
   }
 
@@ -383,6 +388,10 @@ export default function InstagramImportPage() {
         </Card>
       </Box>
     )
+  }
+
+  if (checkingConnection) {
+    return <AdminLoading message="Checking Instagram Connection..." />
   }
 
   return (
