@@ -80,7 +80,8 @@ export default async function JourneyDetailPage({ params }: { params: { slug: st
     nights: journey.nights,
     visitedPlaceIds: journey.visitedPlaceIds,
     journeyId: journey.id,
-    segments: journey.segments
+    segments: journey.segments,
+    startDate: journey.startDate
   }
 
   return <JourneyDetailClient journey={trip} />

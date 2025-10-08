@@ -37,6 +37,7 @@ interface Journey {
   nights: number
   visitedPlaceIds?: string[]
   journeyId?: string
+  startDate?: string
   segments?: Array<{
     order: number
     from: { name: string; lat: number; lng: number }
@@ -323,6 +324,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 places={places}
                 routeSegments={journey?.segments}
                 routeCoordinates={journey?.segments ? getRouteCoordinates(journey.journeyId, journey.segments) : journey?.journeyId ? getRouteCoordinates(journey.journeyId) : undefined}
+                journeyDate={journey?.startDate}
               />
             </Box>
           </Box>

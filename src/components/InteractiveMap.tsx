@@ -50,9 +50,10 @@ interface InteractiveMapProps {
   isDetailView?: boolean
   routeCoordinates?: [number, number][] // Array of coordinates for the route path
   routeSegments?: RouteSegment[] // Array of route segments with transport methods
+  journeyDate?: string // Journey start date to determine which home to show
 }
 
-export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments }: InteractiveMapProps) {
+export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate }: InteractiveMapProps) {
   const { locale, tr } = useTranslation()
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -711,13 +712,26 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       }
     }
 
-    // Add home location markers
-    homeLocations.forEach((home) => {
-      const marker = L.marker([home.lat, home.lng], { icon: homeIcon }).addTo(map)
+    // Add home location marker (filtered by date if journeyDate is provided)
+    let relevantHome: HomeLocation | null = null
+
+    if (journeyDate && homeLocations.length > 0) {
+      // Find the home location that was active during the journey date
+      relevantHome = homeLocations.find(home => {
+        return journeyDate >= home.startDate && journeyDate <= home.endDate
+      }) || null
+    } else if (homeLocations.length > 0) {
+      // If no journey date, use the most recent home (for destination detail view)
+      const sortedHomes = [...homeLocations].sort((a, b) => b.startDate.localeCompare(a.startDate))
+      relevantHome = sortedHomes[0]
+    }
+
+    if (relevantHome) {
+      const marker = L.marker([relevantHome.lat, relevantHome.lng], { icon: homeIcon }).addTo(map)
 
       // Create simple popup with home location info
       const homeTitle = locale === 'zh' ? '家的位置' : 'Home'
-      const locationName = locale === 'zh' && home.nameCN ? home.nameCN : home.name
+      const locationName = locale === 'zh' && relevantHome.nameCN ? relevantHome.nameCN : relevantHome.name
 
       const popupContent = `
         <div style="font-family: ${locale === 'zh' ? 'MarioFontTitleChinese' : 'MarioFontTitle'}, sans-serif; text-align: center; min-width: 200px;">
@@ -730,13 +744,13 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         maxWidth: 300,
         className: 'custom-popup'
       })
-    })
+    }
 
     // Cleanup
     return () => {
       map.remove()
     }
-  }, [places, isDetailView, routeCoordinates, routeSegments, homeLocations, locale])
+  }, [places, isDetailView, routeCoordinates, routeSegments, homeLocations, locale, journeyDate])
 
   return (
     <div

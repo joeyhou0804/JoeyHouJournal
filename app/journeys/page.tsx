@@ -376,6 +376,7 @@ export default function JourneysPage() {
                   places={currentJourneyPlaces}
                   routeSegments={currentJourney?.segments}
                   routeCoordinates={getRouteCoordinates(currentJourney.id)}
+                  journeyDate={currentJourney?.startDate}
                 />
               </Box>
 

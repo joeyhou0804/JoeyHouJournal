@@ -508,7 +508,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   borderRadius: { xs: '0.75rem', sm: '1.5rem' }
                 }}
               >
-                <InteractiveMap places={[station]} isDetailView={true} />
+                <InteractiveMap places={[station]} isDetailView={true} journeyDate={station.date} />
               </Box>
             </Box>
           </div>
