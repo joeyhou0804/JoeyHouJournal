@@ -399,40 +399,141 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
             L.marker(curvedCoords[midPointIndex], { icon: planeIcon }).addTo(map)
           })
         } else if (group.method === 'bus' || group.method === 'drive') {
-          // For bus/drive routes: collect all coordinates first to draw as continuous line
-          const allCoords: [number, number][] = []
+          // For bus/drive routes: check if segments are round-trips between same cities
+          // If so, draw them as curved arcs; otherwise draw as continuous line
 
-          group.segments.forEach((segment, index) => {
-            if (index === 0) {
-              allCoords.push([segment.from.lat, segment.from.lng])
+          // Check if all segments form round-trip pairs
+          const segmentPairMap = new Map<string, RouteSegment[]>()
+          let allAreRoundTrips = true
+
+          group.segments.forEach(segment => {
+            const fromKey = `${segment.from.lat},${segment.from.lng}`
+            const toKey = `${segment.to.lat},${segment.to.lng}`
+            const pairKey = [fromKey, toKey].sort().join('-')
+
+            if (!segmentPairMap.has(pairKey)) {
+              segmentPairMap.set(pairKey, [])
             }
-            allCoords.push([segment.to.lat, segment.to.lng])
+            segmentPairMap.get(pairKey)!.push(segment)
           })
 
-          // Draw border (darker outline)
-          L.polyline(allCoords, {
-            color: '#373737',
-            weight: 6,
-            opacity: 1,
-            smoothFactor: 1
-          }).addTo(map)
+          // Check if all pairs have exactly 2 segments (round-trips)
+          segmentPairMap.forEach(segments => {
+            if (segments.length !== 2) {
+              allAreRoundTrips = false
+            }
+          })
 
-          // Draw solid line in #373737
-          L.polyline(allCoords, {
-            color: '#373737',
-            weight: 4,
-            opacity: 1,
-            smoothFactor: 1
-          }).addTo(map)
+          if (allAreRoundTrips && segmentPairMap.size > 0) {
+            // Draw each segment as a curved arc
+            group.segments.forEach(segment => {
+              const lat1 = segment.from.lat
+              const lng1 = segment.from.lng
+              const lat2 = segment.to.lat
+              const lng2 = segment.to.lng
 
-          // Draw thin dashed line in #F6F6F6 on top
-          L.polyline(allCoords, {
-            color: '#F6F6F6',
-            weight: 1,
-            opacity: 1,
-            smoothFactor: 1,
-            dashArray: '5, 5'
-          }).addTo(map)
+              // Calculate the midpoint
+              const midLat = (lat1 + lat2) / 2
+              const midLng = (lng1 + lng2) / 2
+
+              // Calculate perpendicular offset for the curve
+              const cities = [
+                { lat: lat1, lng: lng1 },
+                { lat: lat2, lng: lng2 }
+              ].sort((a, b) => a.lat !== b.lat ? a.lat - b.lat : a.lng - b.lng)
+
+              const normDx = cities[1].lng - cities[0].lng
+              const normDy = cities[1].lat - cities[0].lat
+              const distance = Math.sqrt(normDx * normDx + normDy * normDy)
+
+              // Get offset for this segment
+              const offsetFactor = segmentOffsets.get(segment) || 0.2
+
+              // Calculate perpendicular vector
+              const perpDx = -normDy
+              const perpDy = normDx
+
+              // Normalize perpendicular vector
+              const perpLength = Math.sqrt(perpDx * perpDx + perpDy * perpDy)
+              const perpNormX = perpDx / perpLength
+              const perpNormY = perpDy / perpLength
+
+              // Apply offset in perpendicular direction
+              const controlLat = midLat + (perpNormY * offsetFactor * distance)
+              const controlLng = midLng + (perpNormX * offsetFactor * distance)
+
+              // Create curved path with interpolated points
+              const curvedCoords: [number, number][] = []
+              const numPoints = 50
+              for (let i = 0; i <= numPoints; i++) {
+                const t = i / numPoints
+                // Quadratic Bezier curve formula
+                const lat = (1 - t) * (1 - t) * lat1 + 2 * (1 - t) * t * controlLat + t * t * lat2
+                const lng = (1 - t) * (1 - t) * lng1 + 2 * (1 - t) * t * controlLng + t * t * lng2
+                curvedCoords.push([lat, lng])
+              }
+
+              // Draw border (darker outline)
+              L.polyline(curvedCoords, {
+                color: '#373737',
+                weight: 6,
+                opacity: 1,
+                smoothFactor: 1
+              }).addTo(map)
+
+              // Draw solid line in #373737
+              L.polyline(curvedCoords, {
+                color: '#373737',
+                weight: 4,
+                opacity: 1,
+                smoothFactor: 1
+              }).addTo(map)
+
+              // Draw thin dashed line in #F6F6F6 on top
+              L.polyline(curvedCoords, {
+                color: '#F6F6F6',
+                weight: 1,
+                opacity: 1,
+                smoothFactor: 1,
+                dashArray: '5, 5'
+              }).addTo(map)
+            })
+          } else {
+            // Draw as continuous straight line (original behavior)
+            const allCoords: [number, number][] = []
+
+            group.segments.forEach((segment, index) => {
+              if (index === 0) {
+                allCoords.push([segment.from.lat, segment.from.lng])
+              }
+              allCoords.push([segment.to.lat, segment.to.lng])
+            })
+
+            // Draw border (darker outline)
+            L.polyline(allCoords, {
+              color: '#373737',
+              weight: 6,
+              opacity: 1,
+              smoothFactor: 1
+            }).addTo(map)
+
+            // Draw solid line in #373737
+            L.polyline(allCoords, {
+              color: '#373737',
+              weight: 4,
+              opacity: 1,
+              smoothFactor: 1
+            }).addTo(map)
+
+            // Draw thin dashed line in #F6F6F6 on top
+            L.polyline(allCoords, {
+              color: '#F6F6F6',
+              weight: 1,
+              opacity: 1,
+              smoothFactor: 1,
+              dashArray: '5, 5'
+            }).addTo(map)
+          }
         } else {
           // For train routes: collect all coordinates first to draw as continuous line
           const allCoords: [number, number][] = []
