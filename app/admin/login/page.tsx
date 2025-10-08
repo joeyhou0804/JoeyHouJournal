@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function AdminLogin() {
@@ -9,7 +9,30 @@ export default function AdminLogin() {
   const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
   const [codeSent, setCodeSent] = useState(false)
+  const [checkingAuth, setCheckingAuth] = useState(true)
   const router = useRouter()
+
+  // Check if user is already authenticated on mount
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/admin/auth')
+        if (response.ok) {
+          const data = await response.json()
+          if (data.authenticated) {
+            // User is already logged in, redirect to dashboard
+            router.push('/admin/dashboard')
+            return
+          }
+        }
+      } catch (err) {
+        console.error('Error checking auth:', err)
+      } finally {
+        setCheckingAuth(false)
+      }
+    }
+    checkAuth()
+  }, [router])
 
   const handleSendCode = async () => {
     setLoading(true)
@@ -65,6 +88,45 @@ export default function AdminLogin() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Show loading state while checking authentication
+  if (checkingAuth) {
+    return (
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
+        backgroundRepeat: 'repeat',
+        backgroundSize: '400px auto',
+        padding: '1rem'
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          padding: 'clamp(1.5rem, 5vw, 3rem)',
+          borderRadius: '1rem',
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+          width: '100%',
+          maxWidth: '400px',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            width: '60px',
+            height: '60px',
+            border: '6px solid rgba(240, 96, 1, 0.2)',
+            borderTop: '6px solid #F06001',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto'
+          }} />
+          <p style={{ fontFamily: 'MarioFont, sans-serif', marginTop: '1rem', color: '#373737' }}>
+            Checking authentication...
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
