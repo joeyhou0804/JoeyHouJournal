@@ -112,10 +112,16 @@ export default function DestinationFormPage() {
           // Old data may be in YYYY/MM/DD format, convert to YYYY-MM-DD for date input
           if (key === 'date' && destination[key]) {
             setValue(key as any, destination[key].replace(/\//g, '-'))
+          } else if (key === 'coordinates') {
+            // Don't set coordinates object, we use lat/lng fields instead
+            return
           } else {
             setValue(key as any, destination[key])
           }
         })
+        // Ensure lat/lng are set from the destination data
+        if (destination.lat !== undefined) setValue('lat', destination.lat)
+        if (destination.lng !== undefined) setValue('lng', destination.lng)
       } else {
         console.error('Destination not found:', id)
       }
@@ -241,7 +247,9 @@ export default function DestinationFormPage() {
       // Convert any / to - for standardization
       const formattedData = {
         ...data,
-        date: data.date ? data.date.replace(/\//g, '-') : data.date
+        date: data.date ? data.date.replace(/\//g, '-') : data.date,
+        // Remove coordinates object if it exists, we send lat/lng directly
+        coordinates: undefined
       }
 
       const method = isNew ? 'POST' : 'PUT'
