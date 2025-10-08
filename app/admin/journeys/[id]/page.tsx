@@ -52,7 +52,7 @@ export default function JourneyDetailsPage() {
   })
 
   // Route points state (simplified from segments)
-  const [routePoints, setRoutePoints] = useState<Array<{ name: string; lat: number; lng: number }>>([])
+  const [routePoints, setRoutePoints] = useState<Array<{ name: string; nameCN?: string; lat: number; lng: number }>>([])
 
   // Transportation methods between points (length = points.length - 1)
   const [transportMethods, setTransportMethods] = useState<string[]>([])
@@ -248,15 +248,25 @@ export default function JourneyDetailsPage() {
   }
 
   // Convert routePoints to segments when saving
-  const pointsToSegments = (points: Array<{ name: string; lat: number; lng: number }>) => {
+  const pointsToSegments = (points: Array<{ name: string; nameCN?: string; lat: number; lng: number }>) => {
     if (points.length < 2) return []
 
     const segments = []
     for (let i = 0; i < points.length - 1; i++) {
       segments.push({
         order: i + 1,
-        from: points[i],
-        to: points[i + 1],
+        from: {
+          name: points[i].name,
+          nameCN: points[i].nameCN || '',
+          lat: points[i].lat,
+          lng: points[i].lng
+        },
+        to: {
+          name: points[i + 1].name,
+          nameCN: points[i + 1].nameCN || '',
+          lat: points[i + 1].lat,
+          lng: points[i + 1].lng
+        },
         method: transportMethods[i] || 'train' // Include transportation method
       })
     }
@@ -1072,7 +1082,7 @@ export default function JourneyDetailsPage() {
                     </Box>
                   </Box>
 
-                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '2fr 1fr 1fr' }, gap: '0.75rem' }}>
+                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '0.75rem', marginBottom: '0.75rem' }}>
                     <input
                       value={point.name}
                       onChange={(e) => updatePoint(index, 'name', e.target.value)}
@@ -1085,6 +1095,21 @@ export default function JourneyDetailsPage() {
                         fontFamily: 'MarioFont, sans-serif'
                       }}
                     />
+                    <input
+                      value={point.nameCN || ''}
+                      onChange={(e) => updatePoint(index, 'nameCN', e.target.value)}
+                      placeholder="Chinese name (e.g., 芝加哥)"
+                      style={{
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                  </Box>
+
+                  <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '0.75rem' }}>
                     <input
                       type="number"
                       step="0.0001"
