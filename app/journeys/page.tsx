@@ -80,16 +80,8 @@ export default function JourneysPage() {
       }
     }
 
-    // Use Chinese location names if locale is Chinese
-    const startLocationName = locale === 'zh' && journey.startLocation.nameCN
-      ? journey.startLocation.nameCN
-      : journey.startLocation.name
-    const endLocationName = locale === 'zh' && journey.endLocation.nameCN
-      ? journey.endLocation.nameCN
-      : journey.endLocation.name
-
     // Determine route display
-    let route = `${startLocationName} → ${endLocationName}`
+    let route = `${journey.startLocation.name} → ${journey.endLocation.name}`
 
     // If start and end are the same (round trip from home)
     if (journey.startLocation.name === journey.endLocation.name && journey.segments && journey.segments.length > 0) {
@@ -111,12 +103,8 @@ export default function JourneysPage() {
       const uniquePlaces = Array.from(intermediatePlaces)
 
       if (uniquePlaces.length === 1) {
-        // Single destination: "Home to [Place]"
-        const homeText = locale === 'zh' ? '从家出发' : 'Home'
-        const placeName = locale === 'zh' && intermediatePlacesCN.has(uniquePlaces[0])
-          ? intermediatePlacesCN.get(uniquePlaces[0])
-          : uniquePlaces[0]
-        route = `${homeText} → ${placeName}`
+        // Single destination: "Home → [Place]"
+        route = `Home → ${uniquePlaces[0]}`
       } else if (uniquePlaces.length > 1) {
         // Multiple destinations: use first and last from segments ordered by journey
         const firstPlace = journey.segments[0].to.name !== journey.startLocation.name
@@ -127,14 +115,32 @@ export default function JourneysPage() {
           ? lastSegment.from.name
           : uniquePlaces[uniquePlaces.length - 1]
 
-        const firstName = locale === 'zh' && intermediatePlacesCN.has(firstPlace)
-          ? intermediatePlacesCN.get(firstPlace)
-          : firstPlace
-        const lastName = locale === 'zh' && intermediatePlacesCN.has(lastPlace)
-          ? intermediatePlacesCN.get(lastPlace)
-          : lastPlace
+        route = `${firstPlace} → ${lastPlace}`
+      }
+    }
 
-        route = `${firstName} → ${lastName}`
+    // Apply Chinese translations if needed
+    let routeDisplay = route
+    if (locale === 'zh') {
+      // Replace "Home" with Chinese
+      routeDisplay = routeDisplay.replace('Home', '从家出发')
+
+      // Replace location names with Chinese versions
+      if (journey.startLocation.nameCN && journey.endLocation.nameCN) {
+        routeDisplay = routeDisplay.replace(journey.startLocation.name, journey.startLocation.nameCN)
+        routeDisplay = routeDisplay.replace(journey.endLocation.name, journey.endLocation.nameCN)
+      }
+
+      // Replace intermediate places with Chinese versions
+      if (journey.segments) {
+        journey.segments.forEach((segment: any) => {
+          if (segment.from.nameCN) {
+            routeDisplay = routeDisplay.replace(segment.from.name, segment.from.nameCN)
+          }
+          if (segment.to.nameCN) {
+            routeDisplay = routeDisplay.replace(segment.to.name, segment.to.nameCN)
+          }
+        })
       }
     }
 
@@ -144,7 +150,7 @@ export default function JourneysPage() {
       slug: journey.slug,
       places: journey.totalPlaces,
       description: journey.description,
-      route: route,
+      route: routeDisplay,
       duration: journey.duration,
       days: journey.days,
       nights: journey.nights,
@@ -347,15 +353,7 @@ export default function JourneysPage() {
                 station={{
                   id: '',
                   name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
-                  journeyName: `${
-                    locale === 'zh' && currentJourney.startLocation.nameCN
-                      ? currentJourney.startLocation.nameCN
-                      : currentJourney.startLocation.name
-                  } → ${
-                    locale === 'zh' && currentJourney.endLocation.nameCN
-                      ? currentJourney.endLocation.nameCN
-                      : currentJourney.endLocation.name
-                  }`,
+                  journeyName: trips[currentJourneyIndex]?.route || '',
                   date: formatDuration(currentJourney.days, currentJourney.nights, tr),
                   images: []
                 }}
@@ -397,15 +395,7 @@ export default function JourneysPage() {
                   station={{
                     id: '',
                     name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
-                    journeyName: `${
-                      locale === 'zh' && currentJourney.startLocation.nameCN
-                        ? currentJourney.startLocation.nameCN
-                        : currentJourney.startLocation.name
-                    } → ${
-                      locale === 'zh' && currentJourney.endLocation.nameCN
-                        ? currentJourney.endLocation.nameCN
-                        : currentJourney.endLocation.name
-                    }`,
+                    journeyName: trips[currentJourneyIndex]?.route || '',
                     date: formatDuration(currentJourney.days, currentJourney.nights, tr),
                     images: []
                   }}

@@ -51,9 +51,10 @@ interface InteractiveMapProps {
   routeCoordinates?: [number, number][] // Array of coordinates for the route path
   routeSegments?: RouteSegment[] // Array of route segments with transport methods
   journeyDate?: string // Journey start date to determine which home to show
+  showHomeMarker?: boolean // Whether to show home marker (default: true for journey maps, false for destinations list)
 }
 
-export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate }: InteractiveMapProps) {
+export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate, showHomeMarker }: InteractiveMapProps) {
   const { locale, tr } = useTranslation()
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -713,17 +714,21 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     }
 
     // Add home location marker (filtered by date if journeyDate is provided)
+    // Only show if showHomeMarker is not explicitly set to false
+    const shouldShowHome = showHomeMarker !== false
     let relevantHome: HomeLocation | null = null
 
-    if (journeyDate && homeLocations.length > 0) {
-      // Find the home location that was active during the journey date
-      relevantHome = homeLocations.find(home => {
-        return journeyDate >= home.startDate && journeyDate <= home.endDate
-      }) || null
-    } else if (homeLocations.length > 0) {
-      // If no journey date, use the most recent home (for destination detail view)
-      const sortedHomes = [...homeLocations].sort((a, b) => b.startDate.localeCompare(a.startDate))
-      relevantHome = sortedHomes[0]
+    if (shouldShowHome) {
+      if (journeyDate && homeLocations.length > 0) {
+        // Find the home location that was active during the journey date
+        relevantHome = homeLocations.find(home => {
+          return journeyDate >= home.startDate && journeyDate <= home.endDate
+        }) || null
+      } else if (homeLocations.length > 0) {
+        // If no journey date, use the most recent home (for destination detail view)
+        const sortedHomes = [...homeLocations].sort((a, b) => b.startDate.localeCompare(a.startDate))
+        relevantHome = sortedHomes[0]
+      }
     }
 
     if (relevantHome) {
@@ -734,16 +739,15 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       const locationName = locale === 'zh' && relevantHome.nameCN ? relevantHome.nameCN : relevantHome.name
 
       const popupContent = `
-        <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
-          <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
-            <div style="position: relative; width: 100%; height: 146px;">
-              <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
-              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -40px; z-index: 3; width: 250px;">
+        <div style="width: 280px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 8px; position: relative;">
+          <div style="border: 2px solid #F6F6F6; border-radius: 6px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
+            <div style="position: relative; width: 100%; height: 90px;">
+              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -24px; z-index: 3; width: 180px;">
                 <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
-                <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(homeTitle, '20px')}</h3>
+                <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(homeTitle, '16px')}</h3>
               </div>
-              <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
-                <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin: 0;">${locationName}</p>
+              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: 6px; z-index: 2; width: 180px; text-align: center;">
+                <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 14px; color: #F6F6F6; margin: 0;">${locationName}</p>
               </div>
             </div>
           </div>
@@ -751,8 +755,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       `
 
       marker.bindPopup(popupContent, {
-        maxWidth: 520,
-        minWidth: 520,
+        maxWidth: 320,
+        minWidth: 320,
         className: 'custom-popup',
         closeButton: false
       })

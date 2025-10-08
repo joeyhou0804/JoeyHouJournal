@@ -222,7 +222,7 @@ export default function StationsPage() {
                 borderRadius: { xs: '0.75rem', sm: '1.5rem' }
               }}
             >
-              <InteractiveMap places={destinations} />
+              <InteractiveMap places={destinations} showHomeMarker={false} />
             </Box>
           </Box>
         </div>

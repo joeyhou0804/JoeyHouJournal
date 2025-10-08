@@ -79,20 +79,76 @@ export default function Home() {
           }
         }
 
-        // Use Chinese location names if locale is Chinese
-        const startLocationName = locale === 'zh' && journey.startLocation.nameCN
-          ? journey.startLocation.nameCN
-          : journey.startLocation.name
-        const endLocationName = locale === 'zh' && journey.endLocation.nameCN
-          ? journey.endLocation.nameCN
-          : journey.endLocation.name
+        // Determine route display
+        let route = `${journey.startLocation.name} → ${journey.endLocation.name}`
+
+        // If start and end are the same (round trip from home)
+        if (journey.startLocation.name === journey.endLocation.name && journey.segments && journey.segments.length > 0) {
+          // Extract unique intermediate destinations from segments (excluding start/end location)
+          const intermediatePlaces = new Set<string>()
+          const intermediatePlacesCN = new Map<string, string>()
+
+          journey.segments.forEach((segment: any) => {
+            if (segment.from.name !== journey.startLocation.name) {
+              intermediatePlaces.add(segment.from.name)
+              if (segment.from.nameCN) intermediatePlacesCN.set(segment.from.name, segment.from.nameCN)
+            }
+            if (segment.to.name !== journey.endLocation.name) {
+              intermediatePlaces.add(segment.to.name)
+              if (segment.to.nameCN) intermediatePlacesCN.set(segment.to.name, segment.to.nameCN)
+            }
+          })
+
+          const uniquePlaces = Array.from(intermediatePlaces)
+
+          if (uniquePlaces.length === 1) {
+            // Single destination: "Home → [Place]"
+            route = `Home → ${uniquePlaces[0]}`
+          } else if (uniquePlaces.length > 1) {
+            // Multiple destinations: use first and last from segments ordered by journey
+            const firstPlace = journey.segments[0].to.name !== journey.startLocation.name
+              ? journey.segments[0].to.name
+              : (journey.segments[0].from.name !== journey.startLocation.name ? journey.segments[0].from.name : uniquePlaces[0])
+            const lastSegment = journey.segments[journey.segments.length - 1]
+            const lastPlace = lastSegment.from.name !== journey.endLocation.name
+              ? lastSegment.from.name
+              : uniquePlaces[uniquePlaces.length - 1]
+
+            route = `${firstPlace} → ${lastPlace}`
+          }
+        }
+
+        // Apply Chinese translations if needed
+        let routeDisplay = route
+        if (locale === 'zh') {
+          // Replace "Home" with Chinese
+          routeDisplay = routeDisplay.replace('Home', '从家出发')
+
+          // Replace location names with Chinese versions
+          if (journey.startLocation.nameCN && journey.endLocation.nameCN) {
+            routeDisplay = routeDisplay.replace(journey.startLocation.name, journey.startLocation.nameCN)
+            routeDisplay = routeDisplay.replace(journey.endLocation.name, journey.endLocation.nameCN)
+          }
+
+          // Replace intermediate places with Chinese versions
+          if (journey.segments) {
+            journey.segments.forEach((segment: any) => {
+              if (segment.from.nameCN) {
+                routeDisplay = routeDisplay.replace(segment.from.name, segment.from.nameCN)
+              }
+              if (segment.to.nameCN) {
+                routeDisplay = routeDisplay.replace(segment.to.name, segment.to.nameCN)
+              }
+            })
+          }
+        }
 
         return {
           name: journey.name,
           nameCN: journey.nameCN,
           slug: journey.slug,
           places: journey.totalPlaces,
-          route: `${startLocationName} → ${endLocationName}`,
+          route: routeDisplay,
           duration: formatDuration(journey.days, journey.nights, tr),
           description: journey.description,
           image: imageUrl
@@ -473,6 +529,7 @@ export default function Home() {
           </Container>
 
           {/* XS Layout - JourneyCard Style */}
+          {featuredTrips.length > 0 && (
           <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw] mt-8" sx={{ minHeight: '500px', zIndex: 10, padding: 0 }}>
             <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column', overflow: 'visible' }}>
               {/* Card Background */}
@@ -517,7 +574,7 @@ export default function Home() {
                   sx={{ width: '100%', height: 'auto', display: 'block' }}
                 />
                 <MixedText
-                  text={locale === 'zh' && featuredTrips[currentSlide].nameCN ? featuredTrips[currentSlide].nameCN : featuredTrips[currentSlide].name}
+                  text={locale === 'zh' && featuredTrips[currentSlide]?.nameCN ? featuredTrips[currentSlide]?.nameCN : featuredTrips[currentSlide]?.name || ''}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
                   fontSize="28px"
@@ -539,15 +596,15 @@ export default function Home() {
               {/* Route and Duration */}
               <Box sx={{ position: 'absolute', top: '15%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', textAlign: 'center', zIndex: 15 }}>
                 <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0, lineHeight: '1.4' }}>
-                  {featuredTrips[currentSlide].route}
+                  {featuredTrips[currentSlide]?.route || ''}
                 </Box>
                 <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', color: '#F6F6F6', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
-                  {featuredTrips[currentSlide].duration}
+                  {featuredTrips[currentSlide]?.duration || ''}
                 </Box>
               </Box>
 
               {/* View Details Button */}
-              <Link href={`/journeys/${featuredTrips[currentSlide].slug}`}>
+              <Link href={`/journeys/${featuredTrips[currentSlide]?.slug || ''}`}>
                 <Box sx={{ position: 'absolute', top: '25%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 15 }}>
                   <Box
                     component="img"
@@ -605,8 +662,10 @@ export default function Home() {
               </Container>
             </Container>
           </Container>
+          )}
 
           {/* MD+ Layout - Original Carousel */}
+          {featuredTrips.length > 0 && (
           <Container
             className="hidden md:block relative w-screen left-1/2 -ml-[50vw] mt-96"
             sx={{ aspectRatio: '1920/800' }}
@@ -714,7 +773,7 @@ export default function Home() {
                     sx={{ width: '100%', height: 'auto', display: 'block' }}
                   />
                   <MixedText
-                    text={locale === 'zh' && featuredTrips[currentSlide].nameCN ? featuredTrips[currentSlide].nameCN : featuredTrips[currentSlide].name}
+                    text={locale === 'zh' && featuredTrips[currentSlide]?.nameCN ? featuredTrips[currentSlide]?.nameCN : featuredTrips[currentSlide]?.name || ''}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
                     fontSize="40px"
@@ -809,6 +868,7 @@ export default function Home() {
               </Container>
             </Container>
           </Container>
+          )}
         </Container>
       </Section>
 
