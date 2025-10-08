@@ -757,6 +757,42 @@ export default function NewJourneyPage() {
         </Box>
       </Box>
 
+      {/* Form Actions */}
+      <Box sx={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+        <button
+          type="button"
+          onClick={() => router.push('/admin/journeys')}
+          style={{
+            padding: '0.75rem 2rem',
+            fontSize: '16px',
+            fontFamily: 'MarioFont, sans-serif',
+            backgroundColor: 'white',
+            border: '2px solid #373737',
+            borderRadius: '0.5rem',
+            cursor: 'pointer'
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={handleSaveJourney}
+          disabled={saving}
+          style={{
+            padding: '0.75rem 2rem',
+            fontSize: '16px',
+            fontFamily: 'MarioFont, sans-serif',
+            backgroundColor: '#FFD701',
+            border: '2px solid #373737',
+            borderRadius: '0.5rem',
+            cursor: saving ? 'not-allowed' : 'pointer',
+            opacity: saving ? 0.6 : 1
+          }}
+        >
+          {saving ? 'Creating...' : 'Create Journey'}
+        </button>
+      </Box>
+
       {/* Requirements Info Box */}
       <Box sx={{ marginTop: '2rem', padding: '1rem', backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '1px solid #2196f3' }}>
         <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', margin: 0, marginBottom: '0.5rem' }}>

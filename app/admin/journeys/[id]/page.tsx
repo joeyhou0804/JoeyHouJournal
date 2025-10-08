@@ -754,216 +754,6 @@ export default function JourneyDetailsPage() {
         </Box>
       </Box>
 
-      {/* Associated Destinations */}
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0 }}>
-            Associated Destinations ({destinations.length})
-          </h2>
-          <button
-            onClick={() => setAddDrawerOpen(true)}
-            style={{
-              padding: '0.75rem 1.5rem',
-              fontSize: '16px',
-              fontFamily: 'MarioFont, sans-serif',
-              backgroundColor: '#FFD701',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: 'pointer'
-            }}
-          >
-            + Add Destinations
-          </button>
-        </Box>
-
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            borderRadius: '1rem',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            overflow: 'hidden'
-          }}
-        >
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ backgroundColor: '#f9f9f9', borderBottom: '2px solid #e0e0e0' }}>
-                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Name</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Date</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>State</th>
-                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Images</th>
-                <th style={{ padding: '1rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {destinations.length === 0 ? (
-                <tr>
-                  <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
-                    No destinations found for this journey
-                  </td>
-                </tr>
-              ) : (
-                destinations
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((dest) => (
-                    <tr
-                      key={dest.id}
-                      style={{
-                        borderBottom: '1px solid #e0e0e0',
-                        cursor: 'pointer',
-                        transition: 'background-color 0.2s'
-                      }}
-                      onClick={() => router.push(`/admin/destinations/${dest.id}`)}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                    >
-                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
-                        {dest.name}
-                        {dest.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{dest.nameCN}</div>}
-                      </td>
-                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.date}</td>
-                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</td>
-                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
-                        {dest.images?.length || 0}
-                      </td>
-                      <td
-                        style={{ padding: '1rem', textAlign: 'center' }}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <button
-                          onClick={() => handleRemoveDestination(dest.id)}
-                          style={{
-                            padding: '0.5rem 1rem',
-                            fontSize: '14px',
-                            fontFamily: 'MarioFont, sans-serif',
-                            backgroundColor: '#ff6b6b',
-                            color: 'white',
-                            border: '1px solid #c92a2a',
-                            borderRadius: '0.25rem',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-              )}
-            </tbody>
-          </table>
-        </Box>
-
-        {/* Pagination Controls */}
-        {destinations.length > 0 && (
-          <Box sx={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginTop: '1rem',
-            padding: '1rem',
-            backgroundColor: 'white',
-            borderRadius: '0.5rem',
-            border: '1px solid #e0e0e0'
-          }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-                Rows per page:
-              </label>
-              <select
-                value={rowsPerPage}
-                onChange={(e) => {
-                  setRowsPerPage(Number(e.target.value))
-                  setPage(0)
-                }}
-                style={{
-                  padding: '0.5rem',
-                  fontSize: '14px',
-                  fontFamily: 'MarioFont, sans-serif',
-                  border: '2px solid #373737',
-                  borderRadius: '0.25rem',
-                  cursor: 'pointer'
-                }}
-              >
-                <option value={5}>5</option>
-                <option value={10}>10</option>
-                <option value={25}>25</option>
-                <option value={50}>50</option>
-              </select>
-            </Box>
-
-            <Box sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-              {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, destinations.length)} of {destinations.length}
-            </Box>
-
-            <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-              <button
-                onClick={() => setPage(0)}
-                disabled={page === 0}
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontSize: '14px',
-                  fontFamily: 'MarioFont, sans-serif',
-                  backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
-                  border: '2px solid #373737',
-                  borderRadius: '0.25rem',
-                  cursor: page === 0 ? 'not-allowed' : 'pointer',
-                  opacity: page === 0 ? 0.5 : 1
-                }}
-              >
-                ««
-              </button>
-              <button
-                onClick={() => setPage(page - 1)}
-                disabled={page === 0}
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontSize: '14px',
-                  fontFamily: 'MarioFont, sans-serif',
-                  backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
-                  border: '2px solid #373737',
-                  borderRadius: '0.25rem',
-                  cursor: page === 0 ? 'not-allowed' : 'pointer',
-                  opacity: page === 0 ? 0.5 : 1
-                }}
-              >
-                «
-              </button>
-              <button
-                onClick={() => setPage(page + 1)}
-                disabled={page >= Math.ceil(destinations.length / rowsPerPage) - 1}
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontSize: '14px',
-                  fontFamily: 'MarioFont, sans-serif',
-                  backgroundColor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
-                  border: '2px solid #373737',
-                  borderRadius: '0.25rem',
-                  cursor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
-                  opacity: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 0.5 : 1
-                }}
-              >
-                »
-              </button>
-              <button
-                onClick={() => setPage(Math.ceil(destinations.length / rowsPerPage) - 1)}
-                disabled={page >= Math.ceil(destinations.length / rowsPerPage) - 1}
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontSize: '14px',
-                  fontFamily: 'MarioFont, sans-serif',
-                  backgroundColor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
-                  border: '2px solid #373737',
-                  borderRadius: '0.25rem',
-                  cursor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
-                  opacity: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 0.5 : 1
-                }}
-              >
-                »»
-              </button>
-            </Box>
-          </Box>
-        )}
-      </Box>
-
       {/* Route Points */}
       <Box
         sx={{
@@ -1217,6 +1007,252 @@ export default function JourneyDetailsPage() {
             <li>Current route: {routePoints.length >= 2 ? getRouteDisplay() : 'Add at least 2 points'}</li>
           </ul>
         </Box>
+      </Box>
+
+      {/* Associated Destinations */}
+      <Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0 }}>
+            Associated Destinations ({destinations.length})
+          </h2>
+          <button
+            onClick={() => setAddDrawerOpen(true)}
+            style={{
+              padding: '0.75rem 1.5rem',
+              fontSize: '16px',
+              fontFamily: 'MarioFont, sans-serif',
+              backgroundColor: '#FFD701',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: 'pointer'
+            }}
+          >
+            + Add Destinations
+          </button>
+        </Box>
+
+        <Box
+          sx={{
+            backgroundColor: 'white',
+            borderRadius: '1rem',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            overflow: 'hidden'
+          }}
+        >
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#f9f9f9', borderBottom: '2px solid #e0e0e0' }}>
+                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Name</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Date</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>State</th>
+                <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Images</th>
+                <th style={{ padding: '1rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {destinations.length === 0 ? (
+                <tr>
+                  <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
+                    No destinations found for this journey
+                  </td>
+                </tr>
+              ) : (
+                destinations
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((dest) => (
+                    <tr
+                      key={dest.id}
+                      style={{
+                        borderBottom: '1px solid #e0e0e0',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onClick={() => router.push(`/admin/destinations/${dest.id}`)}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                    >
+                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
+                        {dest.name}
+                        {dest.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{dest.nameCN}</div>}
+                      </td>
+                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.date}</td>
+                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</td>
+                      <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
+                        {dest.images?.length || 0}
+                      </td>
+                      <td
+                        style={{ padding: '1rem', textAlign: 'center' }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          onClick={() => handleRemoveDestination(dest.id)}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            fontSize: '14px',
+                            fontFamily: 'MarioFont, sans-serif',
+                            backgroundColor: '#ff6b6b',
+                            color: 'white',
+                            border: '1px solid #c92a2a',
+                            borderRadius: '0.25rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+              )}
+            </tbody>
+          </table>
+        </Box>
+
+        {/* Pagination Controls */}
+        {destinations.length > 0 && (
+          <Box sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginTop: '1rem',
+            padding: '1rem',
+            backgroundColor: 'white',
+            borderRadius: '0.5rem',
+            border: '1px solid #e0e0e0'
+          }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
+                Rows per page:
+              </label>
+              <select
+                value={rowsPerPage}
+                onChange={(e) => {
+                  setRowsPerPage(Number(e.target.value))
+                  setPage(0)
+                }}
+                style={{
+                  padding: '0.5rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={25}>25</option>
+                <option value={50}>50</option>
+              </select>
+            </Box>
+
+            <Box sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
+              {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, destinations.length)} of {destinations.length}
+            </Box>
+
+            <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => setPage(0)}
+                disabled={page === 0}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: page === 0 ? 'not-allowed' : 'pointer',
+                  opacity: page === 0 ? 0.5 : 1
+                }}
+              >
+                ««
+              </button>
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 0}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: page === 0 ? 'not-allowed' : 'pointer',
+                  opacity: page === 0 ? 0.5 : 1
+                }}
+              >
+                «
+              </button>
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page >= Math.ceil(destinations.length / rowsPerPage) - 1}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
+                  opacity: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 0.5 : 1
+                }}
+              >
+                »
+              </button>
+              <button
+                onClick={() => setPage(Math.ceil(destinations.length / rowsPerPage) - 1)}
+                disabled={page >= Math.ceil(destinations.length / rowsPerPage) - 1}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontSize: '14px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
+                  border: '2px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
+                  opacity: page >= Math.ceil(destinations.length / rowsPerPage) - 1 ? 0.5 : 1
+                }}
+              >
+                »»
+              </button>
+            </Box>
+          </Box>
+        )}
+      </Box>
+
+      {/* Form Actions */}
+      <Box sx={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+        <button
+          type="button"
+          onClick={() => router.push('/admin/journeys')}
+          style={{
+            padding: '0.75rem 2rem',
+            fontSize: '16px',
+            fontFamily: 'MarioFont, sans-serif',
+            backgroundColor: 'white',
+            border: '2px solid #373737',
+            borderRadius: '0.5rem',
+            cursor: 'pointer'
+          }}
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          onClick={handleSaveJourney}
+          disabled={saving}
+          style={{
+            padding: '0.75rem 2rem',
+            fontSize: '16px',
+            fontFamily: 'MarioFont, sans-serif',
+            backgroundColor: '#FFD701',
+            border: '2px solid #373737',
+            borderRadius: '0.5rem',
+            cursor: saving ? 'not-allowed' : 'pointer',
+            opacity: saving ? 0.6 : 1
+          }}
+        >
+          {saving ? 'Saving...' : 'Save Journey'}
+        </button>
       </Box>
 
       {/* Dangerous Zone - Delete Journey */}
