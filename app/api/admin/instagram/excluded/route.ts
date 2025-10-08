@@ -18,36 +18,29 @@ export async function GET() {
 // POST - Exclude a post
 export async function POST(request: Request) {
   try {
-    const body = await request.json()
-    console.log('POST /api/admin/instagram/excluded received body:', body)
-    const { instagramPostId } = body
+    const { instagramPostId } = await request.json()
 
     if (!instagramPostId) {
-      console.error('Missing instagramPostId in request')
       return NextResponse.json(
         { error: 'Instagram post ID is required' },
         { status: 400 }
       )
     }
 
-    console.log('Calling excludeInstagramPost with ID:', instagramPostId)
     const success = await excludeInstagramPost(instagramPostId)
-    console.log('excludeInstagramPost returned:', success)
 
     if (!success) {
-      console.error('excludeInstagramPost returned false')
       return NextResponse.json(
-        { error: 'Failed to exclude post - database operation returned false' },
+        { error: 'Failed to exclude post' },
         { status: 500 }
       )
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error in POST /api/admin/instagram/excluded:', error)
-    console.error('Error message:', error instanceof Error ? error.message : String(error))
+    console.error('Error excluding post:', error)
     return NextResponse.json(
-      { error: 'Failed to exclude post: ' + (error instanceof Error ? error.message : 'Unknown error') },
+      { error: 'Failed to exclude post' },
       { status: 500 }
     )
   }

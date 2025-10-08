@@ -327,18 +327,14 @@ export async function getAllExcludedPostIds(): Promise<string[]> {
 
 export async function excludeInstagramPost(instagramPostId: string): Promise<boolean> {
   try {
-    console.log('Attempting to exclude Instagram post:', instagramPostId)
-    const result = await sql`
+    await sql`
       INSERT INTO excluded_instagram_posts (instagram_post_id)
       VALUES (${instagramPostId})
       ON CONFLICT (instagram_post_id) DO NOTHING
     `
-    console.log('Successfully excluded Instagram post:', instagramPostId, 'Result:', result)
     return true
   } catch (error) {
-    console.error('Error excluding Instagram post:', instagramPostId, error)
-    console.error('Error details:', error instanceof Error ? error.message : String(error))
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack')
+    console.error('Error excluding Instagram post:', error)
     return false
   }
 }
