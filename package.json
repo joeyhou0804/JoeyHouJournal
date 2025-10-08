@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:migrate": "tsx scripts/migrate-to-db.ts"
+    "db:migrate": "tsx scripts/migrate-to-db.ts",
+    "sync-journey-names": "tsx scripts/sync-journey-names.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

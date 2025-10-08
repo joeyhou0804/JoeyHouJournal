@@ -462,9 +462,9 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <Train style={{ color: '#F6F6F6' }} size={24} />
                 <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
-                  {locale === 'zh' && station.journeyNameCN && station.journeyNameCN !== station.journeyName
-                    ? station.journeyNameCN
-                    : journey?.name || station.journeyName}
+                  {locale === 'zh'
+                    ? (journey?.nameCN || station.journeyNameCN || journey?.name || station.journeyName)
+                    : (journey?.name || station.journeyName)}
                 </Box>
               </Box>
             </Box>
