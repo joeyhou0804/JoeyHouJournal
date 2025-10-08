@@ -326,12 +326,6 @@ export default function JourneysPage() {
         </Box>
       )}
 
-      <Box sx={{ marginTop: '2rem', padding: '1rem', backgroundColor: '#fff3cd', borderRadius: '0.5rem', border: '1px solid #ffc107' }}>
-        <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', margin: 0 }}>
-          <strong>Note:</strong> Journeys are currently read-only from journeys.js. To add or modify journeys,
-          you need to manually edit the src/data/journeys.js file. This interface is for viewing journey details and associated destinations.
-        </p>
-      </Box>
     </Box>
   )
 }
