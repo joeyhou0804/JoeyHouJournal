@@ -68,6 +68,7 @@ export default function InstagramImportPage() {
   const [checkingConnection, setCheckingConnection] = useState(true)
   const [loading, setLoading] = useState(false)
   const [posts, setPosts] = useState<InstagramPost[]>([])
+  const [importedPostIds, setImportedPostIds] = useState<Set<string>>(new Set())
   const [error, setError] = useState<string | null>(null)
   const [selectedPost, setSelectedPost] = useState<InstagramPost | null>(null)
   const [importing, setImporting] = useState(false)
@@ -133,15 +134,30 @@ export default function InstagramImportPage() {
     setError(null)
 
     try {
-      const response = await fetch('/api/admin/instagram/posts?limit=50')
+      // Fetch Instagram posts and existing destinations in parallel
+      const [postsResponse, destinationsResponse] = await Promise.all([
+        fetch('/api/admin/instagram/posts?limit=50'),
+        fetch('/api/admin/destinations')
+      ])
 
-      if (!response.ok) {
-        const data = await response.json()
+      if (!postsResponse.ok) {
+        const data = await postsResponse.json()
         throw new Error(data.error || 'Failed to load posts')
       }
 
-      const data = await response.json()
-      setPosts(data.posts)
+      const postsData = await postsResponse.json()
+      const destinationsData = await destinationsResponse.json()
+
+      // Build a set of Instagram post IDs that have already been imported
+      const imported = new Set<string>()
+      destinationsData.forEach((dest: any) => {
+        if (dest.instagram_post_id) {
+          imported.add(dest.instagram_post_id)
+        }
+      })
+
+      setImportedPostIds(imported)
+      setPosts(postsData.posts)
       setIsConnected(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load posts')
@@ -216,6 +232,10 @@ export default function InstagramImportPage() {
         `Successfully created destination "${destinationName}" with ${result.uploadedCount} image(s). ` +
         `Click here to view it in the destinations list.`
       )
+
+      // Add post to imported set
+      setImportedPostIds(prev => new Set([...prev, selectedPost.id]))
+
       setSelectedPost(null)
 
       // Clear form fields
@@ -227,9 +247,6 @@ export default function InstagramImportPage() {
       setLat(0)
       setLng(0)
       setIsEditingCountry(false)
-
-      // Remove imported post from list
-      setPosts(posts.filter(p => p.id !== selectedPost.id))
 
       // Show link to the new destination in the success message
       console.log('New destination created:', newDestinationId)
@@ -350,8 +367,18 @@ export default function InstagramImportPage() {
     setPage(0)
   }
 
+  // Sort posts: non-imported first, then imported
+  const sortedPosts = [...posts].sort((a, b) => {
+    const aImported = importedPostIds.has(a.id)
+    const bImported = importedPostIds.has(b.id)
+
+    if (aImported && !bImported) return 1
+    if (!aImported && bImported) return -1
+    return 0
+  })
+
   // Paginated posts
-  const paginatedPosts = posts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+  const paginatedPosts = sortedPosts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
 
   if (!isConnected) {
     return (
@@ -397,9 +424,16 @@ export default function InstagramImportPage() {
   return (
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
-          Instagram Import
-        </Typography>
+        <Box>
+          <Typography variant="h4" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
+            Instagram Import
+          </Typography>
+          {posts.length > 0 && (
+            <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666', mt: 0.5 }}>
+              {posts.length - importedPostIds.size} of {posts.length} posts available to import
+            </Typography>
+          )}
+        </Box>
         <Button
           variant="contained"
           startIcon={<InstagramIcon />}
@@ -468,12 +502,16 @@ export default function InstagramImportPage() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {paginatedPosts.map((post) => (
+                {paginatedPosts.map((post) => {
+                  const isImported = importedPostIds.has(post.id)
+                  return (
                   <TableRow
                     key={post.id}
                     sx={{
                       '&:hover': { backgroundColor: '#fafafa' },
                       cursor: 'pointer',
+                      backgroundColor: isImported ? '#f5f5f5' : 'transparent',
+                      opacity: isImported ? 0.6 : 1,
                     }}
                   >
                     <TableCell>
@@ -557,28 +595,42 @@ export default function InstagramImportPage() {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => {
-                          setSelectedPost(post)
-                          // Auto-fill date from post timestamp
-                          const postDate = new Date(post.timestamp)
-                          const formattedDate = postDate.toISOString().split('T')[0]
-                          setDestinationDate(formattedDate)
-                        }}
-                        sx={{
-                          backgroundColor: '#FFD701',
-                          color: '#373737',
-                          fontFamily: 'MarioFont, sans-serif',
-                          '&:hover': { backgroundColor: '#E5C001' },
-                        }}
-                      >
-                        Import
-                      </Button>
+                      {isImported ? (
+                        <Chip
+                          icon={<CheckIcon />}
+                          label="Already Imported"
+                          size="small"
+                          sx={{
+                            fontFamily: 'MarioFont, sans-serif',
+                            backgroundColor: '#4caf50',
+                            color: 'white',
+                          }}
+                        />
+                      ) : (
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() => {
+                            setSelectedPost(post)
+                            // Auto-fill date from post timestamp
+                            const postDate = new Date(post.timestamp)
+                            const formattedDate = postDate.toISOString().split('T')[0]
+                            setDestinationDate(formattedDate)
+                          }}
+                          sx={{
+                            backgroundColor: '#FFD701',
+                            color: '#373737',
+                            fontFamily: 'MarioFont, sans-serif',
+                            '&:hover': { backgroundColor: '#E5C001' },
+                          }}
+                        >
+                          Import
+                        </Button>
+                      )}
                     </TableCell>
                   </TableRow>
-                ))}
+                  )
+                })}
               </TableBody>
             </Table>
           </TableContainer>

@@ -26,6 +26,7 @@ function dbToApi(destination: any) {
     description: destination.description,
     descriptionCN: destination.description_cn,
     showMap: destination.show_map ?? false,
+    instagram_post_id: destination.instagram_post_id,
   }
 }
 
@@ -55,6 +56,7 @@ function apiToDb(destination: any) {
     description: destination.description || null,
     description_cn: destination.descriptionCN || null,
     show_map: destination.showMap ?? false,
+    instagram_post_id: destination.instagram_post_id || null,
   }
 }
 

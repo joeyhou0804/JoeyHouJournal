@@ -104,6 +104,7 @@ export async function POST(request: NextRequest) {
       description: description || null,
       description_cn: descriptionCn || null,
       show_map: showMap ?? true,
+      instagram_post_id: instagramPostId,
     }
 
     // Save to database
