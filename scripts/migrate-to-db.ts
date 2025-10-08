@@ -75,55 +75,8 @@ async function migrate() {
 
     console.log('Tables created successfully')
 
-    // Import journeys
-    console.log(`Importing ${journeysData.length} journeys...`)
-    for (const journey of journeysData) {
-      await sql`
-        INSERT INTO journeys (
-          id, slug, name, name_cn, description, description_cn,
-          start_date, end_date, duration, days, nights,
-          start_location, end_location, visited_place_ids,
-          total_places, images, segments
-        ) VALUES (
-          ${journey.id},
-          ${journey.slug},
-          ${journey.name},
-          ${(journey as any).nameCN || null},
-          ${(journey as any).description || null},
-          ${(journey as any).descriptionCN || null},
-          ${journey.startDate},
-          ${journey.endDate},
-          ${journey.duration},
-          ${(journey as any).days || 1},
-          ${(journey as any).nights || 0},
-          ${JSON.stringify(journey.startLocation)}::jsonb,
-          ${JSON.stringify(journey.endLocation)}::jsonb,
-          ${JSON.stringify(journey.visitedPlaceIds || [])}::jsonb,
-          ${journey.totalPlaces || null},
-          ${JSON.stringify(journey.images || [])}::jsonb,
-          ${JSON.stringify((journey as any).segments || null)}::jsonb
-        )
-        ON CONFLICT (id) DO UPDATE SET
-          slug = EXCLUDED.slug,
-          name = EXCLUDED.name,
-          name_cn = EXCLUDED.name_cn,
-          description = EXCLUDED.description,
-          description_cn = EXCLUDED.description_cn,
-          start_date = EXCLUDED.start_date,
-          end_date = EXCLUDED.end_date,
-          duration = EXCLUDED.duration,
-          days = EXCLUDED.days,
-          nights = EXCLUDED.nights,
-          start_location = EXCLUDED.start_location,
-          end_location = EXCLUDED.end_location,
-          visited_place_ids = EXCLUDED.visited_place_ids,
-          total_places = EXCLUDED.total_places,
-          images = EXCLUDED.images,
-          segments = EXCLUDED.segments,
-          updated_at = NOW()
-      `
-    }
-    console.log('Journeys imported successfully')
+    // NOTE: Journeys migration has been archived as the JSON file is no longer available
+    console.log('Skipping journeys import (archived)')
 
     // Import destinations
     console.log(`Importing ${destinationsData.length} destinations...`)
