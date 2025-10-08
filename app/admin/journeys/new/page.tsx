@@ -16,7 +16,8 @@ export default function NewJourneyPage() {
     days: 1,
     nights: 0,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    isDayTrip: false
   })
 
   // Route points state (minimum 2 points required)
@@ -112,7 +113,8 @@ export default function NewJourneyPage() {
         visitedPlaceIds: [],
         totalPlaces: 0,
         images: [],
-        segments: segments
+        segments: segments,
+        isDayTrip: formData.isDayTrip
       }
 
       const response = await fetch('/api/admin/journeys', {
@@ -452,6 +454,26 @@ export default function NewJourneyPage() {
                 }}
               />
             </Box>
+          </Box>
+
+          {/* Day Trip Checkbox */}
+          <Box>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={formData.isDayTrip}
+                onChange={(e) => handleInputChange('isDayTrip', e.target.checked)}
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  cursor: 'pointer'
+                }}
+              />
+              <span style={{ fontWeight: 'bold' }}>Day Trip / Weekend Trip</span>
+              <span style={{ fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
+                (Check this for short trips that will appear on the day trips map)
+              </span>
+            </label>
           </Box>
 
           {/* Start Date */}
