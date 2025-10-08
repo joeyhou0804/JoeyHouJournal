@@ -283,11 +283,7 @@ export default function Home() {
             border: '6px solid rgba(240, 96, 1, 0.2)',
             borderTop: '6px solid #F06001',
             borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            '@keyframes spin': {
-              '0%': { transform: 'rotate(0deg)' },
-              '100%': { transform: 'rotate(360deg)' }
-            }
+            animation: 'spin 1s linear infinite'
           }}
         />
         {/* Loading text */}
