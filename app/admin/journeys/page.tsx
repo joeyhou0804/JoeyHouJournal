@@ -121,6 +121,11 @@ export default function JourneysPage() {
               <Box sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '0.5rem', color: '#373737' }}>
                 {journey.name}
               </Box>
+              {journey.nameCN && (
+                <Box sx={{ fontSize: '14px', color: '#666', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
+                  {journey.nameCN}
+                </Box>
+              )}
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
                 <Box><strong>Route:</strong> {journey.startLocation.name} → {journey.endLocation.name}</Box>
                 <Box><strong>Duration:</strong> {journey.days} day{journey.days > 1 ? 's' : ''}{journey.nights > 0 ? `, ${journey.nights} night${journey.nights > 1 ? 's' : ''}` : ''}</Box>
@@ -172,8 +177,9 @@ export default function JourneysPage() {
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
                     {journey.name}
+                    {journey.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{journey.nameCN}</div>}
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
                     {journey.startLocation.name} → {journey.endLocation.name}
