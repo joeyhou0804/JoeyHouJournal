@@ -36,6 +36,7 @@ export interface Destination {
   images: string[] | null
   description: string | null
   description_cn: string | null
+  show_map: boolean | null
   created_at: Date
   updated_at: Date
 }
@@ -203,13 +204,14 @@ export async function createDestination(destination: Partial<Destination>): Prom
     INSERT INTO destinations (
       id, name, name_cn, state, country, date, coordinates,
       journey_id, journey_name, journey_name_cn,
-      images, description, description_cn
+      images, description, description_cn, show_map
     ) VALUES (
       ${destination.id}, ${destination.name}, ${destination.name_cn},
       ${destination.state}, ${destination.country}, ${destination.date},
       ${JSON.stringify(destination.coordinates)}::jsonb,
       ${destination.journey_id}, ${destination.journey_name}, ${destination.journey_name_cn},
-      ${images}::jsonb, ${destination.description}, ${destination.description_cn}
+      ${images}::jsonb, ${destination.description}, ${destination.description_cn},
+      ${destination.show_map ?? false}
     )
     RETURNING *
   `
@@ -233,6 +235,7 @@ export async function updateDestination(id: string, destination: Partial<Destina
       images = ${images}::jsonb,
       description = ${destination.description},
       description_cn = ${destination.description_cn},
+      show_map = ${destination.show_map ?? false},
       updated_at = NOW()
     WHERE id = ${id}
     RETURNING *

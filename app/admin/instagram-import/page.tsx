@@ -83,6 +83,7 @@ export default function InstagramImportPage() {
   const [lat, setLat] = useState<number>(0)
   const [lng, setLng] = useState<number>(0)
   const [isDetectingCoords, setIsDetectingCoords] = useState(false)
+  const [showMap, setShowMap] = useState(true)
 
   const destinations: Destination[] = destinationsData as Destination[]
 
@@ -194,6 +195,7 @@ export default function InstagramImportPage() {
           description: english,
           descriptionCn: chinese,
           mediaUrls,
+          showMap,
         }),
       })
 
@@ -766,6 +768,30 @@ export default function InstagramImportPage() {
                   }}
                 />
               </FormControl>
+
+              {/* Show Map Toggle */}
+              <Box sx={{ mb: 2, p: 2, backgroundColor: '#f9f9f9', borderRadius: '4px', border: '1px solid #ddd' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <input
+                    type="checkbox"
+                    checked={showMap}
+                    onChange={(e) => setShowMap(e.target.checked)}
+                    id="showMap-import"
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      cursor: 'pointer',
+                      accentColor: '#FFD701'
+                    }}
+                  />
+                  <label htmlFor="showMap-import" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1, color: '#666' }}>
+                    Show Map in Carousel
+                  </label>
+                </Box>
+                <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '12px', color: '#999', marginTop: '0.5rem', marginLeft: '32px' }}>
+                  When enabled, the last tab will display a map instead of the image number.
+                </Typography>
+              </Box>
             </DialogContent>
             <DialogActions>
               <Button
@@ -778,6 +804,7 @@ export default function InstagramImportPage() {
                   setDestinationDate('')
                   setLat(0)
                   setLng(0)
+                  setShowMap(true)
                   setIsEditingCountry(false)
                 }}
                 startIcon={<CancelIcon />}

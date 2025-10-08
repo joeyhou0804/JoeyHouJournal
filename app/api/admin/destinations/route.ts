@@ -25,6 +25,7 @@ function dbToApi(destination: any) {
     images: destination.images,
     description: destination.description,
     descriptionCN: destination.description_cn,
+    showMap: destination.show_map ?? false,
   }
 }
 
@@ -53,6 +54,7 @@ function apiToDb(destination: any) {
     images: destination.images || [],
     description: destination.description || null,
     description_cn: destination.descriptionCN || null,
+    show_map: destination.showMap ?? false,
   }
 }
 

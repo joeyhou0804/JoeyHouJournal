@@ -24,6 +24,7 @@ interface ImportRequest {
   description: string
   descriptionCn: string
   mediaUrls: string[] // Instagram media URLs to import
+  showMap: boolean
 }
 
 export async function POST(request: NextRequest) {
@@ -49,6 +50,7 @@ export async function POST(request: NextRequest) {
       description,
       descriptionCn,
       mediaUrls,
+      showMap,
     } = body
 
     if (!instagramPostId || !destinationName || !destinationDate || !mediaUrls || mediaUrls.length === 0) {
@@ -101,6 +103,7 @@ export async function POST(request: NextRequest) {
       images: uploadedUrls,
       description: description || null,
       description_cn: descriptionCn || null,
+      show_map: showMap ?? true,
     }
 
     // Save to database

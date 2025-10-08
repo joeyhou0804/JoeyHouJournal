@@ -302,12 +302,10 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
               }}
             >
               {station.images.map((_, index) => {
-                // Hidden boolean to control if single image should use tab_1 instead of tab_map
-                const useSingleImageAsMap = true
-
                 const isLastImage = index === station.images.length - 1
                 const isSingleImage = station.images.length === 1
-                const useMapTab = (isSingleImage && useSingleImageAsMap) || (isLastImage && station.images.length > 1)
+                // Use map tab for last image only if showMap is enabled
+                const useMapTab = station.showMap && isLastImage
                 const tabNumber = index + 1
                 const isSelected = currentImageIndex === index
 

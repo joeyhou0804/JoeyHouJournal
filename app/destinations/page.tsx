@@ -1,6 +1,5 @@
 'use client'
-import { useState, useRef } from 'react'
-import { destinations } from 'src/data/destinations'
+import { useState, useRef, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
@@ -32,9 +31,27 @@ export default function StationsPage() {
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const [xsDisplayCount, setXsDisplayCount] = useState(12)
+  const [destinations, setDestinations] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 12
+
+  // Fetch destinations from API
+  useEffect(() => {
+    async function fetchDestinations() {
+      try {
+        const response = await fetch('/api/destinations')
+        const data = await response.json()
+        setDestinations(data)
+      } catch (error) {
+        console.error('Error fetching destinations:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchDestinations()
+  }, [])
 
   const sortedDestinations = [...destinations].sort((a, b) => {
     const dateA = new Date(a.date).getTime()
@@ -90,6 +107,16 @@ export default function StationsPage() {
         }, 50)
       }, 50)
     }, 150)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-600" style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '24px' }}>
+          Loading destinations...
+        </p>
+      </div>
+    )
   }
 
   return (

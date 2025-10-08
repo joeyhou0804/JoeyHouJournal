@@ -40,6 +40,7 @@ export function transformDestination(destination: DBDestination): any {
     journeyNameCN: destination.journey_name_cn,
     images: destination.images || [],
     description: destination.description,
-    descriptionCN: destination.description_cn
+    descriptionCN: destination.description_cn,
+    showMap: destination.show_map ?? false
   }
 }

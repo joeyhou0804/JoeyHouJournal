@@ -21,6 +21,7 @@ interface DestinationFormData {
   lat: number
   lng: number
   images: string[]
+  showMap: boolean
 }
 
 export default function DestinationFormPage() {
@@ -31,7 +32,8 @@ export default function DestinationFormPage() {
 
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<DestinationFormData>({
     defaultValues: {
-      images: []
+      images: [],
+      showMap: false
     }
   })
 
@@ -664,6 +666,29 @@ export default function DestinationFormPage() {
               resize: 'vertical'
             }}
           />
+        </Box>
+
+        {/* Show Map Toggle */}
+        <Box sx={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f5f5f5', borderRadius: '0.5rem', border: '2px solid #373737' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <input
+              type="checkbox"
+              {...register('showMap')}
+              id="showMap"
+              style={{
+                width: '24px',
+                height: '24px',
+                cursor: 'pointer',
+                accentColor: '#FFD701'
+              }}
+            />
+            <label htmlFor="showMap" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+              Show Map in Carousel
+            </label>
+          </Box>
+          <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', marginTop: '0.5rem', marginLeft: '40px' }}>
+            When enabled, the last tab in the destination carousel will display a map instead of the image number.
+          </Typography>
         </Box>
 
         {/* Images */}
