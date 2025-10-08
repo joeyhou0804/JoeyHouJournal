@@ -20,9 +20,9 @@ export default function NewJourneyPage() {
   })
 
   // Route points state (minimum 2 points required)
-  const [routePoints, setRoutePoints] = useState<Array<{ name: string; lat: number; lng: number }>>([
-    { name: '', lat: 0, lng: 0 },
-    { name: '', lat: 0, lng: 0 }
+  const [routePoints, setRoutePoints] = useState<Array<{ name: string; nameCN?: string; lat: number; lng: number }>>([
+    { name: '', nameCN: '', lat: 0, lng: 0 },
+    { name: '', nameCN: '', lat: 0, lng: 0 }
   ])
 
   // Transportation methods between points
@@ -126,15 +126,25 @@ export default function NewJourneyPage() {
   }
 
   // Convert routePoints to segments when saving
-  const pointsToSegments = (points: Array<{ name: string; lat: number; lng: number }>) => {
+  const pointsToSegments = (points: Array<{ name: string; nameCN?: string; lat: number; lng: number }>) => {
     if (points.length < 2) return []
 
     const segments = []
     for (let i = 0; i < points.length - 1; i++) {
       segments.push({
         order: i + 1,
-        from: points[i],
-        to: points[i + 1],
+        from: {
+          name: points[i].name,
+          nameCN: points[i].nameCN || '',
+          lat: points[i].lat,
+          lng: points[i].lng
+        },
+        to: {
+          name: points[i + 1].name,
+          nameCN: points[i + 1].nameCN || '',
+          lat: points[i + 1].lat,
+          lng: points[i + 1].lng
+        },
         method: transportMethods[i] || 'train'
       })
     }
@@ -143,7 +153,7 @@ export default function NewJourneyPage() {
 
   // Route points management functions
   const addPoint = () => {
-    setRoutePoints([...routePoints, { name: '', lat: 0, lng: 0 }])
+    setRoutePoints([...routePoints, { name: '', nameCN: '', lat: 0, lng: 0 }])
     setEditableCoords([...editableCoords, false])
     if (routePoints.length > 0) {
       setTransportMethods([...transportMethods, 'train'])
@@ -170,7 +180,7 @@ export default function NewJourneyPage() {
     setTransportMethods(newMethods)
   }
 
-  const updatePoint = (index: number, subfield: 'name' | 'lat' | 'lng', value: string | number) => {
+  const updatePoint = (index: number, subfield: 'name' | 'nameCN' | 'lat' | 'lng', value: string | number) => {
     const newPoints = [...routePoints]
     if (subfield === 'name') {
       newPoints[index][subfield] = value as string
@@ -181,6 +191,8 @@ export default function NewJourneyPage() {
           geocodePointSilently(index, value as string)
         }, 1000)
       }
+    } else if (subfield === 'nameCN') {
+      newPoints[index][subfield] = value as string
     } else {
       newPoints[index][subfield] = value as number
     }
@@ -539,7 +551,7 @@ export default function NewJourneyPage() {
                   </Box>
                 </Box>
 
-                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '2fr 1fr 1fr' }, gap: '0.75rem' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                   <input
                     value={point.name}
                     onChange={(e) => updatePoint(index, 'name', e.target.value)}
@@ -552,6 +564,56 @@ export default function NewJourneyPage() {
                       fontFamily: 'MarioFont, sans-serif'
                     }}
                   />
+                  <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <input
+                      value={point.nameCN || ''}
+                      onChange={(e) => updatePoint(index, 'nameCN', e.target.value)}
+                      placeholder="Chinese name (e.g., 芝加哥)"
+                      style={{
+                        flex: 1,
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const { generateChineseDestinationName } = require('lib/cityTranslations')
+                        // Extract city name and state from the full name (e.g., "New York, NY")
+                        const parts = point.name.split(',').map(p => p.trim())
+                        if (parts.length >= 2) {
+                          const cityName = parts[0]
+                          const stateCode = parts[1]
+                          const fullTranslation = generateChineseDestinationName(cityName, stateCode)
+                          if (fullTranslation) {
+                            // Extract just the city name (after the ·)
+                            const cityNameCN = fullTranslation.split('·')[1] || fullTranslation
+                            updatePoint(index, 'nameCN', cityNameCN)
+                          }
+                        }
+                      }}
+                      disabled={!point.name || !point.name.includes(',')}
+                      style={{
+                        padding: '0.5rem 0.75rem',
+                        fontSize: '12px',
+                        fontFamily: 'MarioFont, sans-serif',
+                        backgroundColor: point.name && point.name.includes(',') ? '#FFD701' : '#E0E0E0',
+                        color: '#373737',
+                        border: '1px solid #373737',
+                        borderRadius: '0.5rem',
+                        cursor: point.name && point.name.includes(',') ? 'pointer' : 'not-allowed',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      Auto-Generate
+                    </button>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '0.75rem' }}>
                   <input
                     type="number"
                     step="0.0001"
