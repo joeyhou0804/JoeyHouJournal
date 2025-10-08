@@ -264,7 +264,7 @@ export default function Home() {
   }
 
   // Show loading state while data is being fetched
-  if (isLoading || featuredTrips.length === 0 || recentPlaces.length === 0) {
+  if (isLoading) {
     return (
       <Box sx={{
         minHeight: '100vh',
