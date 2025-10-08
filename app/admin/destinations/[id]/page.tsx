@@ -108,12 +108,8 @@ export default function DestinationFormPage() {
 
       if (destination) {
         Object.keys(destination).forEach((key) => {
-          // Convert date format from YYYY/MM/DD to YYYY-MM-DD for date input
-          if (key === 'date' && destination[key]) {
-            setValue(key as any, destination[key].replace(/\//g, '-'))
-          } else {
-            setValue(key as any, destination[key])
-          }
+          // Date is stored in YYYY-MM-DD format (ISO 8601 standard), no conversion needed
+          setValue(key as any, destination[key])
         })
       } else {
         console.error('Destination not found:', id)
@@ -236,11 +232,8 @@ export default function DestinationFormPage() {
     setLoading(true)
 
     try {
-      // Convert date format from YYYY-MM-DD to YYYY/MM/DD for storage
-      const formattedData = {
-        ...data,
-        date: data.date ? data.date.replace(/-/g, '/') : data.date
-      }
+      // Date is already in YYYY-MM-DD format (ISO 8601 standard), no conversion needed
+      const formattedData = data
 
       const method = isNew ? 'POST' : 'PUT'
       const response = await fetch('/api/admin/destinations', {

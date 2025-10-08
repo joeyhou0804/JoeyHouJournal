@@ -108,8 +108,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Format date to YYYY/MM/DD
-    const formattedDate = destinationDate.replace(/-/g, '/')
+    // Date is already in YYYY-MM-DD format (ISO 8601 standard)
+    const formattedDate = destinationDate
 
     // Create new destination in database
     const newDestination = {
