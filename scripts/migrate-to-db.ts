@@ -8,6 +8,7 @@ config({ path: '.env.local' })
 
 async function migrate() {
   console.log('Starting migration...')
+  console.log('DATABASE_URL:', process.env.DATABASE_URL?.substring(0, 50) + '...')
 
   try {
     // Drop existing tables to recreate with new schema
@@ -57,6 +58,8 @@ async function migrate() {
         images JSONB,
         description TEXT,
         description_cn TEXT,
+        show_map BOOLEAN DEFAULT false,
+        instagram_post_id TEXT,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       )
@@ -67,6 +70,7 @@ async function migrate() {
     await sql`CREATE INDEX IF NOT EXISTS idx_journeys_start_date ON journeys(start_date)`
     await sql`CREATE INDEX IF NOT EXISTS idx_destinations_journey_id ON destinations(journey_id)`
     await sql`CREATE INDEX IF NOT EXISTS idx_destinations_date ON destinations(date)`
+    await sql`CREATE INDEX IF NOT EXISTS idx_destinations_instagram_post_id ON destinations(instagram_post_id)`
 
     console.log('Tables created successfully')
 
@@ -134,7 +138,7 @@ async function migrate() {
         INSERT INTO destinations (
           id, name, name_cn, state, country, date, coordinates,
           journey_id, journey_name, journey_name_cn,
-          images, description, description_cn
+          images, description, description_cn, show_map, instagram_post_id
         ) VALUES (
           ${dest.id},
           ${dest.name},
@@ -148,7 +152,9 @@ async function migrate() {
           ${(dest as any).journeyNameCN || null},
           ${JSON.stringify(dest.images || [])}::jsonb,
           ${(dest as any).description || null},
-          ${(dest as any).descriptionCN || null}
+          ${(dest as any).descriptionCN || null},
+          ${(dest as any).showMap !== undefined ? (dest as any).showMap : false},
+          ${(dest as any).instagramPostId || null}
         )
         ON CONFLICT (id) DO UPDATE SET
           name = EXCLUDED.name,
@@ -163,6 +169,8 @@ async function migrate() {
           images = EXCLUDED.images,
           description = EXCLUDED.description,
           description_cn = EXCLUDED.description_cn,
+          show_map = EXCLUDED.show_map,
+          instagram_post_id = EXCLUDED.instagram_post_id,
           updated_at = NOW()
       `
     }
@@ -176,8 +184,13 @@ async function migrate() {
     console.log(`   Journeys: ${journeyCount.rows[0].count}`)
     console.log(`   Destinations: ${destCount.rows[0].count}`)
 
+    // Double check with a sample query
+    const sampleDest = await sql`SELECT id, name FROM destinations LIMIT 1`
+    console.log('Sample destination:', sampleDest.rows[0])
+
   } catch (error) {
     console.error('❌ Migration failed:', error)
+    console.error('Error details:', JSON.stringify(error, null, 2))
     throw error
   }
 }
