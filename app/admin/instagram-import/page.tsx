@@ -162,7 +162,7 @@ export default function InstagramImportPage() {
       let allPosts: InstagramPost[] = []
       let nextCursor: string | undefined = undefined
       let pageCount = 0
-      const maxPages = 20 // Safety limit to prevent infinite loops (20 pages × 25 posts = 500 posts max)
+      const maxPages = 60 // Safety limit to prevent infinite loops (60 pages × 25 posts = 1500 posts max)
 
       // Fetch destinations once
       const destinationsResponse = await fetch('/api/admin/destinations')
