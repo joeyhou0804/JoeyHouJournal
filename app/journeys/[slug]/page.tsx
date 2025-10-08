@@ -1,7 +1,7 @@
 import JourneyDetailClient from './JourneyDetailClient'
 import { getJourneyBySlug, getAllJourneys, getAllDestinations } from '@/lib/db'
 import { transformJourney, transformDestination } from '@/lib/transform'
-import { isLocalTrip } from '@/utils/journeyHelpers'
+import { isLocalTrip } from 'src/utils/journeyHelpers'
 
 export const dynamic = 'force-dynamic'
 
