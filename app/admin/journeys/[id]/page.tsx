@@ -17,6 +17,7 @@ import {
 } from '@mui/material'
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material'
 import Link from 'next/link'
+import AdminLoading from 'src/components/AdminLoading'
 
 export default function JourneyDetailsPage() {
   const params = useParams()
@@ -157,11 +158,7 @@ export default function JourneyDetailsPage() {
   }, [journey])
 
   if (loading) {
-    return (
-      <Box sx={{ padding: '2rem' }}>
-        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '36px' }}>Loading...</h1>
-      </Box>
-    )
+    return <AdminLoading message="Loading Journey..." />
   }
 
   if (!journey) {

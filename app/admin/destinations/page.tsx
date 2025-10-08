@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Box } from '@mui/material'
 import { useRouter } from 'next/navigation'
+import AdminLoading from 'src/components/AdminLoading'
 
 interface Destination {
   id: string
@@ -91,7 +92,7 @@ export default function DestinationsPage() {
   }
 
   if (loading) {
-    return <Box>Loading...</Box>
+    return <AdminLoading message="Loading Destinations..." />
   }
 
   return (

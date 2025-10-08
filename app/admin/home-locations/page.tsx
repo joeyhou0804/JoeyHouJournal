@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Box, Button, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material'
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material'
 import Link from 'next/link'
+import AdminLoading from 'src/components/AdminLoading'
 
 interface HomeLocation {
   id: string
@@ -125,13 +126,7 @@ export default function HomeLocationsPage() {
   }
 
   if (loading) {
-    return (
-      <Box sx={{ padding: '2rem' }}>
-        <Typography variant="h4" sx={{ fontFamily: 'MarioFontTitle, sans-serif', marginBottom: '2rem' }}>
-          Loading...
-        </Typography>
-      </Box>
-    )
+    return <AdminLoading message="Loading Home Locations..." />
   }
 
   return (
