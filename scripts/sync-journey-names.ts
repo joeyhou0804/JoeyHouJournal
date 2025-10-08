@@ -1,17 +1,25 @@
 /**
  * Script to sync journey_name_cn from journeys table to destinations table
  * This ensures destinations have the Chinese journey names cached
+ * Run with: POSTGRES_URL='...' pnpm sync-journey-names
  */
 
 import * as dotenv from 'dotenv'
+import { resolve } from 'path'
 import { sql } from '@vercel/postgres'
 
-// Load environment variables
-dotenv.config({ path: '.env.local' })
+// Load environment variables from .env.local only if POSTGRES_URL is not already set
+if (!process.env.POSTGRES_URL) {
+  dotenv.config({ path: resolve(__dirname, '../.env.local') })
+}
 
 async function syncJourneyNames() {
   try {
+    const dbUrl = process.env.POSTGRES_URL || process.env.DATABASE_URL || ''
+    const host = dbUrl.match(/@([^/]+)/)?.[1] || 'unknown'
     console.log('Starting journey name sync...')
+    console.log(`Target database: ${host}`)
+    console.log('')
 
     // Update all destinations to have the journey_name_cn from their associated journey
     const result = await sql`
