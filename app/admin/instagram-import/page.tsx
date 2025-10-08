@@ -793,9 +793,15 @@ export default function InstagramImportPage() {
                   <Button
                     size="small"
                     onClick={() => {
-                      const translation = generateChineseDestinationName(destinationName, destinationState)
+                      // Extract city name without state suffix (e.g., "San Francisco" from "San Francisco, CA")
+                      const cityName = destinationName.split(',')[0].trim()
+                      console.log('Generating Chinese name for:', { cityName, destinationState })
+                      const translation = generateChineseDestinationName(cityName, destinationState)
+                      console.log('Translation result:', translation)
                       if (translation) {
                         setDestinationNameCn(translation)
+                      } else {
+                        console.warn('No translation found for:', { cityName, destinationState })
                       }
                     }}
                     disabled={!destinationName || !destinationState}
