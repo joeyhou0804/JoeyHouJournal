@@ -298,3 +298,71 @@ export async function getInstagramToken(): Promise<InstagramToken | null> {
 export async function deleteInstagramToken() {
   await sql`DELETE FROM instagram_tokens`
 }
+
+// Home location operations
+export interface HomeLocation {
+  id: string
+  name: string
+  name_cn: string | null
+  start_date: string
+  end_date: string
+  coordinates: any // JSON
+  created_at: Date
+  updated_at: Date
+}
+
+export async function getAllHomeLocations(): Promise<HomeLocation[]> {
+  const { rows } = await sql<HomeLocation>`SELECT * FROM home_locations ORDER BY start_date DESC`
+  return rows
+}
+
+export async function getHomeLocationById(id: string): Promise<HomeLocation | null> {
+  const { rows } = await sql<HomeLocation>`SELECT * FROM home_locations WHERE id = ${id}`
+  return rows[0] || null
+}
+
+export async function getHomeLocationByDate(date: string): Promise<HomeLocation | null> {
+  const { rows } = await sql<HomeLocation>`
+    SELECT * FROM home_locations
+    WHERE ${date} >= start_date AND ${date} <= end_date
+    LIMIT 1
+  `
+  return rows[0] || null
+}
+
+export async function createHomeLocation(homeLocation: Partial<HomeLocation>): Promise<HomeLocation> {
+  const { rows } = await sql<HomeLocation>`
+    INSERT INTO home_locations (
+      id, name, name_cn, start_date, end_date, coordinates
+    ) VALUES (
+      ${homeLocation.id},
+      ${homeLocation.name},
+      ${homeLocation.name_cn},
+      ${homeLocation.start_date},
+      ${homeLocation.end_date},
+      ${JSON.stringify(homeLocation.coordinates)}::jsonb
+    )
+    RETURNING *
+  `
+  return rows[0]
+}
+
+export async function updateHomeLocation(id: string, homeLocation: Partial<HomeLocation>): Promise<HomeLocation> {
+  const { rows } = await sql<HomeLocation>`
+    UPDATE home_locations SET
+      name = ${homeLocation.name},
+      name_cn = ${homeLocation.name_cn},
+      start_date = ${homeLocation.start_date},
+      end_date = ${homeLocation.end_date},
+      coordinates = ${JSON.stringify(homeLocation.coordinates)}::jsonb,
+      updated_at = NOW()
+    WHERE id = ${id}
+    RETURNING *
+  `
+  return rows[0]
+}
+
+export async function deleteHomeLocation(id: string): Promise<boolean> {
+  await sql`DELETE FROM home_locations WHERE id = ${id}`
+  return true
+}

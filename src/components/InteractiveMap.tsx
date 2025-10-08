@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useTranslation } from 'src/hooks/useTranslation'
@@ -35,6 +35,16 @@ interface RouteSegment {
   method?: string
 }
 
+interface HomeLocation {
+  id: string
+  name: string
+  nameCN?: string
+  startDate: string
+  endDate: string
+  lat: number
+  lng: number
+}
+
 interface InteractiveMapProps {
   places: Place[]
   isDetailView?: boolean
@@ -46,9 +56,24 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
   const { locale, tr } = useTranslation()
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
+  const [homeLocations, setHomeLocations] = useState<HomeLocation[]>([])
+
+  // Fetch home locations
+  useEffect(() => {
+    async function fetchHomeLocations() {
+      try {
+        const response = await fetch('/api/home-locations')
+        const data = await response.json()
+        setHomeLocations(data)
+      } catch (error) {
+        console.error('Failed to fetch home locations:', error)
+      }
+    }
+    fetchHomeLocations()
+  }, [])
 
   useEffect(() => {
-    if (typeof window === 'undefined' || !mapContainerRef.current) return
+    if (typeof window === 'undefined' || !mapContainerRef.current || homeLocations.length === 0) return
 
     // Helper function to generate mixed font HTML
     const getMixedFontHTML = (text: string, fontSize: string = '20px') => {
@@ -123,6 +148,22 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
           <path d="M12.5 0C5.596 0 0 5.596 0 12.5c0 8.437 12.5 28.5 12.5 28.5S25 20.937 25 12.5C25 5.596 19.404 0 12.5 0z" fill="#FFD701"/>
           <circle cx="12.5" cy="12.5" r="6" fill="white"/>
+        </svg>
+      `),
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      shadowSize: [41, 41],
+      shadowAnchor: [12, 41]
+    })
+
+    // Create custom home marker icon
+    const homeIcon = L.icon({
+      iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+        <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.5 0C5.596 0 0 5.596 0 12.5c0 8.437 12.5 28.5 12.5 28.5S25 20.937 25 12.5C25 5.596 19.404 0 12.5 0z" fill="#373737"/>
+          <path d="M12.5 6L7 11v7h3v-5h5v5h3v-7z" fill="white"/>
         </svg>
       `),
       iconSize: [25, 41],
@@ -670,11 +711,32 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       }
     }
 
+    // Add home location markers
+    homeLocations.forEach((home) => {
+      const marker = L.marker([home.lat, home.lng], { icon: homeIcon }).addTo(map)
+
+      // Create simple popup with home location info
+      const homeTitle = locale === 'zh' ? '家的位置' : 'Home'
+      const locationName = locale === 'zh' && home.nameCN ? home.nameCN : home.name
+
+      const popupContent = `
+        <div style="font-family: ${locale === 'zh' ? 'MarioFontTitleChinese' : 'MarioFontTitle'}, sans-serif; text-align: center; min-width: 200px;">
+          <div style="font-size: 20px; margin-bottom: 8px; font-weight: bold;">${homeTitle}</div>
+          <div style="font-family: ${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif; font-size: 16px; color: #666;">${locationName}</div>
+        </div>
+      `
+
+      marker.bindPopup(popupContent, {
+        maxWidth: 300,
+        className: 'custom-popup'
+      })
+    })
+
     // Cleanup
     return () => {
       map.remove()
     }
-  }, [places, isDetailView, routeCoordinates, routeSegments])
+  }, [places, isDetailView, routeCoordinates, routeSegments, homeLocations, locale])
 
   return (
     <div
