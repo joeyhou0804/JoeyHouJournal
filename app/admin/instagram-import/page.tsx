@@ -346,15 +346,32 @@ export default function InstagramImportPage() {
   const geocodeAddress = async (address: string) => {
     setIsDetectingCoords(true)
     try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-      )
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+      console.log('Geocoding address:', address)
+      console.log('API key exists:', !!apiKey)
+
+      if (!apiKey) {
+        console.error('Google Maps API key not found')
+        setIsDetectingCoords(false)
+        return
+      }
+
+      const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${apiKey}`
+      console.log('Geocoding URL:', url.replace(apiKey, 'REDACTED'))
+
+      const response = await fetch(url)
       const data = await response.json()
+
+      console.log('Geocoding response status:', data.status)
+      console.log('Geocoding response:', data)
 
       if (data.status === 'OK' && data.results.length > 0) {
         const location = data.results[0].geometry.location
+        console.log('Setting coordinates:', location)
         setLat(location.lat)
         setLng(location.lng)
+      } else {
+        console.warn('Geocoding failed:', data.status, data.error_message)
       }
     } catch (error) {
       console.error('Geocoding error:', error)
