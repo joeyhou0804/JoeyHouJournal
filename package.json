@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "db:migrate": "tsx scripts/migrate-to-db.ts",
+    "db:import-json": "tsx scripts/migrate-json-to-db.ts",
     "sync-journey-names": "tsx scripts/sync-journey-names.ts"
   },
   "dependencies": {
