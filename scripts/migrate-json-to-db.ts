@@ -24,58 +24,8 @@ async function migrate() {
   console.log('')
 
   try {
-    // Migrate journeys
-    console.log(`\nMigrating ${journeysData.length} journeys...`)
-    for (const journey of journeysData) {
-      const {
-        id,
-        slug,
-        name,
-        nameCN,
-        startDate,
-        endDate,
-        duration,
-        days,
-        nights,
-        startLocation,
-        endLocation,
-        visitedPlaceIds,
-        totalPlaces,
-        images,
-        segments
-      } = journey as any
-
-      await sql`
-        INSERT INTO journeys (
-          id, slug, name, name_cn, start_date, end_date, duration, days, nights,
-          start_location, end_location, visited_place_ids, total_places, images, segments
-        ) VALUES (
-          ${id}, ${slug}, ${name}, ${nameCN || null}, ${startDate}, ${endDate}, ${duration}, ${days}, ${nights},
-          ${JSON.stringify(startLocation)}, ${JSON.stringify(endLocation)},
-          ${visitedPlaceIds ? JSON.stringify(visitedPlaceIds) : null},
-          ${totalPlaces || 0},
-          ${images ? JSON.stringify(images) : null},
-          ${segments ? JSON.stringify(segments) : null}
-        )
-        ON CONFLICT (id) DO UPDATE SET
-          slug = EXCLUDED.slug,
-          name = EXCLUDED.name,
-          name_cn = EXCLUDED.name_cn,
-          start_date = EXCLUDED.start_date,
-          end_date = EXCLUDED.end_date,
-          duration = EXCLUDED.duration,
-          days = EXCLUDED.days,
-          nights = EXCLUDED.nights,
-          start_location = EXCLUDED.start_location,
-          end_location = EXCLUDED.end_location,
-          visited_place_ids = EXCLUDED.visited_place_ids,
-          total_places = EXCLUDED.total_places,
-          images = EXCLUDED.images,
-          segments = EXCLUDED.segments,
-          updated_at = NOW()
-      `
-      console.log(`✓ Migrated journey: ${name}`)
-    }
+    // NOTE: Journeys migration has been archived as the JSON file is no longer available
+    const journeyCount = 0
 
     // Migrate destinations
     console.log(`\nMigrating ${destinationsData.length} destinations...`)
@@ -131,7 +81,7 @@ async function migrate() {
     }
 
     console.log('\n✅ Migration completed successfully!')
-    console.log(`   Journeys: ${journeysData.length}`)
+    console.log(`   Journeys: ${journeyCount} (archived)`)
     console.log(`   Destinations: ${destinationsData.length}`)
 
   } catch (error) {
