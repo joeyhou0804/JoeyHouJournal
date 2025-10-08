@@ -2,26 +2,19 @@
 
 ## Overview
 
-This project is currently in a **hybrid state** with data stored in both JSON files and a PostgreSQL database on Vercel.
+This project has **fully migrated** to using a PostgreSQL database on Vercel as the single source of truth.
 
-## Current State (As of October 2025) - IN MIGRATION
+## Current State (As of October 2025) - MIGRATION COMPLETE ✅
 
-### Status: Partial Migration to Database
+### Status: Database-Only Architecture
 
 **✅ Completed:**
 - PostgreSQL database schema created and populated
 - API routes created (`/api/destinations`, `/api/journeys`)
 - Transform layer to convert database format to app format
-- Homepage migrated to fetch from API
-- Database migrated with 12 journeys and 148 destinations
-
-**🚧 In Progress:**
-- Migrating individual page components to use database
-
-**❌ Pending:**
-- Destinations pages
-- Journeys pages
-- Admin dashboard page
+- All pages migrated to fetch from API (Homepage, Journeys, Destinations, Admin)
+- Database migrated with journeys and destinations
+- JSON files archived (`journeys.json.archived`, `destinations.json.backup`)
 
 ### Active Data Sources
 
@@ -39,11 +32,10 @@ This project is currently in a **hybrid state** with data stored in both JSON fi
 - `/api/journeys/[slug]` - Fetch single journey
 - Returns: camelCase format (via `/lib/transform.ts`)
 
-#### 3. **JSON Files** - Legacy (Still Required)
-- `destinations.json` (148 KB) - Destination data
-- `journeys.json` (95 KB) - Journey routes
-- Used by: Pages not yet migrated to database
-- **DO NOT DELETE** until all pages migrated
+#### 3. **JSON Files** - ARCHIVED ⚠️
+- `destinations.json` (148 KB) - Destination data (still in use for now)
+- `journeys.json.archived` (95 KB) - Journey routes (ARCHIVED - no longer used)
+- Status: `journeys.json` has been archived and is no longer used by any pages
 
 #### 4. **Route Data**
 - `routes.js` (49 KB) - Map polyline coordinates
@@ -87,22 +79,18 @@ Instagram API → Admin Import → Cloudinary + PostgreSQL
 - Destination data saved to database
 - **Current Issue**: Imported destinations don't appear on public pages
 
-## Critical Issue: Data Synchronization
+## Data Synchronization - RESOLVED ✅
 
-**Problem**: The application uses two separate data sources:
-- Public pages read from JSON files
-- Admin panel writes to PostgreSQL database
-- Changes made in the admin panel or Instagram imports are NOT visible on the public site
+**Status**: All pages now fetch from the PostgreSQL database via API routes.
 
-**Why This Happens**:
-The public pages still import JSON files directly:
+**Current Architecture**:
 ```typescript
-// app/page.tsx, app/destinations/page.tsx, etc.
-import destinationsData from 'src/data/destinations.json'
-import journeysData from 'src/data/journeys.json'
+// All pages (app/page.tsx, app/journeys/page.tsx, etc.)
+const journeys = await fetch('/api/journeys').then(r => r.json())
+const destinations = await fetch('/api/destinations').then(r => r.json())
 ```
 
-**Solution Required**: Refactor public pages to fetch data from database via API routes instead of importing JSON files.
+**Result**: Changes made in the admin panel or Instagram imports are immediately visible on the public site.
 
 ## Database Schema
 
@@ -163,40 +151,29 @@ CREATE TABLE instagram_tokens (
 )
 ```
 
-## Migration Status
+## Migration Status - COMPLETE ✅
 
 ✅ Database schema created
-✅ Migration script available (`pnpm migrate-db`)
+✅ Migration scripts available
 ✅ Admin panel uses database
 ✅ Instagram import uses database
-❌ Public pages still use JSON files
-❌ No sync between database and JSON files
+✅ Public pages use database via API routes
+✅ `journeys.json` archived
+⚠️ `destinations.json` still in use (can be archived in future)
 
-## Future Work
+## Archived Migration Scripts
 
-To complete the migration to database-only architecture:
-
-1. **Create API routes** for public data fetching:
-   - `/api/destinations` - Fetch all destinations
-   - `/api/destinations/[id]` - Fetch single destination
-   - `/api/journeys` - Fetch all journeys
-   - `/api/journeys/[slug]` - Fetch single journey
-
-2. **Refactor public pages** to fetch from API:
-   - Update `app/page.tsx` to use `fetch()` or Server Components with database queries
-   - Update `app/destinations/page.tsx` and `app/destinations/[id]/page.tsx`
-   - Update `app/journeys/page.tsx` and `app/journeys/[slug]/page.tsx`
-
-3. **Remove JSON file imports** once all pages use database
-
-4. **Archive JSON files** completely after verification
+The following scripts reference `journeys.json` and are no longer needed:
+- `scripts/migrate-to-db.ts` - Initial migration script (commented out)
+- `scripts/migrate-json-to-db.ts` - JSON migration script (commented out)
+- `app/api/admin/migrate-json/route.ts` - Migration API route (commented out)
 
 ## Notes for Developers
 
-- **Before deploying admin changes**: Understand that edits won't appear on the public site yet
-- **JSON files are still needed**: Don't delete `destinations.json` or `journeys.json` - the public site depends on them
-- **Database is authoritative for admin**: All admin operations correctly save to database
-- **Instagram imports work**: But imported destinations won't show until public pages use database
+- **All changes are live**: Admin panel edits and Instagram imports are immediately visible on the public site
+- **Database is single source of truth**: All pages fetch from PostgreSQL via API routes
+- **`journeys.json` archived**: No longer used - all journey data comes from database
+- **`destinations.json` still present**: Can be archived in future when confirmed no longer needed
 
 ## Scripts
 

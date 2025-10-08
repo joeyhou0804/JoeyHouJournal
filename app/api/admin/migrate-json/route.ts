@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { sql } from '@vercel/postgres'
-import journeysData from 'src/data/journeys.json'
+// NOTE: JSON files have been archived - this migration route is no longer needed
+// import journeysData from 'src/data/journeys.json'
 import destinationsData from 'src/data/destinations.json'
 
 export const dynamic = 'force-dynamic'

@@ -1,6 +1,7 @@
 import { config } from 'dotenv'
 import { sql } from '@vercel/postgres'
-import journeysData from '../src/data/journeys.json'
+// NOTE: JSON files have been archived - this migration script is no longer needed
+// import journeysData from '../src/data/journeys.json'
 import destinationsData from '../src/data/destinations.json'
 
 // Load environment variables from .env.local
