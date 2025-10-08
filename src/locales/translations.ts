@@ -31,6 +31,9 @@ export const translations = {
 
     // Loading States
     loadingMap: 'Loading map...',
+    loading: 'Loading...',
+    loadingJourneys: 'Loading journeys...',
+    loadingDestinations: 'Loading destinations...',
 
     // Pagination
     pageOfPages: (current: number, total: number) => `Page ${current} of ${total}`,
@@ -137,6 +140,9 @@ export const translations = {
 
     // Loading States
     loadingMap: '加载地图中...',
+    loading: '加载中...',
+    loadingJourneys: '加载旅程中...',
+    loadingDestinations: '加载目的地中...',
 
     // Pagination
     pageOfPages: (current: number, total: number) => `第 ${current} 页，共 ${total} 页`,

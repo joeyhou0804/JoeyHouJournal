@@ -292,7 +292,7 @@ export default function Home() {
           fontSize: '32px',
           color: '#373737'
         }}>
-          Loading...
+          {tr.loading}
         </Box>
       </Box>
     )

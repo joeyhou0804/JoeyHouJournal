@@ -200,7 +200,7 @@ export default function JourneysPage() {
         />
         {/* Loading text */}
         <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '32px', color: '#373737', margin: 0 }}>
-          Loading journeys...
+          {tr.loadingJourneys}
         </p>
       </div>
     )
