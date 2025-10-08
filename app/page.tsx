@@ -111,6 +111,7 @@ export default function Home() {
     toRef: section1Ref,
     bgUrl: '/images/backgrounds/homepage_background.webp',
     adjustPx: ADJUST_PX_HOMEPAGE_HEAD,
+    enabled: !isLoading,
   })
 
   // Connect Section 1 to the decorative foot mask below it
@@ -119,6 +120,7 @@ export default function Home() {
     decoRef,
     bgUrl: '/images/backgrounds/homepage_background.webp',
     adjustPx: ADJUST_PX_FOOT,
+    enabled: !isLoading,
   })
 
   // Carry over tile alignment from the head mask band to Recent Places
@@ -127,6 +129,7 @@ export default function Home() {
     toRef: recentRef,
     bgUrl: '/images/backgrounds/homepage_background.webp',
     adjustPx: ADJUST_PX_HEAD,
+    enabled: !isLoading,
   })
 
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -1245,16 +1248,19 @@ function useSeamlessBackground({
   decoRef,
   bgUrl,
   adjustPx = 0,
+  enabled = true,
 }: {
   sectionRef: React.RefObject<HTMLElement>
   decoRef: React.RefObject<HTMLDivElement>
   bgUrl: string
   adjustPx?: number
+  enabled?: boolean
 }) {
   const [ratio, setRatio] = useState<number | null>(null)
 
   // Preload to get intrinsic aspect ratio
   useLayoutEffect(() => {
+    if (!enabled) return
     let mounted = true
     const img = new Image()
     img.onload = () => {
@@ -1265,10 +1271,10 @@ function useSeamlessBackground({
     }
     img.src = bgUrl
     return () => { mounted = false }
-  }, [bgUrl])
+  }, [bgUrl, enabled])
 
   useEffect(() => {
-    if (!ratio) return
+    if (!enabled || !ratio) return
     const sectionEl = sectionRef.current
     const decoEl = decoRef.current
     if (!sectionEl || !decoEl) return
@@ -1305,7 +1311,7 @@ function useSeamlessBackground({
       ro.disconnect()
       window.removeEventListener('resize', onWinResize)
     }
-  }, [ratio, sectionRef, decoRef, adjustPx])
+  }, [ratio, sectionRef, decoRef, adjustPx, enabled])
 }
 
 /* ---------- Seamless carry-over for second decorative band ---------- */
@@ -1315,16 +1321,19 @@ function useSeamlessCarryOver({
   toRef,
   bgUrl,
   adjustPx = 0,
+  enabled = true,
 }: {
   fromRef: React.RefObject<HTMLElement>
   toRef: React.RefObject<HTMLElement>
   bgUrl: string
   adjustPx?: number
+  enabled?: boolean
 }) {
   const [ratio, setRatio] = useState<number | null>(null)
 
   // Preload to get intrinsic aspect ratio
   useLayoutEffect(() => {
+    if (!enabled) return
     let mounted = true
     const img = new Image()
     img.onload = () => {
@@ -1335,10 +1344,10 @@ function useSeamlessCarryOver({
     }
     img.src = bgUrl
     return () => { mounted = false }
-  }, [bgUrl])
+  }, [bgUrl, enabled])
 
   useEffect(() => {
-    if (!ratio) return
+    if (!enabled || !ratio) return
     const fromEl = fromRef.current
     const toEl = toRef.current
     if (!fromEl || !toEl) return
@@ -1370,5 +1379,5 @@ function useSeamlessCarryOver({
       ro.disconnect()
       window.removeEventListener('resize', onWinResize)
     }
-  }, [ratio, fromRef, toRef, adjustPx])
+  }, [ratio, fromRef, toRef, adjustPx, enabled])
 }
