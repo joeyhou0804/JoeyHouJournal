@@ -173,7 +173,7 @@ export default function JourneysPage() {
   const currentJourneyPlaces = currentJourney ? allDestinations.filter(
     destination => destination.journeyName === currentJourney.name
   ).map((destination) => ({
-    id: `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`,
+    id: destination.id,
     name: destination.name,
     nameCN: destination.nameCN,
     date: destination.date,
