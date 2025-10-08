@@ -253,7 +253,7 @@ export default function InstagramImportPage() {
       )
 
       // Add post to imported set
-      setImportedPostIds(prev => new Set([...prev, selectedPost.id]))
+      setImportedPostIds(prev => new Set([...Array.from(prev), selectedPost.id]))
 
       setSelectedPost(null)
 
@@ -389,17 +389,17 @@ export default function InstagramImportPage() {
   const handleExcludePost = () => {
     if (!postToExclude) return
 
-    const newExcluded = new Set([...excludedPostIds, postToExclude.id])
+    const newExcluded = new Set([...Array.from(excludedPostIds), postToExclude.id])
     setExcludedPostIds(newExcluded)
-    localStorage.setItem('excludedInstagramPosts', JSON.stringify([...newExcluded]))
+    localStorage.setItem('excludedInstagramPosts', JSON.stringify(Array.from(newExcluded)))
     setPostToExclude(null)
   }
 
   const handleUnexcludePost = (postId: string) => {
-    const newExcluded = new Set([...excludedPostIds])
+    const newExcluded = new Set(Array.from(excludedPostIds))
     newExcluded.delete(postId)
     setExcludedPostIds(newExcluded)
-    localStorage.setItem('excludedInstagramPosts', JSON.stringify([...newExcluded]))
+    localStorage.setItem('excludedInstagramPosts', JSON.stringify(Array.from(newExcluded)))
   }
 
   const handleRowClick = (post: InstagramPost) => {
@@ -419,7 +419,7 @@ export default function InstagramImportPage() {
   const filteredPosts = posts.filter(post => !excludedPostIds.has(post.id))
 
   // Sort posts: non-imported first, then imported
-  const sortedPosts = [...filteredPosts].sort((a, b) => {
+  const sortedPosts = Array.from(filteredPosts).sort((a, b) => {
     const aImported = importedPostIds.has(a.id)
     const bImported = importedPostIds.has(b.id)
 
