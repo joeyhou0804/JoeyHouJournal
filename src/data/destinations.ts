@@ -14,6 +14,7 @@ export interface Destination {
   images: string[]
   description: string
   descriptionCN?: string
+  showMap?: boolean          // Whether to show map tab in carousel
 }
 
 export const destinations: Destination[] = destinationsData as Destination[]
