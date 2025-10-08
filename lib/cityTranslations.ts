@@ -181,7 +181,6 @@ const cityTranslations: Record<string, string> = {
   'Frisco': '弗里斯科',
   'Yonkers': '扬克斯',
   'Amarillo': '阿马里洛',
-  'Glendale': '格伦代尔',
   'Huntington Beach': '亨廷顿海滩',
   'McKinney': '麦金尼',
   'Montgomery': '蒙哥马利',
