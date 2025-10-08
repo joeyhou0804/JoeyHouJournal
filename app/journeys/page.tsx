@@ -92,27 +92,48 @@ export default function JourneysPage() {
     let route = `${startLocationName} → ${endLocationName}`
 
     // If start and end are the same (round trip from home)
-    if (journey.startLocation.name === journey.endLocation.name) {
-      // Sort destinations by date to find first and last
-      const sortedDestinations = [...journeyDestinations].sort((a, b) =>
-        new Date(a.date).getTime() - new Date(b.date).getTime()
-      )
+    if (journey.startLocation.name === journey.endLocation.name && journey.segments && journey.segments.length > 0) {
+      // Extract unique intermediate destinations from segments (excluding start/end location)
+      const intermediatePlaces = new Set<string>()
+      const intermediatePlacesCN = new Map<string, string>()
 
-      if (sortedDestinations.length === 1) {
+      journey.segments.forEach((segment: any) => {
+        if (segment.from.name !== journey.startLocation.name) {
+          intermediatePlaces.add(segment.from.name)
+          if (segment.from.nameCN) intermediatePlacesCN.set(segment.from.name, segment.from.nameCN)
+        }
+        if (segment.to.name !== journey.endLocation.name) {
+          intermediatePlaces.add(segment.to.name)
+          if (segment.to.nameCN) intermediatePlacesCN.set(segment.to.name, segment.to.nameCN)
+        }
+      })
+
+      const uniquePlaces = Array.from(intermediatePlaces)
+
+      if (uniquePlaces.length === 1) {
         // Single destination: "Home to [Place]"
-        const destName = locale === 'zh' && sortedDestinations[0].nameCN
-          ? sortedDestinations[0].nameCN
-          : sortedDestinations[0].name
         const homeText = locale === 'zh' ? '从家出发' : 'Home'
-        route = `${homeText} → ${destName}`
-      } else if (sortedDestinations.length > 1) {
-        // Multiple destinations: First to Last (excluding home)
-        const firstName = locale === 'zh' && sortedDestinations[0].nameCN
-          ? sortedDestinations[0].nameCN
-          : sortedDestinations[0].name
-        const lastName = locale === 'zh' && sortedDestinations[sortedDestinations.length - 1].nameCN
-          ? sortedDestinations[sortedDestinations.length - 1].nameCN
-          : sortedDestinations[sortedDestinations.length - 1].name
+        const placeName = locale === 'zh' && intermediatePlacesCN.has(uniquePlaces[0])
+          ? intermediatePlacesCN.get(uniquePlaces[0])
+          : uniquePlaces[0]
+        route = `${homeText} → ${placeName}`
+      } else if (uniquePlaces.length > 1) {
+        // Multiple destinations: use first and last from segments ordered by journey
+        const firstPlace = journey.segments[0].to.name !== journey.startLocation.name
+          ? journey.segments[0].to.name
+          : (journey.segments[0].from.name !== journey.startLocation.name ? journey.segments[0].from.name : uniquePlaces[0])
+        const lastSegment = journey.segments[journey.segments.length - 1]
+        const lastPlace = lastSegment.from.name !== journey.endLocation.name
+          ? lastSegment.from.name
+          : uniquePlaces[uniquePlaces.length - 1]
+
+        const firstName = locale === 'zh' && intermediatePlacesCN.has(firstPlace)
+          ? intermediatePlacesCN.get(firstPlace)
+          : firstPlace
+        const lastName = locale === 'zh' && intermediatePlacesCN.has(lastPlace)
+          ? intermediatePlacesCN.get(lastPlace)
+          : lastPlace
+
         route = `${firstName} → ${lastName}`
       }
     }
