@@ -60,13 +60,25 @@ export async function POST(request: NextRequest) {
     // Generate destination ID
     const destinationId = destinationName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 
+    // Check Cloudinary configuration
+    if (!process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      console.error('Cloudinary credentials missing')
+      return NextResponse.json(
+        { error: 'Cloudinary not configured. Please set CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.' },
+        { status: 500 }
+      )
+    }
+
     // Upload images to Cloudinary
     const uploadedUrls: string[] = []
+    const uploadErrors: string[] = []
 
     for (let i = 0; i < mediaUrls.length; i++) {
       const mediaUrl = mediaUrls[i]
 
       try {
+        console.log(`Uploading image ${i + 1}/${mediaUrls.length} from Instagram:`, mediaUrl.substring(0, 100))
+
         // Upload to Cloudinary
         const result = await cloudinary.uploader.upload(mediaUrl, {
           folder: `joeyhoujournal/destinations/${destinationId}`,
@@ -74,15 +86,25 @@ export async function POST(request: NextRequest) {
           overwrite: true,
         })
 
+        console.log(`Successfully uploaded image ${i + 1} to Cloudinary:`, result.secure_url)
         uploadedUrls.push(result.secure_url)
       } catch (uploadError) {
-        console.error(`Failed to upload image ${i}:`, uploadError)
+        const errorMsg = uploadError instanceof Error ? uploadError.message : String(uploadError)
+        console.error(`Failed to upload image ${i + 1}:`, errorMsg)
+        uploadErrors.push(`Image ${i + 1}: ${errorMsg}`)
         // Continue with other images even if one fails
       }
     }
 
     if (uploadedUrls.length === 0) {
-      return NextResponse.json({ error: 'Failed to upload any images' }, { status: 500 })
+      console.error('All image uploads failed:', uploadErrors)
+      return NextResponse.json(
+        {
+          error: 'Failed to upload any images',
+          details: uploadErrors.join('; ')
+        },
+        { status: 500 }
+      )
     }
 
     // Format date to YYYY/MM/DD
