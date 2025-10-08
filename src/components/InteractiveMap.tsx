@@ -193,9 +193,16 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       segmentPairs.forEach((segments) => {
         if (segments.length > 1) {
           // Multiple segments between same cities - apply offsets
+          // Sort by direction to ensure consistent offset assignment
+          segments.sort((a, b) => {
+            const dirA = `${a.from.lat},${a.from.lng}-${a.to.lat},${a.to.lng}`
+            const dirB = `${b.from.lat},${b.from.lng}-${b.to.lat},${b.to.lng}`
+            return dirA.localeCompare(dirB)
+          })
+
           segments.forEach((segment, index) => {
-            // Distribute offsets symmetrically around 0
-            // For 2 segments: -0.15, 0.15
+            // Distribute offsets symmetrically
+            // For 2 segments: -0.15, 0.15 (will curve in opposite directions)
             // For 3 segments: -0.2, 0, 0.2
             const totalOffsets = segments.length
             const offsetRange = totalOffsets === 2 ? 0.3 : 0.4
@@ -204,8 +211,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
             segmentOffsets.set(segment, offset)
           })
         } else {
-          // Single segment - no offset
-          segmentOffsets.set(segments[0], 0.2) // Default offset for single routes
+          // Single segment - default offset
+          segmentOffsets.set(segments[0], 0.2)
         }
       })
 
