@@ -31,12 +31,16 @@ import {
   TablePagination,
   Paper,
   Link,
+  Drawer,
+  Tooltip,
 } from '@mui/material'
 import {
   Instagram as InstagramIcon,
   CheckCircle as CheckIcon,
   Cancel as CancelIcon,
   CloudUpload as UploadIcon,
+  Block as BlockIcon,
+  Visibility as VisibilityIcon,
 } from '@mui/icons-material'
 import destinationsData from 'src/data/destinations.json'
 import AdminLoading from 'src/components/AdminLoading'
@@ -69,12 +73,15 @@ export default function InstagramImportPage() {
   const [loading, setLoading] = useState(false)
   const [posts, setPosts] = useState<InstagramPost[]>([])
   const [importedPostIds, setImportedPostIds] = useState<Set<string>>(new Set())
+  const [excludedPostIds, setExcludedPostIds] = useState<Set<string>>(new Set())
   const [error, setError] = useState<string | null>(null)
   const [selectedPost, setSelectedPost] = useState<InstagramPost | null>(null)
+  const [postToExclude, setPostToExclude] = useState<InstagramPost | null>(null)
   const [importing, setImporting] = useState(false)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [showProcessedPosts, setShowProcessedPosts] = useState(false)
 
   // New destination form fields
   const [destinationName, setDestinationName] = useState('')
@@ -89,6 +96,18 @@ export default function InstagramImportPage() {
   const [showMap, setShowMap] = useState(true)
 
   const destinations: Destination[] = destinationsData as Destination[]
+
+  // Load excluded posts from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('excludedInstagramPosts')
+    if (stored) {
+      try {
+        setExcludedPostIds(new Set(JSON.parse(stored)))
+      } catch (e) {
+        console.error('Failed to load excluded posts:', e)
+      }
+    }
+  }, [])
 
   // Check if Instagram is connected
   useEffect(() => {
@@ -367,8 +386,40 @@ export default function InstagramImportPage() {
     setPage(0)
   }
 
+  const handleExcludePost = () => {
+    if (!postToExclude) return
+
+    const newExcluded = new Set([...excludedPostIds, postToExclude.id])
+    setExcludedPostIds(newExcluded)
+    localStorage.setItem('excludedInstagramPosts', JSON.stringify([...newExcluded]))
+    setPostToExclude(null)
+  }
+
+  const handleUnexcludePost = (postId: string) => {
+    const newExcluded = new Set([...excludedPostIds])
+    newExcluded.delete(postId)
+    setExcludedPostIds(newExcluded)
+    localStorage.setItem('excludedInstagramPosts', JSON.stringify([...newExcluded]))
+  }
+
+  const handleRowClick = (post: InstagramPost) => {
+    const isImported = importedPostIds.has(post.id)
+    const isExcluded = excludedPostIds.has(post.id)
+
+    if (isImported || isExcluded) return
+
+    setSelectedPost(post)
+    // Auto-fill date from post timestamp
+    const postDate = new Date(post.timestamp)
+    const formattedDate = postDate.toISOString().split('T')[0]
+    setDestinationDate(formattedDate)
+  }
+
+  // Filter out excluded posts from main list
+  const filteredPosts = posts.filter(post => !excludedPostIds.has(post.id))
+
   // Sort posts: non-imported first, then imported
-  const sortedPosts = [...posts].sort((a, b) => {
+  const sortedPosts = [...filteredPosts].sort((a, b) => {
     const aImported = importedPostIds.has(a.id)
     const bImported = importedPostIds.has(b.id)
 
@@ -379,6 +430,11 @@ export default function InstagramImportPage() {
 
   // Paginated posts
   const paginatedPosts = sortedPosts.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
+  // Get processed posts (imported + excluded)
+  const processedPosts = posts.filter(post =>
+    importedPostIds.has(post.id) || excludedPostIds.has(post.id)
+  )
 
   if (!isConnected) {
     return (
@@ -430,24 +486,41 @@ export default function InstagramImportPage() {
           </Typography>
           {posts.length > 0 && (
             <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666', mt: 0.5 }}>
-              {posts.length - importedPostIds.size} of {posts.length} posts available to import
+              {filteredPosts.length - importedPostIds.size} available · {importedPostIds.size} imported · {excludedPostIds.size} excluded
             </Typography>
           )}
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<InstagramIcon />}
-          onClick={loadPosts}
-          disabled={loading}
-          sx={{
-            backgroundColor: '#FFD701',
-            color: '#373737',
-            fontFamily: 'MarioFont, sans-serif',
-            '&:hover': { backgroundColor: '#E5C001' },
-          }}
-        >
-          {loading ? 'Loading...' : 'Load Posts'}
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          {processedPosts.length > 0 && (
+            <Button
+              variant="outlined"
+              startIcon={<VisibilityIcon />}
+              onClick={() => setShowProcessedPosts(true)}
+              sx={{
+                borderColor: '#373737',
+                color: '#373737',
+                fontFamily: 'MarioFont, sans-serif',
+                '&:hover': { borderColor: '#FFD701', backgroundColor: '#FFD701' },
+              }}
+            >
+              View Processed ({processedPosts.length})
+            </Button>
+          )}
+          <Button
+            variant="contained"
+            startIcon={<InstagramIcon />}
+            onClick={loadPosts}
+            disabled={loading}
+            sx={{
+              backgroundColor: '#FFD701',
+              color: '#373737',
+              fontFamily: 'MarioFont, sans-serif',
+              '&:hover': { backgroundColor: '#E5C001' },
+            }}
+          >
+            {loading ? 'Loading...' : 'Load Posts'}
+          </Button>
+        </Box>
       </Box>
 
       {error && (
@@ -507,14 +580,15 @@ export default function InstagramImportPage() {
                   return (
                   <TableRow
                     key={post.id}
+                    onClick={() => handleRowClick(post)}
                     sx={{
-                      '&:hover': { backgroundColor: '#fafafa' },
-                      cursor: 'pointer',
+                      '&:hover': { backgroundColor: isImported ? '#f5f5f5' : '#fafafa' },
+                      cursor: isImported ? 'default' : 'pointer',
                       backgroundColor: isImported ? '#f5f5f5' : 'transparent',
                       opacity: isImported ? 0.6 : 1,
                     }}
                   >
-                    <TableCell>
+                    <TableCell onClick={(e) => e.stopPropagation()}>
                       <Box
                         component="img"
                         src={getMediaPreview(post)}
@@ -594,11 +668,11 @@ export default function InstagramImportPage() {
                         {new Date(post.timestamp).toLocaleDateString()}
                       </Typography>
                     </TableCell>
-                    <TableCell>
+                    <TableCell onClick={(e) => e.stopPropagation()}>
                       {isImported ? (
                         <Chip
                           icon={<CheckIcon />}
-                          label="Already Imported"
+                          label="Imported"
                           size="small"
                           sx={{
                             fontFamily: 'MarioFont, sans-serif',
@@ -607,25 +681,21 @@ export default function InstagramImportPage() {
                           }}
                         />
                       ) : (
-                        <Button
-                          variant="contained"
-                          size="small"
-                          onClick={() => {
-                            setSelectedPost(post)
-                            // Auto-fill date from post timestamp
-                            const postDate = new Date(post.timestamp)
-                            const formattedDate = postDate.toISOString().split('T')[0]
-                            setDestinationDate(formattedDate)
-                          }}
-                          sx={{
-                            backgroundColor: '#FFD701',
-                            color: '#373737',
-                            fontFamily: 'MarioFont, sans-serif',
-                            '&:hover': { backgroundColor: '#E5C001' },
-                          }}
-                        >
-                          Import
-                        </Button>
+                        <Tooltip title="Exclude this post from import">
+                          <IconButton
+                            size="small"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setPostToExclude(post)
+                            }}
+                            sx={{
+                              color: '#f44336',
+                              '&:hover': { backgroundColor: 'rgba(244, 67, 54, 0.1)' },
+                            }}
+                          >
+                            <BlockIcon />
+                          </IconButton>
+                        </Tooltip>
                       )}
                     </TableCell>
                   </TableRow>
@@ -916,6 +986,159 @@ export default function InstagramImportPage() {
           </>
         )}
       </Dialog>
+
+      {/* Exclude Confirmation Dialog */}
+      <Dialog
+        open={postToExclude !== null}
+        onClose={() => setPostToExclude(null)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>
+          Exclude Post from Import?
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ fontFamily: 'MarioFont, sans-serif', mb: 2 }}>
+            This post will be hidden from the import list. You can restore it later from the "View Processed" section.
+          </Typography>
+          {postToExclude && (
+            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
+              <Box
+                component="img"
+                src={getMediaPreview(postToExclude)}
+                alt="Post preview"
+                sx={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 1 }}
+              />
+              <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', flex: 1 }}>
+                {parseBilingualCaption(postToExclude.caption).english || 'No caption'}
+              </Typography>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setPostToExclude(null)}
+            sx={{ fontFamily: 'MarioFont, sans-serif' }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleExcludePost}
+            variant="contained"
+            startIcon={<BlockIcon />}
+            sx={{
+              backgroundColor: '#f44336',
+              color: 'white',
+              fontFamily: 'MarioFont, sans-serif',
+              '&:hover': { backgroundColor: '#d32f2f' },
+            }}
+          >
+            Exclude Post
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Processed Posts Drawer */}
+      <Drawer
+        anchor="right"
+        open={showProcessedPosts}
+        onClose={() => setShowProcessedPosts(false)}
+        sx={{ '& .MuiDrawer-paper': { width: { xs: '100%', sm: '600px' } } }}
+      >
+        <Box sx={{ p: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+            <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
+              Processed Posts
+            </Typography>
+            <Button onClick={() => setShowProcessedPosts(false)} sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+              Close
+            </Button>
+          </Box>
+
+          <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666', mb: 3 }}>
+            {importedPostIds.size} imported · {excludedPostIds.size} excluded
+          </Typography>
+
+          <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid #e0e0e0' }}>
+            <Table size="small">
+              <TableHead>
+                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Preview</TableCell>
+                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Caption</TableCell>
+                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Status</TableCell>
+                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {processedPosts.map((post) => {
+                  const isImported = importedPostIds.has(post.id)
+                  const isExcluded = excludedPostIds.has(post.id)
+                  return (
+                    <TableRow key={post.id}>
+                      <TableCell>
+                        <Box
+                          component="img"
+                          src={getMediaPreview(post)}
+                          alt="Post preview"
+                          sx={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 1 }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '12px' }}>
+                          {parseBilingualCaption(post.caption).english?.substring(0, 50) || 'No caption'}...
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        {isImported ? (
+                          <Chip
+                            icon={<CheckIcon />}
+                            label="Imported"
+                            size="small"
+                            sx={{
+                              fontFamily: 'MarioFont, sans-serif',
+                              backgroundColor: '#4caf50',
+                              color: 'white',
+                              fontSize: '11px',
+                            }}
+                          />
+                        ) : (
+                          <Chip
+                            icon={<BlockIcon />}
+                            label="Excluded"
+                            size="small"
+                            sx={{
+                              fontFamily: 'MarioFont, sans-serif',
+                              backgroundColor: '#f44336',
+                              color: 'white',
+                              fontSize: '11px',
+                            }}
+                          />
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {isExcluded && (
+                          <Button
+                            size="small"
+                            onClick={() => handleUnexcludePost(post.id)}
+                            sx={{
+                              fontFamily: 'MarioFont, sans-serif',
+                              fontSize: '11px',
+                              color: '#FFD701',
+                              '&:hover': { backgroundColor: 'rgba(255, 215, 1, 0.1)' },
+                            }}
+                          >
+                            Restore
+                          </Button>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </Drawer>
     </Box>
   )
 }
