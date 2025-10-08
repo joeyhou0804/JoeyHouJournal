@@ -28,10 +28,41 @@ export default function HomeLocationsPage() {
     lng: ''
   })
   const [editing, setEditing] = useState(false)
+  const [geocodeTimeout, setGeocodeTimeout] = useState<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     fetchHomeLocations()
   }, [])
+
+  const debounceGeocode = (locationName: string) => {
+    if (geocodeTimeout) {
+      clearTimeout(geocodeTimeout)
+    }
+
+    const timeout = setTimeout(async () => {
+      if (!locationName.trim()) return
+
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(locationName)}&language=en&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+        )
+        const data = await response.json()
+
+        if (data.status === 'OK' && data.results.length > 0) {
+          const location = data.results[0].geometry.location
+          setFormData(prev => ({
+            ...prev,
+            lat: location.lat.toString(),
+            lng: location.lng.toString()
+          }))
+        }
+      } catch (error) {
+        console.error('Geocoding error:', error)
+      }
+    }, 1000)
+
+    setGeocodeTimeout(timeout)
+  }
 
   const fetchHomeLocations = async () => {
     try {
@@ -170,32 +201,73 @@ export default function HomeLocationsPage() {
           <TextField
             label="Name (e.g., New York, NY)"
             value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            onChange={(e) => {
+              setFormData({ ...formData, name: e.target.value })
+              // Auto-geocode when name changes
+              if (e.target.value.trim()) {
+                debounceGeocode(e.target.value)
+              }
+            }}
             required
             fullWidth
             sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
           />
+          <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end' }}>
+            <TextField
+              label="Chinese Name"
+              value={formData.nameCN}
+              onChange={(e) => setFormData({ ...formData, nameCN: e.target.value })}
+              fullWidth
+              sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
+            />
+            <Button
+              onClick={() => {
+                const parts = formData.name.split(',').map(p => p.trim())
+                if (parts.length >= 2) {
+                  const { generateChineseDestinationName } = require('lib/cityTranslations')
+                  const cityName = parts[0]
+                  const stateCode = parts[1]
+                  const fullTranslation = generateChineseDestinationName(cityName, stateCode)
+                  if (fullTranslation) {
+                    const cityNameCN = fullTranslation.split('·')[1] || fullTranslation
+                    setFormData({ ...formData, nameCN: cityNameCN })
+                  }
+                }
+              }}
+              disabled={!formData.name || !formData.name.includes(',')}
+              variant="outlined"
+              sx={{
+                minWidth: '120px',
+                height: '56px',
+                fontFamily: 'MarioFont, sans-serif',
+                fontSize: '12px',
+                borderColor: '#373737',
+                color: '#373737',
+                '&:hover': { borderColor: '#FFD701', backgroundColor: '#FFD701' },
+                '&:disabled': { borderColor: '#e0e0e0', color: '#999' }
+              }}
+            >
+              Auto-Generate
+            </Button>
+          </Box>
           <TextField
-            label="Chinese Name"
-            value={formData.nameCN}
-            onChange={(e) => setFormData({ ...formData, nameCN: e.target.value })}
-            fullWidth
-            sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-          />
-          <TextField
-            label="Start Date (YYYY/MM/DD)"
+            label="Start Date"
+            type="date"
             value={formData.startDate}
             onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
             required
             fullWidth
+            InputLabelProps={{ shrink: true }}
             sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
           />
           <TextField
-            label="End Date (YYYY/MM/DD)"
+            label="End Date"
+            type="date"
             value={formData.endDate}
             onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
             required
             fullWidth
+            InputLabelProps={{ shrink: true }}
             sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
           />
           <TextField
