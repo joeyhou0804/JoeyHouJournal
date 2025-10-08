@@ -213,7 +213,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
       <div className="pt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Location Title */}
-        <Box sx={{ width: '100%', maxWidth: '800px', margin: '6rem auto 3rem' }}>
+        <Box sx={{ width: '100%', maxWidth: '800px', margin: '6rem auto 2rem' }}>
           <Box sx={{ position: 'relative', width: '100%', marginBottom: '2rem' }}>
             <Box
               component="img"
@@ -251,27 +251,27 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
               )}
             </Box>
           </Box>
-
-          {/* About/Description */}
-          {station.description && (
-            <Box sx={{ textAlign: 'center', maxWidth: '100%', margin: '0 auto', paddingX: { xs: '1rem', sm: '2rem', md: '2rem', lg: '3rem' } }}>
-              <Box
-                component="div"
-                sx={{
-                  fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                  fontSize: { xs: '18px', sm: '22px', md: '24px' },
-                  color: '#373737',
-                  whiteSpace: 'pre-line',
-                  lineHeight: { xs: '1.7', sm: '1.8' }
-                }}
-              >
-                {locale === 'zh' && station.descriptionCN ? station.descriptionCN : station.description}
-              </Box>
-            </Box>
-          )}
         </Box>
 
         </div>
+
+        {/* About/Description - Full Width */}
+        {station.description && (
+          <Box sx={{ textAlign: 'center', width: '100%', margin: '0 auto 3rem', paddingX: { xs: '1rem', sm: '2rem', md: '2rem', lg: '3rem' } }}>
+            <Box
+              component="div"
+              sx={{
+                fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+                fontSize: { xs: '18px', sm: '26px', md: '28px' },
+                color: '#373737',
+                whiteSpace: 'pre-line',
+                lineHeight: { xs: '1.7', sm: '1.8' }
+              }}
+            >
+              {locale === 'zh' && station.descriptionCN ? station.descriptionCN : station.description}
+            </Box>
+          </Box>
+        )}
 
         {/* Image Carousel */}
         {station.images && station.images.length > 0 && (
