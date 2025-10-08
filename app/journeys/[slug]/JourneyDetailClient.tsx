@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
@@ -9,7 +9,6 @@ import NavigationMenu from 'src/components/NavigationMenu'
 import MapViewHint from 'src/components/MapViewHint'
 import MixedText from 'src/components/MixedText'
 import DestinationCard from 'src/components/DestinationCard'
-import destinationsData from 'src/data/destinations.json'
 import { getRouteCoordinates } from 'src/data/routes'
 import { useTranslation } from 'src/hooks/useTranslation'
 
@@ -58,14 +57,31 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   const [currentPage, setCurrentPage] = useState(1)
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const [xsDisplayCount, setXsDisplayCount] = useState(12)
+  const [allDestinations, setAllDestinations] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
-  // Load places for this journey from destinations.json
-  const allDestinations = destinationsData as any[]
+  // Fetch destinations from API
+  useEffect(() => {
+    async function fetchDestinations() {
+      try {
+        const response = await fetch('/api/destinations')
+        const data = await response.json()
+        setAllDestinations(data)
+      } catch (error) {
+        console.error('Error fetching destinations:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchDestinations()
+  }, [])
+
+  // Filter places for this journey
   const places = journey ? allDestinations.filter(
     destination => destination.journeyName === journey.name
   ).map((destination) => ({
-    id: `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`,
+    id: destination.id,
     name: destination.name,
     nameCN: destination.nameCN,
     date: destination.date,

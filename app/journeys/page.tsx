@@ -1,18 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { MapPin, Calendar, Train, Clock } from 'lucide-react'
 import NavigationMenu from 'src/components/NavigationMenu'
 import Footer from 'src/components/Footer'
 import Box from '@mui/material/Box'
 import JourneyCard from 'src/components/JourneyCard'
-// import { journeys } from 'src/data/journeys'
-import journeysData from 'src/data/journeys.json'
 import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
 import MixedText from 'src/components/MixedText'
-import destinationsData from 'src/data/destinations.json'
 import { getRouteCoordinates } from 'src/data/routes'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { formatDuration } from 'src/utils/formatDuration'
@@ -39,15 +36,36 @@ export default function JourneysPage() {
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const [currentJourneyIndex, setCurrentJourneyIndex] = useState(0)
   const [xsDisplayCount, setXsDisplayCount] = useState(5)
+  const [journeysData, setJourneysData] = useState<any[]>([])
+  const [allDestinations, setAllDestinations] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
 
-  // Load all destinations data first
-  const allDestinations = destinationsData as any[]
+  // Fetch data from API
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [journeysRes, destinationsRes] = await Promise.all([
+          fetch('/api/journeys'),
+          fetch('/api/destinations')
+        ])
+        const journeys = await journeysRes.json()
+        const destinations = await destinationsRes.json()
+        setJourneysData(journeys)
+        setAllDestinations(destinations)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   // Transform journeys to trips format and add route string with images
-  const trips = (journeysData as any[]).map((journey: any) => {
+  const trips = journeysData.map((journey: any) => {
     // Find destinations for this journey
     const journeyDestinations = allDestinations.filter(
       destination => destination.journeyName === journey.name
@@ -85,8 +103,8 @@ export default function JourneysPage() {
   })
 
   // Get current journey based on index
-  const currentJourney = (journeysData as any[])[currentJourneyIndex]
-  const currentJourneyPlaces = allDestinations.filter(
+  const currentJourney = journeysData[currentJourneyIndex]
+  const currentJourneyPlaces = currentJourney ? allDestinations.filter(
     destination => destination.journeyName === currentJourney.name
   ).map((destination) => ({
     id: `${destination.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${destination.date.replace(/\//g, '-')}`,
@@ -99,7 +117,7 @@ export default function JourneysPage() {
     images: destination.images || [],
     lat: destination.lat,
     lng: destination.lng
-  }))
+  })) : []
 
   const handlePrevJourney = () => {
     setCurrentJourneyIndex((prev) => (prev - 1 + journeysData.length) % journeysData.length)
@@ -164,6 +182,16 @@ export default function JourneysPage() {
         }, 50)
       }, 50)
     }, 150)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-600" style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '24px' }}>
+          Loading journeys...
+        </p>
+      </div>
+    )
   }
 
   return (

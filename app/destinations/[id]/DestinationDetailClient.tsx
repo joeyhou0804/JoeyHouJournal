@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useState, useEffect, useRef } from 'react'
 import { Destination } from 'src/data/destinations'
-import { getJourneyById } from 'src/data/journeys'
 import Box from '@mui/material/Box'
 import { Calendar, Train, ArrowLeft, MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
@@ -25,9 +24,10 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
 
 interface DestinationDetailClientProps {
   station: Destination | undefined
+  journey?: any
 }
 
-export default function DestinationDetailClient({ station }: DestinationDetailClientProps) {
+export default function DestinationDetailClient({ station, journey }: DestinationDetailClientProps) {
   const { locale, tr } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
@@ -37,9 +37,6 @@ export default function DestinationDetailClient({ station }: DestinationDetailCl
   const [isXsScreen, setIsXsScreen] = useState(false)
   const [isTabsReady, setIsTabsReady] = useState(false)
   const tabContainerRef = useRef<HTMLDivElement>(null)
-
-  // Get journey information if this destination belongs to a journey
-  const journey = station ? getJourneyById(station.journeyId) : undefined
 
   // Detect xs screen size
   useEffect(() => {

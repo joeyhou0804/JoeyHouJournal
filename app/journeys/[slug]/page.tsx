@@ -1,20 +1,35 @@
 import JourneyDetailClient from './JourneyDetailClient'
-import journeysData from 'src/data/journeys.json'
+import { getJourneyBySlug, getAllJourneys } from '@/lib/db'
+import { transformJourney } from '@/lib/transform'
 
-// Transform journeys to trips format for the detail page
-const trips = (journeysData as any[]).map((journey: any) => {
-  // Always use startLocation/endLocation for route (they have Chinese names)
-  const route = `${journey.startLocation.name} → ${journey.endLocation.name}`
-  const routeCN = `${journey.startLocation.nameCN || journey.startLocation.name} → ${journey.endLocation.nameCN || journey.endLocation.name}`
+export const dynamic = 'force-dynamic'
 
-  return {
+export async function generateStaticParams() {
+  const journeys = await getAllJourneys()
+  return journeys.map((journey) => ({
+    slug: journey.slug,
+  }))
+}
+
+export default async function JourneyDetailPage({ params }: { params: { slug: string } }) {
+  const journeyFromDb = await getJourneyBySlug(params.slug)
+
+  if (!journeyFromDb) {
+    return <JourneyDetailClient journey={undefined} />
+  }
+
+  // Transform to app format
+  const journey = transformJourney(journeyFromDb)
+
+  // Create trip object for client component
+  const trip = {
     name: journey.name,
     nameCN: journey.nameCN,
     slug: journey.slug,
     places: journey.totalPlaces,
     description: journey.description,
-    route,
-    routeCN,
+    route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
+    routeCN: `${journey.startLocation.nameCN || journey.startLocation.name} → ${journey.endLocation.nameCN || journey.endLocation.name}`,
     duration: journey.duration,
     days: journey.days,
     nights: journey.nights,
@@ -22,15 +37,6 @@ const trips = (journeysData as any[]).map((journey: any) => {
     journeyId: journey.id,
     segments: journey.segments
   }
-})
 
-export async function generateStaticParams() {
-  return trips.map((trip) => ({
-    slug: trip.slug,
-  }))
-}
-
-export default function JourneyDetailPage({ params }: { params: { slug: string } }) {
-  const journey = trips.find(t => t.slug === params.slug)
-  return <JourneyDetailClient journey={journey} />
+  return <JourneyDetailClient journey={trip} />
 }
