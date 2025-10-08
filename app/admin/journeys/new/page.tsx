@@ -32,7 +32,7 @@ export default function NewJourneyPage() {
   // Track which coordinates are editable
   const [editableCoords, setEditableCoords] = useState<boolean[]>([false, false])
 
-  const handleInputChange = (field: string, value: string | number) => {
+  const handleInputChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }))
 
     // Auto-generate slug when name changes
