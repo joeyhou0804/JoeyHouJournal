@@ -654,14 +654,38 @@ export default function InstagramImportPage() {
               </FormControl>
 
               <FormControl fullWidth sx={{ mb: 2 }}>
-                <Typography variant="body2" sx={{ mb: 0.5, fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                  Name (Chinese)
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
+                  <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
+                    Name (Chinese)
+                  </Typography>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      const { generateChineseDestinationName } = require('lib/cityTranslations')
+                      const translation = generateChineseDestinationName(destinationName, destinationState)
+                      if (translation) {
+                        setDestinationNameCn(translation)
+                      }
+                    }}
+                    disabled={!destinationName || !destinationState}
+                    sx={{
+                      fontFamily: 'MarioFont, sans-serif',
+                      fontSize: '12px',
+                      textTransform: 'none',
+                      backgroundColor: '#FFD701',
+                      color: '#373737',
+                      '&:hover': { backgroundColor: '#FFC700' },
+                      '&:disabled': { backgroundColor: '#E0E0E0', color: '#999' },
+                    }}
+                  >
+                    Auto-Generate
+                  </Button>
+                </Box>
                 <input
                   type="text"
                   value={destinationNameCn}
                   onChange={(e) => setDestinationNameCn(e.target.value)}
-                  placeholder="e.g., 大峡谷"
+                  placeholder="e.g., 加利福尼亚州·旧金山"
                   style={{
                     width: '100%',
                     padding: '10px',

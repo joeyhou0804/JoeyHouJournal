@@ -350,11 +350,39 @@ export default function DestinationFormPage() {
 
           {/* Name (Chinese) */}
           <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Name (Chinese)
-            </label>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <label style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+                Name (Chinese)
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  const { generateChineseDestinationName } = require('lib/cityTranslations')
+                  const name = watch('name')
+                  const state = watch('state')
+                  const translation = generateChineseDestinationName(name, state)
+                  if (translation) {
+                    setValue('nameCN', translation)
+                  }
+                }}
+                disabled={!watch('name') || !watch('state')}
+                style={{
+                  padding: '0.5rem 1rem',
+                  fontFamily: 'MarioFont, sans-serif',
+                  fontSize: '12px',
+                  backgroundColor: watch('name') && watch('state') ? '#FFD701' : '#E0E0E0',
+                  color: watch('name') && watch('state') ? '#373737' : '#999',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  cursor: watch('name') && watch('state') ? 'pointer' : 'not-allowed',
+                }}
+              >
+                Auto-Generate
+              </button>
+            </Box>
             <input
               {...register('nameCN')}
+              placeholder="e.g., 加利福尼亚州·旧金山"
               style={{
                 width: '100%',
                 padding: '0.75rem',
