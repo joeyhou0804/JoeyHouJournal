@@ -1,4 +1,7 @@
-import destinationsData from './destinations.json'
+/**
+ * TypeScript type definitions for destinations
+ * Data is now stored in the database and fetched via API routes
+ */
 
 export interface Destination {
   id: string
@@ -15,6 +18,5 @@ export interface Destination {
   description: string
   descriptionCN?: string
   showMap?: boolean          // Whether to show map tab in carousel
+  instagramPostId?: string   // Instagram post ID if imported from Instagram
 }
-
-export const destinations: Destination[] = destinationsData as Destination[]

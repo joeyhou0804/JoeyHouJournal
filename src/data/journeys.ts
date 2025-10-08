@@ -1,28 +1,7 @@
-// Import journeys data from JSON
-import journeysDataRaw from './journeys.json'
-
-// Export journeys directly - ensure we preserve ALL fields from JSON
-// Force TypeScript to treat this as any to preserve all fields
-export const journeys: any[] = journeysDataRaw as any[]
-
-// Helper function to get journey by slug
-export function getJourneyBySlug(slug: string) {
-  return journeys.find((j: any) => j.slug === slug)
-}
-
-// Helper function to get journey by ID
-export function getJourneyById(id: string) {
-  return journeys.find((j: any) => j.id === id)
-}
-
-// Helper function to get all journeys sorted by date
-export function getJourneysSortedByDate(order: 'asc' | 'desc' = 'desc') {
-  return [...journeys].sort((a, b) => {
-    const dateA = new Date(a.startDate)
-    const dateB = new Date(b.startDate)
-    return order === 'desc' ? dateB.getTime() - dateA.getTime() : dateA.getTime() - dateB.getTime()
-  })
-}
+/**
+ * TypeScript type definitions for journeys
+ * Data is now stored in the database and fetched via API routes
+ */
 
 // Type definition for Journey
 export interface Journey {
