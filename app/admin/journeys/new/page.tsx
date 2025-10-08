@@ -33,6 +33,17 @@ export default function NewJourneyPage() {
 
   const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }))
+
+    // Auto-generate slug when name changes
+    if (field === 'name' && typeof value === 'string') {
+      const autoSlug = value
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+        .replace(/\s+/g, '-') // Replace spaces with hyphens
+        .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+        .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      setFormData(prev => ({ ...prev, slug: autoSlug }))
+    }
   }
 
   const handleSaveJourney = async () => {
@@ -41,8 +52,9 @@ export default function NewJourneyPage() {
       alert('Please enter a journey name')
       return
     }
+    // Slug is auto-generated from name, but ensure it exists
     if (!formData.slug.trim()) {
-      alert('Please enter a slug')
+      alert('Journey name must contain at least one letter or number to generate a valid slug')
       return
     }
     if (!formData.startDate) {
@@ -322,26 +334,6 @@ export default function NewJourneyPage() {
         }}
       >
         <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '1.5rem' }}>
-          {/* Slug */}
-          <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Slug *
-            </label>
-            <input
-              value={formData.slug}
-              onChange={(e) => handleInputChange('slug', e.target.value)}
-              placeholder="california-zephyr"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
-              }}
-            />
-          </Box>
-
           {/* Name (English) */}
           <Box>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
@@ -358,6 +350,29 @@ export default function NewJourneyPage() {
                 border: '2px solid #373737',
                 borderRadius: '0.5rem',
                 fontFamily: 'MarioFont, sans-serif'
+              }}
+            />
+          </Box>
+
+          {/* Slug (Auto-generated) */}
+          <Box>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+              Slug (auto-generated)
+            </label>
+            <input
+              value={formData.slug}
+              readOnly
+              placeholder="california-zephyr"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                fontSize: '16px',
+                border: '2px solid #e0e0e0',
+                borderRadius: '0.5rem',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#f5f5f5',
+                cursor: 'not-allowed',
+                color: '#666'
               }}
             />
           </Box>
