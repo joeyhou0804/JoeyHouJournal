@@ -254,13 +254,14 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
 
           {/* About/Description */}
           {station.description && (
-            <Box sx={{ textAlign: 'center', maxWidth: '1400px', margin: '0 auto', paddingX: { xs: '1.5rem', sm: '3rem', md: '4rem' } }}>
+            <Box sx={{ textAlign: 'center', maxWidth: '100%', margin: '0 auto', paddingX: { xs: '1.5rem', sm: '3rem', md: '6rem', lg: '8rem' } }}>
               <Box
                 component="div"
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
                   fontSize: { xs: '18px', sm: '26px', md: '28px' },
                   color: '#373737',
+                  whiteSpace: 'pre-line',
                   lineHeight: { xs: '1.7', sm: '1.8' }
                 }}
               >
