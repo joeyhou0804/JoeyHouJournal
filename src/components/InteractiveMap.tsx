@@ -729,20 +729,29 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     if (relevantHome) {
       const marker = L.marker([relevantHome.lat, relevantHome.lng], { icon: homeIcon }).addTo(map)
 
-      // Create simple popup with home location info
+      // Create popup with same styling as regular place popups
       const homeTitle = locale === 'zh' ? '家的位置' : 'Home'
       const locationName = locale === 'zh' && relevantHome.nameCN ? relevantHome.nameCN : relevantHome.name
 
       const popupContent = `
-        <div style="font-family: ${locale === 'zh' ? 'MarioFontTitleChinese' : 'MarioFontTitle'}, sans-serif; text-align: center; min-width: 200px;">
-          <div style="font-size: 20px; margin-bottom: 8px; font-weight: bold;">${homeTitle}</div>
-          <div style="font-family: ${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif; font-size: 16px; color: #666;">${locationName}</div>
+        <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
+          <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
+            <div style="position: relative; width: 100%; height: 146px;">
+              <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
+              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; text-align: center; z-index: 3;">
+                <div style="font-family: ${locale === 'zh' ? 'MarioFontTitleChinese' : 'MarioFontTitle'}, sans-serif; font-size: 24px; color: #373737; margin-bottom: 8px;">${homeTitle}</div>
+                <div style="font-family: ${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif; font-size: 18px; color: #666;">${locationName}</div>
+              </div>
+            </div>
+          </div>
         </div>
       `
 
       marker.bindPopup(popupContent, {
-        maxWidth: 300,
-        className: 'custom-popup'
+        maxWidth: 520,
+        minWidth: 520,
+        className: 'custom-popup',
+        closeButton: false
       })
     }
 
