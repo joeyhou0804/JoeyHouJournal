@@ -161,8 +161,40 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       shadowAnchor: [12, 41]
     })
 
-    // Create custom home marker icon
+    // Create custom home marker icon (single visit at home)
     const homeIcon = L.icon({
+      iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+        <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.5 0C5.596 0 0 5.596 0 12.5c0 8.437 12.5 28.5 12.5 28.5S25 20.937 25 12.5C25 5.596 19.404 0 12.5 0z" fill="#F06001"/>
+          <path d="M12.5 6L7 11v7h3v-5h5v5h3v-7z" fill="white"/>
+        </svg>
+      `),
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      shadowSize: [41, 41],
+      shadowAnchor: [12, 41]
+    })
+
+    // Create custom golden home marker icon (multiple visits at home)
+    const goldenHomeIcon = L.icon({
+      iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+        <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.5 0C5.596 0 0 5.596 0 12.5c0 8.437 12.5 28.5 12.5 28.5S25 20.937 25 12.5C25 5.596 19.404 0 12.5 0z" fill="#FFD701"/>
+          <path d="M12.5 6L7 11v7h3v-5h5v5h3v-7z" fill="white"/>
+        </svg>
+      `),
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      shadowSize: [41, 41],
+      shadowAnchor: [12, 41]
+    })
+
+    // Create custom dark home marker icon (for journeys without destinations at home)
+    const darkHomeIcon = L.icon({
       iconUrl: 'data:image/svg+xml;base64,' + btoa(`
         <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
           <path d="M12.5 0C5.596 0 0 5.596 0 12.5c0 8.437 12.5 28.5 12.5 28.5S25 20.937 25 12.5C25 5.596 19.404 0 12.5 0z" fill="#373737"/>
@@ -477,7 +509,21 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     // Add markers for each group
     Object.entries(groupedPlaces).forEach(([key, places]) => {
       const isMultiVisit = places.length > 1
-      const icon = isMultiVisit ? goldenIcon : orangeIcon
+
+      // Check if this location is a home location
+      const isAtHome = homeLocations.some(home =>
+        Math.abs(home.lat - places[0].lat) < 0.0001 &&
+        Math.abs(home.lng - places[0].lng) < 0.0001
+      )
+
+      // Use home icon if at home location, otherwise use regular icons
+      let icon: L.Icon
+      if (isAtHome) {
+        icon = isMultiVisit ? goldenHomeIcon : homeIcon
+      } else {
+        icon = isMultiVisit ? goldenIcon : orangeIcon
+      }
+
       const marker = L.marker([places[0].lat, places[0].lng], { icon }).addTo(map)
 
       if (isMultiVisit) {
@@ -732,8 +778,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       )
 
       if (destinationsAtHome.length === 0) {
-        // No destinations at home - show regular home marker
-        const marker = L.marker([relevantHome.lat, relevantHome.lng], { icon: homeIcon }).addTo(map)
+        // No destinations at home - show dark home marker
+        const marker = L.marker([relevantHome.lat, relevantHome.lng], { icon: darkHomeIcon }).addTo(map)
         const homeTitle = locale === 'zh' ? '家的位置' : 'Home'
         const locationName = locale === 'zh' && relevantHome.nameCN ? relevantHome.nameCN : relevantHome.name
 
