@@ -19,7 +19,8 @@ import {
   Train as TrainIcon,
   AccountCircle,
   Menu as MenuIcon,
-  Instagram as InstagramIcon
+  Instagram as InstagramIcon,
+  Home as HomeIcon
 } from '@mui/icons-material'
 import Link from 'next/link'
 
@@ -101,6 +102,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Dashboard', path: '/admin/dashboard', icon: <DashboardIcon /> },
     { label: 'Destinations', path: '/admin/destinations', icon: <LocationIcon /> },
     { label: 'Journeys', path: '/admin/journeys', icon: <TrainIcon /> },
+    { label: 'Home Locations', path: '/admin/home-locations', icon: <HomeIcon /> },
     { label: 'Instagram Import', path: '/admin/instagram-import', icon: <InstagramIcon /> }
   ]
 
