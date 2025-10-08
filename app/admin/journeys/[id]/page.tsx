@@ -1010,8 +1010,16 @@ export default function JourneyDetailsPage() {
       </Box>
 
       {/* Associated Destinations */}
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+      <Box
+        sx={{
+          backgroundColor: 'white',
+          padding: '2rem',
+          borderRadius: '1rem',
+          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+          marginTop: '2rem'
+        }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0 }}>
             Associated Destinations ({destinations.length})
           </h2>
@@ -1036,7 +1044,8 @@ export default function JourneyDetailsPage() {
             backgroundColor: 'white',
             borderRadius: '1rem',
             boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            overflow: 'hidden'
+            overflow: 'hidden',
+            border: '1px solid #e0e0e0'
           }}
         >
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
