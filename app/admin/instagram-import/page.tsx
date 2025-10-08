@@ -94,7 +94,7 @@ export default function InstagramImportPage() {
   const [lat, setLat] = useState<number>(0)
   const [lng, setLng] = useState<number>(0)
   const [isDetectingCoords, setIsDetectingCoords] = useState(false)
-  const [showMap, setShowMap] = useState(true)
+  const [showMap, setShowMap] = useState(false)
 
   const destinations: Destination[] = destinationsData as Destination[]
 
@@ -1029,7 +1029,7 @@ export default function InstagramImportPage() {
                   setDestinationDate('')
                   setLat(0)
                   setLng(0)
-                  setShowMap(true)
+                  setShowMap(false)
                   setIsEditingCountry(false)
                 }}
                 startIcon={<CancelIcon />}
