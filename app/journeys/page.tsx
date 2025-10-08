@@ -10,7 +10,7 @@ import JourneyCard from 'src/components/JourneyCard'
 import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
 import MixedText from 'src/components/MixedText'
-import { getRouteCoordinates } from 'src/data/routes'
+import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { formatDuration } from 'src/utils/formatDuration'
 import { isLocalTrip } from 'src/utils/journeyHelpers'
@@ -397,7 +397,7 @@ export default function JourneysPage() {
                 <InteractiveMap
                   places={currentJourneyPlaces}
                   routeSegments={currentJourney?.segments}
-                  routeCoordinates={getRouteCoordinates(currentJourney.id)}
+                  routeCoordinates={getRouteCoordinatesFromSegments(currentJourney?.segments)}
                   journeyDate={currentJourney?.startDate}
                 />
               </Box>

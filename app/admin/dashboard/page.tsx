@@ -23,8 +23,6 @@ import {
   Photo as PhotoIcon
 } from '@mui/icons-material'
 import Link from 'next/link'
-import destinationsData from 'src/data/destinations.json'
-import { journeys } from 'src/data/journeys'
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -33,20 +31,38 @@ export default function AdminDashboard() {
     totalImages: 0,
     recentDestinations: [] as any[]
   })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const destinations = destinationsData as any[]
-    const totalImages = destinations.reduce((sum, dest) => sum + (dest.images?.length || 0), 0)
-    const recentDests = [...destinations]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 5)
+    async function fetchStats() {
+      try {
+        const [destinationsRes, journeysRes] = await Promise.all([
+          fetch('/api/destinations'),
+          fetch('/api/journeys')
+        ])
 
-    setStats({
-      totalDestinations: destinations.length,
-      totalJourneys: journeys.length,
-      totalImages,
-      recentDestinations: recentDests
-    })
+        const destinations = await destinationsRes.json()
+        const journeys = await journeysRes.json()
+
+        const totalImages = destinations.reduce((sum: number, dest: any) => sum + (dest.images?.length || 0), 0)
+        const recentDests = [...destinations]
+          .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 5)
+
+        setStats({
+          totalDestinations: destinations.length,
+          totalJourneys: journeys.length,
+          totalImages,
+          recentDestinations: recentDests
+        })
+      } catch (error) {
+        console.error('Failed to fetch stats:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchStats()
   }, [])
 
   return (

@@ -9,7 +9,7 @@ import NavigationMenu from 'src/components/NavigationMenu'
 import MapViewHint from 'src/components/MapViewHint'
 import MixedText from 'src/components/MixedText'
 import DestinationCard from 'src/components/DestinationCard'
-import { getRouteCoordinates } from 'src/data/routes'
+import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
 
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -323,7 +323,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               <InteractiveMap
                 places={places}
                 routeSegments={journey?.segments}
-                routeCoordinates={journey?.segments ? getRouteCoordinates(journey.journeyId, journey.segments) : journey?.journeyId ? getRouteCoordinates(journey.journeyId) : undefined}
+                routeCoordinates={getRouteCoordinatesFromSegments(journey?.segments)}
                 journeyDate={journey?.startDate}
               />
             </Box>

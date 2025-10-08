@@ -5,7 +5,6 @@ import { useRouter, useParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { Box, TextField, MenuItem, Drawer, Typography, Button, Alert } from '@mui/material'
 import { Delete as DeleteIcon } from '@mui/icons-material'
-import { journeys } from 'src/data/journeys'
 
 interface DestinationFormData {
   id?: string
@@ -43,14 +42,28 @@ export default function DestinationFormPage() {
   const [geocodingError, setGeocodingError] = useState<string | null>(null)
   const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
+  const [journeys, setJourneys] = useState<any[]>([])
   const images = watch('images') || []
   const cityName = watch('name')
   const destinationName = watch('name')
 
   useEffect(() => {
-    if (!isNew) {
-      fetchDestination()
+    async function fetchData() {
+      // Fetch journeys
+      try {
+        const response = await fetch('/api/journeys')
+        const data = await response.json()
+        setJourneys(data)
+      } catch (error) {
+        console.error('Failed to fetch journeys:', error)
+      }
+
+      // Fetch destination if editing
+      if (!isNew) {
+        fetchDestination()
+      }
     }
+    fetchData()
   }, [id, isNew])
 
   // Auto-geocode when city name changes

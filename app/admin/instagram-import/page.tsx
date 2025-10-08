@@ -42,7 +42,6 @@ import {
   Block as BlockIcon,
   Visibility as VisibilityIcon,
 } from '@mui/icons-material'
-import destinationsData from 'src/data/destinations.json'
 import AdminLoading from 'src/components/AdminLoading'
 import { generateChineseDestinationName } from '@/lib/cityTranslations'
 
@@ -95,8 +94,6 @@ export default function InstagramImportPage() {
   const [lng, setLng] = useState<number>(0)
   const [isDetectingCoords, setIsDetectingCoords] = useState(false)
   const [showMap, setShowMap] = useState(false)
-
-  const destinations: Destination[] = destinationsData as Destination[]
 
   // Load excluded posts from database
   useEffect(() => {
