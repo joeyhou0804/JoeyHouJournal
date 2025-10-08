@@ -172,6 +172,21 @@ export default function NewJourneyPage() {
     }
   }
 
+  const insertPointAfter = (index: number) => {
+    const newPoints = [...routePoints]
+    newPoints.splice(index + 1, 0, { name: '', nameCN: '', lat: 0, lng: 0 })
+    setRoutePoints(newPoints)
+
+    const newEditable = [...editableCoords]
+    newEditable.splice(index + 1, 0, false)
+    setEditableCoords(newEditable)
+
+    // Insert a new transport method for the new segment
+    const newMethods = [...transportMethods]
+    newMethods.splice(index + 1, 0, 'train')
+    setTransportMethods(newMethods)
+  }
+
   const removePoint = (index: number) => {
     if (routePoints.length <= 2) {
       alert('You must have at least 2 points (start and end)')
@@ -667,48 +682,75 @@ export default function NewJourneyPage() {
               </Box>
 
               {index < routePoints.length - 1 && (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '1rem', gap: '1rem' }}>
-                  <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
-                  <Box sx={{
-                    backgroundColor: '#fff3cd',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '0.5rem',
-                    border: '2px solid #ffc107',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem'
-                  }}>
-                    <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', fontWeight: 'bold' }}>
-                      Travel by:
-                    </label>
-                    <select
-                      value={transportMethods[index] || 'train'}
-                      onChange={(e) => {
-                        const newMethods = [...transportMethods]
-                        newMethods[index] = e.target.value
-                        setTransportMethods(newMethods)
-                      }}
-                      style={{
-                        padding: '0.5rem',
-                        fontSize: '14px',
-                        fontFamily: 'MarioFont, sans-serif',
-                        border: '2px solid #373737',
-                        borderRadius: '0.25rem',
-                        cursor: 'pointer',
-                        backgroundColor: 'white'
-                      }}
-                    >
-                      <option value="train">🚂 Train</option>
-                      <option value="bus">🚌 Bus</option>
-                      <option value="subway">🚇 Subway</option>
-                      <option value="plane">✈️ Plane</option>
-                      <option value="ferry">⛴️ Ferry</option>
-                      <option value="walk">🚶 Walk</option>
-                      <option value="cruise">🚢 Cruise</option>
-                      <option value="drive">🚗 Drive</option>
-                    </select>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1rem' }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem', width: '100%' }}>
+                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
+                    <Box sx={{
+                      backgroundColor: '#fff3cd',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '0.5rem',
+                      border: '2px solid #ffc107',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', fontWeight: 'bold' }}>
+                        Travel by:
+                      </label>
+                      <select
+                        value={transportMethods[index] || 'train'}
+                        onChange={(e) => {
+                          const newMethods = [...transportMethods]
+                          newMethods[index] = e.target.value
+                          setTransportMethods(newMethods)
+                        }}
+                        style={{
+                          padding: '0.5rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          border: '2px solid #373737',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer',
+                          backgroundColor: 'white'
+                        }}
+                      >
+                        <option value="train">🚂 Train</option>
+                        <option value="bus">🚌 Bus</option>
+                        <option value="subway">🚇 Subway</option>
+                        <option value="plane">✈️ Plane</option>
+                        <option value="ferry">⛴️ Ferry</option>
+                        <option value="walk">🚶 Walk</option>
+                        <option value="cruise">🚢 Cruise</option>
+                        <option value="drive">🚗 Drive</option>
+                      </select>
+                    </Box>
+                    <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
                   </Box>
-                  <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '20px', color: '#666' }}>↓</span>
+                  <button
+                    type="button"
+                    onClick={() => insertPointAfter(index)}
+                    style={{
+                      padding: '0.4rem 1rem',
+                      fontSize: '13px',
+                      fontFamily: 'MarioFont, sans-serif',
+                      backgroundColor: '#4CAF50',
+                      color: 'white',
+                      border: '2px solid #388E3C',
+                      borderRadius: '0.5rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = '#45a049'
+                      e.currentTarget.style.transform = 'scale(1.05)'
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = '#4CAF50'
+                      e.currentTarget.style.transform = 'scale(1)'
+                    }}
+                  >
+                    + Insert Stop Here
+                  </button>
                 </Box>
               )}
             </Box>
