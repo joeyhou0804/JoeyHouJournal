@@ -15,10 +15,12 @@ This is a personal travel journal website documenting rail travel across America
   - `layout.tsx` - Root Server Component layout
   - `providers.tsx` - Client Component wrapper for contexts
 - `src/components/` - Reusable React components
-- `src/data/` - Data files (destinations.json, journeys.json, routes.js)
+- `src/data/` - Data type definitions and archived JSON files
 - `src/hooks/` - Custom React hooks (useTranslation, useFontFamily)
 - `src/contexts/` - React contexts (LanguageContext for bilingual support)
 - `src/i18n/` - Internationalization configuration and locale files
+- `lib/` - Database access layer (`db.ts`) and transformers (`transform.ts`)
+- `scripts/` - Database migration and utility scripts
 - `public/` - Static assets (images, backgrounds, masks)
 
 ## Development Commands
@@ -29,7 +31,7 @@ All commands use pnpm as the package manager:
 # Development server
 pnpm dev
 
-# Build for production (static export)
+# Build for production
 pnpm build
 
 # Lint code
@@ -37,6 +39,11 @@ pnpm lint
 
 # Start production server (after build)
 pnpm start
+
+# Database scripts
+pnpm db:migrate              # Migrate data to PostgreSQL (mostly archived)
+pnpm db:import-json          # Import JSON data to database (mostly archived)
+pnpm sync-journey-names      # Sync journey names in destinations table
 ```
 
 ## Architecture Overview
@@ -56,16 +63,42 @@ pnpm start
    - Dashboard, journey editor, destination editor
    - API routes in `app/api/admin/` handle data persistence and uploads
 
-### Data Layer
+### Data Layer - PostgreSQL Database Architecture
 
-The data architecture follows a hierarchical structure:
+**IMPORTANT**: This project uses PostgreSQL on Vercel as the single source of truth. All data is fetched via API routes.
 
-- **`src/data/journeys.json`**: Journey data with route info, dates, and visitedPlaceIds
-- **`src/data/journeys.ts`**: TypeScript exports with Journey interface and helper functions (getJourneyBySlug, getJourneyById, getJourneysSortedByDate)
-- **`src/data/destinations.json`**: Destination data with coordinates, dates, journey associations, and image arrays
-- **`src/data/destinations.ts`**: TypeScript exports with Destination interface
-- **`src/data/routes.js`**: Route polyline definitions for map rendering
-- Data relationship: Journeys reference destinations via `visitedPlaceIds`, destinations reference journeys via `journeyId`
+#### Database Tables
+- **`journeys`** - Journey metadata with route segments, dates, and location info
+- **`destinations`** - Individual destinations with coordinates, images, journey associations
+- **`instagram_tokens`** - Instagram API authentication tokens
+- **`home_locations`** - Historical home locations with date ranges
+
+#### Data Flow
+```
+PostgreSQL Database (Vercel)
+    ↓
+API Routes (/api/journeys, /api/destinations)
+    ↓
+Transform Layer (lib/transform.ts - snake_case → camelCase)
+    ↓
+React Components
+```
+
+#### Key Files
+- **`lib/db.ts`** - Database access layer with type definitions
+- **`lib/transform.ts`** - Transforms database format (snake_case) to app format (camelCase)
+- **`src/data/journeys.ts`** - TypeScript Journey interface (no data)
+- **`src/data/destinations.ts`** - TypeScript Destination interface (no data)
+- **`src/data/journeys.json.archived`** - Archived JSON file (no longer used)
+
+#### API Routes
+- **Public**: `/api/journeys`, `/api/journeys/[slug]`, `/api/destinations`, `/api/destinations/[id]`, `/api/home-locations`
+- **Admin**: `/app/api/admin/*` - CRUD operations for journeys, destinations, uploads, Instagram integration
+
+#### Data Relationships
+- Journeys reference destinations via `visitedPlaceIds` array
+- Destinations reference journeys via `journeyId` and `journeyName`
+- Route segments stored as JSONB in `journeys.segments` with `from`, `to`, `method` (train/bus/plane/etc)
 
 ### Internationalization
 
@@ -83,6 +116,13 @@ The data architecture follows a hierarchical structure:
 - Responsive sizing: 450px (base) → 500px (sm) → 550px (md) → 600px (lg+)
 - -50px negative gap between images for overlap effect
 - Container rotated -12 degrees with 150% width
+
+**InteractiveMap** (`src/components/InteractiveMap.tsx`):
+- Leaflet-based map with custom markers and route rendering
+- Route visualization: Straight lines for trains, dashed for buses, curved arcs for planes and round-trip bus segments
+- Detects round-trip segments between same city pairs and renders as Bézier curves
+- Custom marker icons: Orange (single visit), Golden (multiple visits), Home markers
+- Popup carousels for multi-visit locations
 
 **Background Alignment System** (in `app/page.tsx`):
 - Custom hooks: `useSeamlessBackground()` and `useSeamlessCarryOver()`
@@ -129,6 +169,17 @@ The data architecture follows a hierarchical structure:
 ## Important Notes
 
 - **Server/Client separation**: The app uses Server Components by default with a `providers.tsx` client boundary for contexts
-- **Dual deployment modes**: Vercel uses Next.js server (for admin API), Netlify uses static export (public site only)
-- **Data files**: Content is stored in JSON files (`src/data/`), not a database
-- **Admin authentication**: Admin routes require authentication (handled via API routes)
+- **Database-only architecture**: All data is stored in PostgreSQL on Vercel and fetched via API routes
+- **No JSON imports**: Pages fetch data from `/api/journeys` and `/api/destinations` at runtime, NOT from JSON files
+- **Data transformation**: Database uses snake_case (e.g., `name_cn`), app uses camelCase (e.g., `nameCN`) via `lib/transform.ts`
+- **Admin authentication**: Admin routes require phone verification via Twilio SMS
+- **Instagram integration**: Admin panel can import destinations from Instagram posts with Cloudinary image hosting
+- **Deployment**: Vercel (primary) for full Next.js server with API routes and database access
+
+## Admin Panel Features
+
+- **Journey Management**: Create/edit journeys with route segments (specifying transport method: train/bus/plane/etc)
+- **Destination Management**: Create/edit destinations with coordinates, images, journey associations
+- **Instagram Import**: OAuth flow to import destinations from Instagram posts automatically
+- **Image Upload**: Cloudinary integration for image hosting
+- **Home Locations**: Manage historical home locations with date ranges for proper map markers
