@@ -17,7 +17,6 @@ import {
 } from '@mui/material'
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material'
 import Link from 'next/link'
-import destinationsData from 'src/data/destinations.json'
 
 export default function JourneyDetailsPage() {
   const params = useParams()
@@ -27,6 +26,7 @@ export default function JourneyDetailsPage() {
   const [journey, setJourney] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [destinations, setDestinations] = useState<any[]>([])
+  const [allDestinationsData, setAllDestinationsData] = useState<any[]>([])
   const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [addDrawerOpen, setAddDrawerOpen] = useState(false)
@@ -138,11 +138,22 @@ export default function JourneyDetailsPage() {
   }, [id])
 
   useEffect(() => {
-    if (journey) {
-      const allDests = destinationsData as any[]
-      const journeyDests = allDests.filter(d => d.journeyName === journey.name)
-      setDestinations(journeyDests)
+    async function fetchAllDestinations() {
+      try {
+        const response = await fetch('/api/destinations')
+        const data = await response.json()
+        setAllDestinationsData(data)
+
+        if (journey) {
+          const journeyDests = data.filter((d: any) => d.journeyName === journey.name)
+          setDestinations(journeyDests)
+        }
+      } catch (error) {
+        console.error('Failed to fetch destinations:', error)
+      }
     }
+
+    fetchAllDestinations()
   }, [journey])
 
   if (loading) {
@@ -428,7 +439,7 @@ export default function JourneyDetailsPage() {
     }
   }
 
-  const allDestinations = destinationsData as any[]
+  const allDestinations = allDestinationsData
   const availableDestinations = allDestinations.filter(
     d => !destinations.find(jd => jd.id === d.id)
   )
