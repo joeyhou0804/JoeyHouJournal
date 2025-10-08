@@ -738,11 +738,11 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
             <div style="position: relative; width: 100%; height: 146px;">
               <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
-              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -20px; z-index: 3; width: 300px;">
+              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -40px; z-index: 3; width: 250px;">
                 <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
                 <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(homeTitle, '20px')}</h3>
               </div>
-              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: 30px; z-index: 2; width: 300px; text-align: center;">
+              <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
                 <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin: 0;">${locationName}</p>
               </div>
             </div>
