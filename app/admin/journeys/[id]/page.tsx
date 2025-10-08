@@ -244,26 +244,7 @@ export default function JourneyDetailsPage() {
       })
 
       if (response.ok) {
-        // Re-fetch the journey data to get the updated version
-        const fetchResponse = await fetch(`/api/admin/journeys?id=${id}`, {
-          cache: 'no-store'
-        })
-        if (fetchResponse.ok) {
-          const data = await fetchResponse.json()
-          setJourney(data)
-          // Update form data with fetched journey
-          setFormData({
-            name: data.name || '',
-            nameCN: data.nameCN || '',
-            slug: data.slug || '',
-            duration: data.duration || '',
-            days: data.days || 1,
-            nights: data.nights || 0,
-            startDate: data.startDate || '',
-            endDate: data.endDate || ''
-          })
-          alert('Journey saved successfully!')
-        }
+        router.push('/admin/journeys')
       } else {
         alert('Failed to save journey')
       }
