@@ -288,7 +288,7 @@ export default function Home() {
         />
         {/* Loading text */}
         <Box sx={{
-          fontFamily: 'MarioFontTitle, sans-serif',
+          fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
           fontSize: '32px',
           color: '#373737'
         }}>
