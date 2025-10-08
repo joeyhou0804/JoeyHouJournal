@@ -171,6 +171,14 @@ export default function InstagramImportPage() {
         if (dest.instagram_post_id) {
           imported.add(dest.instagram_post_id)
         }
+        // Also check if the destination ID contains an Instagram post ID pattern
+        // (for backwards compatibility with destinations imported before instagram_post_id field)
+        // Instagram post IDs are numeric strings, typically 17-19 digits
+        const idParts = dest.id.split('-')
+        const lastPart = idParts[idParts.length - 1]
+        if (lastPart && /^\d{17,19}$/.test(lastPart)) {
+          imported.add(lastPart)
+        }
       })
 
       // Fetch all pages of Instagram posts
