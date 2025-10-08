@@ -44,6 +44,7 @@ import {
 } from '@mui/icons-material'
 import destinationsData from 'src/data/destinations.json'
 import AdminLoading from 'src/components/AdminLoading'
+import { generateChineseDestinationName } from '@/lib/cityTranslations'
 
 interface InstagramPost {
   id: string
@@ -792,7 +793,6 @@ export default function InstagramImportPage() {
                   <Button
                     size="small"
                     onClick={() => {
-                      const { generateChineseDestinationName } = require('lib/cityTranslations')
                       const translation = generateChineseDestinationName(destinationName, destinationState)
                       if (translation) {
                         setDestinationNameCn(translation)
