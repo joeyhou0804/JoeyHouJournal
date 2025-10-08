@@ -251,15 +251,33 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
             const midLng = (lng1 + lng2) / 2
 
             // Calculate the perpendicular offset for the curve
-            // The control point is offset perpendicular to the line
-            const dx = lng2 - lng1
-            const dy = lat2 - lat1
-            const distance = Math.sqrt(dx * dx + dy * dy)
+            // Use a normalized direction (always from lower coords to higher coords)
+            // to ensure consistent perpendicular direction
+            const cities = [
+              { lat: lat1, lng: lng1 },
+              { lat: lat2, lng: lng2 }
+            ].sort((a, b) => a.lat !== b.lat ? a.lat - b.lat : a.lng - b.lng)
+
+            const normDx = cities[1].lng - cities[0].lng
+            const normDy = cities[1].lat - cities[0].lat
+            const distance = Math.sqrt(normDx * normDx + normDy * normDy)
 
             // Get the offset factor for this segment (handles duplicates)
             const offsetFactor = segmentOffsets.get(segment) || 0.2
-            const controlLat = midLat - (dx * offsetFactor)
-            const controlLng = midLng + (dy * offsetFactor)
+
+            // Calculate perpendicular vector (rotate 90 degrees)
+            // For a vector (dx, dy), perpendicular is (-dy, dx)
+            const perpDx = -normDy
+            const perpDy = normDx
+
+            // Normalize the perpendicular vector
+            const perpLength = Math.sqrt(perpDx * perpDx + perpDy * perpDy)
+            const perpNormX = perpDx / perpLength
+            const perpNormY = perpDy / perpLength
+
+            // Apply offset in the perpendicular direction
+            const controlLat = midLat + (perpNormY * offsetFactor * distance)
+            const controlLng = midLng + (perpNormX * offsetFactor * distance)
 
             // Create curved path with multiple interpolated points
             const curvedCoords: [number, number][] = []
