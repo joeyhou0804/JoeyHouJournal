@@ -610,7 +610,7 @@ export default function Home() {
                     component="img"
                     src={`/images/buttons/view_details_button_${locale}.png`}
                     alt="View Details"
-                    className="w-56 h-auto hover:scale-105 transition-transform duration-200"
+                    className="h-12 w-auto hover:scale-105 transition-transform duration-200"
                   />
                 </Box>
               </Link>
@@ -1065,7 +1065,7 @@ export default function Home() {
                     component="img"
                     src={`/images/buttons/view_details_button_${locale}.png`}
                     alt="View Details"
-                    className="w-56 h-auto hover:scale-105 transition-transform duration-200"
+                    className="h-12 w-auto hover:scale-105 transition-transform duration-200"
                   />
                 </Box>
               </Link>

@@ -184,10 +184,10 @@ export default function JourneysPage() {
   }
 
   const sortedTrips = [...trips].sort((a, b) => {
-    // Sort by index/order - latest means end of list, earliest means start
+    // Sort by index/order - latest means start of list, earliest means end
     const indexA = trips.indexOf(a)
     const indexB = trips.indexOf(b)
-    return sortOrder === 'latest' ? indexB - indexA : indexA - indexB
+    return sortOrder === 'latest' ? indexA - indexB : indexB - indexA
   })
 
   const totalPages = Math.ceil(sortedTrips.length / itemsPerPage)
@@ -350,6 +350,7 @@ export default function JourneysPage() {
                 imageOnRight={true}
                 cardNumber={2}
                 isJourneyInfo={true}
+                journeySlug={currentJourney.slug}
                 station={{
                   id: '',
                   name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
@@ -392,6 +393,7 @@ export default function JourneysPage() {
                   imageOnRight={true}
                   cardNumber={2}
                   isJourneyInfo={true}
+                  journeySlug={currentJourney.slug}
                   station={{
                     id: '',
                     name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,

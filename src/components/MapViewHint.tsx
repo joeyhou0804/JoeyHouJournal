@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box'
+import Link from 'next/link'
 import MixedText from './MixedText'
 import { useTranslation } from 'src/hooks/useTranslation'
 
@@ -15,9 +16,10 @@ interface MapViewHintProps {
   imageOnRight?: boolean
   cardNumber?: 1 | 2
   isJourneyInfo?: boolean
+  journeySlug?: string
 }
 
-export default function MapViewHint({ station, imageOnRight = false, cardNumber = 1, isJourneyInfo = false }: MapViewHintProps) {
+export default function MapViewHint({ station, imageOnRight = false, cardNumber = 1, isJourneyInfo = false, journeySlug }: MapViewHintProps) {
   const { locale } = useTranslation()
 
   // Determine card image based on screen size and card number
@@ -109,22 +111,32 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
         </Box>
 
         {/* Body Text */}
-        <Box sx={{ position: 'absolute', top: { xs: isJourneyInfo ? '50%' : '20%', sm: '60%' }, left: { xs: '50%', sm: imageOnRight ? '30%' : '70%' }, transform: 'translate(-50%, -50%)', width: { xs: '80%', sm: '50%' }, textAlign: isJourneyInfo ? 'center' : 'left', paddingLeft: { xs: '0', sm: imageOnRight ? '0' : '2rem' }, paddingRight: { xs: '0', sm: imageOnRight ? '2rem' : '0' } }}>
+        <Box sx={{ position: 'absolute', top: { xs: isJourneyInfo ? '30%' : '20%', sm: isJourneyInfo ? '40%' : '60%' }, left: { xs: '50%', sm: imageOnRight ? '30%' : '70%' }, transform: 'translate(-50%, -50%)', width: { xs: '80%', sm: '50%' }, textAlign: isJourneyInfo ? 'center' : 'left', paddingLeft: { xs: '0', sm: imageOnRight ? '0' : '2rem' }, paddingRight: { xs: '0', sm: imageOnRight ? '2rem' : '0' } }}>
           {isJourneyInfo ? (
-            <>
-              <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: { xs: '16px', sm: '26px' }, color: '#F6F6F6', marginBottom: '4px', marginTop: 0, lineHeight: '1.4' }}>
-                {station.journeyName || station.name}
-              </Box>
-              <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: { xs: '16px', sm: '26px' }, color: '#F6F6F6', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
-                {station.date}
-              </Box>
-            </>
+            <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: { xs: '16px', sm: '26px' }, color: '#F6F6F6', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
+              {station.journeyName || station.name}
+            </Box>
           ) : (
             <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: { xs: '16px', sm: '26px' }, color: '#373737', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
               {station.journeyName ? `${station.journeyName} ${station.date}` : `${station.name} ${station.date}`}
             </Box>
           )}
         </Box>
+
+        {/* View Details Button - Only show for journey info with journeySlug */}
+        {isJourneyInfo && journeySlug && (
+          <Link href={`/journeys/${journeySlug}`}>
+            <Box sx={{ position: 'absolute', top: { xs: '63%', sm: '72%' }, left: { xs: '50%', sm: imageOnRight ? '30%' : '70%' }, transform: 'translate(-50%, -50%)', zIndex: 15 }}>
+              <Box
+                component="img"
+                src={`/images/buttons/view_details_button_${locale}.png`}
+                alt="View Details"
+                sx={{ height: { xs: '3rem', sm: 'auto' }, width: { xs: 'auto', sm: '17.5rem' } }}
+                className="hover:scale-105 transition-transform duration-200"
+              />
+            </Box>
+          </Link>
+        )}
       </Box>
   )
 }
