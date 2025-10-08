@@ -50,6 +50,10 @@ export const translations = {
     viewDetails: 'View Details',
     journeyDetails: 'Journey Details',
 
+    // Journey Route Labels
+    home: 'Home',
+    localTrip: 'Local trip',
+
     // US States
     states: {
       'New York': 'New York',
@@ -158,6 +162,10 @@ export const translations = {
     nextJourney: '下一个旅程',
     viewDetails: '了解更多',
     journeyDetails: '旅程详情',
+
+    // Journey Route Labels
+    home: '从家出发',
+    localTrip: '本地转转',
 
     // US States
     states: {

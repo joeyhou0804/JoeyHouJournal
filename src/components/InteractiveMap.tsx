@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { isLocalTrip } from 'src/utils/journeyHelpers'
 
 // Fix for default marker icon in Next.js
 if (typeof window !== 'undefined') {
@@ -211,8 +212,12 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       })
     })
 
+    // Check if this is a local trip (single segment with same start/end)
+    const isLocal = isLocalTrip(routeSegments)
+
     // Draw lines connecting places using detailed route segments or coordinates
-    if (routeSegments && routeSegments.length > 0) {
+    // Skip drawing routes for local trips
+    if (routeSegments && routeSegments.length > 0 && !isLocal) {
       // Detect duplicate segments (same pair of cities, potentially bidirectional)
       const segmentPairs = new Map<string, RouteSegment[]>()
 
@@ -722,32 +727,63 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     if (relevantHome) {
       const marker = L.marker([relevantHome.lat, relevantHome.lng], { icon: homeIcon }).addTo(map)
 
-      // Create popup with same styling as regular place popups
-      const homeTitle = locale === 'zh' ? '家的位置' : 'Home'
-      const locationName = locale === 'zh' && relevantHome.nameCN ? relevantHome.nameCN : relevantHome.name
+      // For local trips, show normal popup style; otherwise show home-specific popup
+      if (isLocal) {
+        // Use normal destination popup style for local trips
+        const homeTitle = locale === 'zh' ? tr.localTrip : 'Local trip'
+        const locationName = locale === 'zh' && relevantHome.nameCN ? relevantHome.nameCN : relevantHome.name
 
-      const popupContent = `
-        <div style="width: 280px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 8px; position: relative;">
-          <div style="border: 2px solid #F6F6F6; border-radius: 6px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
-            <div style="position: relative; width: 100%; height: 90px;">
-              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -24px; z-index: 3; width: 180px;">
-                <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
-                <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(homeTitle, '16px')}</h3>
-              </div>
-              <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: 6px; z-index: 2; width: 180px; text-align: center;">
-                <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 14px; color: #F6F6F6; margin: 0;">${locationName}</p>
+        const popupContent = `
+          <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
+            <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
+              <div style="position: relative; width: 100%; height: 146px;">
+                <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -40px; z-index: 3; width: 250px;">
+                  <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
+                  <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(homeTitle, '20px')}</h3>
+                </div>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
+                  <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #F6F6F6; margin: 0;">${locationName}</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      `
+        `
 
-      marker.bindPopup(popupContent, {
-        maxWidth: 320,
-        minWidth: 320,
-        className: 'custom-popup',
-        closeButton: false
-      })
+        marker.bindPopup(popupContent, {
+          maxWidth: 520,
+          minWidth: 520,
+          className: 'custom-popup',
+          closeButton: false
+        })
+      } else {
+        // Regular home popup for non-local trips
+        const homeTitle = locale === 'zh' ? '家的位置' : 'Home'
+        const locationName = locale === 'zh' && relevantHome.nameCN ? relevantHome.nameCN : relevantHome.name
+
+        const popupContent = `
+          <div style="width: 280px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 8px; position: relative;">
+            <div style="border: 2px solid #F6F6F6; border-radius: 6px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
+              <div style="position: relative; width: 100%; height: 90px;">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -24px; z-index: 3; width: 180px;">
+                  <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
+                  <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(homeTitle, '16px')}</h3>
+                </div>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: 6px; z-index: 2; width: 180px; text-align: center;">
+                  <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 14px; color: #F6F6F6; margin: 0;">${locationName}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+
+        marker.bindPopup(popupContent, {
+          maxWidth: 320,
+          minWidth: 320,
+          className: 'custom-popup',
+          closeButton: false
+        })
+      }
     }
 
     // Cleanup
