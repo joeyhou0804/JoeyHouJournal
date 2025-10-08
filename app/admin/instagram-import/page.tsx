@@ -158,18 +158,14 @@ export default function InstagramImportPage() {
     setError(null)
 
     try {
-      // Fetch Instagram posts and existing destinations in parallel
-      const [postsResponse, destinationsResponse] = await Promise.all([
-        fetch('/api/admin/instagram/posts?limit=50'),
-        fetch('/api/admin/destinations')
-      ])
+      // Fetch all Instagram posts with pagination
+      let allPosts: InstagramPost[] = []
+      let nextCursor: string | undefined = undefined
+      let pageCount = 0
+      const maxPages = 20 // Safety limit to prevent infinite loops (20 pages × 25 posts = 500 posts max)
 
-      if (!postsResponse.ok) {
-        const data = await postsResponse.json()
-        throw new Error(data.error || 'Failed to load posts')
-      }
-
-      const postsData = await postsResponse.json()
+      // Fetch destinations once
+      const destinationsResponse = await fetch('/api/admin/destinations')
       const destinationsData = await destinationsResponse.json()
 
       // Build a set of Instagram post IDs that have already been imported
@@ -180,8 +176,34 @@ export default function InstagramImportPage() {
         }
       })
 
+      // Fetch all pages of Instagram posts
+      do {
+        pageCount++
+        const url = nextCursor
+          ? `/api/admin/instagram/posts?limit=25&after=${nextCursor}`
+          : '/api/admin/instagram/posts?limit=25'
+
+        console.log(`Fetching Instagram posts page ${pageCount}...`)
+        const postsResponse = await fetch(url)
+
+        if (!postsResponse.ok) {
+          const data = await postsResponse.json()
+          throw new Error(data.error || 'Failed to load posts')
+        }
+
+        const postsData = await postsResponse.json()
+        allPosts = [...allPosts, ...postsData.posts]
+
+        // Check if there's a next page
+        nextCursor = postsData.paging?.next ? postsData.paging.cursors.after : undefined
+
+        console.log(`Loaded ${postsData.posts.length} posts (total: ${allPosts.length})`)
+      } while (nextCursor && pageCount < maxPages)
+
+      console.log(`Finished loading ${allPosts.length} total posts from ${pageCount} pages`)
+
       setImportedPostIds(imported)
-      setPosts(postsData.posts)
+      setPosts(allPosts)
       setIsConnected(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load posts')
