@@ -261,7 +261,6 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
                   fontSize: { xs: '18px', sm: '26px', md: '28px' },
                   color: '#373737',
-                  whiteSpace: 'pre-line',
                   lineHeight: { xs: '1.7', sm: '1.8' }
                 }}
               >
