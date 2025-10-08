@@ -362,91 +362,79 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
             L.marker(curvedCoords[midPointIndex], { icon: planeIcon }).addTo(map)
           })
         } else if (group.method === 'bus' || group.method === 'drive') {
-          // For bus/drive routes: draw segments individually to handle offsets
-          group.segments.forEach(segment => {
-            const offsetFactor = segmentOffsets.get(segment) || 0.2
+          // For bus/drive routes: collect all coordinates first to draw as continuous line
+          const allCoords: [number, number][] = []
 
-            // Calculate offset perpendicular to the segment
-            const dx = segment.to.lng - segment.from.lng
-            const dy = segment.to.lat - segment.from.lat
-            const perpX = -dy * offsetFactor * 0.5 // Scale down offset for non-plane routes
-            const perpY = dx * offsetFactor * 0.5
-
-            const offsetCoords: [number, number][] = [
-              [segment.from.lat + perpY, segment.from.lng + perpX],
-              [segment.to.lat + perpY, segment.to.lng + perpX]
-            ]
-
-            // Draw border (darker outline)
-            L.polyline(offsetCoords, {
-              color: '#373737',
-              weight: 6,
-              opacity: 1,
-              smoothFactor: 1
-            }).addTo(map)
-
-            // Draw solid line in #373737
-            L.polyline(offsetCoords, {
-              color: '#373737',
-              weight: 4,
-              opacity: 1,
-              smoothFactor: 1
-            }).addTo(map)
-
-            // Draw thin dashed line in #F6F6F6 on top
-            L.polyline(offsetCoords, {
-              color: '#F6F6F6',
-              weight: 1,
-              opacity: 1,
-              smoothFactor: 1,
-              dashArray: '5, 5'
-            }).addTo(map)
+          group.segments.forEach((segment, index) => {
+            if (index === 0) {
+              allCoords.push([segment.from.lat, segment.from.lng])
+            }
+            allCoords.push([segment.to.lat, segment.to.lng])
           })
+
+          // Draw border (darker outline)
+          L.polyline(allCoords, {
+            color: '#373737',
+            weight: 6,
+            opacity: 1,
+            smoothFactor: 1
+          }).addTo(map)
+
+          // Draw solid line in #373737
+          L.polyline(allCoords, {
+            color: '#373737',
+            weight: 4,
+            opacity: 1,
+            smoothFactor: 1
+          }).addTo(map)
+
+          // Draw thin dashed line in #F6F6F6 on top
+          L.polyline(allCoords, {
+            color: '#F6F6F6',
+            weight: 1,
+            opacity: 1,
+            smoothFactor: 1,
+            dashArray: '5, 5'
+          }).addTo(map)
         } else {
-          // For train routes: draw segments individually to handle offsets
-          group.segments.forEach(segment => {
-            const offsetFactor = segmentOffsets.get(segment) || 0.2
+          // For train routes: collect all coordinates first to draw as continuous line
+          const allCoords: [number, number][] = []
 
-            // Calculate offset perpendicular to the segment
-            const dx = segment.to.lng - segment.from.lng
-            const dy = segment.to.lat - segment.from.lat
-            const perpX = -dy * offsetFactor * 0.5 // Scale down offset for non-plane routes
-            const perpY = dx * offsetFactor * 0.5
-
-            const offsetCoords: [number, number][] = [
-              [segment.from.lat + perpY, segment.from.lng + perpX],
-              [segment.to.lat + perpY, segment.to.lng + perpX]
-            ]
-
-            // Draw border (darker outline)
-            L.polyline(offsetCoords, {
-              color: '#373737',
-              weight: 5,
-              opacity: 1,
-              smoothFactor: 1
-            }).addTo(map)
-
-            // Create dashed pattern for train routes: alternating #373737 and #F6F6F6
-            L.polyline(offsetCoords, {
-              color: '#373737',
-              weight: 3,
-              opacity: 1,
-              smoothFactor: 1,
-              dashArray: '10, 10',
-              lineCap: 'butt'
-            }).addTo(map)
-
-            // Add white dashes offset by 10 to create alternating pattern
-            L.polyline(offsetCoords, {
-              color: '#F6F6F6',
-              weight: 3,
-              opacity: 1,
-              smoothFactor: 1,
-              dashArray: '10, 10',
-              dashOffset: '10',
-              lineCap: 'butt'
-            }).addTo(map)
+          group.segments.forEach((segment, index) => {
+            if (index === 0) {
+              allCoords.push([segment.from.lat, segment.from.lng])
+            }
+            allCoords.push([segment.to.lat, segment.to.lng])
           })
+
+          // Draw border (darker outline)
+          L.polyline(allCoords, {
+            color: '#373737',
+            weight: 5,
+            opacity: 1,
+            smoothFactor: 1
+          }).addTo(map)
+
+          // Create dashed pattern for train routes: alternating #373737 and #F6F6F6
+          L.polyline(allCoords, {
+            color: '#373737',
+            weight: 3,
+            opacity: 1,
+            smoothFactor: 1,
+            dashArray: '10, 10',
+            lineCap: 'butt'
+          }).addTo(map)
+
+          // Add white dashes offset by 10 to create alternating pattern
+          L.polyline(allCoords, {
+            color: '#F6F6F6',
+            weight: 3,
+            opacity: 1,
+            smoothFactor: 1,
+            dashArray: '10, 10',
+            dashOffset: '10',
+            lineCap: 'butt'
+          }).addTo(map)
         }
       })
     } else if (routeCoordinates && routeCoordinates.length > 1) {
