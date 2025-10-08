@@ -233,14 +233,14 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       groupedPlaces[foundKey].push(place)
     })
 
-    // Sort each group by date and time
+    // Sort each group by date and time (latest first)
     Object.values(groupedPlaces).forEach(group => {
       group.sort((a, b) => {
         const dateA = new Date(a.date).getTime()
         const dateB = new Date(b.date).getTime()
         // If same date, maintain original order (stable sort)
         if (dateA === dateB) return 0
-        return dateA - dateB
+        return dateB - dateA
       })
     })
 
