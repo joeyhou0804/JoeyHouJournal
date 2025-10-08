@@ -301,6 +301,57 @@ export async function deleteInstagramToken() {
   await sql`DELETE FROM instagram_tokens`
 }
 
+// Excluded Instagram posts operations
+export interface ExcludedInstagramPost {
+  id: number
+  instagram_post_id: string
+  created_at: Date
+}
+
+export async function initExcludedPostsTable() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS excluded_instagram_posts (
+      id SERIAL PRIMARY KEY,
+      instagram_post_id TEXT NOT NULL UNIQUE,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `
+}
+
+export async function getAllExcludedPostIds(): Promise<string[]> {
+  const result = await sql<ExcludedInstagramPost>`
+    SELECT instagram_post_id FROM excluded_instagram_posts
+  `
+  return result.rows.map(row => row.instagram_post_id)
+}
+
+export async function excludeInstagramPost(instagramPostId: string): Promise<boolean> {
+  try {
+    await sql`
+      INSERT INTO excluded_instagram_posts (instagram_post_id)
+      VALUES (${instagramPostId})
+      ON CONFLICT (instagram_post_id) DO NOTHING
+    `
+    return true
+  } catch (error) {
+    console.error('Error excluding Instagram post:', error)
+    return false
+  }
+}
+
+export async function unexcludeInstagramPost(instagramPostId: string): Promise<boolean> {
+  try {
+    await sql`
+      DELETE FROM excluded_instagram_posts
+      WHERE instagram_post_id = ${instagramPostId}
+    `
+    return true
+  } catch (error) {
+    console.error('Error unexcluding Instagram post:', error)
+    return false
+  }
+}
+
 // Home location operations
 export interface HomeLocation {
   id: string

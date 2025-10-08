@@ -98,16 +98,20 @@ export default function InstagramImportPage() {
 
   const destinations: Destination[] = destinationsData as Destination[]
 
-  // Load excluded posts from localStorage
+  // Load excluded posts from database
   useEffect(() => {
-    const stored = localStorage.getItem('excludedInstagramPosts')
-    if (stored) {
+    async function fetchExcludedPosts() {
       try {
-        setExcludedPostIds(new Set(JSON.parse(stored)))
-      } catch (e) {
-        console.error('Failed to load excluded posts:', e)
+        const response = await fetch('/api/admin/instagram/excluded')
+        if (response.ok) {
+          const data = await response.json()
+          setExcludedPostIds(new Set(data.excludedPostIds || []))
+        }
+      } catch (error) {
+        console.error('Failed to load excluded posts:', error)
       }
     }
+    fetchExcludedPosts()
   }, [])
 
   // Check if Instagram is connected
@@ -387,20 +391,48 @@ export default function InstagramImportPage() {
     setPage(0)
   }
 
-  const handleExcludePost = () => {
+  const handleExcludePost = async () => {
     if (!postToExclude) return
 
-    const newExcluded = new Set([...Array.from(excludedPostIds), postToExclude.id])
-    setExcludedPostIds(newExcluded)
-    localStorage.setItem('excludedInstagramPosts', JSON.stringify(Array.from(newExcluded)))
-    setPostToExclude(null)
+    try {
+      const response = await fetch('/api/admin/instagram/excluded', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ instagramPostId: postToExclude.id })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to exclude post')
+      }
+
+      const newExcluded = new Set([...Array.from(excludedPostIds), postToExclude.id])
+      setExcludedPostIds(newExcluded)
+      setPostToExclude(null)
+    } catch (error) {
+      console.error('Error excluding post:', error)
+      setError('Failed to exclude post')
+    }
   }
 
-  const handleUnexcludePost = (postId: string) => {
-    const newExcluded = new Set(Array.from(excludedPostIds))
-    newExcluded.delete(postId)
-    setExcludedPostIds(newExcluded)
-    localStorage.setItem('excludedInstagramPosts', JSON.stringify(Array.from(newExcluded)))
+  const handleUnexcludePost = async (postId: string) => {
+    try {
+      const response = await fetch('/api/admin/instagram/excluded', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ instagramPostId: postId })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to unexclude post')
+      }
+
+      const newExcluded = new Set(Array.from(excludedPostIds))
+      newExcluded.delete(postId)
+      setExcludedPostIds(newExcluded)
+    } catch (error) {
+      console.error('Error unexcluding post:', error)
+      setError('Failed to restore post')
+    }
   }
 
   const handleRowClick = (post: InstagramPost) => {
