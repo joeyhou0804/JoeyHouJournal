@@ -340,7 +340,7 @@ export default function JourneyDetailsPage() {
     setTransportMethods(newMethods)
   }
 
-  const updatePoint = (index: number, subfield: 'name' | 'lat' | 'lng', value: string | number) => {
+  const updatePoint = (index: number, subfield: 'name' | 'nameCN' | 'lat' | 'lng', value: string | number) => {
     const newPoints = [...routePoints]
     if (subfield === 'name') {
       newPoints[index][subfield] = value as string
@@ -351,6 +351,8 @@ export default function JourneyDetailsPage() {
           geocodePointSilently(index, value as string)
         }, 1000)
       }
+    } else if (subfield === 'nameCN') {
+      newPoints[index][subfield] = value as string
     } else {
       newPoints[index][subfield] = value as number
     }
