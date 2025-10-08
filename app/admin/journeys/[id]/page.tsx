@@ -37,6 +37,7 @@ export default function JourneyDetailsPage() {
   const [saving, setSaving] = useState(false)
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [showOnlyUnassigned, setShowOnlyUnassigned] = useState(true)
 
   // Form state for editable fields
   const [formData, setFormData] = useState({
@@ -420,9 +421,15 @@ export default function JourneyDetailsPage() {
   }
 
   const allDestinations = allDestinationsData
-  const availableDestinations = allDestinations.filter(
-    d => !destinations.find(jd => jd.id === d.id)
-  )
+  const availableDestinations = allDestinations.filter(d => {
+    // Don't show destinations already in this journey
+    if (destinations.find(jd => jd.id === d.id)) return false
+
+    // If filter is on, only show destinations without a journey assigned
+    if (showOnlyUnassigned && d.journeyId) return false
+
+    return true
+  })
 
   const filteredAvailableDestinations = availableDestinations.filter(dest =>
     dest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -1468,6 +1475,38 @@ export default function JourneyDetailsPage() {
               }
             }}
           />
+
+          <Box sx={{
+            mb: 2,
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0.75rem',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '0.5rem',
+            border: '1px solid #e0e0e0'
+          }}>
+            <Checkbox
+              checked={showOnlyUnassigned}
+              onChange={(e) => setShowOnlyUnassigned(e.target.checked)}
+              sx={{
+                color: '#373737',
+                '&.Mui-checked': { color: '#FFD701' },
+                padding: '0 8px 0 0'
+              }}
+            />
+            <Typography
+              onClick={() => setShowOnlyUnassigned(!showOnlyUnassigned)}
+              sx={{
+                fontFamily: 'MarioFont, sans-serif',
+                fontSize: '14px',
+                cursor: 'pointer',
+                userSelect: 'none',
+                flex: 1
+              }}
+            >
+              Only show destinations without a journey
+            </Typography>
+          </Box>
 
           <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 1, color: '#666' }}>
             {filteredAvailableDestinations.length} available destination{filteredAvailableDestinations.length !== 1 ? 's' : ''}
