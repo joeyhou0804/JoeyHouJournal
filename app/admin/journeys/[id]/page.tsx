@@ -46,9 +46,7 @@ export default function JourneyDetailsPage() {
     days: 1,
     nights: 0,
     startDate: '',
-    endDate: '',
-    description: '',
-    descriptionCN: ''
+    endDate: ''
   })
 
   // Route points state (simplified from segments)
@@ -111,9 +109,7 @@ export default function JourneyDetailsPage() {
             days: data.days || 1,
             nights: data.nights || 0,
             startDate: data.startDate || '',
-            endDate: data.endDate || '',
-            description: data.description || '',
-            descriptionCN: data.descriptionCN || ''
+            endDate: data.endDate || ''
           })
           // Load route segments if they exist and convert to points
           if (data.segments && Array.isArray(data.segments) && data.segments.length > 0) {
@@ -228,8 +224,6 @@ export default function JourneyDetailsPage() {
         nights: formData.nights,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        description: formData.description,
-        descriptionCN: formData.descriptionCN,
         startLocation,
         endLocation,
         ...(segments.length > 0 && { segments })
@@ -258,9 +252,7 @@ export default function JourneyDetailsPage() {
             days: data.days || 1,
             nights: data.nights || 0,
             startDate: data.startDate || '',
-            endDate: data.endDate || '',
-            description: data.description || '',
-            descriptionCN: data.descriptionCN || ''
+            endDate: data.endDate || ''
           })
           alert('Journey saved successfully!')
         }
@@ -768,47 +760,6 @@ export default function JourneyDetailsPage() {
             />
           </Box>
 
-          {/* Description (English) */}
-          <Box sx={{ gridColumn: '1 / -1' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Description (English)
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              rows={4}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif',
-                resize: 'vertical'
-              }}
-            />
-          </Box>
-
-          {/* Description (Chinese) */}
-          <Box sx={{ gridColumn: '1 / -1' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Description (Chinese)
-            </label>
-            <textarea
-              value={formData.descriptionCN}
-              onChange={(e) => handleInputChange('descriptionCN', e.target.value)}
-              rows={4}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif',
-                resize: 'vertical'
-              }}
-            />
-          </Box>
         </Box>
       </Box>
 

@@ -5,8 +5,6 @@ export interface Journey {
   slug: string
   name: string
   name_cn: string | null
-  description: string | null
-  description_cn: string | null
   start_date: string
   end_date: string
   duration: string
@@ -51,8 +49,6 @@ export async function initDatabase() {
         slug TEXT NOT NULL,
         name TEXT NOT NULL,
         name_cn TEXT,
-        description TEXT,
-        description_cn TEXT,
         start_date TEXT NOT NULL,
         end_date TEXT NOT NULL,
         duration TEXT NOT NULL,
@@ -126,13 +122,12 @@ export async function createJourney(journey: Partial<Journey>): Promise<Journey>
 
   const { rows } = await sql<Journey>`
     INSERT INTO journeys (
-      id, slug, name, name_cn, description, description_cn,
+      id, slug, name, name_cn,
       start_date, end_date, duration, days, nights,
       start_location, end_location, visited_place_ids,
       total_places, images, segments
     ) VALUES (
       ${journey.id}, ${journey.slug}, ${journey.name}, ${journey.name_cn},
-      ${journey.description}, ${journey.description_cn},
       ${journey.start_date}, ${journey.end_date}, ${journey.duration},
       ${journey.days}, ${journey.nights},
       ${JSON.stringify(journey.start_location)}::jsonb,
@@ -156,8 +151,6 @@ export async function updateJourney(id: string, journey: Partial<Journey>): Prom
       slug = ${journey.slug},
       name = ${journey.name},
       name_cn = ${journey.name_cn},
-      description = ${journey.description},
-      description_cn = ${journey.description_cn},
       start_date = ${journey.start_date},
       end_date = ${journey.end_date},
       duration = ${journey.duration},

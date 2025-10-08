@@ -16,9 +16,7 @@ export default function NewJourneyPage() {
     days: 1,
     nights: 0,
     startDate: '',
-    endDate: '',
-    description: '',
-    descriptionCN: ''
+    endDate: ''
   })
 
   // Route points state (minimum 2 points required)
@@ -83,8 +81,6 @@ export default function NewJourneyPage() {
         nights: formData.nights,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        description: formData.description,
-        descriptionCN: formData.descriptionCN,
         startLocation: {
           name: routePoints[0].name,
           nameCN: '', // Can be added later
@@ -456,48 +452,6 @@ export default function NewJourneyPage() {
             />
           </Box>
 
-          {/* Description (English) */}
-          <Box sx={{ gridColumn: '1 / -1' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Description (English)
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              rows={4}
-              placeholder="Cross-country journey from Chicago to San Francisco..."
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif',
-                resize: 'vertical'
-              }}
-            />
-          </Box>
-
-          {/* Description (Chinese) */}
-          <Box sx={{ gridColumn: '1 / -1' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Description (Chinese)
-            </label>
-            <textarea
-              value={formData.descriptionCN}
-              onChange={(e) => handleInputChange('descriptionCN', e.target.value)}
-              rows={4}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif',
-                resize: 'vertical'
-              }}
-            />
-          </Box>
         </Box>
       </Box>
 

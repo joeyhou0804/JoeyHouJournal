@@ -41,8 +41,7 @@ export default function JourneysPage() {
   }, [])
 
   const filteredJourneys = journeys.filter(journey =>
-    journey.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    journey.description?.toLowerCase().includes(searchTerm.toLowerCase())
+    journey.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const paginatedJourneys = filteredJourneys.slice(

@@ -7,8 +7,6 @@ export function transformJourney(journey: DBJourney): any {
     slug: journey.slug,
     name: journey.name,
     nameCN: journey.name_cn,
-    description: journey.description,
-    descriptionCN: journey.description_cn,
     startDate: journey.start_date,
     endDate: journey.end_date,
     duration: journey.duration,
