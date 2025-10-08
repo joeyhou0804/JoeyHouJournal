@@ -254,7 +254,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
 
           {/* About/Description */}
           {station.description && (
-            <Box sx={{ textAlign: 'center', maxWidth: '100%', margin: '0 auto', paddingX: { xs: '1.5rem', sm: '3rem', md: '6rem', lg: '8rem' } }}>
+            <Box sx={{ textAlign: 'center', maxWidth: '100%', margin: '0 auto', paddingX: { xs: '1rem', sm: '2rem', md: '3rem', lg: '4rem' } }}>
               <Box
                 component="div"
                 sx={{
