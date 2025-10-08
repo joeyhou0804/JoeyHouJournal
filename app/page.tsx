@@ -342,7 +342,10 @@ export default function Home() {
         alignItems: 'center',
         justifyContent: 'center',
         gap: '2rem',
-        backgroundColor: '#F6F6F6'
+        backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
+        backgroundRepeat: 'repeat',
+        backgroundSize: '200px auto',
+        animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
       }}>
         {/* Spinner */}
         <Box

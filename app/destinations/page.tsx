@@ -111,10 +111,23 @@ export default function StationsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center gap-8">
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '2rem',
+          backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px auto',
+          animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
+        }}
+      >
         {/* Spinner */}
-        <div
-          style={{
+        <Box
+          sx={{
             width: '60px',
             height: '60px',
             border: '6px solid rgba(240, 96, 1, 0.2)',
@@ -124,10 +137,10 @@ export default function StationsPage() {
           }}
         />
         {/* Loading text */}
-        <p style={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: '32px', color: '#373737', margin: 0 }}>
+        <Box sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: '32px', color: '#373737', margin: 0 }}>
           {tr.loadingDestinations}
-        </p>
-      </div>
+        </Box>
+      </Box>
     )
   }
 
