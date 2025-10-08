@@ -8,7 +8,13 @@ export async function GET() {
   try {
     const journeys = await getAllJourneys()
     const transformed = journeys.map(transformJourney)
-    return NextResponse.json(transformed)
+    return NextResponse.json(transformed, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      }
+    })
   } catch (error) {
     console.error('Error fetching journeys:', error)
     return NextResponse.json(
