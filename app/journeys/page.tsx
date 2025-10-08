@@ -88,13 +88,42 @@ export default function JourneysPage() {
       ? journey.endLocation.nameCN
       : journey.endLocation.name
 
+    // Determine route display
+    let route = `${startLocationName} → ${endLocationName}`
+
+    // If start and end are the same (round trip from home)
+    if (journey.startLocation.name === journey.endLocation.name) {
+      // Sort destinations by date to find first and last
+      const sortedDestinations = [...journeyDestinations].sort((a, b) =>
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+      )
+
+      if (sortedDestinations.length === 1) {
+        // Single destination: "Home to [Place]"
+        const destName = locale === 'zh' && sortedDestinations[0].nameCN
+          ? sortedDestinations[0].nameCN
+          : sortedDestinations[0].name
+        const homeText = locale === 'zh' ? '从家出发' : 'Home'
+        route = `${homeText} → ${destName}`
+      } else if (sortedDestinations.length > 1) {
+        // Multiple destinations: First to Last (excluding home)
+        const firstName = locale === 'zh' && sortedDestinations[0].nameCN
+          ? sortedDestinations[0].nameCN
+          : sortedDestinations[0].name
+        const lastName = locale === 'zh' && sortedDestinations[sortedDestinations.length - 1].nameCN
+          ? sortedDestinations[sortedDestinations.length - 1].nameCN
+          : sortedDestinations[sortedDestinations.length - 1].name
+        route = `${firstName} → ${lastName}`
+      }
+    }
+
     return {
       name: journey.name,
       nameCN: journey.nameCN,
       slug: journey.slug,
       places: journey.totalPlaces,
       description: journey.description,
-      route: `${startLocationName} → ${endLocationName}`,
+      route: route,
       duration: journey.duration,
       days: journey.days,
       nights: journey.nights,

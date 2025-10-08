@@ -1,6 +1,6 @@
 import JourneyDetailClient from './JourneyDetailClient'
-import { getJourneyBySlug, getAllJourneys } from '@/lib/db'
-import { transformJourney } from '@/lib/transform'
+import { getJourneyBySlug, getAllJourneys, getAllDestinations } from '@/lib/db'
+import { transformJourney, transformDestination } from '@/lib/transform'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,6 +21,35 @@ export default async function JourneyDetailPage({ params }: { params: { slug: st
   // Transform to app format
   const journey = transformJourney(journeyFromDb)
 
+  // Get destinations for this journey to calculate route
+  const allDestinationsFromDb = await getAllDestinations()
+  const allDestinations = allDestinationsFromDb.map(transformDestination)
+  const journeyDestinations = allDestinations.filter(
+    destination => destination.journeyName === journey.name
+  )
+
+  // Determine route display
+  let route = `${journey.startLocation.name} → ${journey.endLocation.name}`
+  let routeCN = `${journey.startLocation.nameCN || journey.startLocation.name} → ${journey.endLocation.nameCN || journey.endLocation.name}`
+
+  // If start and end are the same (round trip from home)
+  if (journey.startLocation.name === journey.endLocation.name) {
+    // Sort destinations by date to find first and last
+    const sortedDestinations = [...journeyDestinations].sort((a, b) =>
+      new Date(a.date).getTime() - new Date(b.date).getTime()
+    )
+
+    if (sortedDestinations.length === 1) {
+      // Single destination: "Home to [Place]"
+      route = `Home → ${sortedDestinations[0].name}`
+      routeCN = `从家出发 → ${sortedDestinations[0].nameCN || sortedDestinations[0].name}`
+    } else if (sortedDestinations.length > 1) {
+      // Multiple destinations: First to Last (excluding home)
+      route = `${sortedDestinations[0].name} → ${sortedDestinations[sortedDestinations.length - 1].name}`
+      routeCN = `${sortedDestinations[0].nameCN || sortedDestinations[0].name} → ${sortedDestinations[sortedDestinations.length - 1].nameCN || sortedDestinations[sortedDestinations.length - 1].name}`
+    }
+  }
+
   // Create trip object for client component
   const trip = {
     name: journey.name,
@@ -28,8 +57,8 @@ export default async function JourneyDetailPage({ params }: { params: { slug: st
     slug: journey.slug,
     places: journey.totalPlaces,
     description: journey.description,
-    route: `${journey.startLocation.name} → ${journey.endLocation.name}`,
-    routeCN: `${journey.startLocation.nameCN || journey.startLocation.name} → ${journey.endLocation.nameCN || journey.endLocation.name}`,
+    route: route,
+    routeCN: routeCN,
     duration: journey.duration,
     days: journey.days,
     nights: journey.nights,
