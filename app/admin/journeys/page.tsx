@@ -3,19 +3,42 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
-import journeysData from 'src/data/journeys.json'
-import { destinations } from 'src/data/destinations'
 
 export default function JourneysPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [journeys, setJourneys] = useState<any[]>([])
+  const [destinations, setDestinations] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Calculate totalPlaces dynamically from destinations
-  const journeys = journeysData.map(journey => ({
-    ...journey,
-    totalPlaces: destinations.filter(d => d.journeyId === journey.id).length
-  }))
+  // Fetch data from API
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [journeysRes, destinationsRes] = await Promise.all([
+          fetch('/api/journeys'),
+          fetch('/api/destinations')
+        ])
+        const journeysData = await journeysRes.json()
+        const destinationsData = await destinationsRes.json()
+
+        // Calculate totalPlaces dynamically from destinations
+        const journeysWithPlaces = journeysData.map((journey: any) => ({
+          ...journey,
+          totalPlaces: destinationsData.filter((d: any) => d.journeyId === journey.id).length
+        }))
+
+        setJourneys(journeysWithPlaces)
+        setDestinations(destinationsData)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   const filteredJourneys = journeys.filter(journey =>
     journey.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -26,6 +49,29 @@ export default function JourneysPage() {
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   )
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+        <Box sx={{ textAlign: 'center' }}>
+          <Box
+            sx={{
+              width: '60px',
+              height: '60px',
+              border: '6px solid rgba(240, 96, 1, 0.2)',
+              borderTop: '6px solid #F06001',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite',
+              margin: '0 auto 1rem'
+            }}
+          />
+          <p style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#373737', margin: 0 }}>
+            Loading...
+          </p>
+        </Box>
+      </Box>
+    )
+  }
 
   return (
     <Box>
