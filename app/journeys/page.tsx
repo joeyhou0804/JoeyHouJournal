@@ -402,7 +402,7 @@ export default function JourneysPage() {
               text={locale === 'zh' ? '长途旅行' : 'Long Trips'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '48px', sm: '64px' }}
+              fontSize={{ xs: '40px', sm: '64px' }}
               color="#F6F6F6"
               component="h3"
               sx={{
@@ -522,7 +522,7 @@ export default function JourneysPage() {
                   text={locale === 'zh' ? '一日游 & 周末旅行' : 'Day Trips & Weekend Trips'}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
-                  fontSize={{ xs: '48px', sm: '64px' }}
+                  fontSize={{ xs: '32px', sm: '64px' }}
                   color="#F6F6F6"
                   component="h3"
                   sx={{
