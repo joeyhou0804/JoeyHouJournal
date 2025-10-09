@@ -37,6 +37,16 @@ export const zh: Translations = {
     mapHint2Title: '关于金色标记...',
     mapHint2Route: '金色标记表示多次访问的城市。',
     mapHint2Date: '使用侧边按钮浏览它们。',
+    longerTripsHint: {
+      title: '长途旅行',
+      description1: '探索多日旅程',
+      description2: '穿越美国的冒险',
+    },
+    dayTripsHint: {
+      title: '短途与周末旅行',
+      description1: '短途冒险和度假',
+      description2: '铁路快速出游',
+    },
     duration: '时长',
     places: '个地点',
   },
