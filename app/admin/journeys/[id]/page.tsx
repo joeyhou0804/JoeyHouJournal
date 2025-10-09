@@ -48,8 +48,7 @@ export default function JourneyDetailsPage() {
     days: 1,
     nights: 0,
     startDate: '',
-    endDate: '',
-    isDayTrip: false
+    endDate: ''
   })
 
   // Route points state (simplified from segments)
@@ -112,8 +111,7 @@ export default function JourneyDetailsPage() {
             days: data.days || 1,
             nights: data.nights || 0,
             startDate: data.startDate || '',
-            endDate: data.endDate || '',
-            isDayTrip: data.isDayTrip || false
+            endDate: data.endDate || ''
           })
           // Load route segments if they exist and convert to points
           if (data.segments && Array.isArray(data.segments) && data.segments.length > 0) {
@@ -235,7 +233,6 @@ export default function JourneyDetailsPage() {
         nights: formData.nights,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        isDayTrip: formData.isDayTrip,
         startLocation,
         endLocation,
         ...(segments.length > 0 && { segments })
@@ -259,7 +256,7 @@ export default function JourneyDetailsPage() {
     }
   }
 
-  const handleInputChange = (field: string, value: string | number | boolean) => {
+  const handleInputChange = (field: string, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -734,26 +731,6 @@ export default function JourneyDetailsPage() {
                 }}
               />
             </Box>
-          </Box>
-
-          {/* Day Trip Checkbox */}
-          <Box>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer' }}>
-              <input
-                type="checkbox"
-                checked={formData.isDayTrip}
-                onChange={(e) => handleInputChange('isDayTrip', e.target.checked)}
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  cursor: 'pointer'
-                }}
-              />
-              <span style={{ fontWeight: 'bold' }}>Day Trip / Weekend Trip</span>
-              <span style={{ fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
-                (Check this for short trips that will appear on the day trips map)
-              </span>
-            </label>
           </Box>
 
           {/* Start Date */}

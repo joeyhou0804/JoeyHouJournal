@@ -35,16 +35,6 @@ export const en = {
     mapHint2Title: 'As for golden markers...',
     mapHint2Route: 'Golden markers indicate cities with multiple visits.',
     mapHint2Date: 'Use the side buttons to navigate through them.',
-    longerTripsHint: {
-      title: 'Longer Trips',
-      description1: 'Explore multi-day journeys',
-      description2: 'Adventures across America',
-    },
-    dayTripsHint: {
-      title: 'Day & Weekend Trips',
-      description1: 'Short adventures and getaways',
-      description2: 'Quick escapes by rail',
-    },
     duration: 'Duration',
     places: 'places',
   },

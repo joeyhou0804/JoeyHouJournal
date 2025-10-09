@@ -27,7 +27,6 @@ export interface Journey {
   visitedPlaceIds: string[]
   totalPlaces: number
   images: string[]
-  isDayTrip: boolean
   segments?: Array<{
     order: number
     from: { name: string; lat: number; lng: number }

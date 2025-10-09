@@ -16,7 +16,6 @@ export interface Journey {
   total_places: number | null
   images: string[] | null
   segments: any | null // JSON
-  is_day_trip: boolean
   created_at: Date
   updated_at: Date
 }
@@ -62,7 +61,6 @@ export async function initDatabase() {
         total_places INTEGER,
         images JSONB,
         segments JSONB,
-        is_day_trip BOOLEAN DEFAULT FALSE,
         created_at TIMESTAMP DEFAULT NOW(),
         updated_at TIMESTAMP DEFAULT NOW()
       )
@@ -128,7 +126,7 @@ export async function createJourney(journey: Partial<Journey>): Promise<Journey>
       id, slug, name, name_cn,
       start_date, end_date, duration, days, nights,
       start_location, end_location, visited_place_ids,
-      total_places, images, segments, is_day_trip
+      total_places, images, segments
     ) VALUES (
       ${journey.id}, ${journey.slug}, ${journey.name}, ${journey.name_cn},
       ${journey.start_date}, ${journey.end_date}, ${journey.duration},
@@ -138,8 +136,7 @@ export async function createJourney(journey: Partial<Journey>): Promise<Journey>
       ${visitedPlaceIds}::jsonb,
       ${journey.total_places},
       ${images}::jsonb,
-      ${JSON.stringify(journey.segments)}::jsonb,
-      ${journey.is_day_trip ?? false}
+      ${JSON.stringify(journey.segments)}::jsonb
     )
     RETURNING *
   `
@@ -166,7 +163,6 @@ export async function updateJourney(id: string, journey: Partial<Journey>): Prom
       total_places = ${journey.total_places},
       images = ${images}::jsonb,
       segments = ${JSON.stringify(journey.segments)}::jsonb,
-      is_day_trip = ${journey.is_day_trip ?? false},
       updated_at = NOW()
     WHERE id = ${id}
     RETURNING *

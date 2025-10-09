@@ -22,16 +22,6 @@ export const translations = {
       description1: 'Golden markers indicate cities with multiple visits.',
       description2: 'Use the side buttons to navigate through them.',
     },
-    longerTripsHint: {
-      title: 'Longer Trips',
-      description1: 'Explore multi-day journeys',
-      description2: 'Adventures across America',
-    },
-    dayTripsHint: {
-      title: 'Day & Weekend Trips',
-      description1: 'Short adventures and getaways',
-      description2: 'Quick escapes by rail',
-    },
 
     // Error Messages
     stationNotFound: 'Station Not Found',
@@ -144,16 +134,6 @@ export const translations = {
       title: '金黄色的标记是...',
       description1: '金黄色标记表示去过多次的地点。',
       description2: '使用侧边的按钮，就可以看到每次旅游的信息了。',
-    },
-    longerTripsHint: {
-      title: '长途旅行',
-      description1: '探索多日旅程',
-      description2: '穿越美国的冒险',
-    },
-    dayTripsHint: {
-      title: '短途与周末旅行',
-      description1: '短途冒险和度假',
-      description2: '铁路快速出游',
     },
 
     // Error Messages
