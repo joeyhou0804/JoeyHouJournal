@@ -14,7 +14,7 @@ interface Station {
 interface MapViewHintProps {
   station: Station
   imageOnRight?: boolean
-  cardNumber?: 1 | 2
+  cardNumber?: 1 | 2 | 3
   isJourneyInfo?: boolean
   journeySlug?: string
 }
