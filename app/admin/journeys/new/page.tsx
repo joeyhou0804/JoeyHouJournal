@@ -16,7 +16,8 @@ export default function NewJourneyPage() {
     days: 1,
     nights: 0,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    isDayTrip: false
   })
 
   // Route points state (minimum 2 points required)
@@ -31,7 +32,7 @@ export default function NewJourneyPage() {
   // Track which coordinates are editable
   const [editableCoords, setEditableCoords] = useState<boolean[]>([false, false])
 
-  const handleInputChange = (field: string, value: string | number) => {
+  const handleInputChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }))
 
     // Auto-generate slug when name changes
@@ -112,7 +113,8 @@ export default function NewJourneyPage() {
         visitedPlaceIds: [],
         totalPlaces: 0,
         images: [],
-        segments: segments
+        segments: segments,
+        isDayTrip: formData.isDayTrip
       }
 
       const response = await fetch('/api/admin/journeys', {
@@ -492,6 +494,23 @@ export default function NewJourneyPage() {
                 fontFamily: 'MarioFont, sans-serif'
               }}
             />
+          </Box>
+
+          {/* Day Trip Checkbox - Full width row */}
+          <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.75rem', backgroundColor: '#f5f5f5', borderRadius: '0.5rem', border: '2px solid #e0e0e0' }}>
+              <input
+                type="checkbox"
+                checked={formData.isDayTrip}
+                onChange={(e) => handleInputChange('isDayTrip', e.target.checked)}
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  cursor: 'pointer'
+                }}
+              />
+              <span style={{ fontWeight: 'bold', fontSize: '16px' }}>Day Trip / Weekend Trip</span>
+            </label>
           </Box>
 
         </Box>

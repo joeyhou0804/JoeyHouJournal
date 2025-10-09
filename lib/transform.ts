@@ -17,7 +17,8 @@ export function transformJourney(journey: DBJourney): any {
     visitedPlaceIds: journey.visited_place_ids,
     totalPlaces: journey.total_places,
     images: journey.images,
-    segments: journey.segments
+    segments: journey.segments,
+    isDayTrip: journey.is_day_trip
   }
 }
 

@@ -48,7 +48,8 @@ export default function JourneyDetailsPage() {
     days: 1,
     nights: 0,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    isDayTrip: false
   })
 
   // Route points state (simplified from segments)
@@ -111,7 +112,8 @@ export default function JourneyDetailsPage() {
             days: data.days || 1,
             nights: data.nights || 0,
             startDate: data.startDate || '',
-            endDate: data.endDate || ''
+            endDate: data.endDate || '',
+            isDayTrip: data.isDayTrip || false
           })
           // Load route segments if they exist and convert to points
           if (data.segments && Array.isArray(data.segments) && data.segments.length > 0) {
@@ -233,6 +235,7 @@ export default function JourneyDetailsPage() {
         nights: formData.nights,
         startDate: formData.startDate,
         endDate: formData.endDate,
+        isDayTrip: formData.isDayTrip,
         startLocation,
         endLocation,
         ...(segments.length > 0 && { segments })
@@ -256,7 +259,7 @@ export default function JourneyDetailsPage() {
     }
   }
 
-  const handleInputChange = (field: string, value: string | number) => {
+  const handleInputChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
@@ -771,6 +774,23 @@ export default function JourneyDetailsPage() {
                 fontFamily: 'MarioFont, sans-serif'
               }}
             />
+          </Box>
+
+          {/* Day Trip Checkbox - Full width row */}
+          <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.75rem', backgroundColor: '#f5f5f5', borderRadius: '0.5rem', border: '2px solid #e0e0e0' }}>
+              <input
+                type="checkbox"
+                checked={formData.isDayTrip}
+                onChange={(e) => handleInputChange('isDayTrip', e.target.checked)}
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  cursor: 'pointer'
+                }}
+              />
+              <span style={{ fontWeight: 'bold', fontSize: '16px' }}>Day Trip / Weekend Trip</span>
+            </label>
           </Box>
 
         </Box>

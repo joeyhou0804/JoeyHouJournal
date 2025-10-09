@@ -27,6 +27,7 @@ function dbToApi(journey: any) {
     totalPlaces: journey.total_places,
     images: journey.images,
     segments: journey.segments,
+    isDayTrip: journey.is_day_trip,
   }
 }
 
@@ -50,6 +51,7 @@ function apiToDb(journey: any) {
     total_places: journey.totalPlaces || null,
     images: journey.images || [],
     segments: journey.segments || null,
+    is_day_trip: journey.isDayTrip ?? false,
   }
 }
 

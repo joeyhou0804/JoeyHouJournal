@@ -36,6 +36,7 @@ export default function JourneysPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const [currentJourneyIndex, setCurrentJourneyIndex] = useState(0)
+  const [currentDayTripIndex, setCurrentDayTripIndex] = useState(0)
   const [xsDisplayCount, setXsDisplayCount] = useState(5)
   const [journeysData, setJourneysData] = useState<any[]>([])
   const [allDestinations, setAllDestinations] = useState<any[]>([])
@@ -168,8 +169,12 @@ export default function JourneysPage() {
     }
   })
 
-  // Get current journey based on index
-  const currentJourney = journeysData[currentJourneyIndex]
+  // Filter journeys into regular and day trips
+  const regularJourneys = journeysData.filter((journey: any) => !journey.isDayTrip)
+  const dayTripJourneys = journeysData.filter((journey: any) => journey.isDayTrip)
+
+  // Get current regular journey based on index
+  const currentJourney = regularJourneys[currentJourneyIndex]
   const currentJourneyPlaces = currentJourney ? allDestinations.filter(
     destination => destination.journeyName === currentJourney.name
   ).map((destination) => ({
@@ -185,12 +190,37 @@ export default function JourneysPage() {
     lng: destination.lng
   })) : []
 
+  // Get current day trip based on index
+  const currentDayTrip = dayTripJourneys[currentDayTripIndex]
+  const currentDayTripPlaces = currentDayTrip ? allDestinations.filter(
+    destination => destination.journeyName === currentDayTrip.name
+  ).map((destination) => ({
+    id: destination.id,
+    name: destination.name,
+    nameCN: destination.nameCN,
+    date: destination.date,
+    journeyName: destination.journeyName,
+    journeyNameCN: destination.journeyNameCN,
+    state: destination.state,
+    images: destination.images || [],
+    lat: destination.lat,
+    lng: destination.lng
+  })) : []
+
   const handlePrevJourney = () => {
-    setCurrentJourneyIndex((prev) => (prev - 1 + journeysData.length) % journeysData.length)
+    setCurrentJourneyIndex((prev) => (prev - 1 + regularJourneys.length) % regularJourneys.length)
   }
 
   const handleNextJourney = () => {
-    setCurrentJourneyIndex((prev) => (prev + 1) % journeysData.length)
+    setCurrentJourneyIndex((prev) => (prev + 1) % regularJourneys.length)
+  }
+
+  const handlePrevDayTrip = () => {
+    setCurrentDayTripIndex((prev) => (prev - 1 + dayTripJourneys.length) % dayTripJourneys.length)
+  }
+
+  const handleNextDayTrip = () => {
+    setCurrentDayTripIndex((prev) => (prev + 1) % dayTripJourneys.length)
   }
 
   const sortedTrips = [...trips].sort((a, b) => {
@@ -352,7 +382,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Second Map View Hint - Image on right */}
-          <div className="my-36 sm:mb-[300px] xs:mt-12 xs:mb-12">
+          <div className="my-36 sm:mb-24 xs:mt-12 xs:mb-12">
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}
@@ -366,25 +396,40 @@ export default function JourneysPage() {
             />
           </div>
 
-          <div>
-            {/* Journey Info Card - Above map on xs screens */}
-            <div className="block sm:hidden mb-12">
-              <MapViewHint
-                imageOnRight={true}
-                cardNumber={2}
-                isJourneyInfo={true}
-                journeySlug={currentJourney.slug}
-                station={{
-                  id: '',
-                  name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
-                  journeyName: trips[currentJourneyIndex]?.route || '',
-                  date: formatDuration(currentJourney.days, currentJourney.nights, tr),
-                  images: []
-                }}
-              />
-            </div>
+          {/* Long Trips Map Title */}
+          <div className="flex justify-center items-center mb-48 xs:mb-24">
+            <MixedText
+              text={locale === 'zh' ? '长途旅行' : 'Long Trips'}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize={{ xs: '48px', sm: '64px' }}
+              color="#F6F6F6"
+              component="h3"
+              sx={{
+                textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                margin: 0
+              }}
+            />
+          </div>
 
-            <Box style={{ position: 'relative' }} className="xs:mt-[-3rem] xs:mx-[-0.5rem]">
+          {/* Journey Info Card - Above map on xs screens */}
+          <div className="block sm:hidden mb-12">
+            <MapViewHint
+              imageOnRight={true}
+              cardNumber={2}
+              isJourneyInfo={true}
+              journeySlug={currentJourney.slug}
+              station={{
+                id: '',
+                name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
+                journeyName: trips[currentJourneyIndex]?.route || '',
+                date: formatDuration(currentJourney.days, currentJourney.nights, tr),
+                images: []
+              }}
+            />
+          </div>
+
+          <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem]">
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
@@ -450,24 +495,145 @@ export default function JourneysPage() {
               {/* Next Button */}
               <button
                 onClick={handleNextJourney}
-                disabled={currentJourneyIndex === journeysData.length - 1}
+                disabled={currentJourneyIndex === regularJourneys.length - 1}
                 className={`group absolute right-4 xs:right-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
-                  currentJourneyIndex === journeysData.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                  currentJourneyIndex === regularJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
                 <img
                   src="/images/buttons/tab_next.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === journeysData.length - 1 ? '' : 'group-hover:hidden'}`}
+                  className={`h-24 w-auto ${currentJourneyIndex === regularJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
                 />
                 <img
                   src="/images/buttons/tab_next_hover.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === journeysData.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                  className={`h-24 w-auto ${currentJourneyIndex === regularJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
                 />
               </button>
             </Box>
-          </div>
+
+          {/* Day Trips & Weekend Trips Map Section */}
+          {dayTripJourneys.length > 0 && currentDayTrip && (
+            <div className="mt-24 xs:mt-12">
+              {/* Day Trips Map Title */}
+              <div className="flex justify-center items-center mb-48 xs:mb-24">
+                <MixedText
+                  text={locale === 'zh' ? '一日游 & 周末旅行' : 'Day Trips & Weekend Trips'}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize={{ xs: '48px', sm: '64px' }}
+                  color="#F6F6F6"
+                  component="h3"
+                  sx={{
+                    textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                    margin: 0
+                  }}
+                />
+              </div>
+
+              {/* Day Trip Info Card - Above map on xs screens */}
+              <div className="block sm:hidden mb-12">
+                <MapViewHint
+                  imageOnRight={true}
+                  cardNumber={2}
+                  isJourneyInfo={true}
+                  journeySlug={currentDayTrip.slug}
+                  station={{
+                    id: '',
+                    name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
+                    journeyName: trips.find(t => t.slug === currentDayTrip.slug)?.route || '',
+                    date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
+                    images: []
+                  }}
+                />
+              </div>
+
+              <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem]">
+                <Box
+                  sx={{
+                    backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                    backgroundRepeat: 'repeat',
+                    backgroundSize: '200px auto',
+                    padding: { xs: '0.5rem', sm: '1rem' },
+                    borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                  }}
+                >
+                  <InteractiveMap
+                    places={currentDayTripPlaces}
+                    routeSegments={currentDayTrip?.segments}
+                    routeCoordinates={getRouteCoordinatesFromSegments(currentDayTrip?.segments)}
+                    journeyDate={currentDayTrip?.startDate}
+                  />
+                </Box>
+
+                {/* Day Trip Info Card - Top Right Corner on desktop only */}
+                <Box
+                  sx={{
+                    display: { xs: 'none', sm: 'block' },
+                    position: 'absolute',
+                    top: '-100px',
+                    right: '-600px',
+                    zIndex: 1000
+                  }}
+                >
+                  <MapViewHint
+                    imageOnRight={true}
+                    cardNumber={2}
+                    isJourneyInfo={true}
+                    journeySlug={currentDayTrip.slug}
+                    station={{
+                      id: '',
+                      name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
+                      journeyName: trips.find(t => t.slug === currentDayTrip.slug)?.route || '',
+                      date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
+                      images: []
+                    }}
+                  />
+                </Box>
+
+                {/* Previous Button */}
+                <button
+                  onClick={handlePrevDayTrip}
+                  disabled={currentDayTripIndex === 0}
+                  className={`group absolute left-4 xs:left-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                    currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                  }`}
+                >
+                  <img
+                    src="/images/buttons/tab_prev.webp"
+                    alt={tr.previousJourney}
+                    className={`h-24 w-auto ${currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}`}
+                  />
+                  <img
+                    src="/images/buttons/tab_prev_hover.webp"
+                    alt={tr.previousJourney}
+                    className={`h-24 w-auto ${currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
+                  />
+                </button>
+
+                {/* Next Button */}
+                <button
+                  onClick={handleNextDayTrip}
+                  disabled={currentDayTripIndex === dayTripJourneys.length - 1}
+                  className={`group absolute right-4 xs:right-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                    currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                  }`}
+                >
+                  <img
+                    src="/images/buttons/tab_next.webp"
+                    alt={tr.nextJourney}
+                    className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
+                  />
+                  <img
+                    src="/images/buttons/tab_next_hover.webp"
+                    alt={tr.nextJourney}
+                    className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                  />
+                </button>
+              </Box>
+            </div>
+          )}
         </div>
       </Box>
 
