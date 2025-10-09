@@ -209,28 +209,16 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       shadowAnchor: [12, 41]
     })
 
-    // Group places by name first, then by approximate coordinates
+    // Group places by location name only (not by proximity)
     const groupedPlaces: { [key: string]: Place[] } = {}
     placesWithCoords.forEach((place) => {
-      // First, try to find an existing group with the same name
-      let foundKey = Object.keys(groupedPlaces).find(key => {
-        const existingPlaces = groupedPlaces[key]
-        return existingPlaces.some(p => p.name === place.name)
-      })
+      // Use the location name as the grouping key
+      const key = place.name
 
-      // If not found by name, group by approximate coordinates (within ~0.05 degrees)
-      if (!foundKey) {
-        const coordKey = `${Math.round(place.lat * 20) / 20},${Math.round(place.lng * 20) / 20}`
-        foundKey = Object.keys(groupedPlaces).find(key => key.startsWith(coordKey))
-        if (!foundKey) {
-          foundKey = `${coordKey}_${place.name}`
-        }
+      if (!groupedPlaces[key]) {
+        groupedPlaces[key] = []
       }
-
-      if (!groupedPlaces[foundKey]) {
-        groupedPlaces[foundKey] = []
-      }
-      groupedPlaces[foundKey].push(place)
+      groupedPlaces[key].push(place)
     })
 
     // Sort each group by date and time (latest first)
