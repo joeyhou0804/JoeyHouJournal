@@ -413,7 +413,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Journey Info Card - Above map on xs screens */}
-          <div className="block sm:hidden mb-12">
+          <div className="block sm:hidden">
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}
@@ -429,7 +429,7 @@ export default function JourneysPage() {
             />
           </div>
 
-          <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem]">
+          <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem] xs:-mt-6">
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
@@ -533,10 +533,10 @@ export default function JourneysPage() {
               </div>
 
               {/* Day Trip Info Card - Above map on xs screens */}
-              <div className="block sm:hidden mb-12">
+              <div className="block sm:hidden">
                 <MapViewHint
                   imageOnRight={true}
-                  cardNumber={2}
+                  cardNumber={3}
                   isJourneyInfo={true}
                   journeySlug={currentDayTrip.slug}
                   station={{
@@ -549,7 +549,7 @@ export default function JourneysPage() {
                 />
               </div>
 
-              <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem]">
+              <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem] xs:-mt-6">
                 <Box
                   sx={{
                     backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
@@ -567,19 +567,19 @@ export default function JourneysPage() {
                   />
                 </Box>
 
-                {/* Day Trip Info Card - Top Right Corner on desktop only */}
+                {/* Day Trip Info Card - Top Left Corner on desktop only */}
                 <Box
                   sx={{
                     display: { xs: 'none', sm: 'block' },
                     position: 'absolute',
                     top: '-100px',
-                    right: '-600px',
+                    left: '-600px',
                     zIndex: 1000
                   }}
                 >
                   <MapViewHint
-                    imageOnRight={true}
-                    cardNumber={2}
+                    imageOnRight={false}
+                    cardNumber={3}
                     isJourneyInfo={true}
                     journeySlug={currentDayTrip.slug}
                     station={{

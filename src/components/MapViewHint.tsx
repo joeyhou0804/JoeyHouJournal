@@ -14,7 +14,7 @@ interface Station {
 interface MapViewHintProps {
   station: Station
   imageOnRight?: boolean
-  cardNumber?: 1 | 2
+  cardNumber?: 1 | 2 | 3
   isJourneyInfo?: boolean
   journeySlug?: string
 }
@@ -24,10 +24,10 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
 
   // Determine card image based on screen size and card number
   const cardImageSrc = isJourneyInfo
-    ? '/images/journey/journeys_map_description_card.webp'
+    ? (cardNumber === 3 ? '/images/destinations/destination_card_even.webp' : '/images/journey/journeys_map_description_card.webp')
     : `/images/destinations/hints/map_view_hint_card_${cardNumber}.webp`
   const cardImageSrcXs = isJourneyInfo
-    ? '/images/destinations/destination_card_xs_even.webp'
+    ? (cardNumber === 3 ? '/images/destinations/destination_card_xs_even.webp' : '/images/destinations/destination_card_xs_odd.webp')
     : `/images/destinations/hints/map_view_hint_card_xs_${cardNumber}.webp`
 
   return (
