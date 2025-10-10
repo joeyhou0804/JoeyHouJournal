@@ -341,6 +341,53 @@ export default function JourneysPage() {
         />
       </div>
 
+      {/* New Background Section - Full Width */}
+      <div className="w-full relative overflow-hidden">
+        {/* Desktop Layout - Image overlaid on left of background */}
+        <div className="xs:hidden relative">
+          <img
+            src="/images/journey/journey_page_first_section.png"
+            alt="Journey Background"
+            className="w-full h-auto object-cover"
+          />
+
+          {/* Text Content - Desktop */}
+          <div className="absolute left-[30%] md:left-[35%] lg:left-[38%] top-1/2 -translate-y-1/2">
+            <p className="text-[#373737] mb-2 whitespace-nowrap" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '24px', lineHeight: '1.4' }}>
+              {locale === 'zh' ? '想看什么样的旅程故事呢？' : 'What type of journeys are you looking for?'}
+            </p>
+            <p className="text-[#373737] mb-2 whitespace-nowrap" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '24px', lineHeight: '1.4' }}>
+              {locale === 'zh' ? '想看我的长途旅行的话，请看下面的第一个地图。' : 'View the first map below if you want to see my longer trips.'}
+            </p>
+            <p className="text-[#373737] whitespace-nowrap" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '24px', lineHeight: '1.4' }}>
+              {locale === 'zh' ? '第二个地图是我的一日游和周末旅行。' : 'Checkout the second map for my day trips and weekend trips.'}
+            </p>
+          </div>
+        </div>
+
+        {/* Mobile Layout - Background with text only */}
+        <div className="hidden xs:block relative">
+          <img
+            src="/images/journey/journey_page_first_section_xs.png"
+            alt="Journey Background"
+            className="w-full h-auto object-cover"
+          />
+
+          {/* Text Content - Mobile */}
+          <div className="absolute top-36 left-10">
+            <p className="text-[#373737] mb-2" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', lineHeight: '1.4' }}>
+              {locale === 'zh' ? '想看什么样的旅程故事呢？' : 'What type of journeys are you looking for?'}
+            </p>
+            <p className="text-[#373737] mb-2" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', lineHeight: '1.4' }}>
+              {locale === 'zh' ? '想看我的长途旅行的话，请看下面的第一个地图。' : 'View the first map below if you want to see my longer trips.'}
+            </p>
+            <p className="text-[#373737]" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', lineHeight: '1.4' }}>
+              {locale === 'zh' ? '第二个地图是我的一日游和周末旅行。' : 'Checkout the second map for my day trips and weekend trips.'}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Map View Section */}
       <Box
         component="section"

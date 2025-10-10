@@ -940,7 +940,7 @@ export default function Home() {
         >
           <Box
             component="img"
-            src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_4"
+            src="/images/homepage/homepage_image_4.png"
             alt="Homepage Image 4"
             className="w-full h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
           />

@@ -117,7 +117,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
               {station.journeyName || station.name}
             </Box>
           ) : (
-            <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: { xs: '16px', sm: '26px' }, color: '#373737', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
+            <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: { xs: '16px', sm: '24px' }, color: '#373737', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
               {station.journeyName ? `${station.journeyName} ${station.date}` : `${station.name} ${station.date}`}
             </Box>
           )}
