@@ -961,8 +961,8 @@ export default function NewJourneyPage() {
               <thead>
                 <tr style={{ backgroundColor: '#f9f9f9', borderBottom: '2px solid #e0e0e0' }}>
                   <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Name</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif', display: { xs: 'none', sm: 'table-cell' } }}>Date</th>
-                  <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif', display: { xs: 'none', sm: 'table-cell' } }}>State</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Date</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>State</th>
                   <th style={{ padding: '1rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>Actions</th>
                 </tr>
               </thead>
@@ -978,8 +978,8 @@ export default function NewJourneyPage() {
                       {dest.name}
                       {dest.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{dest.nameCN}</div>}
                     </td>
-                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', display: { xs: 'none', sm: 'table-cell' } }}>{dest.date}</td>
-                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', display: { xs: 'none', sm: 'table-cell' } }}>{dest.state}</td>
+                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.date}</td>
+                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</td>
                     <td style={{ padding: '1rem', textAlign: 'center' }}>
                       <button
                         onClick={() => handleRemoveDestination(dest.id)}
