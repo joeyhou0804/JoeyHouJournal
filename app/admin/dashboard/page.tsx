@@ -67,7 +67,7 @@ export default function AdminDashboard() {
 
   return (
     <Box>
-      <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', marginBottom: '2rem', color: '#373737', margin: 0, marginBottom: '2rem' }}>
+      <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', color: '#373737', margin: 0, marginBottom: '2rem' }}>
         Dashboard
       </h1>
 
@@ -150,7 +150,7 @@ export default function AdminDashboard() {
                 1
               </Box>
               <Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
-                <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', marginBottom: '0.5rem', fontSize: '18px', margin: 0, marginBottom: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', fontSize: '18px', margin: 0, marginBottom: '0.5rem' }}>
                   Create Destinations
                 </h3>
                 <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', marginBottom: '1rem', fontSize: '14px' }}>
@@ -199,7 +199,7 @@ export default function AdminDashboard() {
                 2
               </Box>
               <Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
-                <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', marginBottom: '0.5rem', fontSize: '18px', margin: 0, marginBottom: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', fontSize: '18px', margin: 0, marginBottom: '0.5rem' }}>
                   Create a Journey
                 </h3>
                 <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', marginBottom: '1rem', fontSize: '14px' }}>
@@ -248,7 +248,7 @@ export default function AdminDashboard() {
                 3
               </Box>
               <Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
-                <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', marginBottom: '0.5rem', fontSize: '18px', margin: 0, marginBottom: '0.5rem' }}>
+                <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', fontSize: '18px', margin: 0, marginBottom: '0.5rem' }}>
                   Link Destinations to Journey
                 </h3>
                 <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', marginBottom: '1rem', fontSize: '14px' }}>
