@@ -1,12 +1,30 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Box } from '@mui/material'
+import {
+  Box,
+  Drawer,
+  TextField,
+  Checkbox,
+  Typography,
+  Chip,
+  List,
+  ListItem,
+  ListItemText
+} from '@mui/material'
 
 export default function NewJourneyPage() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
+
+  // Destination management state
+  const [allDestinations, setAllDestinations] = useState<any[]>([])
+  const [selectedDestinationIds, setSelectedDestinationIds] = useState<string[]>([])
+  const [addDrawerOpen, setAddDrawerOpen] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [showOnlyUnassigned, setShowOnlyUnassigned] = useState(true)
+  const [loading, setLoading] = useState(true)
 
   // Form state for new journey
   const [formData, setFormData] = useState({
@@ -31,6 +49,22 @@ export default function NewJourneyPage() {
 
   // Track which coordinates are editable
   const [editableCoords, setEditableCoords] = useState<boolean[]>([false, false])
+
+  // Fetch all destinations on mount
+  useEffect(() => {
+    async function fetchDestinations() {
+      try {
+        const response = await fetch('/api/destinations')
+        const data = await response.json()
+        setAllDestinations(data)
+      } catch (error) {
+        console.error('Failed to fetch destinations:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchDestinations()
+  }, [])
 
   const handleInputChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -125,7 +159,37 @@ export default function NewJourneyPage() {
 
       if (response.ok) {
         const data = await response.json()
-        alert('Journey created successfully! You can now add destinations to it.')
+
+        // If destinations were pre-selected, assign them to the journey
+        if (selectedDestinationIds.length > 0) {
+          try {
+            for (const destId of selectedDestinationIds) {
+              const dest = allDestinations.find(d => d.id === destId)
+              if (dest) {
+                const updatedDest = {
+                  ...dest,
+                  journeyId: newJourney.id,
+                  journeyName: newJourney.name,
+                  journeyNameCN: newJourney.nameCN || ''
+                }
+
+                const destResponse = await fetch('/api/admin/destinations', {
+                  method: 'PUT',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(updatedDest)
+                })
+
+                if (!destResponse.ok) {
+                  console.error(`Failed to assign destination ${dest.name}`)
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Error assigning destinations:', error)
+          }
+        }
+
+        alert(`Journey created successfully!${selectedDestinationIds.length > 0 ? ` ${selectedDestinationIds.length} destination(s) have been added.` : ' You can now add destinations to it.'}`)
         router.push('/admin/journeys')
       } else {
         const error = await response.json()
@@ -295,6 +359,37 @@ export default function NewJourneyPage() {
       alert('Failed to geocode location. Please enter coordinates manually.')
     }
   }
+
+  // Destination management functions
+  const handleToggleDestination = (destId: string) => {
+    setSelectedDestinationIds(prev =>
+      prev.includes(destId)
+        ? prev.filter(id => id !== destId)
+        : [...prev, destId]
+    )
+  }
+
+  const handleRemoveDestination = (destId: string) => {
+    setSelectedDestinationIds(prev => prev.filter(id => id !== destId))
+  }
+
+  // Get selected destinations as full objects
+  const selectedDestinations = allDestinations.filter(d => selectedDestinationIds.includes(d.id))
+
+  // Get available destinations for the drawer
+  const availableDestinations = allDestinations.filter(d => {
+    // Don't show destinations already selected
+    if (selectedDestinationIds.includes(d.id)) return false
+    // If filter is on, only show destinations without a journey assigned
+    if (showOnlyUnassigned && d.journeyId) return false
+    return true
+  })
+
+  const filteredAvailableDestinations = availableDestinations.filter(dest =>
+    dest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    dest.state?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    dest.nameCN?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   return (
     <Box>
@@ -793,7 +888,7 @@ export default function NewJourneyPage() {
         </Box>
       </Box>
 
-      {/* Destinations Section - Placeholder */}
+      {/* Associated Destinations */}
       <Box
         sx={{
           backgroundColor: 'white',
@@ -803,36 +898,111 @@ export default function NewJourneyPage() {
           marginTop: '2rem'
         }}
       >
-        <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(18px, 5vw, 24px)', margin: 0, marginBottom: '1rem' }}>
-          Associated Destinations
-        </h2>
-
-        <Box sx={{
-          padding: { xs: '2rem 1rem', sm: '3rem' },
-          textAlign: 'center',
-          backgroundColor: '#f5f5f5',
-          borderRadius: '0.5rem',
-          border: '2px dashed #e0e0e0'
-        }}>
-          <Box sx={{ fontSize: '48px', marginBottom: '1rem' }}>📍</Box>
-          <p style={{
-            fontFamily: 'MarioFont, sans-serif',
-            fontSize: '16px',
-            color: '#666',
-            margin: 0,
-            marginBottom: '0.5rem'
-          }}>
-            No destinations yet
-          </p>
-          <p style={{
-            fontFamily: 'MarioFont, sans-serif',
-            fontSize: '14px',
-            color: '#999',
-            margin: 0
-          }}>
-            After creating this journey, you'll be able to add destinations to it from the journey details page.
-          </p>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, marginBottom: '1.5rem', gap: { xs: 1, sm: 0 } }}>
+          <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(18px, 5vw, 24px)', margin: 0 }}>
+            Associated Destinations ({selectedDestinations.length})
+          </h2>
+          <button
+            onClick={() => setAddDrawerOpen(true)}
+            style={{
+              padding: '0.75rem 1.5rem',
+              fontSize: '16px',
+              fontFamily: 'MarioFont, sans-serif',
+              backgroundColor: '#FFD701',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              width: '100%',
+              maxWidth: '200px'
+            }}
+          >
+            + Add Destinations
+          </button>
         </Box>
+
+        {selectedDestinations.length === 0 ? (
+          <Box sx={{
+            padding: { xs: '2rem 1rem', sm: '3rem' },
+            textAlign: 'center',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '0.5rem',
+            border: '2px dashed #e0e0e0'
+          }}>
+            <Box sx={{ fontSize: '48px', marginBottom: '1rem' }}>📍</Box>
+            <p style={{
+              fontFamily: 'MarioFont, sans-serif',
+              fontSize: '16px',
+              color: '#666',
+              margin: 0,
+              marginBottom: '0.5rem'
+            }}>
+              No destinations selected yet
+            </p>
+            <p style={{
+              fontFamily: 'MarioFont, sans-serif',
+              fontSize: '14px',
+              color: '#999',
+              margin: 0
+            }}>
+              Click "+ Add Destinations" to select destinations for this journey. They will be assigned when you create the journey.
+            </p>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              backgroundColor: 'white',
+              borderRadius: '1rem',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              overflow: 'hidden',
+              border: '1px solid #e0e0e0'
+            }}
+          >
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#f9f9f9', borderBottom: '2px solid #e0e0e0' }}>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Name</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif', display: { xs: 'none', sm: 'table-cell' } }}>Date</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif', display: { xs: 'none', sm: 'table-cell' } }}>State</th>
+                  <th style={{ padding: '1rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedDestinations.map((dest) => (
+                  <tr
+                    key={dest.id}
+                    style={{
+                      borderBottom: '1px solid #e0e0e0'
+                    }}
+                  >
+                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
+                      {dest.name}
+                      {dest.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{dest.nameCN}</div>}
+                    </td>
+                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', display: { xs: 'none', sm: 'table-cell' } }}>{dest.date}</td>
+                    <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', display: { xs: 'none', sm: 'table-cell' } }}>{dest.state}</td>
+                    <td style={{ padding: '1rem', textAlign: 'center' }}>
+                      <button
+                        onClick={() => handleRemoveDestination(dest.id)}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          backgroundColor: '#ff6b6b',
+                          color: 'white',
+                          border: '1px solid #c92a2a',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Box>
+        )}
       </Box>
 
       {/* Form Actions */}
@@ -883,9 +1053,176 @@ export default function NewJourneyPage() {
         <ul style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '13px', marginTop: '0.5rem', paddingLeft: '1.5rem', marginBottom: 0 }}>
           <li>At least 2 route points (start and end) with valid coordinates</li>
           <li>All route points must have names and coordinates (auto-generated from location names)</li>
-          <li>After creating the journey, add at least one destination to make it visible on the main site</li>
+          <li>Destinations are optional but recommended - at least one destination makes the journey visible on the main site</li>
         </ul>
       </Box>
+
+      {/* Add Destinations Drawer */}
+      <Drawer
+        anchor="right"
+        open={addDrawerOpen}
+        onClose={() => {
+          setAddDrawerOpen(false)
+          setSearchTerm('')
+        }}
+      >
+        <Box sx={{ width: 500, padding: 3 }}>
+          <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 2 }}>
+            Add Destinations
+          </Typography>
+
+          {selectedDestinationIds.length > 0 && (
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 1 }}>
+                Selected: {selectedDestinationIds.length} destination{selectedDestinationIds.length !== 1 ? 's' : ''}
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selectedDestinationIds.map(destId => {
+                  const dest = allDestinations.find(d => d.id === destId)
+                  return dest ? (
+                    <Chip
+                      key={destId}
+                      label={dest.name}
+                      onDelete={() => handleToggleDestination(destId)}
+                      size="small"
+                      sx={{ fontFamily: 'MarioFont, sans-serif' }}
+                    />
+                  ) : null
+                })}
+              </Box>
+            </Box>
+          )}
+
+          <TextField
+            fullWidth
+            placeholder="Search destinations by name, state, or Chinese name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{
+              mb: 2,
+              '& .MuiOutlinedInput-root': {
+                fontFamily: 'MarioFont, sans-serif',
+                '& fieldset': { borderColor: '#373737', borderWidth: '2px' },
+                '&:hover fieldset': { borderColor: '#373737' },
+                '&.Mui-focused fieldset': { borderColor: '#FFD701', borderWidth: '2px' }
+              },
+              '& .MuiInputBase-input': {
+                fontFamily: 'MarioFont, sans-serif'
+              }
+            }}
+          />
+
+          <Box sx={{
+            mb: 2,
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0.75rem',
+            backgroundColor: '#f5f5f5',
+            borderRadius: '0.5rem',
+            border: '1px solid #e0e0e0'
+          }}>
+            <Checkbox
+              checked={showOnlyUnassigned}
+              onChange={(e) => setShowOnlyUnassigned(e.target.checked)}
+              sx={{
+                color: '#373737',
+                '&.Mui-checked': { color: '#FFD701' },
+                padding: '0 8px 0 0'
+              }}
+            />
+            <Typography
+              onClick={() => setShowOnlyUnassigned(!showOnlyUnassigned)}
+              sx={{
+                fontFamily: 'MarioFont, sans-serif',
+                fontSize: '14px',
+                cursor: 'pointer',
+                userSelect: 'none',
+                flex: 1
+              }}
+            >
+              Only show destinations without a journey
+            </Typography>
+          </Box>
+
+          <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 1, color: '#666' }}>
+            {filteredAvailableDestinations.length} available destination{filteredAvailableDestinations.length !== 1 ? 's' : ''}
+          </Typography>
+
+          <Box sx={{
+            maxHeight: '450px',
+            overflow: 'auto',
+            border: '1px solid #e0e0e0',
+            borderRadius: 1,
+            mb: 3
+          }}>
+            {filteredAvailableDestinations.length === 0 ? (
+              <Box sx={{ padding: 3, textAlign: 'center' }}>
+                <Typography sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
+                  {searchTerm ? 'No destinations match your search' : showOnlyUnassigned ? 'No unassigned destinations available' : 'No destinations available'}
+                </Typography>
+              </Box>
+            ) : (
+              <List dense>
+                {filteredAvailableDestinations.map((dest) => (
+                  <ListItem
+                    key={dest.id}
+                    onClick={() => handleToggleDestination(dest.id)}
+                    sx={{
+                      borderBottom: '1px solid #f5f5f5',
+                      '&:hover': { backgroundColor: '#f5f5f5' },
+                      cursor: 'pointer'
+                    }}
+                  >
+                    <Checkbox
+                      checked={selectedDestinationIds.includes(dest.id)}
+                      sx={{ mr: 1 }}
+                    />
+                    <ListItemText
+                      primary={
+                        <Box>
+                          <span style={{ fontFamily: 'MarioFont, sans-serif' }}>{dest.name}</span>
+                          {dest.nameCN && (
+                            <span style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '12px', color: '#666', marginLeft: '8px' }}>
+                              {dest.nameCN}
+                            </span>
+                          )}
+                        </Box>
+                      }
+                      secondary={
+                        <span style={{ fontFamily: 'MarioFont, sans-serif' }}>
+                          {dest.state} • {dest.date}
+                          {dest.journeyName && <span style={{ color: '#999' }}> • Currently in: {dest.journeyName}</span>}
+                        </span>
+                      }
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+          </Box>
+
+          <Box sx={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+            <button
+              type="button"
+              onClick={() => {
+                setAddDrawerOpen(false)
+                setSearchTerm('')
+              }}
+              style={{
+                padding: '0.75rem 2rem',
+                fontSize: '16px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: 'white',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: 'pointer'
+              }}
+            >
+              Done
+            </button>
+          </Box>
+        </Box>
+      </Drawer>
     </Box>
   )
 }
