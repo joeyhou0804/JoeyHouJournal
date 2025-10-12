@@ -52,7 +52,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
               }
             }}
           >
-            <source src="https://res.cloudinary.com/joey-hou-homepage/video/upload/v1759208440/homepage_title_video_pyiksq.mp4" type="video/mp4" />
+            <source src="https://ydafzxmh0skb2hzr.public.blob.vercel-storage.com/homepage/homepage_title_video.mp4" type="video/mp4" />
           </Box>
 
           {/* Logo - Full width with padding on xs, Top Left on md+ */}
