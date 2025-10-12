@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Box, Button, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material'
 import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material'
 import Link from 'next/link'
@@ -16,6 +17,7 @@ interface HomeLocation {
 }
 
 export default function HomeLocationsPage() {
+  const router = useRouter()
   const [homeLocations, setHomeLocations] = useState<HomeLocation[]>([])
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
