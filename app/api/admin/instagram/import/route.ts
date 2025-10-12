@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { v2 as cloudinary } from 'cloudinary'
+import { put } from '@vercel/blob'
 import { createDestination } from '@/lib/db'
 
 export const dynamic = 'force-dynamic'
-
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-})
 
 interface ImportRequest {
   instagramPostId: string
@@ -61,16 +54,7 @@ export async function POST(request: NextRequest) {
     const nameSlug = destinationName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
     const destinationId = `${nameSlug}-${instagramPostId}`
 
-    // Check Cloudinary configuration
-    if (!process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      console.error('Cloudinary credentials missing')
-      return NextResponse.json(
-        { error: 'Cloudinary not configured. Please set CLOUDINARY_API_KEY and CLOUDINARY_API_SECRET.' },
-        { status: 500 }
-      )
-    }
-
-    // Upload images to Cloudinary
+    // Upload images to Vercel Blob
     const uploadedUrls: string[] = []
     const uploadErrors: string[] = []
 
@@ -80,15 +64,27 @@ export async function POST(request: NextRequest) {
       try {
         console.log(`Uploading image ${i + 1}/${mediaUrls.length} from Instagram:`, mediaUrl.substring(0, 100))
 
-        // Upload to Cloudinary
-        const result = await cloudinary.uploader.upload(mediaUrl, {
-          folder: `joeyhoujournal/destinations/${destinationId}`,
-          public_id: `instagram_${instagramPostId}_${i}`,
-          overwrite: true,
-        })
+        // Fetch image from Instagram
+        const response = await fetch(mediaUrl)
+        if (!response.ok) {
+          throw new Error(`Failed to fetch image: ${response.statusText}`)
+        }
 
-        console.log(`Successfully uploaded image ${i + 1} to Cloudinary:`, result.secure_url)
-        uploadedUrls.push(result.secure_url)
+        const blob = await response.blob()
+        const filename = `instagram_${instagramPostId}_${i}.jpg`
+
+        // Upload to Vercel Blob
+        const uploadedBlob = await put(
+          `destinations/${destinationId}/${filename}`,
+          blob,
+          {
+            access: 'public',
+            addRandomSuffix: false,
+          }
+        )
+
+        console.log(`Successfully uploaded image ${i + 1} to Vercel Blob:`, uploadedBlob.url)
+        uploadedUrls.push(uploadedBlob.url)
       } catch (uploadError) {
         const errorMsg = uploadError instanceof Error ? uploadError.message : String(uploadError)
         console.error(`Failed to upload image ${i + 1}:`, errorMsg)
@@ -137,7 +133,7 @@ export async function POST(request: NextRequest) {
       success: true,
       uploadedCount: uploadedUrls.length,
       destinationId: destinationId,
-      cloudinaryUrls: uploadedUrls,
+      blobUrls: uploadedUrls,
     })
   } catch (error) {
     console.error('Instagram import error:', error)
