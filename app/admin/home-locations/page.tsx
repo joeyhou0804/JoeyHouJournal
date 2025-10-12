@@ -161,24 +161,27 @@ export default function HomeLocationsPage() {
   }
 
   return (
-    <Box sx={{ padding: '2rem', fontFamily: 'MarioFont, sans-serif' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <Typography variant="h4" sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>
-          Home Locations Management
-        </Typography>
-        <Button
-          component={Link}
-          href="/admin"
-          variant="outlined"
-          sx={{
+    <Box sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, marginBottom: '2rem', gap: { xs: 2, sm: 0 } }}>
+        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', margin: 0 }}>
+          Home Locations ({homeLocations.length})
+        </h1>
+        <button
+          onClick={() => router.push('/admin/dashboard')}
+          style={{
+            width: '100%',
+            maxWidth: '200px',
+            padding: '0.75rem 1.5rem',
+            fontSize: '16px',
             fontFamily: 'MarioFont, sans-serif',
-            borderColor: '#373737',
-            color: '#373737',
-            '&:hover': { borderColor: '#FFD701', backgroundColor: '#FFD701' }
+            backgroundColor: 'white',
+            border: '2px solid #373737',
+            borderRadius: '0.5rem',
+            cursor: 'pointer'
           }}
         >
-          Back to Admin
-        </Button>
+          Back to Dashboard
+        </button>
       </Box>
 
       {/* Form */}
@@ -187,7 +190,7 @@ export default function HomeLocationsPage() {
         onSubmit={handleSubmit}
         sx={{
           backgroundColor: 'white',
-          padding: '2rem',
+          padding: { xs: '1rem', sm: '2rem' },
           borderRadius: '1rem',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           marginBottom: '2rem'
@@ -292,72 +295,184 @@ export default function HomeLocationsPage() {
           />
         </Box>
 
-        <Box sx={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-          <Button
+        <Box sx={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexDirection: { xs: 'column', sm: 'row' } }}>
+          <button
             type="submit"
-            variant="contained"
-            sx={{
+            style={{
+              padding: '0.75rem 2rem',
+              fontSize: '16px',
               fontFamily: 'MarioFont, sans-serif',
               backgroundColor: '#FFD701',
-              color: '#373737',
-              '&:hover': { backgroundColor: '#F06001' }
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              width: '100%'
             }}
           >
             {editing ? 'Update' : 'Add'} Home Location
-          </Button>
+          </button>
           {editing && (
-            <Button
+            <button
               type="button"
               onClick={resetForm}
-              variant="outlined"
-              sx={{
+              style={{
+                padding: '0.75rem 2rem',
+                fontSize: '16px',
                 fontFamily: 'MarioFont, sans-serif',
-                borderColor: '#373737',
-                color: '#373737'
+                backgroundColor: 'white',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                width: '100%'
               }}
             >
               Cancel
-            </Button>
+            </button>
           )}
         </Box>
       </Box>
 
-      {/* Table */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-              <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Name</TableCell>
-              <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Chinese Name</TableCell>
-              <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Start Date</TableCell>
-              <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>End Date</TableCell>
-              <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Coordinates</TableCell>
-              <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {homeLocations.map((home) => (
-              <TableRow key={home.id}>
-                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.name}</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.nameCN || '-'}</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.startDate}</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.endDate}</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-                  {home.coordinates.lat.toFixed(4)}, {home.coordinates.lng.toFixed(4)}
-                </TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEdit(home)} size="small">
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton onClick={() => handleDelete(home.id)} size="small" color="error">
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+      {/* Mobile Card View */}
+      <Box sx={{ display: { xs: 'block', md: 'none' } }}>
+        {homeLocations.length === 0 ? (
+          <Box sx={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif', backgroundColor: 'white', borderRadius: '1rem' }}>
+            No home locations found
+          </Box>
+        ) : (
+          homeLocations.map((home) => (
+            <Box
+              key={home.id}
+              sx={{
+                backgroundColor: 'white',
+                borderRadius: '1rem',
+                padding: '1rem',
+                marginBottom: '1rem',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+              }}
+            >
+              <Box sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '0.5rem', color: '#373737' }}>
+                {home.name}
+              </Box>
+              {home.nameCN && (
+                <Box sx={{ fontSize: '14px', color: '#666', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
+                  {home.nameCN}
+                </Box>
+              )}
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666', marginBottom: '1rem' }}>
+                <Box><strong>Start:</strong> {home.startDate}</Box>
+                <Box><strong>End:</strong> {home.endDate}</Box>
+                <Box sx={{ gridColumn: '1 / -1' }}>
+                  <strong>Coords:</strong> {home.coordinates.lat.toFixed(4)}, {home.coordinates.lng.toFixed(4)}
+                </Box>
+              </Box>
+              <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+                <button
+                  onClick={() => handleEdit(home)}
+                  style={{
+                    flex: 1,
+                    padding: '0.5rem 1rem',
+                    fontSize: '14px',
+                    fontFamily: 'MarioFont, sans-serif',
+                    backgroundColor: '#FFD701',
+                    border: '2px solid #373737',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(home.id)}
+                  style={{
+                    flex: 1,
+                    padding: '0.5rem 1rem',
+                    fontSize: '14px',
+                    fontFamily: 'MarioFont, sans-serif',
+                    backgroundColor: '#ff6b6b',
+                    color: 'white',
+                    border: '2px solid #c92a2a',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Delete
+                </button>
+              </Box>
+            </Box>
+          ))
+        )}
+      </Box>
+
+      {/* Desktop Table View */}
+      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
+                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Name</TableCell>
+                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Chinese Name</TableCell>
+                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Start Date</TableCell>
+                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>End Date</TableCell>
+                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Coordinates</TableCell>
+                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {homeLocations.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={6} sx={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
+                    No home locations found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                homeLocations.map((home) => (
+                  <TableRow key={home.id}>
+                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.name}</TableCell>
+                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.nameCN || '-'}</TableCell>
+                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.startDate}</TableCell>
+                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.endDate}</TableCell>
+                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+                      {home.coordinates.lat.toFixed(4)}, {home.coordinates.lng.toFixed(4)}
+                    </TableCell>
+                    <TableCell>
+                      <button
+                        onClick={() => handleEdit(home)}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          backgroundColor: '#FFD701',
+                          border: '2px solid #373737',
+                          borderRadius: '0.5rem',
+                          cursor: 'pointer',
+                          marginRight: '0.5rem'
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(home.id)}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          backgroundColor: '#ff6b6b',
+                          color: 'white',
+                          border: '2px solid #c92a2a',
+                          borderRadius: '0.5rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
     </Box>
   )
 }

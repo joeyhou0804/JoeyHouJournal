@@ -520,14 +520,14 @@ export default function NewJourneyPage() {
       <Box
         sx={{
           backgroundColor: 'white',
-          padding: '2rem',
+          padding: { xs: '1rem', sm: '2rem' },
           borderRadius: '1rem',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           marginTop: '2rem'
         }}
       >
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0 }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, marginBottom: '1.5rem', gap: { xs: 1, sm: 0 } }}>
+          <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(18px, 5vw, 24px)', margin: 0 }}>
             Route Points * ({routePoints.length} points = {routePoints.length > 1 ? routePoints.length - 1 : 0} segments)
           </h2>
           <button
@@ -540,7 +540,9 @@ export default function NewJourneyPage() {
               backgroundColor: '#FFD701',
               border: '2px solid #373737',
               borderRadius: '0.5rem',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              width: '100%',
+              maxWidth: '150px'
             }}
           >
             + Add Point
@@ -600,7 +602,7 @@ export default function NewJourneyPage() {
                   </Box>
                 </Box>
 
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '0.75rem', marginBottom: '0.75rem' }}>
                   <input
                     value={point.name}
                     onChange={(e) => updatePoint(index, 'name', e.target.value)}
@@ -657,7 +659,7 @@ export default function NewJourneyPage() {
                         whiteSpace: 'nowrap'
                       }}
                     >
-                      Auto-Generate
+                      Auto
                     </button>
                   </Box>
                 </Box>
@@ -795,18 +797,18 @@ export default function NewJourneyPage() {
       <Box
         sx={{
           backgroundColor: 'white',
-          padding: '2rem',
+          padding: { xs: '1rem', sm: '2rem' },
           borderRadius: '1rem',
           boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
           marginTop: '2rem'
         }}
       >
-        <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', margin: 0, marginBottom: '1rem' }}>
+        <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(18px, 5vw, 24px)', margin: 0, marginBottom: '1rem' }}>
           Associated Destinations
         </h2>
 
         <Box sx={{
-          padding: '3rem',
+          padding: { xs: '2rem 1rem', sm: '3rem' },
           textAlign: 'center',
           backgroundColor: '#f5f5f5',
           borderRadius: '0.5rem',
@@ -834,11 +836,13 @@ export default function NewJourneyPage() {
       </Box>
 
       {/* Form Actions */}
-      <Box sx={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+      <Box sx={{ marginTop: '2rem', display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: '1rem', justifyContent: 'flex-end' }}>
         <button
           type="button"
           onClick={() => router.push('/admin/journeys')}
           style={{
+            width: '100%',
+            maxWidth: '200px',
             padding: '0.75rem 2rem',
             fontSize: '16px',
             fontFamily: 'MarioFont, sans-serif',
@@ -855,6 +859,8 @@ export default function NewJourneyPage() {
           onClick={handleSaveJourney}
           disabled={saving}
           style={{
+            width: '100%',
+            maxWidth: '200px',
             padding: '0.75rem 2rem',
             fontSize: '16px',
             fontFamily: 'MarioFont, sans-serif',
@@ -870,7 +876,7 @@ export default function NewJourneyPage() {
       </Box>
 
       {/* Requirements Info Box */}
-      <Box sx={{ marginTop: '2rem', padding: '1rem', backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '1px solid #2196f3' }}>
+      <Box sx={{ marginTop: '2rem', padding: { xs: '0.75rem', sm: '1rem' }, backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '1px solid #2196f3' }}>
         <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', margin: 0, marginBottom: '0.5rem' }}>
           <strong>📋 Requirements before saving:</strong>
         </p>

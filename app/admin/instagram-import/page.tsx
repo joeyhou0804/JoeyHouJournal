@@ -549,47 +549,62 @@ export default function InstagramImportPage() {
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, mb: 3, gap: { xs: 2, sm: 0 } }}>
         <Box>
-          <Typography variant="h4" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
+          <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', color: '#373737', margin: 0 }}>
             Instagram Import
-          </Typography>
+          </h1>
           {posts.length > 0 && (
-            <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666', mt: 0.5 }}>
+            <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', marginTop: '0.5rem', fontSize: '14px' }}>
               {filteredPosts.length - importedPostIds.size} available · {importedPostIds.size} imported · {excludedPostIds.size} excluded
-            </Typography>
+            </p>
           )}
         </Box>
-        <Box sx={{ display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 1, sm: 2 }, width: { xs: '100%', sm: 'auto' } }}>
           {processedPosts.length > 0 && (
-            <Button
-              variant="outlined"
-              startIcon={<VisibilityIcon />}
+            <button
               onClick={() => setShowProcessedPosts(true)}
-              sx={{
-                borderColor: '#373737',
-                color: '#373737',
+              style={{
+                width: '100%',
+                padding: '0.75rem 1.5rem',
+                fontSize: '16px',
                 fontFamily: 'MarioFont, sans-serif',
-                '&:hover': { borderColor: '#FFD701', backgroundColor: '#FFD701' },
+                backgroundColor: 'white',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem'
               }}
             >
+              <VisibilityIcon sx={{ fontSize: '20px' }} />
               View Processed ({processedPosts.length})
-            </Button>
+            </button>
           )}
-          <Button
-            variant="contained"
-            startIcon={<InstagramIcon />}
+          <button
             onClick={loadPosts}
             disabled={loading}
-            sx={{
-              backgroundColor: '#FFD701',
-              color: '#373737',
+            style={{
+              width: '100%',
+              padding: '0.75rem 1.5rem',
+              fontSize: '16px',
               fontFamily: 'MarioFont, sans-serif',
-              '&:hover': { backgroundColor: '#E5C001' },
+              backgroundColor: '#FFD701',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.6 : 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem'
             }}
           >
+            <InstagramIcon sx={{ fontSize: '20px' }} />
             {loading ? 'Loading...' : 'Load Posts'}
-          </Button>
+          </button>
         </Box>
       </Box>
 
@@ -632,8 +647,8 @@ export default function InstagramImportPage() {
           </CardContent>
         </Card>
       ) : (
-        <Paper elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2 }}>
-          <TableContainer>
+        <Paper elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2, overflowX: 'auto' }}>
+          <TableContainer sx={{ minWidth: { xs: '600px', sm: '100%' } }}>
             <Table>
               <TableHead>
                 <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
@@ -793,6 +808,14 @@ export default function InstagramImportPage() {
         onClose={() => setSelectedPost(null)}
         maxWidth="md"
         fullWidth
+        fullScreen={false}
+        sx={{
+          '& .MuiDialog-paper': {
+            margin: { xs: '16px', sm: '32px' },
+            maxHeight: { xs: 'calc(100% - 32px)', sm: 'calc(100% - 64px)' },
+            width: { xs: 'calc(100% - 32px)', sm: '100%' }
+          }
+        }}
       >
         {selectedPost && (
           <>
@@ -1118,7 +1141,7 @@ export default function InstagramImportPage() {
         anchor="right"
         open={showProcessedPosts}
         onClose={() => setShowProcessedPosts(false)}
-        sx={{ '& .MuiDrawer-paper': { width: { xs: '100%', sm: '600px' } } }}
+        sx={{ '& .MuiDrawer-paper': { width: { xs: '100%', sm: '90%', md: '600px' } } }}
       >
         <Box sx={{ p: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
