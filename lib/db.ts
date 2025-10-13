@@ -12,6 +12,8 @@ export interface Journey {
   nights: number
   start_location: any // JSON
   end_location: any // JSON
+  start_display: string | null // Display override for route start (e.g., "Home")
+  end_display: string | null // Display override for route end (e.g., "Home")
   visited_place_ids: string[] | null
   total_places: number | null
   images: string[] | null
@@ -58,6 +60,8 @@ export async function initDatabase() {
         nights INTEGER NOT NULL DEFAULT 0,
         start_location JSONB NOT NULL,
         end_location JSONB NOT NULL,
+        start_display TEXT,
+        end_display TEXT,
         visited_place_ids JSONB,
         total_places INTEGER,
         images JSONB,
@@ -127,14 +131,16 @@ export async function createJourney(journey: Partial<Journey>): Promise<Journey>
     INSERT INTO journeys (
       id, slug, name, name_cn,
       start_date, end_date, duration, days, nights,
-      start_location, end_location, visited_place_ids,
-      total_places, images, segments, is_day_trip
+      start_location, end_location, start_display, end_display,
+      visited_place_ids, total_places, images, segments, is_day_trip
     ) VALUES (
       ${journey.id}, ${journey.slug}, ${journey.name}, ${journey.name_cn},
       ${journey.start_date}, ${journey.end_date}, ${journey.duration},
       ${journey.days}, ${journey.nights},
       ${JSON.stringify(journey.start_location)}::jsonb,
       ${JSON.stringify(journey.end_location)}::jsonb,
+      ${journey.start_display || null},
+      ${journey.end_display || null},
       ${visitedPlaceIds}::jsonb,
       ${journey.total_places},
       ${images}::jsonb,
@@ -162,6 +168,8 @@ export async function updateJourney(id: string, journey: Partial<Journey>): Prom
       nights = ${journey.nights},
       start_location = ${JSON.stringify(journey.start_location)}::jsonb,
       end_location = ${JSON.stringify(journey.end_location)}::jsonb,
+      start_display = ${journey.start_display || null},
+      end_display = ${journey.end_display || null},
       visited_place_ids = ${visitedPlaceIds}::jsonb,
       total_places = ${journey.total_places},
       images = ${images}::jsonb,

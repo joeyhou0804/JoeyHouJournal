@@ -61,6 +61,10 @@ export default function JourneyDetailsPage() {
   // Track which coordinates are editable
   const [editableCoords, setEditableCoords] = useState<boolean[]>([])
 
+  // Track which points are marked as display start and display end
+  const [displayStartIndex, setDisplayStartIndex] = useState<number | null>(null)
+  const [displayEndIndex, setDisplayEndIndex] = useState<number | null>(null)
+
   // Calculate route display using the same logic as the main site
   const getRouteDisplay = () => {
     if (routePoints.length < 2) {
@@ -118,15 +122,25 @@ export default function JourneyDetailsPage() {
           // Load route segments if they exist and convert to points
           if (data.segments && Array.isArray(data.segments) && data.segments.length > 0) {
             // Convert segments to points
-            const points = [data.segments[0].from]
+            const points = [{ ...data.segments[0].from }]
             const methods: string[] = []
             data.segments.forEach((seg: any) => {
-              points.push(seg.to)
+              points.push({ ...seg.to })
               methods.push(seg.method || 'train') // Load transportation method or default to train
             })
             setRoutePoints(points)
             setTransportMethods(methods)
             setEditableCoords(new Array(points.length).fill(false))
+
+            // Set display start/end indices based on startDisplay/endDisplay from database
+            if (data.startDisplay) {
+              const startIdx = points.findIndex((p: any) => p.name === data.startDisplay)
+              if (startIdx !== -1) setDisplayStartIndex(startIdx)
+            }
+            if (data.endDisplay) {
+              const endIdx = points.findIndex((p: any) => p.name === data.endDisplay)
+              if (endIdx !== -1) setDisplayEndIndex(endIdx)
+            }
           }
         } else {
           console.error('Failed to fetch journey')
@@ -236,6 +250,8 @@ export default function JourneyDetailsPage() {
         startDate: formData.startDate,
         endDate: formData.endDate,
         isDayTrip: formData.isDayTrip,
+        startDisplay: displayStartIndex !== null ? routePoints[displayStartIndex].name : null,
+        endDisplay: displayEndIndex !== null ? routePoints[displayEndIndex].name : null,
         startLocation,
         endLocation,
         ...(segments.length > 0 && { segments })
@@ -312,6 +328,14 @@ export default function JourneyDetailsPage() {
     const newMethods = [...transportMethods]
     newMethods.splice(index + 1, 0, 'train')
     setTransportMethods(newMethods)
+
+    // Adjust display indices if needed (points shifted)
+    if (displayStartIndex !== null && displayStartIndex > index) {
+      setDisplayStartIndex(displayStartIndex + 1)
+    }
+    if (displayEndIndex !== null && displayEndIndex > index) {
+      setDisplayEndIndex(displayEndIndex + 1)
+    }
   }
 
   const removePoint = (index: number) => {
@@ -335,6 +359,18 @@ export default function JourneyDetailsPage() {
       newMethods.splice(index, 1)
     }
     setTransportMethods(newMethods)
+
+    // Clear or adjust display indices
+    if (displayStartIndex === index) {
+      setDisplayStartIndex(null)
+    } else if (displayStartIndex !== null && displayStartIndex > index) {
+      setDisplayStartIndex(displayStartIndex - 1)
+    }
+    if (displayEndIndex === index) {
+      setDisplayEndIndex(null)
+    } else if (displayEndIndex !== null && displayEndIndex > index) {
+      setDisplayEndIndex(displayEndIndex - 1)
+    }
   }
 
   const updatePoint = (index: number, subfield: 'name' | 'nameCN' | 'lat' | 'lng', value: string | number) => {
@@ -354,6 +390,34 @@ export default function JourneyDetailsPage() {
       newPoints[index][subfield] = value as number
     }
     setRoutePoints(newPoints)
+  }
+
+  // Toggle display start marker
+  const toggleDisplayStart = (index: number) => {
+    if (displayStartIndex === index) {
+      setDisplayStartIndex(null)
+    } else {
+      // Validate: display start must be before display end
+      if (displayEndIndex !== null && index >= displayEndIndex) {
+        alert('Display start must come before display end in the route')
+        return
+      }
+      setDisplayStartIndex(index)
+    }
+  }
+
+  // Toggle display end marker
+  const toggleDisplayEnd = (index: number) => {
+    if (displayEndIndex === index) {
+      setDisplayEndIndex(null)
+    } else {
+      // Validate: display end must be after display start
+      if (displayStartIndex !== null && index <= displayStartIndex) {
+        alert('Display end must come after display start in the route')
+        return
+      }
+      setDisplayEndIndex(index)
+    }
   }
 
   // Silent geocoding without alerts
@@ -984,6 +1048,39 @@ export default function JourneyDetailsPage() {
                         cursor: editableCoords[index] ? 'text' : 'not-allowed'
                       }}
                     />
+                  </Box>
+
+                  {/* Route Display Markers */}
+                  <Box sx={{ marginTop: '0.75rem', backgroundColor: '#fffbea', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #ffd700', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.5rem', backgroundColor: displayStartIndex === index ? '#ffd700' : 'transparent', borderRadius: '0.25rem', border: displayStartIndex === index ? '2px solid #373737' : '2px solid transparent', transition: 'all 0.2s' }}>
+                      <input
+                        type="checkbox"
+                        checked={displayStartIndex === index}
+                        onChange={() => toggleDisplayStart(index)}
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          cursor: 'pointer'
+                        }}
+                      />
+                      <span style={{ fontWeight: 'bold', fontSize: '13px' }}>🚩 Mark as Display Start</span>
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.5rem', backgroundColor: displayEndIndex === index ? '#ffd700' : 'transparent', borderRadius: '0.25rem', border: displayEndIndex === index ? '2px solid #373737' : '2px solid transparent', transition: 'all 0.2s' }}>
+                      <input
+                        type="checkbox"
+                        checked={displayEndIndex === index}
+                        onChange={() => toggleDisplayEnd(index)}
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          cursor: 'pointer'
+                        }}
+                      />
+                      <span style={{ fontWeight: 'bold', fontSize: '13px' }}>🏁 Mark as Display End</span>
+                    </label>
+                    <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '11px', margin: 0, color: '#666', width: '100%' }}>
+                      Mark points to override route display. For example, if your trip is Seattle → Portland → Seattle, mark Seattle as both display start and display end to show "Home → Portland" instead.
+                    </p>
                   </Box>
                 </Box>
 

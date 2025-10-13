@@ -82,47 +82,57 @@ export default function JourneysPage() {
       }
     }
 
-    // Determine route display
-    let route = `${journey.startLocation.name} → ${journey.endLocation.name}`
+    // Determine route display using display overrides if available
+    const startDisplay = journey.startDisplay || journey.startLocation.name
+    const endDisplay = journey.endDisplay || journey.endLocation.name
 
-    // If start and end are the same (round trip from home)
-    if (journey.startLocation.name === journey.endLocation.name && journey.segments && journey.segments.length > 0) {
-      // Check if this is a local trip (single segment with same start/end)
-      if (isLocalTrip(journey.segments)) {
-        // Local trip: "Home → Local trip"
-        route = `Home → Local trip`
-      } else {
-        // Extract unique intermediate destinations from segments (excluding start/end location)
-        const intermediatePlaces = new Set<string>()
-        const intermediatePlacesCN = new Map<string, string>()
+    // Special case: if both displays are "Home", show "Home → Local trip"
+    let route = `${startDisplay} → ${endDisplay}`
+    if (startDisplay === 'Home' && endDisplay === 'Home') {
+      route = 'Home → Local trip'
+    }
 
-        journey.segments.forEach((segment: any) => {
-          if (segment.from.name !== journey.startLocation.name) {
-            intermediatePlaces.add(segment.from.name)
-            if (segment.from.nameCN) intermediatePlacesCN.set(segment.from.name, segment.from.nameCN)
+    // Only do complex logic if no display overrides are set
+    if (!journey.startDisplay && !journey.endDisplay) {
+      // If start and end are the same (round trip from home)
+      if (journey.startLocation.name === journey.endLocation.name && journey.segments && journey.segments.length > 0) {
+        // Check if this is a local trip (single segment with same start/end)
+        if (isLocalTrip(journey.segments)) {
+          // Local trip: "Home → Local trip"
+          route = `Home → Local trip`
+        } else {
+          // Extract unique intermediate destinations from segments (excluding start/end location)
+          const intermediatePlaces = new Set<string>()
+          const intermediatePlacesCN = new Map<string, string>()
+
+          journey.segments.forEach((segment: any) => {
+            if (segment.from.name !== journey.startLocation.name) {
+              intermediatePlaces.add(segment.from.name)
+              if (segment.from.nameCN) intermediatePlacesCN.set(segment.from.name, segment.from.nameCN)
+            }
+            if (segment.to.name !== journey.endLocation.name) {
+              intermediatePlaces.add(segment.to.name)
+              if (segment.to.nameCN) intermediatePlacesCN.set(segment.to.name, segment.to.nameCN)
+            }
+          })
+
+          const uniquePlaces = Array.from(intermediatePlaces)
+
+          if (uniquePlaces.length === 1) {
+            // Single destination: "Home → [Place]"
+            route = `Home → ${uniquePlaces[0]}`
+          } else if (uniquePlaces.length > 1) {
+            // Multiple destinations: use first and last from segments ordered by journey
+            const firstPlace = journey.segments[0].to.name !== journey.startLocation.name
+              ? journey.segments[0].to.name
+              : (journey.segments[0].from.name !== journey.startLocation.name ? journey.segments[0].from.name : uniquePlaces[0])
+            const lastSegment = journey.segments[journey.segments.length - 1]
+            const lastPlace = lastSegment.from.name !== journey.endLocation.name
+              ? lastSegment.from.name
+              : uniquePlaces[uniquePlaces.length - 1]
+
+            route = `${firstPlace} → ${lastPlace}`
           }
-          if (segment.to.name !== journey.endLocation.name) {
-            intermediatePlaces.add(segment.to.name)
-            if (segment.to.nameCN) intermediatePlacesCN.set(segment.to.name, segment.to.nameCN)
-          }
-        })
-
-        const uniquePlaces = Array.from(intermediatePlaces)
-
-        if (uniquePlaces.length === 1) {
-          // Single destination: "Home → [Place]"
-          route = `Home → ${uniquePlaces[0]}`
-        } else if (uniquePlaces.length > 1) {
-          // Multiple destinations: use first and last from segments ordered by journey
-          const firstPlace = journey.segments[0].to.name !== journey.startLocation.name
-            ? journey.segments[0].to.name
-            : (journey.segments[0].from.name !== journey.startLocation.name ? journey.segments[0].from.name : uniquePlaces[0])
-          const lastSegment = journey.segments[journey.segments.length - 1]
-          const lastPlace = lastSegment.from.name !== journey.endLocation.name
-            ? lastSegment.from.name
-            : uniquePlaces[uniquePlaces.length - 1]
-
-          route = `${firstPlace} → ${lastPlace}`
         }
       }
     }

@@ -70,12 +70,24 @@ async function migrateCloudinaryToBlob() {
           continue
         }
 
-        // Skip if already migrated to Vercel Blob
+        // Check if already migrated to Vercel Blob AND verify it exists
         if (imageUrl.includes('vercel-storage.com') || imageUrl.includes('blob.vercel-storage.com')) {
-          console.log(`   ✅ Already on Blob: ${imageUrl.substring(0, 80)}...`)
-          newImageUrls.push(imageUrl)
-          skippedCount++
-          continue
+          // Verify the blob URL is accessible
+          try {
+            const checkResponse = await fetch(imageUrl, { method: 'HEAD' })
+            if (checkResponse.ok) {
+              console.log(`   ✅ Already on Blob (verified): ${imageUrl.substring(0, 80)}...`)
+              newImageUrls.push(imageUrl)
+              skippedCount++
+              continue
+            } else {
+              console.log(`   ⚠️  Blob URL returns ${checkResponse.status}, will re-migrate from Cloudinary`)
+              // Fall through to migrate from Cloudinary
+            }
+          } catch (error) {
+            console.log(`   ⚠️  Blob URL not accessible, will re-migrate from Cloudinary`)
+            // Fall through to migrate from Cloudinary
+          }
         }
 
         try {
@@ -91,26 +103,16 @@ async function migrateCloudinaryToBlob() {
           const fileExtension = imageUrl.includes('.jpg') || imageUrl.includes('.jpeg') ? 'jpg' : 'png'
           const filename = `migrated_${i}.${fileExtension}`
 
-          // Upload to Vercel Blob
+          // Upload to Vercel Blob with random suffix to avoid conflicts
           console.log(`   ⬆️  Uploading to Vercel Blob...`)
           const uploadedBlob = await put(
             `destinations/${destination.id}/${filename}`,
             blob,
             {
               access: 'public',
-              addRandomSuffix: false,
+              addRandomSuffix: true, // Add random suffix to avoid conflicts
             }
           )
-          .catch(async (err) => {
-            // If blob exists, try with overwrite
-            if (err.message?.includes('already exists')) {
-              console.log(`   🔄 Blob exists, skipping re-upload...`)
-              // Construct the expected URL based on Vercel Blob pattern
-              const blobUrl = `https://blob.vercel-storage.com/destinations/${destination.id}/${filename}`
-              return { url: blobUrl }
-            }
-            throw err
-          })
 
           console.log(`   ✅ Migrated: ${uploadedBlob.url.substring(0, 80)}...`)
           newImageUrls.push(uploadedBlob.url)
