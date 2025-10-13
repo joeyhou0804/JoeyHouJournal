@@ -39,9 +39,9 @@ export default function NewJourneyPage() {
   })
 
   // Route points state (minimum 2 points required)
-  const [routePoints, setRoutePoints] = useState<Array<{ name: string; nameCN?: string; lat: number; lng: number; displayAs?: string }>>([
-    { name: '', nameCN: '', lat: 0, lng: 0, displayAs: '' },
-    { name: '', nameCN: '', lat: 0, lng: 0, displayAs: '' }
+  const [routePoints, setRoutePoints] = useState<Array<{ name: string; nameCN?: string; lat: number; lng: number }>>([
+    { name: '', nameCN: '', lat: 0, lng: 0 },
+    { name: '', nameCN: '', lat: 0, lng: 0 }
   ])
 
   // Transportation methods between points
@@ -49,6 +49,10 @@ export default function NewJourneyPage() {
 
   // Track which coordinates are editable
   const [editableCoords, setEditableCoords] = useState<boolean[]>([false, false])
+
+  // Track which points are marked as display start and display end
+  const [displayStartIndex, setDisplayStartIndex] = useState<number | null>(null)
+  const [displayEndIndex, setDisplayEndIndex] = useState<number | null>(null)
 
   // Fetch all destinations on mount
   useEffect(() => {
@@ -144,8 +148,8 @@ export default function NewJourneyPage() {
             lng: routePoints[routePoints.length - 1].lng
           }
         },
-        startDisplay: routePoints[0].displayAs || null,
-        endDisplay: routePoints[routePoints.length - 1].displayAs || null,
+        startDisplay: displayStartIndex !== null ? routePoints[displayStartIndex].name : null,
+        endDisplay: displayEndIndex !== null ? routePoints[displayEndIndex].name : null,
         visitedPlaceIds: [],
         totalPlaces: 0,
         images: [],
@@ -233,7 +237,7 @@ export default function NewJourneyPage() {
 
   // Route points management functions
   const addPoint = () => {
-    setRoutePoints([...routePoints, { name: '', nameCN: '', lat: 0, lng: 0, displayAs: '' }])
+    setRoutePoints([...routePoints, { name: '', nameCN: '', lat: 0, lng: 0 }])
     setEditableCoords([...editableCoords, false])
     if (routePoints.length > 0) {
       setTransportMethods([...transportMethods, 'train'])
@@ -242,7 +246,7 @@ export default function NewJourneyPage() {
 
   const insertPointAfter = (index: number) => {
     const newPoints = [...routePoints]
-    newPoints.splice(index + 1, 0, { name: '', nameCN: '', lat: 0, lng: 0, displayAs: '' })
+    newPoints.splice(index + 1, 0, { name: '', nameCN: '', lat: 0, lng: 0 })
     setRoutePoints(newPoints)
 
     const newEditable = [...editableCoords]
@@ -253,6 +257,14 @@ export default function NewJourneyPage() {
     const newMethods = [...transportMethods]
     newMethods.splice(index + 1, 0, 'train')
     setTransportMethods(newMethods)
+
+    // Adjust display indices if needed (points shifted)
+    if (displayStartIndex !== null && displayStartIndex > index) {
+      setDisplayStartIndex(displayStartIndex + 1)
+    }
+    if (displayEndIndex !== null && displayEndIndex > index) {
+      setDisplayEndIndex(displayEndIndex + 1)
+    }
   }
 
   const removePoint = (index: number) => {
@@ -273,9 +285,21 @@ export default function NewJourneyPage() {
       newMethods.splice(index, 1)
     }
     setTransportMethods(newMethods)
+
+    // Clear or adjust display indices
+    if (displayStartIndex === index) {
+      setDisplayStartIndex(null)
+    } else if (displayStartIndex !== null && displayStartIndex > index) {
+      setDisplayStartIndex(displayStartIndex - 1)
+    }
+    if (displayEndIndex === index) {
+      setDisplayEndIndex(null)
+    } else if (displayEndIndex !== null && displayEndIndex > index) {
+      setDisplayEndIndex(displayEndIndex - 1)
+    }
   }
 
-  const updatePoint = (index: number, subfield: 'name' | 'nameCN' | 'lat' | 'lng' | 'displayAs', value: string | number) => {
+  const updatePoint = (index: number, subfield: 'name' | 'nameCN' | 'lat' | 'lng', value: string | number) => {
     const newPoints = [...routePoints]
     if (subfield === 'name') {
       newPoints[index][subfield] = value as string
@@ -286,12 +310,40 @@ export default function NewJourneyPage() {
           geocodePointSilently(index, value as string)
         }, 1000)
       }
-    } else if (subfield === 'nameCN' || subfield === 'displayAs') {
+    } else if (subfield === 'nameCN') {
       newPoints[index][subfield] = value as string
     } else {
       newPoints[index][subfield] = value as number
     }
     setRoutePoints(newPoints)
+  }
+
+  // Toggle display start marker
+  const toggleDisplayStart = (index: number) => {
+    if (displayStartIndex === index) {
+      setDisplayStartIndex(null)
+    } else {
+      // Validate: display start must be before display end
+      if (displayEndIndex !== null && index >= displayEndIndex) {
+        alert('Display start must come before display end in the route')
+        return
+      }
+      setDisplayStartIndex(index)
+    }
+  }
+
+  // Toggle display end marker
+  const toggleDisplayEnd = (index: number) => {
+    if (displayEndIndex === index) {
+      setDisplayEndIndex(null)
+    } else {
+      // Validate: display end must be after display start
+      if (displayStartIndex !== null && index <= displayStartIndex) {
+        alert('Display end must come after display start in the route')
+        return
+      }
+      setDisplayEndIndex(index)
+    }
   }
 
   // Silent geocoding without alerts
@@ -798,30 +850,38 @@ export default function NewJourneyPage() {
                   />
                 </Box>
 
-                {/* Display As field - only for start and end points */}
-                {(index === 0 || index === routePoints.length - 1) && (
-                  <Box sx={{ marginTop: '0.75rem', backgroundColor: '#fffbea', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #ffd700' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', fontSize: '13px', color: '#666' }}>
-                      📍 Display As (Optional - e.g., "Home")
-                    </label>
+                {/* Route Display Markers */}
+                <Box sx={{ marginTop: '0.75rem', backgroundColor: '#fffbea', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #ffd700', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.5rem', backgroundColor: displayStartIndex === index ? '#ffd700' : 'transparent', borderRadius: '0.25rem', border: displayStartIndex === index ? '2px solid #373737' : '2px solid transparent', transition: 'all 0.2s' }}>
                     <input
-                      value={point.displayAs || ''}
-                      onChange={(e) => updatePoint(index, 'displayAs', e.target.value)}
-                      placeholder="Leave empty to use location name"
+                      type="checkbox"
+                      checked={displayStartIndex === index}
+                      onChange={() => toggleDisplayStart(index)}
                       style={{
-                        width: '100%',
-                        padding: '0.75rem',
-                        fontSize: '14px',
-                        border: '2px solid #373737',
-                        borderRadius: '0.5rem',
-                        fontFamily: 'MarioFont, sans-serif'
+                        width: '18px',
+                        height: '18px',
+                        cursor: 'pointer'
                       }}
                     />
-                    <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '11px', margin: '0.5rem 0 0 0', color: '#666' }}>
-                      Override how this position displays in the route. For example, enter "Home" to show "{index === 0 ? 'Home' : 'destination'} → {index === 0 ? 'destination' : 'Home'}" instead of the actual city name.
-                    </p>
-                  </Box>
-                )}
+                    <span style={{ fontWeight: 'bold', fontSize: '13px' }}>🚩 Mark as Display Start</span>
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.5rem', backgroundColor: displayEndIndex === index ? '#ffd700' : 'transparent', borderRadius: '0.25rem', border: displayEndIndex === index ? '2px solid #373737' : '2px solid transparent', transition: 'all 0.2s' }}>
+                    <input
+                      type="checkbox"
+                      checked={displayEndIndex === index}
+                      onChange={() => toggleDisplayEnd(index)}
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        cursor: 'pointer'
+                      }}
+                    />
+                    <span style={{ fontWeight: 'bold', fontSize: '13px' }}>🏁 Mark as Display End</span>
+                  </label>
+                  <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '11px', margin: 0, color: '#666', width: '100%' }}>
+                    Mark points to override route display. For example, if your trip is Seattle → Portland → Seattle, mark Seattle as both display start and display end to show "Home → Portland" instead.
+                  </p>
+                </Box>
               </Box>
 
               {index < routePoints.length - 1 && (
