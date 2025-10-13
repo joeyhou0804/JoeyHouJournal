@@ -190,6 +190,9 @@ export default function JourneysPage() {
     lng: destination.lng
   })) : []
 
+  // Get the route for the current regular journey
+  const currentJourneyRoute = currentJourney ? trips.find(t => t.slug === currentJourney.slug)?.route || '' : ''
+
   // Get current day trip based on index
   const currentDayTrip = dayTripJourneys[currentDayTripIndex]
   const currentDayTripPlaces = currentDayTrip ? allDestinations.filter(
@@ -206,6 +209,9 @@ export default function JourneysPage() {
     lat: destination.lat,
     lng: destination.lng
   })) : []
+
+  // Get the route for the current day trip
+  const currentDayTripRoute = currentDayTrip ? trips.find(t => t.slug === currentDayTrip.slug)?.route || '' : ''
 
   const handlePrevJourney = () => {
     setCurrentJourneyIndex((prev) => (prev - 1 + regularJourneys.length) % regularJourneys.length)
@@ -469,7 +475,7 @@ export default function JourneysPage() {
               station={{
                 id: '',
                 name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
-                journeyName: trips[currentJourneyIndex]?.route || '',
+                journeyName: currentJourneyRoute,
                 date: formatDuration(currentJourney.days, currentJourney.nights, tr),
                 images: []
               }}
@@ -512,7 +518,7 @@ export default function JourneysPage() {
                   station={{
                     id: '',
                     name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
-                    journeyName: trips[currentJourneyIndex]?.route || '',
+                    journeyName: currentJourneyRoute,
                     date: formatDuration(currentJourney.days, currentJourney.nights, tr),
                     images: []
                   }}
@@ -589,7 +595,7 @@ export default function JourneysPage() {
                   station={{
                     id: '',
                     name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
-                    journeyName: trips.find(t => t.slug === currentDayTrip.slug)?.route || '',
+                    journeyName: currentDayTripRoute,
                     date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
                     images: []
                   }}
@@ -632,7 +638,7 @@ export default function JourneysPage() {
                     station={{
                       id: '',
                       name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
-                      journeyName: trips.find(t => t.slug === currentDayTrip.slug)?.route || '',
+                      journeyName: currentDayTripRoute,
                       date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
                       images: []
                     }}
