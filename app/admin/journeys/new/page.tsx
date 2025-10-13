@@ -39,9 +39,9 @@ export default function NewJourneyPage() {
   })
 
   // Route points state (minimum 2 points required)
-  const [routePoints, setRoutePoints] = useState<Array<{ name: string; nameCN?: string; lat: number; lng: number }>>([
-    { name: '', nameCN: '', lat: 0, lng: 0 },
-    { name: '', nameCN: '', lat: 0, lng: 0 }
+  const [routePoints, setRoutePoints] = useState<Array<{ name: string; nameCN?: string; lat: number; lng: number; displayAs?: string }>>([
+    { name: '', nameCN: '', lat: 0, lng: 0, displayAs: '' },
+    { name: '', nameCN: '', lat: 0, lng: 0, displayAs: '' }
   ])
 
   // Transportation methods between points
@@ -144,6 +144,8 @@ export default function NewJourneyPage() {
             lng: routePoints[routePoints.length - 1].lng
           }
         },
+        startDisplay: routePoints[0].displayAs || null,
+        endDisplay: routePoints[routePoints.length - 1].displayAs || null,
         visitedPlaceIds: [],
         totalPlaces: 0,
         images: [],
@@ -231,7 +233,7 @@ export default function NewJourneyPage() {
 
   // Route points management functions
   const addPoint = () => {
-    setRoutePoints([...routePoints, { name: '', nameCN: '', lat: 0, lng: 0 }])
+    setRoutePoints([...routePoints, { name: '', nameCN: '', lat: 0, lng: 0, displayAs: '' }])
     setEditableCoords([...editableCoords, false])
     if (routePoints.length > 0) {
       setTransportMethods([...transportMethods, 'train'])
@@ -240,7 +242,7 @@ export default function NewJourneyPage() {
 
   const insertPointAfter = (index: number) => {
     const newPoints = [...routePoints]
-    newPoints.splice(index + 1, 0, { name: '', nameCN: '', lat: 0, lng: 0 })
+    newPoints.splice(index + 1, 0, { name: '', nameCN: '', lat: 0, lng: 0, displayAs: '' })
     setRoutePoints(newPoints)
 
     const newEditable = [...editableCoords]
@@ -273,7 +275,7 @@ export default function NewJourneyPage() {
     setTransportMethods(newMethods)
   }
 
-  const updatePoint = (index: number, subfield: 'name' | 'nameCN' | 'lat' | 'lng', value: string | number) => {
+  const updatePoint = (index: number, subfield: 'name' | 'nameCN' | 'lat' | 'lng' | 'displayAs', value: string | number) => {
     const newPoints = [...routePoints]
     if (subfield === 'name') {
       newPoints[index][subfield] = value as string
@@ -284,7 +286,7 @@ export default function NewJourneyPage() {
           geocodePointSilently(index, value as string)
         }, 1000)
       }
-    } else if (subfield === 'nameCN') {
+    } else if (subfield === 'nameCN' || subfield === 'displayAs') {
       newPoints[index][subfield] = value as string
     } else {
       newPoints[index][subfield] = value as number
@@ -795,6 +797,31 @@ export default function NewJourneyPage() {
                     }}
                   />
                 </Box>
+
+                {/* Display As field - only for start and end points */}
+                {(index === 0 || index === routePoints.length - 1) && (
+                  <Box sx={{ marginTop: '0.75rem', backgroundColor: '#fffbea', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid #ffd700' }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', fontSize: '13px', color: '#666' }}>
+                      📍 Display As (Optional - e.g., "Home")
+                    </label>
+                    <input
+                      value={point.displayAs || ''}
+                      onChange={(e) => updatePoint(index, 'displayAs', e.target.value)}
+                      placeholder="Leave empty to use location name"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        fontSize: '14px',
+                        border: '2px solid #373737',
+                        borderRadius: '0.5rem',
+                        fontFamily: 'MarioFont, sans-serif'
+                      }}
+                    />
+                    <p style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '11px', margin: '0.5rem 0 0 0', color: '#666' }}>
+                      Override how this position displays in the route. For example, enter "Home" to show "{index === 0 ? 'Home' : 'destination'} → {index === 0 ? 'destination' : 'Home'}" instead of the actual city name.
+                    </p>
+                  </Box>
+                )}
               </Box>
 
               {index < routePoints.length - 1 && (
