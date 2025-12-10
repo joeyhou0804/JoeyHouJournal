@@ -116,4 +116,17 @@ export const zh: Translations = {
     error: '错误',
     notFound: '未找到',
   },
+
+  // Email Subscription
+  emailSubscription: {
+    title: '邮件订阅',
+    description: '订阅以获取我的旅行更新！',
+    nameLabel: '姓名',
+    namePlaceholder: '请输入您的姓名',
+    emailLabel: '邮箱',
+    emailPlaceholder: '请输入您的邮箱',
+    languageLabel: '偏好语言',
+    cancelButton: '取消',
+    confirmButton: '订阅',
+  },
 }

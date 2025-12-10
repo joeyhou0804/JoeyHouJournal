@@ -114,6 +114,19 @@ export const en = {
     error: 'Error',
     notFound: 'Not Found',
   },
+
+  // Email Subscription
+  emailSubscription: {
+    title: 'Email Subscription',
+    description: 'Subscribe to get updates about my travels!',
+    nameLabel: 'Name',
+    namePlaceholder: 'Enter your name',
+    emailLabel: 'Email',
+    emailPlaceholder: 'Enter your email',
+    languageLabel: 'Preferred Language',
+    cancelButton: 'Cancel',
+    confirmButton: 'Subscribe',
+  },
 }
 
 export type Translations = typeof en

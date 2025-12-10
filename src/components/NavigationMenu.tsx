@@ -1,8 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import { useTranslation } from 'src/hooks/useTranslation'
+import EmailSubscriptionDrawer from './EmailSubscriptionDrawer'
 
 interface NavigationMenuProps {
   isMenuOpen: boolean
@@ -24,9 +26,15 @@ export default function NavigationMenu({
   currentPage
 }: NavigationMenuProps) {
   const { locale, setLocale } = useTranslation()
+  const [isEmailDrawerOpen, setIsEmailDrawerOpen] = useState(false)
 
   return (
     <>
+      <EmailSubscriptionDrawer
+        isOpen={isEmailDrawerOpen}
+        onClose={() => setIsEmailDrawerOpen(false)}
+      />
+
       {/* Navigation Drawer */}
       {isMenuOpen && (
         <>
@@ -133,9 +141,7 @@ export default function NavigationMenu({
               <Box
                 component="button"
                 className="group hover:scale-105 transition-transform duration-200"
-                onClick={() => {
-                  // Email subscription functionality to be implemented
-                }}
+                onClick={() => setIsEmailDrawerOpen(true)}
               >
                 <Box
                   component="img"

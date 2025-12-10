@@ -1,8 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import { useTranslation } from 'src/hooks/useTranslation'
+import EmailSubscriptionDrawer from './EmailSubscriptionDrawer'
 
 interface FooterProps {
   currentPage?: 'home' | 'trips' | 'destinations'
@@ -10,7 +12,14 @@ interface FooterProps {
 
 export default function Footer({ currentPage }: FooterProps = {}) {
   const { locale, setLocale } = useTranslation()
+  const [isEmailDrawerOpen, setIsEmailDrawerOpen] = useState(false)
+
   return (
+    <>
+      <EmailSubscriptionDrawer
+        isOpen={isEmailDrawerOpen}
+        onClose={() => setIsEmailDrawerOpen(false)}
+      />
     <Box
       component="footer"
       className="text-white py-8 px-4 border-t border-gray-400"
@@ -87,9 +96,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             <Box
               component="button"
               className="group hover:scale-105 transition-transform duration-200"
-              onClick={() => {
-                // Email subscription functionality to be implemented
-              }}
+              onClick={() => setIsEmailDrawerOpen(true)}
             >
               <Box
                 component="img"
@@ -131,5 +138,6 @@ export default function Footer({ currentPage }: FooterProps = {}) {
         </div>
       </div>
     </Box>
+    </>
   )
 }

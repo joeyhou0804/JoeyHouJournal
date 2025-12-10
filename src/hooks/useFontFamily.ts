@@ -12,7 +12,9 @@ export function useFontFamily() {
   }
 
   const getBodyFont = () => {
-    return 'MarioFont, system-ui, -apple-system, sans-serif'
+    return locale === 'zh'
+      ? 'MarioFontChinese, MarioFont, system-ui, -apple-system, sans-serif'
+      : 'MarioFont, system-ui, -apple-system, sans-serif'
   }
 
   return {
