@@ -30,16 +30,27 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
     // Reset form
     setName('')
     setEmail('')
-    onClose()
+    handleClose()
   }
 
-  if (!isOpen) return null
+  const [isExiting, setIsExiting] = useState(false)
+
+  // Handle close with exit animation
+  const handleClose = () => {
+    setIsExiting(true)
+    setTimeout(() => {
+      setIsExiting(false)
+      onClose()
+    }, 400) // Match animation duration
+  }
+
+  if (!isOpen && !isExiting) return null
 
   return (
     <>
       {/* Backdrop */}
       <Box
-        onClick={onClose}
+        onClick={handleClose}
         sx={{
           position: 'fixed',
           top: 0,
@@ -50,7 +61,9 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
           zIndex: 10000,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center'
+          justifyContent: 'center',
+          opacity: isExiting ? 0 : 1,
+          transition: 'opacity 0.4s ease-in-out'
         }}
       />
 
@@ -70,7 +83,42 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
           backgroundRepeat: 'repeat',
           backgroundSize: '200px auto',
           padding: '0.5rem',
-          borderRadius: '1rem'
+          borderRadius: '1rem',
+          animation: isExiting
+            ? 'drawerExit 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards'
+            : 'drawerEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+          '@keyframes drawerEnter': {
+            '0%': {
+              transform: 'translate(-50%, -250%) rotate(-8deg)',
+              opacity: 0
+            },
+            '60%': {
+              transform: 'translate(-50%, -49.2%) rotate(2deg)',
+              opacity: 1
+            },
+            '80%': {
+              transform: 'translate(-50%, -50.3%) rotate(-1deg)',
+              opacity: 1
+            },
+            '100%': {
+              transform: 'translate(-50%, -50%) rotate(0deg)',
+              opacity: 1
+            }
+          },
+          '@keyframes drawerExit': {
+            '0%': {
+              transform: 'translate(-50%, -50%) rotate(0deg)',
+              opacity: 1
+            },
+            '30%': {
+              transform: 'translate(-50%, -49%) rotate(-5deg)',
+              opacity: 1
+            },
+            '100%': {
+              transform: 'translate(-50%, -300%) rotate(-8deg)',
+              opacity: 0
+            }
+          }
         }}
       >
         <Box
@@ -87,7 +135,7 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
           {/* Close Button */}
           <Box
             component="button"
-            onClick={onClose}
+            onClick={handleClose}
             className="hover:opacity-70 transition-opacity duration-200"
             sx={{
               position: 'absolute',
