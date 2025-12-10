@@ -39,7 +39,7 @@ export default function NavigationMenu({
 
           {/* Drawer */}
           <Box
-            className={`fixed top-8 right-0 h-96 w-64 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
+            className={`fixed top-8 right-0 w-64 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
               isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
             }`}
             sx={{
@@ -47,7 +47,10 @@ export default function NavigationMenu({
               backgroundRepeat: 'repeat',
               backgroundSize: '200px',
               borderColor: '#373737',
-              zIndex: 9999
+              zIndex: 9999,
+              height: 'auto',
+              paddingTop: '3rem',
+              paddingBottom: '3rem'
             }}
           >
             {/* Close Button */}
@@ -65,7 +68,7 @@ export default function NavigationMenu({
             </Box>
 
             {/* Navigation Buttons */}
-            <Box className="flex flex-col items-center justify-center h-full space-y-3 px-6">
+            <Box className="flex flex-col items-center space-y-3 px-6">
               <Link href="/" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
                 <Box
                   component="img"
@@ -126,6 +129,27 @@ export default function NavigationMenu({
                   />
                 </Link>
               )}
+
+              <Box
+                component="button"
+                className="group hover:scale-105 transition-transform duration-200"
+                onClick={() => {
+                  // Email subscription functionality to be implemented
+                }}
+              >
+                <Box
+                  component="img"
+                  src={`/images/buttons/email_subscription_button_${locale}.png`}
+                  alt="Email Subscription"
+                  className="w-48 h-auto group-hover:hidden"
+                />
+                <Box
+                  component="img"
+                  src={`/images/buttons/email_subscription_button_hover_${locale}.png`}
+                  alt="Email Subscription"
+                  className="w-48 h-auto hidden group-hover:block"
+                />
+              </Box>
 
               <Box
                 component="button"

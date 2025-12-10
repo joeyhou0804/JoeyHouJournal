@@ -38,7 +38,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                   component="img"
                   src={`/images/buttons/journey_button_current_${locale}.png`}
                   alt="Journeys"
-                  className="h-20 w-auto xs:h-auto xs:w-64"
+                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain xs:h-auto xs:w-64"
                 />
               </Box>
             ) : (
@@ -47,13 +47,13 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                   component="img"
                   src={`/images/buttons/journey_button${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Journeys"
-                  className="h-20 w-auto group-hover:hidden xs:h-auto xs:w-64"
+                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain group-hover:hidden xs:h-auto xs:w-64"
                 />
                 <Box
                   component="img"
                   src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Journeys"
-                  className="h-20 w-auto hidden group-hover:block xs:h-auto xs:w-64"
+                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain hidden group-hover:block xs:h-auto xs:w-64"
                 />
               </Link>
             )}
@@ -64,7 +64,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                   component="img"
                   src={`/images/buttons/destination_button_current_${locale}.png`}
                   alt="Destinations"
-                  className="h-20 w-auto xs:h-auto xs:w-64"
+                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain xs:h-auto xs:w-64"
                 />
               </Box>
             ) : (
@@ -73,16 +73,37 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                   component="img"
                   src={`/images/buttons/destination_button${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Destinations"
-                  className="h-20 w-auto group-hover:hidden xs:h-auto xs:w-64"
+                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain group-hover:hidden xs:h-auto xs:w-64"
                 />
                 <Box
                   component="img"
                   src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                   alt="Destinations"
-                  className="h-20 w-auto hidden group-hover:block xs:h-auto xs:w-64"
+                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain hidden group-hover:block xs:h-auto xs:w-64"
                 />
               </Link>
             )}
+
+            <Box
+              component="button"
+              className="group hover:scale-105 transition-transform duration-200"
+              onClick={() => {
+                // Email subscription functionality to be implemented
+              }}
+            >
+              <Box
+                component="img"
+                src={`/images/buttons/email_subscription_button_${locale}.png`}
+                alt="Email Subscription"
+                className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain group-hover:hidden xs:h-auto xs:w-64"
+              />
+              <Box
+                component="img"
+                src={`/images/buttons/email_subscription_button_hover_${locale}.png`}
+                alt="Email Subscription"
+                className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain hidden group-hover:block xs:h-auto xs:w-64"
+              />
+            </Box>
 
             <Box
               component="button"
@@ -93,13 +114,13 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                 component="img"
                 src={`/images/buttons/language_button_${locale}.png`}
                 alt="Language Toggle"
-                className="h-20 w-auto group-hover:hidden xs:h-auto xs:w-64"
+                className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain group-hover:hidden xs:h-auto xs:w-64"
               />
               <Box
                 component="img"
                 src={`/images/buttons/language_button_${locale}_hover.png`}
                 alt="Language Toggle"
-                className="h-20 w-auto hidden group-hover:block xs:h-auto xs:w-64"
+                className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain hidden group-hover:block xs:h-auto xs:w-64"
               />
             </Box>
           </div>
