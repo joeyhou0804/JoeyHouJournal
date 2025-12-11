@@ -112,8 +112,14 @@ interface HomeLocation {
 export function getHomeLocationForDate(date: string | undefined, homeLocations: HomeLocation[]): HomeLocation | null {
   if (!date || homeLocations.length === 0) return null
 
+  // Normalize date format to YYYY-MM-DD for comparison
+  const normalizeDate = (d: string) => d.replace(/\//g, '-')
+  const normalizedDate = normalizeDate(date)
+
   return homeLocations.find(home => {
-    return date >= home.startDate && date <= home.endDate
+    const normalizedStart = normalizeDate(home.startDate)
+    const normalizedEnd = normalizeDate(home.endDate)
+    return normalizedDate >= normalizedStart && normalizedDate <= normalizedEnd
   }) || null
 }
 
