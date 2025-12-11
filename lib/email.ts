@@ -15,26 +15,36 @@ interface JourneyEmailData {
 }
 
 export async function sendNewJourneyEmails(journey: JourneyEmailData) {
+  console.log('📧 sendNewJourneyEmails called for journey:', journey.slug)
+
   if (!process.env.RESEND_API_KEY) {
-    console.warn('RESEND_API_KEY not configured, skipping email notifications')
+    console.warn('⚠️ RESEND_API_KEY not configured, skipping email notifications')
     return { success: false, error: 'Email service not configured' }
   }
 
   if (!process.env.RESEND_FROM_EMAIL) {
-    console.warn('RESEND_FROM_EMAIL not configured, skipping email notifications')
+    console.warn('⚠️ RESEND_FROM_EMAIL not configured, skipping email notifications')
     return { success: false, error: 'From email not configured' }
   }
+
+  console.log('✅ Email config found:', {
+    apiKeyPrefix: process.env.RESEND_API_KEY.substring(0, 5),
+    fromEmail: process.env.RESEND_FROM_EMAIL,
+  })
 
   // Initialize Resend client inside the function to avoid build-time errors
   const resend = new Resend(process.env.RESEND_API_KEY)
 
   try {
     // Get all active subscribers
+    console.log('📋 Fetching active subscribers...')
     const subscribers = await getAllEmailSubscriptions()
     const activeSubscribers = subscribers.filter((sub) => sub.is_active)
 
+    console.log(`📊 Found ${subscribers.length} total subscribers, ${activeSubscribers.length} active`)
+
     if (activeSubscribers.length === 0) {
-      console.log('No active subscribers found')
+      console.log('⚠️ No active subscribers found')
       return { success: true, sent: 0, message: 'No active subscribers' }
     }
 

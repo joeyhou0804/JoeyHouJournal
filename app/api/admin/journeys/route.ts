@@ -91,6 +91,7 @@ export async function POST(request: Request) {
 
     // Send email notifications to subscribers in the background
     // Don't wait for emails to complete before responding
+    console.log('🚀 Triggering email notifications for journey:', created.slug)
     sendNewJourneyEmails({
       id: created.id,
       slug: created.slug,
@@ -102,10 +103,14 @@ export async function POST(request: Request) {
       startLocation: created.start_display || created.start_location?.name || 'Unknown',
       endLocation: created.end_display || created.end_location?.name || 'Unknown',
       images: created.images,
-    }).catch((error) => {
-      // Log error but don't fail the journey creation
-      console.error('Failed to send journey notification emails:', error)
     })
+      .then((result) => {
+        console.log('✅ Email notification result:', result)
+      })
+      .catch((error) => {
+        // Log error but don't fail the journey creation
+        console.error('❌ Failed to send journey notification emails:', error)
+      })
 
     return NextResponse.json({ success: true, journey: dbToApi(created) })
   } catch (error) {
