@@ -117,19 +117,56 @@ export function getHomeLocationForDate(date: string | undefined, homeLocations: 
  * @returns Formatted route string
  */
 export function calculateRouteDisplay(journey: Journey, homeLocations: HomeLocation[] = []): string {
-  // PRIORITY 1: Use display start/end if set
-  let startDisplay = journey.startDisplay || journey.startLocation.name
-  let endDisplay = journey.endDisplay || journey.endLocation.name
-
-  // PRIORITY 2: Apply home location logic
   const homeLocation = getHomeLocationForDate(journey.startDate, homeLocations)
 
+  // PRIORITY 1: Determine effective start and end points
+  // If no display start is selected and we have a home location, default to "Home"
+  let startDisplay: string
+  if (journey.startDisplay) {
+    startDisplay = journey.startDisplay
+  } else if (homeLocation && journey.startLocation.name === homeLocation.name) {
+    startDisplay = 'Home'
+  } else {
+    startDisplay = journey.startLocation.name
+  }
+
+  // Use display end if set, otherwise use actual end location
+  let endDisplay = journey.endDisplay || journey.endLocation.name
+
+  // PRIORITY 2: Apply home location logic to both start and end
   if (homeLocation) {
     if (startDisplay === homeLocation.name) {
       startDisplay = 'Home'
     }
     if (endDisplay === homeLocation.name) {
       endDisplay = 'Home'
+    }
+  }
+
+  // PRIORITY 3: Special case - if both are "Home", extract intermediate destinations
+  if (startDisplay === 'Home' && endDisplay === 'Home' && journey.segments && journey.segments.length > 0) {
+    // Extract unique intermediate destinations from segments (excluding start/end location)
+    const intermediatePlaces = new Set<string>()
+
+    journey.segments.forEach(segment => {
+      if (homeLocation) {
+        if (segment.from.name !== homeLocation.name) {
+          intermediatePlaces.add(segment.from.name)
+        }
+        if (segment.to.name !== homeLocation.name) {
+          intermediatePlaces.add(segment.to.name)
+        }
+      }
+    })
+
+    const uniquePlaces = Array.from(intermediatePlaces)
+
+    if (uniquePlaces.length === 1) {
+      // Single destination: "Home → [Place]"
+      return `Home → ${uniquePlaces[0]}`
+    } else if (uniquePlaces.length > 1) {
+      // Multiple destinations: First → Last (excluding home)
+      return `${uniquePlaces[0]} → ${uniquePlaces[uniquePlaces.length - 1]}`
     }
   }
 
