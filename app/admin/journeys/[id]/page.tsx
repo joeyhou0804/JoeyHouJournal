@@ -87,47 +87,20 @@ export default function JourneyDetailsPage() {
     // Check if journey dates fall within a home location
     const homeLocation = getHomeLocationForDate(formData.startDate)
 
-    // Determine display names for start and end
-    let startDisplayName = startPoint.name || 'Start'
-    let endDisplayName = endPoint.name || 'End'
+    // PRIORITY 1: Use display start/end markers if set
+    let effectiveStartPoint = displayStartIndex !== null ? routePoints[displayStartIndex] : startPoint
+    let effectiveEndPoint = displayEndIndex !== null ? routePoints[displayEndIndex] : endPoint
 
-    // If display start/end is set, use those for comparison
-    const effectiveStartName = displayStartIndex !== null ? routePoints[displayStartIndex].name : startPoint.name
-    const effectiveEndName = displayEndIndex !== null ? routePoints[displayEndIndex].name : endPoint.name
+    // PRIORITY 2: Apply home location logic
+    let startDisplayName = effectiveStartPoint?.name || 'Start'
+    let endDisplayName = effectiveEndPoint?.name || 'End'
 
-    // Replace with "Home" if it matches current home location
     if (homeLocation) {
-      if (effectiveStartName === homeLocation.name) {
+      if (effectiveStartPoint?.name === homeLocation.name) {
         startDisplayName = 'Home'
-      } else {
-        startDisplayName = effectiveStartName || 'Start'
       }
-
-      if (effectiveEndName === homeLocation.name) {
+      if (effectiveEndPoint?.name === homeLocation.name) {
         endDisplayName = 'Home'
-      } else {
-        endDisplayName = effectiveEndName || 'End'
-      }
-    } else {
-      startDisplayName = effectiveStartName || 'Start'
-      endDisplayName = effectiveEndName || 'End'
-    }
-
-    // If start and end are the same (round trip from home)
-    if (startPoint.name === endPoint.name) {
-      // Extract unique intermediate destinations from route points (excluding start/end)
-      const intermediatePlaces = routePoints
-        .slice(1, -1)
-        .filter((point, index, arr) =>
-          arr.findIndex(p => p.name === point.name) === index
-        )
-
-      if (intermediatePlaces.length === 1) {
-        // Single destination: "Home → [Place]"
-        return `${startDisplayName} → ${intermediatePlaces[0].name}`
-      } else if (intermediatePlaces.length > 1) {
-        // Multiple destinations: First → Last (excluding home)
-        return `${intermediatePlaces[0].name} → ${intermediatePlaces[intermediatePlaces.length - 1].name}`
       }
     }
 

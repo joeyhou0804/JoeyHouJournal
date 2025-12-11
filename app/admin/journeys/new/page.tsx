@@ -106,32 +106,24 @@ export default function NewJourneyPage() {
     // Check if journey dates fall within a home location
     const homeLocation = getHomeLocationForDate(formData.startDate)
 
-    // Determine display names for start and end
-    let startDisplayName = startPoint.name
-    let endDisplayName = endPoint.name
+    // PRIORITY 1: Use display start/end markers if set
+    let effectiveStartPoint = displayStartIndex !== null ? routePoints[displayStartIndex] : startPoint
+    let effectiveEndPoint = displayEndIndex !== null ? routePoints[displayEndIndex] : endPoint
 
-    // If display start/end is set, use those for comparison
-    const effectiveStartName = displayStartIndex !== null ? routePoints[displayStartIndex].name : startPoint.name
-    const effectiveEndName = displayEndIndex !== null ? routePoints[displayEndIndex].name : endPoint.name
+    // PRIORITY 2: Apply home location logic
+    let startDisplayName = effectiveStartPoint?.name || 'Start'
+    let endDisplayName = effectiveEndPoint?.name || 'End'
 
-    // Replace with "Home" if it matches current home location
     if (homeLocation) {
-      if (effectiveStartName === homeLocation.name) {
+      if (effectiveStartPoint?.name === homeLocation.name) {
         startDisplayName = 'Home'
-      } else {
-        startDisplayName = effectiveStartName
       }
-
-      if (effectiveEndName === homeLocation.name) {
+      if (effectiveEndPoint?.name === homeLocation.name) {
         endDisplayName = 'Home'
-      } else {
-        endDisplayName = effectiveEndName
       }
-    } else {
-      startDisplayName = effectiveStartName
-      endDisplayName = effectiveEndName
     }
 
+    // Default: start → end
     return `${startDisplayName} → ${endDisplayName}`
   }
 
