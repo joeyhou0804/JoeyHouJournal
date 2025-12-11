@@ -128,5 +128,11 @@ export const zh: Translations = {
     languageLabel: '偏好语言',
     cancelButton: '取消',
     confirmButton: '订阅',
+    invalidEmailError: '请输入有效的邮箱地址',
+    successTitle: '订阅成功！',
+    successMessage: '感谢您的订阅！您将收到我的旅行更新。',
+    alreadySubscribedTitle: '已订阅',
+    alreadySubscribedMessage: '此邮箱已订阅接收更新。',
+    okButton: '好的',
   },
 }

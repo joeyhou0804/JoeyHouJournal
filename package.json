@@ -9,7 +9,8 @@
     "lint": "next lint",
     "db:migrate": "tsx scripts/migrate-to-db.ts",
     "db:import-json": "tsx scripts/migrate-json-to-db.ts",
-    "sync-journey-names": "tsx scripts/sync-journey-names.ts"
+    "sync-journey-names": "tsx scripts/sync-journey-names.ts",
+    "db:init-subscriptions": "tsx scripts/init-email-subscriptions.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

@@ -126,6 +126,12 @@ export const en = {
     languageLabel: 'Preferred Language',
     cancelButton: 'Cancel',
     confirmButton: 'Subscribe',
+    invalidEmailError: 'Please enter a valid email address',
+    successTitle: 'Subscription Successful!',
+    successMessage: 'Thank you for subscribing! You will receive updates about my travels.',
+    alreadySubscribedTitle: 'Already Subscribed',
+    alreadySubscribedMessage: 'This email is already subscribed to receive updates.',
+    okButton: 'OK',
   },
 }
 

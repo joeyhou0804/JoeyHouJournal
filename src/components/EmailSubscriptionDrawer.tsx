@@ -6,6 +6,7 @@ import MixedText from './MixedText'
 import { useLanguage } from 'src/contexts/LanguageContext'
 import { useFontFamily } from 'src/hooks/useFontFamily'
 import { X } from 'lucide-react'
+import SubscriptionResultDrawer from './SubscriptionResultDrawer'
 
 interface EmailSubscriptionDrawerProps {
   isOpen: boolean
@@ -18,19 +19,80 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [subscriptionLocale, setSubscriptionLocale] = useState<'en' | 'zh'>(locale)
+  const [emailError, setEmailError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showResultDrawer, setShowResultDrawer] = useState(false)
+  const [isNewSubscription, setIsNewSubscription] = useState(true)
 
   // Update subscriptionLocale when locale changes
   useEffect(() => {
     setSubscriptionLocale(locale)
   }, [locale])
 
-  const handleSubmit = () => {
-    // TODO: Implement email subscription logic
-    console.log('Subscribe:', { name, email, locale: subscriptionLocale })
-    // Reset form
+  // Email validation function
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  const handleSubmit = async () => {
+    // Validate email format
+    if (!validateEmail(email)) {
+      setEmailError(t.emailSubscription?.invalidEmailError || 'Please enter a valid email address')
+      return
+    }
+
+    // Clear any previous errors
+    setEmailError('')
+    setIsSubmitting(true)
+
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          preferredLocale: subscriptionLocale,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        // Success - show result drawer
+        setIsNewSubscription(data.isNewSubscription)
+        console.log('Subscription successful:', data)
+
+        // Start exit animation for form drawer
+        setIsExiting(true)
+
+        // Wait for the form drawer to close before showing result
+        setTimeout(() => {
+          setIsExiting(false)
+          setShowResultDrawer(true)
+        }, 400) // Match exit animation duration
+      } else {
+        // Server error
+        setEmailError(data.error || 'Failed to subscribe. Please try again.')
+      }
+    } catch (error) {
+      console.error('Error submitting subscription:', error)
+      setEmailError('Network error. Please check your connection and try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleResultDrawerClose = () => {
+    setShowResultDrawer(false)
+    // Reset form after result drawer closes
     setName('')
     setEmail('')
-    handleClose()
+    // Close the parent drawer
+    onClose()
   }
 
   const [isExiting, setIsExiting] = useState(false)
@@ -44,31 +106,34 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
     }, 400) // Match animation duration
   }
 
-  if (!isOpen && !isExiting) return null
+  if (!isOpen && !isExiting && !showResultDrawer) return null
 
   return (
     <>
-      {/* Backdrop */}
-      <Box
-        onClick={handleClose}
-        sx={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 10000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: isExiting ? 0 : 1,
-          transition: 'opacity 0.4s ease-in-out'
-        }}
-      />
+      {/* Backdrop - only show when form is visible */}
+      {!showResultDrawer && (
+        <Box
+          onClick={handleClose}
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: isExiting ? 0 : 1,
+            transition: 'opacity 0.4s ease-in-out'
+          }}
+        />
+      )}
 
-      {/* Drawer */}
-      <Box
+      {/* Drawer - only show when result drawer is not visible */}
+      {!showResultDrawer && (
+        <Box
         onClick={(e) => e.stopPropagation()}
         sx={{
           position: 'fixed',
@@ -227,7 +292,11 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                // Clear error when user starts typing
+                if (emailError) setEmailError('')
+              }}
               placeholder={t.emailSubscription?.emailPlaceholder || 'Enter your email'}
               style={{
                 width: '100%',
@@ -235,12 +304,24 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
                 fontSize: '16px',
                 fontFamily: bodyFont,
                 borderRadius: '0.5rem',
-                border: '2px solid #373737',
+                border: emailError ? '2px solid #d32f2f' : '2px solid #373737',
                 backgroundColor: '#F6F6F6',
                 color: '#373737',
                 outline: 'none'
               }}
             />
+            {emailError && (
+              <Box
+                sx={{
+                  fontFamily: bodyFont,
+                  fontSize: '14px',
+                  color: '#d32f2f',
+                  marginTop: '0.5rem'
+                }}
+              >
+                {emailError}
+              </Box>
+            )}
           </Box>
 
           {/* Language Toggle */}
@@ -327,17 +408,17 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
           </Box>
 
           {/* Subscribe Button */}
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Box
               component="button"
               onClick={handleSubmit}
-              disabled={!name || !email}
+              disabled={!name || !email || isSubmitting}
               className="hover:scale-105 transition-transform duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
               sx={{
                 border: 'none',
                 background: 'transparent',
                 padding: 0,
-                cursor: !name || !email ? 'not-allowed' : 'pointer'
+                cursor: !name || !email || isSubmitting ? 'not-allowed' : 'pointer'
               }}
             >
               <Box
@@ -345,11 +426,34 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
                 src={`/images/buttons/subscribe_button_${locale}.png`}
                 alt="Subscribe"
                 className="h-16 w-auto xs:h-14"
+                sx={{
+                  opacity: isSubmitting ? 0.6 : 1
+                }}
               />
             </Box>
+            {isSubmitting && (
+              <Box
+                sx={{
+                  fontFamily: bodyFont,
+                  fontSize: '14px',
+                  color: '#373737',
+                  marginTop: '0.5rem'
+                }}
+              >
+                {locale === 'en' ? 'Submitting...' : '提交中...'}
+              </Box>
+            )}
           </Box>
         </Box>
       </Box>
+      )}
+
+      {/* Subscription Result Drawer */}
+      <SubscriptionResultDrawer
+        isOpen={showResultDrawer}
+        onClose={handleResultDrawerClose}
+        isNewSubscription={isNewSubscription}
+      />
     </>
   )
 }

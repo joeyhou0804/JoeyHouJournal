@@ -431,3 +431,98 @@ export async function deleteHomeLocation(id: string): Promise<boolean> {
   await sql`DELETE FROM home_locations WHERE id = ${id}`
   return true
 }
+
+// Email subscription operations
+export interface EmailSubscription {
+  id: number
+  name: string
+  email: string
+  preferred_locale: string
+  subscribed_at: Date
+  is_active: boolean
+  unsubscribe_token: string
+}
+
+export async function initEmailSubscriptionsTable() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS email_subscriptions (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      preferred_locale TEXT NOT NULL DEFAULT 'en',
+      subscribed_at TIMESTAMP DEFAULT NOW(),
+      is_active BOOLEAN DEFAULT TRUE,
+      unsubscribe_token TEXT NOT NULL UNIQUE
+    )
+  `
+
+  // Create index for faster email lookups
+  await sql`CREATE INDEX IF NOT EXISTS idx_email_subscriptions_email ON email_subscriptions(email)`
+  await sql`CREATE INDEX IF NOT EXISTS idx_email_subscriptions_active ON email_subscriptions(is_active)`
+}
+
+export async function createEmailSubscription(
+  name: string,
+  email: string,
+  preferredLocale: string
+): Promise<{ subscription: EmailSubscription; isNewSubscription: boolean }> {
+  // Generate unique unsubscribe token
+  const unsubscribeToken = crypto.randomUUID()
+
+  try {
+    // Check if email already exists
+    const existingSubscription = await getEmailSubscriptionByEmail(email)
+    const isNewSubscription = !existingSubscription || !existingSubscription.is_active
+
+    const { rows } = await sql<EmailSubscription>`
+      INSERT INTO email_subscriptions (name, email, preferred_locale, unsubscribe_token, is_active)
+      VALUES (${name}, ${email}, ${preferredLocale}, ${unsubscribeToken}, TRUE)
+      ON CONFLICT (email)
+      DO UPDATE SET
+        name = ${name},
+        preferred_locale = ${preferredLocale},
+        is_active = TRUE,
+        subscribed_at = NOW()
+      RETURNING *
+    `
+    return { subscription: rows[0], isNewSubscription }
+  } catch (error) {
+    console.error('Error creating email subscription:', error)
+    throw error
+  }
+}
+
+export async function getAllEmailSubscriptions(): Promise<EmailSubscription[]> {
+  const { rows } = await sql<EmailSubscription>`
+    SELECT * FROM email_subscriptions
+    WHERE is_active = TRUE
+    ORDER BY subscribed_at DESC
+  `
+  return rows
+}
+
+export async function getEmailSubscriptionByEmail(email: string): Promise<EmailSubscription | null> {
+  const { rows } = await sql<EmailSubscription>`
+    SELECT * FROM email_subscriptions WHERE email = ${email}
+  `
+  return rows[0] || null
+}
+
+export async function unsubscribeEmail(token: string): Promise<boolean> {
+  try {
+    const { rowCount } = await sql`
+      UPDATE email_subscriptions
+      SET is_active = FALSE
+      WHERE unsubscribe_token = ${token}
+    `
+    return (rowCount ?? 0) > 0
+  } catch (error) {
+    console.error('Error unsubscribing email:', error)
+    return false
+  }
+}
+
+export async function deleteEmailSubscription(email: string): Promise<boolean> {
+  await sql`DELETE FROM email_subscriptions WHERE email = ${email}`
+  return true
+}
