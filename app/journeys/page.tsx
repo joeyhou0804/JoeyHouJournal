@@ -9,6 +9,7 @@ import Box from '@mui/material/Box'
 import JourneyCard from 'src/components/JourneyCard'
 import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
+import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import MixedText from 'src/components/MixedText'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
@@ -41,6 +42,7 @@ export default function JourneysPage() {
   const [journeysData, setJourneysData] = useState<any[]>([])
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
@@ -333,6 +335,10 @@ export default function JourneysPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <ViewHintsDrawer
+        isOpen={isViewHintsDrawerOpen}
+        onClose={() => setIsViewHintsDrawerOpen(false)}
+      />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
         isMenuButtonVisible={isMenuButtonVisible}
@@ -430,8 +436,22 @@ export default function JourneysPage() {
             />
           </div>
 
-          {/* Map View Hint */}
-          <div className="my-36 xs:my-12">
+          {/* View Hints Button - Mobile Only */}
+          <div className="hidden xs:flex justify-center mb-12">
+            <button
+              onClick={() => setIsViewHintsDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={`/images/buttons/view_hints_button_${locale}.png`}
+                alt="View Hints"
+                className="h-12 w-auto"
+              />
+            </button>
+          </div>
+
+          {/* Map View Hint - Desktop Only */}
+          <div className="my-36 xs:hidden">
             <MapViewHint
               cardNumber={1}
               station={{
@@ -444,8 +464,8 @@ export default function JourneysPage() {
             />
           </div>
 
-          {/* Second Map View Hint - Image on right */}
-          <div className="my-36 sm:mb-24 xs:mt-12 xs:mb-12">
+          {/* Second Map View Hint - Image on right - Desktop Only */}
+          <div className="my-36 sm:mb-24 xs:hidden">
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}
