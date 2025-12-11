@@ -564,44 +564,86 @@ export default function NewJourneyPage() {
           </Box>
 
           {/* Duration - Days and Nights */}
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-            <Box>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-                Days *
+          <Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <label style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
+                Days & Nights *
               </label>
-              <input
-                type="number"
-                min="1"
-                value={formData.days}
-                onChange={(e) => handleInputChange('days', parseInt(e.target.value) || 1)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  fontSize: '16px',
-                  border: '2px solid #373737',
-                  borderRadius: '0.5rem',
-                  fontFamily: 'MarioFont, sans-serif'
+              <button
+                type="button"
+                onClick={() => {
+                  if (!formData.startDate || !formData.endDate) {
+                    alert('Please enter both start date and end date first')
+                    return
+                  }
+                  const start = new Date(formData.startDate)
+                  const end = new Date(formData.endDate)
+                  const diffTime = end.getTime() - start.getTime()
+                  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+
+                  if (diffDays < 0) {
+                    alert('End date must be on or after start date')
+                    return
+                  }
+
+                  // If same date: 1 day, 0 nights
+                  // If consecutive dates (e.g., 10/1 to 10/2): 2 days, 1 night
+                  const days = diffDays + 1
+                  const nights = diffDays
+
+                  setFormData(prev => ({ ...prev, days, nights }))
                 }}
-              />
+                disabled={!formData.startDate || !formData.endDate}
+                style={{
+                  padding: '0.4rem 0.75rem',
+                  fontSize: '12px',
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: formData.startDate && formData.endDate ? '#4CAF50' : '#E0E0E0',
+                  color: 'white',
+                  border: '1px solid #373737',
+                  borderRadius: '0.25rem',
+                  cursor: formData.startDate && formData.endDate ? 'pointer' : 'not-allowed',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                🔄 Auto Calculate
+              </button>
             </Box>
-            <Box>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-                Nights
-              </label>
-              <input
-                type="number"
-                min="0"
-                value={formData.nights}
-                onChange={(e) => handleInputChange('nights', parseInt(e.target.value) || 0)}
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  fontSize: '16px',
-                  border: '2px solid #373737',
-                  borderRadius: '0.5rem',
-                  fontFamily: 'MarioFont, sans-serif'
-                }}
-              />
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <Box>
+                <input
+                  type="number"
+                  min="1"
+                  value={formData.days}
+                  onChange={(e) => handleInputChange('days', parseInt(e.target.value) || 1)}
+                  placeholder="Days"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    fontSize: '16px',
+                    border: '2px solid #373737',
+                    borderRadius: '0.5rem',
+                    fontFamily: 'MarioFont, sans-serif'
+                  }}
+                />
+              </Box>
+              <Box>
+                <input
+                  type="number"
+                  min="0"
+                  value={formData.nights}
+                  onChange={(e) => handleInputChange('nights', parseInt(e.target.value) || 0)}
+                  placeholder="Nights"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    fontSize: '16px',
+                    border: '2px solid #373737',
+                    borderRadius: '0.5rem',
+                    fontFamily: 'MarioFont, sans-serif'
+                  }}
+                />
+              </Box>
             </Box>
           </Box>
 
