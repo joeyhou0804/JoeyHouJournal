@@ -82,70 +82,57 @@ interface Journey {
   endLocation: { name: string; nameCN?: string }
   startDisplay?: string | null
   endDisplay?: string | null
+  startDate?: string
+  endDate?: string
   segments?: RouteSegment[]
 }
 
+interface HomeLocation {
+  id: string
+  name: string
+  nameCN?: string
+  startDate: string
+  endDate: string
+  coordinates?: { lat: number; lng: number }
+}
+
 /**
- * Calculate the route display for a journey, including display overrides
+ * Get home location for a specific date
+ * @param date - Date string to check
+ * @param homeLocations - Array of home locations
+ * @returns Home location if found, null otherwise
+ */
+export function getHomeLocationForDate(date: string | undefined, homeLocations: HomeLocation[]): HomeLocation | null {
+  if (!date || homeLocations.length === 0) return null
+
+  return homeLocations.find(home => {
+    return date >= home.startDate && date <= home.endDate
+  }) || null
+}
+
+/**
+ * Calculate the route display for a journey, including display overrides and home location logic
  * @param journey - Journey object with location and segment information
+ * @param homeLocations - Array of home locations (optional)
  * @returns Formatted route string
  */
-export function calculateRouteDisplay(journey: Journey): string {
-  // Determine route display using display overrides if available
-  const startDisplay = journey.startDisplay || journey.startLocation.name
-  const endDisplay = journey.endDisplay || journey.endLocation.name
+export function calculateRouteDisplay(journey: Journey, homeLocations: HomeLocation[] = []): string {
+  // PRIORITY 1: Use display start/end if set
+  let startDisplay = journey.startDisplay || journey.startLocation.name
+  let endDisplay = journey.endDisplay || journey.endLocation.name
 
-  // Use display overrides directly if both are set
-  let route = `${startDisplay} → ${endDisplay}`
+  // PRIORITY 2: Apply home location logic
+  const homeLocation = getHomeLocationForDate(journey.startDate, homeLocations)
 
-  // Special case: if both displays are "Home", show "Home → Local trip"
-  if (startDisplay === 'Home' && endDisplay === 'Home') {
-    route = 'Home → Local trip'
-  }
-
-  // Only do complex logic if no display overrides are set
-  if (!journey.startDisplay && !journey.endDisplay) {
-    route = `${journey.startLocation.name} → ${journey.endLocation.name}`
-
-    // If start and end are the same (round trip from home)
-    if (journey.startLocation.name === journey.endLocation.name && journey.segments && journey.segments.length > 0) {
-      // Check if this is a local trip (single segment with same start/end)
-      if (isLocalTrip(journey.segments)) {
-        // Local trip: "Home → Local trip"
-        route = `Home → Local trip`
-      } else {
-        // Extract unique intermediate destinations from segments (excluding start/end location)
-        const intermediatePlaces = new Set<string>()
-
-        journey.segments.forEach(segment => {
-          if (segment.from.name !== journey.startLocation.name) {
-            intermediatePlaces.add(segment.from.name)
-          }
-          if (segment.to.name !== journey.endLocation.name) {
-            intermediatePlaces.add(segment.to.name)
-          }
-        })
-
-        const uniquePlaces = Array.from(intermediatePlaces)
-
-        if (uniquePlaces.length === 1) {
-          // Single destination: "Home → [Place]"
-          route = `Home → ${uniquePlaces[0]}`
-        } else if (uniquePlaces.length > 1) {
-          // Multiple destinations: use first and last from segments ordered by journey
-          const firstPlace = journey.segments[0].to.name !== journey.startLocation.name
-            ? journey.segments[0].to.name
-            : (journey.segments[0].from.name !== journey.startLocation.name ? journey.segments[0].from.name : uniquePlaces[0])
-          const lastSegment = journey.segments[journey.segments.length - 1]
-          const lastPlace = lastSegment.from.name !== journey.endLocation.name
-            ? lastSegment.from.name
-            : uniquePlaces[uniquePlaces.length - 1]
-
-          route = `${firstPlace} → ${lastPlace}`
-        }
-      }
+  if (homeLocation) {
+    if (startDisplay === homeLocation.name) {
+      startDisplay = 'Home'
+    }
+    if (endDisplay === homeLocation.name) {
+      endDisplay = 'Home'
     }
   }
 
-  return route
+  // Build final route string
+  return `${startDisplay} → ${endDisplay}`
 }

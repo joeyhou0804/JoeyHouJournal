@@ -12,18 +12,21 @@ export default function JourneysPage() {
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [journeys, setJourneys] = useState<any[]>([])
   const [destinations, setDestinations] = useState<any[]>([])
+  const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   // Fetch data from API
   useEffect(() => {
     async function fetchData() {
       try {
-        const [journeysRes, destinationsRes] = await Promise.all([
+        const [journeysRes, destinationsRes, homeLocationsRes] = await Promise.all([
           fetch('/api/journeys'),
-          fetch('/api/destinations')
+          fetch('/api/destinations'),
+          fetch('/api/home-locations')
         ])
         const journeysData = await journeysRes.json()
         const destinationsData = await destinationsRes.json()
+        const homeLocationsData = await homeLocationsRes.json()
 
         // Calculate totalPlaces dynamically from destinations
         const journeysWithPlaces = journeysData.map((journey: any) => ({
@@ -33,6 +36,7 @@ export default function JourneysPage() {
 
         setJourneys(journeysWithPlaces)
         setDestinations(destinationsData)
+        setHomeLocations(homeLocationsData)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -128,7 +132,7 @@ export default function JourneysPage() {
                 </Box>
               )}
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                <Box><strong>Route:</strong> {calculateRouteDisplay(journey)}</Box>
+                <Box><strong>Route:</strong> {calculateRouteDisplay(journey, homeLocations)}</Box>
                 <Box><strong>Duration:</strong> {journey.days} day{journey.days > 1 ? 's' : ''}{journey.nights > 0 ? `, ${journey.nights} night${journey.nights > 1 ? 's' : ''}` : ''}</Box>
                 <Box><strong>Places:</strong> {journey.totalPlaces}</Box>
                 <Box><strong>Dates:</strong> {journey.startDate} to {journey.endDate}</Box>
@@ -183,7 +187,7 @@ export default function JourneysPage() {
                     {journey.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{journey.nameCN}</div>}
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-                    {calculateRouteDisplay(journey)}
+                    {calculateRouteDisplay(journey, homeLocations)}
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
                     {journey.days} day{journey.days > 1 ? 's' : ''}{journey.nights > 0 ? `, ${journey.nights} night${journey.nights > 1 ? 's' : ''}` : ''}
