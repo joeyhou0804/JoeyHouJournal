@@ -248,16 +248,27 @@ export function calculateRouteDisplayCN(journey: Journey, homeLocations: HomeLoc
   }
 
   // PRIORITY 2: Apply home location logic to both start and end
+  // Check using ENGLISH names to determine if we should show home labels
   if (homeLocation) {
-    if (journey.startLocation.name === homeLocation.name && !journey.startDisplay) {
-      startDisplayCN = '从家出发'
-    } else if (startDisplayCN === (homeLocation.nameCN || homeLocation.name)) {
+    // For startDisplay, check if the English name matches home
+    if (journey.startDisplay && journey.startDisplay !== 'Home') {
+      // startDisplay is set to an actual location name, check if it's home
+      if (journey.startDisplay === homeLocation.name) {
+        startDisplayCN = '从家出发'
+      }
+    } else if (!journey.startDisplay && journey.startLocation.name === homeLocation.name) {
+      // No startDisplay set, check if actual start is home
       startDisplayCN = '从家出发'
     }
 
-    if (journey.endLocation.name === homeLocation.name && !journey.endDisplay) {
-      endDisplayCN = '回到家里'
-    } else if (endDisplayCN === (homeLocation.nameCN || homeLocation.name)) {
+    // For endDisplay, check if the English name matches home
+    if (journey.endDisplay && journey.endDisplay !== 'Home') {
+      // endDisplay is set to an actual location name, check if it's home
+      if (journey.endDisplay === homeLocation.name) {
+        endDisplayCN = '回到家里'
+      }
+    } else if (!journey.endDisplay && journey.endLocation.name === homeLocation.name) {
+      // No endDisplay set, check if actual end is home
       endDisplayCN = '回到家里'
     }
   }
