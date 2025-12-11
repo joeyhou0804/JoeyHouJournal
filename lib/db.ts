@@ -183,6 +183,16 @@ export async function updateJourney(id: string, journey: Partial<Journey>): Prom
 }
 
 export async function deleteJourney(id: string): Promise<boolean> {
+  // First, clear the journey relationship from all associated destinations
+  await sql`
+    UPDATE destinations
+    SET journey_id = NULL,
+        journey_name = NULL,
+        journey_name_cn = NULL
+    WHERE journey_id = ${id}
+  `
+
+  // Then delete the journey
   await sql`DELETE FROM journeys WHERE id = ${id}`
   return true
 }
