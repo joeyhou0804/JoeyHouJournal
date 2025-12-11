@@ -127,27 +127,43 @@ export function calculateRouteDisplay(journey: Journey, homeLocations: HomeLocat
   const homeLocation = getHomeLocationForDate(journey.startDate, homeLocations)
 
   // PRIORITY 1: Determine effective start and end points
-  // If no display start is selected and we have a home location, default to "Home"
   let startDisplay: string
   if (journey.startDisplay) {
-    startDisplay = journey.startDisplay
+    // Display start is explicitly set
+    if (journey.startDisplay === 'Home') {
+      startDisplay = 'Home'
+    } else if (homeLocation && journey.startDisplay === homeLocation.name) {
+      // Display start is set to home location name, convert to "Home"
+      startDisplay = 'Home'
+    } else {
+      startDisplay = journey.startDisplay
+    }
   } else if (homeLocation && journey.startLocation.name === homeLocation.name) {
+    // No display start set, but actual start is home
     startDisplay = 'Home'
   } else {
+    // No display start set, use actual start location
     startDisplay = journey.startLocation.name
   }
 
   // Use display end if set, otherwise use actual end location
-  let endDisplay = journey.endDisplay || journey.endLocation.name
-
-  // PRIORITY 2: Apply home location logic to both start and end
-  if (homeLocation) {
-    if (startDisplay === homeLocation.name) {
-      startDisplay = 'Home'
-    }
-    if (endDisplay === homeLocation.name) {
+  let endDisplay: string
+  if (journey.endDisplay) {
+    // Display end is explicitly set
+    if (journey.endDisplay === 'Home') {
       endDisplay = 'Home'
+    } else if (homeLocation && journey.endDisplay === homeLocation.name) {
+      // Display end is set to home location name, convert to "Home"
+      endDisplay = 'Home'
+    } else {
+      endDisplay = journey.endDisplay
     }
+  } else if (homeLocation && journey.endLocation.name === homeLocation.name) {
+    // No display end set, but actual end is home
+    endDisplay = 'Home'
+  } else {
+    // No display end set, use actual end location
+    endDisplay = journey.endLocation.name
   }
 
   // PRIORITY 3: Special case - if both are "Home", extract intermediate destinations
@@ -203,8 +219,11 @@ export function calculateRouteDisplayCN(journey: Journey, homeLocations: HomeLoc
   // PRIORITY 1: Determine effective start and end points
   let startDisplayCN: string
   if (journey.startDisplay) {
-    // If startDisplay is a location name, try to find its Chinese name from segments or locations
+    // Display start is explicitly set
     if (journey.startDisplay === 'Home') {
+      startDisplayCN = '从家出发'
+    } else if (homeLocation && journey.startDisplay === homeLocation.name) {
+      // Display start is set to home location name, convert to "从家出发"
       startDisplayCN = '从家出发'
     } else {
       // Try to find Chinese name from segments
@@ -220,15 +239,21 @@ export function calculateRouteDisplayCN(journey: Journey, homeLocations: HomeLoc
       }
     }
   } else if (homeLocation && journey.startLocation.name === homeLocation.name) {
+    // No display start set, but actual start is home
     startDisplayCN = '从家出发'
   } else {
+    // No display start set, use actual start location
     startDisplayCN = getCNName(journey.startLocation)
   }
 
   // Use display end if set, otherwise use actual end location
   let endDisplayCN: string
   if (journey.endDisplay) {
+    // Display end is explicitly set
     if (journey.endDisplay === 'Home') {
+      endDisplayCN = '回到家里'
+    } else if (homeLocation && journey.endDisplay === homeLocation.name) {
+      // Display end is set to home location name, convert to "回到家里"
       endDisplayCN = '回到家里'
     } else {
       // Try to find Chinese name from segments
@@ -243,34 +268,12 @@ export function calculateRouteDisplayCN(journey: Journey, homeLocations: HomeLoc
         endDisplayCN = journey.endDisplay
       }
     }
+  } else if (homeLocation && journey.endLocation.name === homeLocation.name) {
+    // No display end set, but actual end is home
+    endDisplayCN = '回到家里'
   } else {
+    // No display end set, use actual end location
     endDisplayCN = getCNName(journey.endLocation)
-  }
-
-  // PRIORITY 2: Apply home location logic to both start and end
-  // Check using ENGLISH names to determine if we should show home labels
-  if (homeLocation) {
-    // For startDisplay, check if the English name matches home
-    if (journey.startDisplay && journey.startDisplay !== 'Home') {
-      // startDisplay is set to an actual location name, check if it's home
-      if (journey.startDisplay === homeLocation.name) {
-        startDisplayCN = '从家出发'
-      }
-    } else if (!journey.startDisplay && journey.startLocation.name === homeLocation.name) {
-      // No startDisplay set, check if actual start is home
-      startDisplayCN = '从家出发'
-    }
-
-    // For endDisplay, check if the English name matches home
-    if (journey.endDisplay && journey.endDisplay !== 'Home') {
-      // endDisplay is set to an actual location name, check if it's home
-      if (journey.endDisplay === homeLocation.name) {
-        endDisplayCN = '回到家里'
-      }
-    } else if (!journey.endDisplay && journey.endLocation.name === homeLocation.name) {
-      // No endDisplay set, check if actual end is home
-      endDisplayCN = '回到家里'
-    }
   }
 
   // PRIORITY 3: Special case - if both are home, extract intermediate destinations
