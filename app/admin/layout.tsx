@@ -20,7 +20,8 @@ import {
   AccountCircle,
   Menu as MenuIcon,
   Instagram as InstagramIcon,
-  Home as HomeIcon
+  Home as HomeIcon,
+  Email as EmailIcon
 } from '@mui/icons-material'
 import Link from 'next/link'
 
@@ -103,6 +104,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: 'Destinations', path: '/admin/destinations', icon: <LocationIcon /> },
     { label: 'Journeys', path: '/admin/journeys', icon: <TrainIcon /> },
     { label: 'Home Locations', path: '/admin/home-locations', icon: <HomeIcon /> },
+    { label: 'Email Subscriptions', path: '/admin/email-subscriptions', icon: <EmailIcon /> },
     { label: 'Instagram Import', path: '/admin/instagram-import', icon: <InstagramIcon /> }
   ]
 
