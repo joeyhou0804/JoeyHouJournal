@@ -14,7 +14,7 @@ import MixedText from 'src/components/MixedText'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { formatDuration } from 'src/utils/formatDuration'
-import { isLocalTrip } from 'src/utils/journeyHelpers'
+import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
 
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
@@ -41,6 +41,7 @@ export default function JourneysPage() {
   const [xsDisplayCount, setXsDisplayCount] = useState(5)
   const [journeysData, setJourneysData] = useState<any[]>([])
   const [allDestinations, setAllDestinations] = useState<any[]>([])
+  const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
@@ -51,14 +52,17 @@ export default function JourneysPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [journeysRes, destinationsRes] = await Promise.all([
+        const [journeysRes, destinationsRes, homeLocationsRes] = await Promise.all([
           fetch('/api/journeys'),
-          fetch('/api/destinations')
+          fetch('/api/destinations'),
+          fetch('/api/home-locations')
         ])
         const journeys = await journeysRes.json()
         const destinations = await destinationsRes.json()
+        const homeLocationsData = await homeLocationsRes.json()
         setJourneysData(journeys)
         setAllDestinations(destinations)
+        setHomeLocations(homeLocationsData)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -84,88 +88,10 @@ export default function JourneysPage() {
       }
     }
 
-    // Determine route display using display overrides if available
-    const startDisplay = journey.startDisplay || journey.startLocation.name
-    const endDisplay = journey.endDisplay || journey.endLocation.name
-
-    // Special case: if both displays are "Home", show "Home → Local trip"
-    let route = `${startDisplay} → ${endDisplay}`
-    if (startDisplay === 'Home' && endDisplay === 'Home') {
-      route = 'Home → Local trip'
-    }
-
-    // Only do complex logic if no display overrides are set
-    if (!journey.startDisplay && !journey.endDisplay) {
-      // If start and end are the same (round trip from home)
-      if (journey.startLocation.name === journey.endLocation.name && journey.segments && journey.segments.length > 0) {
-        // Check if this is a local trip (single segment with same start/end)
-        if (isLocalTrip(journey.segments)) {
-          // Local trip: "Home → Local trip"
-          route = `Home → Local trip`
-        } else {
-          // Extract unique intermediate destinations from segments (excluding start/end location)
-          const intermediatePlaces = new Set<string>()
-          const intermediatePlacesCN = new Map<string, string>()
-
-          journey.segments.forEach((segment: any) => {
-            if (segment.from.name !== journey.startLocation.name) {
-              intermediatePlaces.add(segment.from.name)
-              if (segment.from.nameCN) intermediatePlacesCN.set(segment.from.name, segment.from.nameCN)
-            }
-            if (segment.to.name !== journey.endLocation.name) {
-              intermediatePlaces.add(segment.to.name)
-              if (segment.to.nameCN) intermediatePlacesCN.set(segment.to.name, segment.to.nameCN)
-            }
-          })
-
-          const uniquePlaces = Array.from(intermediatePlaces)
-
-          if (uniquePlaces.length === 1) {
-            // Single destination: "Home → [Place]"
-            route = `Home → ${uniquePlaces[0]}`
-          } else if (uniquePlaces.length > 1) {
-            // Multiple destinations: use first and last from segments ordered by journey
-            const firstPlace = journey.segments[0].to.name !== journey.startLocation.name
-              ? journey.segments[0].to.name
-              : (journey.segments[0].from.name !== journey.startLocation.name ? journey.segments[0].from.name : uniquePlaces[0])
-            const lastSegment = journey.segments[journey.segments.length - 1]
-            const lastPlace = lastSegment.from.name !== journey.endLocation.name
-              ? lastSegment.from.name
-              : uniquePlaces[uniquePlaces.length - 1]
-
-            route = `${firstPlace} → ${lastPlace}`
-          }
-        }
-      }
-    }
-
-    // Apply Chinese translations if needed
-    let routeDisplay = route
-    if (locale === 'zh') {
-      // Replace "Home" with Chinese
-      routeDisplay = routeDisplay.replace('Home', tr.home)
-
-      // Replace "Local trip" with Chinese
-      routeDisplay = routeDisplay.replace('Local trip', tr.localTrip)
-
-      // Replace location names with Chinese versions
-      if (journey.startLocation.nameCN && journey.endLocation.nameCN) {
-        routeDisplay = routeDisplay.replace(journey.startLocation.name, journey.startLocation.nameCN)
-        routeDisplay = routeDisplay.replace(journey.endLocation.name, journey.endLocation.nameCN)
-      }
-
-      // Replace intermediate places with Chinese versions
-      if (journey.segments) {
-        journey.segments.forEach((segment: any) => {
-          if (segment.from.nameCN) {
-            routeDisplay = routeDisplay.replace(segment.from.name, segment.from.nameCN)
-          }
-          if (segment.to.nameCN) {
-            routeDisplay = routeDisplay.replace(segment.to.name, segment.to.nameCN)
-          }
-        })
-      }
-    }
+    // Calculate route display using helper functions
+    const routeEnglish = calculateRouteDisplay(journey, homeLocations)
+    const routeChinese = calculateRouteDisplayCN(journey, homeLocations)
+    const routeDisplay = locale === 'zh' ? routeChinese : routeEnglish
 
     return {
       name: journey.name,
