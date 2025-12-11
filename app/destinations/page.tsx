@@ -6,6 +6,7 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import DestinationCard from 'src/components/DestinationCard'
 import MapViewHint from 'src/components/MapViewHint'
+import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import MixedText from 'src/components/MixedText'
 import { useTranslation } from 'src/hooks/useTranslation'
 
@@ -33,6 +34,7 @@ export default function StationsPage() {
   const [xsDisplayCount, setXsDisplayCount] = useState(12)
   const [destinations, setDestinations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 12
@@ -146,6 +148,10 @@ export default function StationsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <ViewHintsDrawer
+        isOpen={isViewHintsDrawerOpen}
+        onClose={() => setIsViewHintsDrawerOpen(false)}
+      />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
         isMenuButtonVisible={isMenuButtonVisible}
@@ -196,8 +202,22 @@ export default function StationsPage() {
             />
           </div>
 
-          {/* Map View Hint */}
-          <div className="my-36 xs:my-12">
+          {/* View Hints Button - Mobile Only */}
+          <div className="hidden xs:flex justify-center mb-12">
+            <button
+              onClick={() => setIsViewHintsDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={`/images/buttons/view_hints_button_${locale}.png`}
+                alt="View Hints"
+                className="h-12 w-auto"
+              />
+            </button>
+          </div>
+
+          {/* Map View Hint - Desktop Only */}
+          <div className="my-36 xs:hidden">
             <MapViewHint
               cardNumber={1}
               station={{
@@ -210,8 +230,8 @@ export default function StationsPage() {
             />
           </div>
 
-          {/* Second Map View Hint - Image on right */}
-          <div className="my-36 xs:my-12">
+          {/* Second Map View Hint - Image on right - Desktop Only */}
+          <div className="my-36 xs:hidden">
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}
