@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import MapViewHint from 'src/components/MapViewHint'
+import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import MixedText from 'src/components/MixedText'
 import DestinationCard from 'src/components/DestinationCard'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
@@ -60,6 +61,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   const [xsDisplayCount, setXsDisplayCount] = useState(12)
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   // Fetch destinations from API
@@ -174,6 +176,10 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         backgroundSize: '100% auto, 400px auto',
       }}
     >
+      <ViewHintsDrawer
+        isOpen={isViewHintsDrawerOpen}
+        onClose={() => setIsViewHintsDrawerOpen(false)}
+      />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
         isMenuButtonVisible={isMenuButtonVisible}
@@ -283,7 +289,22 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             />
           </div>
 
-          <div className="my-36 xs:my-12">
+          {/* View Hints Button - Mobile Only */}
+          <div className="hidden xs:flex justify-center mb-12">
+            <button
+              onClick={() => setIsViewHintsDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={`/images/buttons/view_hints_button_${locale}.png`}
+                alt="View Hints"
+                className="h-12 w-auto"
+              />
+            </button>
+          </div>
+
+          {/* Map View Hint - Desktop Only */}
+          <div className="my-36 xs:hidden">
             <MapViewHint
               cardNumber={1}
               station={{
@@ -296,7 +317,8 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             />
           </div>
 
-          <div className="my-36 xs:my-12">
+          {/* Second Map View Hint - Image on right - Desktop Only */}
+          <div className="my-36 xs:hidden">
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}
