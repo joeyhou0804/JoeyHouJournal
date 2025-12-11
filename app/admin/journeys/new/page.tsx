@@ -110,34 +110,36 @@ export default function NewJourneyPage() {
     // PRIORITY 1: Determine effective start and end points
     let startDisplayNameCN: string
     if (displayStartIndex !== null) {
+      // Display start is explicitly marked
       const displayPoint = routePoints[displayStartIndex]
-      startDisplayNameCN = displayPoint ? getCNName(displayPoint) : 'Start'
+      if (homeLocation && displayPoint?.name === homeLocation.name) {
+        startDisplayNameCN = '从家出发'
+      } else {
+        startDisplayNameCN = displayPoint ? getCNName(displayPoint) : 'Start'
+      }
     } else if (homeLocation && startPoint.name === homeLocation.name) {
+      // No display start set, but actual start is home
       startDisplayNameCN = '从家出发'
     } else {
+      // No display start set, use actual start location
       startDisplayNameCN = getCNName(startPoint)
     }
 
-    let endDisplayNameCN = displayEndIndex !== null
-      ? getCNName(routePoints[displayEndIndex] || {})
-      : getCNName(endPoint)
-
-    // PRIORITY 2: Apply home location logic
-    if (homeLocation) {
-      if (displayStartIndex !== null) {
-        const displayPoint = routePoints[displayStartIndex]
-        if (displayPoint?.name === homeLocation.name) {
-          startDisplayNameCN = '从家出发'
-        }
-      }
-      if (displayEndIndex !== null) {
-        const displayPoint = routePoints[displayEndIndex]
-        if (displayPoint?.name === homeLocation.name) {
-          endDisplayNameCN = '回到家里'
-        }
-      } else if (endPoint.name === homeLocation.name) {
+    let endDisplayNameCN: string
+    if (displayEndIndex !== null) {
+      // Display end is explicitly marked
+      const displayPoint = routePoints[displayEndIndex]
+      if (homeLocation && displayPoint?.name === homeLocation.name) {
         endDisplayNameCN = '回到家里'
+      } else {
+        endDisplayNameCN = displayPoint ? getCNName(displayPoint) : 'End'
       }
+    } else if (homeLocation && endPoint.name === homeLocation.name) {
+      // No display end set, but actual end is home
+      endDisplayNameCN = '回到家里'
+    } else {
+      // No display end set, use actual end location
+      endDisplayNameCN = getCNName(endPoint)
     }
 
     // PRIORITY 3: Special case - if both are home
@@ -175,29 +177,39 @@ export default function NewJourneyPage() {
     const homeLocation = getHomeLocationForDate(formData.startDate)
 
     // PRIORITY 1: Determine effective start and end points
-    // If no display start is selected and we have a home location, default to "Home"
     let startDisplayName: string
     if (displayStartIndex !== null) {
-      startDisplayName = routePoints[displayStartIndex]?.name || 'Start'
+      // Display start is explicitly marked
+      const displayPoint = routePoints[displayStartIndex]
+      if (homeLocation && displayPoint?.name === homeLocation.name) {
+        startDisplayName = 'Home'
+      } else {
+        startDisplayName = displayPoint?.name || 'Start'
+      }
     } else if (homeLocation && startPoint.name === homeLocation.name) {
+      // No display start set, but actual start is home
       startDisplayName = 'Home'
     } else {
+      // No display start set, use actual start location
       startDisplayName = startPoint.name || 'Start'
     }
 
     // Use display end if set, otherwise use actual end point
-    let endDisplayName = displayEndIndex !== null
-      ? (routePoints[displayEndIndex]?.name || 'End')
-      : (endPoint.name || 'End')
-
-    // PRIORITY 2: Apply home location logic to both start and end
-    if (homeLocation) {
-      if (startDisplayName === homeLocation.name) {
-        startDisplayName = 'Home'
-      }
-      if (endDisplayName === homeLocation.name) {
+    let endDisplayName: string
+    if (displayEndIndex !== null) {
+      // Display end is explicitly marked
+      const displayPoint = routePoints[displayEndIndex]
+      if (homeLocation && displayPoint?.name === homeLocation.name) {
         endDisplayName = 'Home'
+      } else {
+        endDisplayName = displayPoint?.name || 'End'
       }
+    } else if (homeLocation && endPoint.name === homeLocation.name) {
+      // No display end set, but actual end is home
+      endDisplayName = 'Home'
+    } else {
+      // No display end set, use actual end location
+      endDisplayName = endPoint.name || 'End'
     }
 
     // PRIORITY 3: Special case - if both are "Home", extract intermediate destinations
