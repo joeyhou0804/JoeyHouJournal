@@ -25,6 +25,7 @@ export default function NewJourneyPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [showOnlyUnassigned, setShowOnlyUnassigned] = useState(true)
   const [loading, setLoading] = useState(true)
+  const [homeLocations, setHomeLocations] = useState<any[]>([])
 
   // Form state for new journey
   const [formData, setFormData] = useState({
@@ -69,6 +70,70 @@ export default function NewJourneyPage() {
     }
     fetchDestinations()
   }, [])
+
+  // Fetch home locations
+  useEffect(() => {
+    async function fetchHomeLocations() {
+      try {
+        const response = await fetch('/api/home-locations')
+        const data = await response.json()
+        setHomeLocations(data)
+      } catch (error) {
+        console.error('Failed to fetch home locations:', error)
+      }
+    }
+    fetchHomeLocations()
+  }, [])
+
+  // Helper function to get home location for a journey date
+  const getHomeLocationForDate = (date: string) => {
+    if (!date || homeLocations.length === 0) return null
+
+    return homeLocations.find(home => {
+      return date >= home.startDate && date <= home.endDate
+    })
+  }
+
+  // Helper function to get route display
+  const getRouteDisplay = () => {
+    if (routePoints.length < 2 || !routePoints[0].name || !routePoints[routePoints.length - 1].name) {
+      return 'Not yet defined'
+    }
+
+    const startPoint = routePoints[0]
+    const endPoint = routePoints[routePoints.length - 1]
+
+    // Check if journey dates fall within a home location
+    const homeLocation = getHomeLocationForDate(formData.startDate)
+
+    // Determine display names for start and end
+    let startDisplayName = startPoint.name
+    let endDisplayName = endPoint.name
+
+    // If display start/end is set, use those for comparison
+    const effectiveStartName = displayStartIndex !== null ? routePoints[displayStartIndex].name : startPoint.name
+    const effectiveEndName = displayEndIndex !== null ? routePoints[displayEndIndex].name : endPoint.name
+
+    // Replace with "Home" if it matches current home location
+    if (homeLocation) {
+      if (effectiveStartName === homeLocation.name) {
+        startDisplayName = 'Home'
+      } else {
+        startDisplayName = effectiveStartName
+      }
+
+      if (effectiveEndName === homeLocation.name) {
+        endDisplayName = 'Home'
+      } else {
+        endDisplayName = effectiveEndName
+      }
+    } else {
+      startDisplayName = effectiveStartName
+      endDisplayName = effectiveEndName
+    }
+
+    return `${startDisplayName} → ${endDisplayName}`
+  }
 
   const handleInputChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -1012,7 +1077,7 @@ export default function NewJourneyPage() {
             <li>Coordinates are automatically generated when you enter a location name</li>
             <li>Click "Edit" to manually adjust coordinates when the location is invalid or needs customization</li>
             <li>At least 2 points required (start and end)</li>
-            <li>Current route: {routePoints.length >= 2 && routePoints[0].name && routePoints[routePoints.length - 1].name ? `${routePoints[0].name} → ${routePoints[routePoints.length - 1].name}` : 'Not yet defined'}</li>
+            <li>Current route: {getRouteDisplay()}</li>
           </ul>
         </Box>
       </Box>

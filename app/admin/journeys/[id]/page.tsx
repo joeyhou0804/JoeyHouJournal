@@ -38,6 +38,7 @@ export default function JourneyDetailsPage() {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [showOnlyUnassigned, setShowOnlyUnassigned] = useState(true)
+  const [homeLocations, setHomeLocations] = useState<any[]>([])
 
   // Form state for editable fields
   const [formData, setFormData] = useState({
@@ -65,6 +66,15 @@ export default function JourneyDetailsPage() {
   const [displayStartIndex, setDisplayStartIndex] = useState<number | null>(null)
   const [displayEndIndex, setDisplayEndIndex] = useState<number | null>(null)
 
+  // Helper function to get home location for a journey date
+  const getHomeLocationForDate = (date: string) => {
+    if (!date || homeLocations.length === 0) return null
+
+    return homeLocations.find(home => {
+      return date >= home.startDate && date <= home.endDate
+    })
+  }
+
   // Calculate route display using the same logic as the main site
   const getRouteDisplay = () => {
     if (routePoints.length < 2) {
@@ -73,6 +83,35 @@ export default function JourneyDetailsPage() {
 
     const startPoint = routePoints[0]
     const endPoint = routePoints[routePoints.length - 1]
+
+    // Check if journey dates fall within a home location
+    const homeLocation = getHomeLocationForDate(formData.startDate)
+
+    // Determine display names for start and end
+    let startDisplayName = startPoint.name || 'Start'
+    let endDisplayName = endPoint.name || 'End'
+
+    // If display start/end is set, use those for comparison
+    const effectiveStartName = displayStartIndex !== null ? routePoints[displayStartIndex].name : startPoint.name
+    const effectiveEndName = displayEndIndex !== null ? routePoints[displayEndIndex].name : endPoint.name
+
+    // Replace with "Home" if it matches current home location
+    if (homeLocation) {
+      if (effectiveStartName === homeLocation.name) {
+        startDisplayName = 'Home'
+      } else {
+        startDisplayName = effectiveStartName || 'Start'
+      }
+
+      if (effectiveEndName === homeLocation.name) {
+        endDisplayName = 'Home'
+      } else {
+        endDisplayName = effectiveEndName || 'End'
+      }
+    } else {
+      startDisplayName = effectiveStartName || 'Start'
+      endDisplayName = effectiveEndName || 'End'
+    }
 
     // If start and end are the same (round trip from home)
     if (startPoint.name === endPoint.name) {
@@ -85,7 +124,7 @@ export default function JourneyDetailsPage() {
 
       if (intermediatePlaces.length === 1) {
         // Single destination: "Home → [Place]"
-        return `Home → ${intermediatePlaces[0].name}`
+        return `${startDisplayName} → ${intermediatePlaces[0].name}`
       } else if (intermediatePlaces.length > 1) {
         // Multiple destinations: First → Last (excluding home)
         return `${intermediatePlaces[0].name} → ${intermediatePlaces[intermediatePlaces.length - 1].name}`
@@ -93,7 +132,7 @@ export default function JourneyDetailsPage() {
     }
 
     // Default: start → end
-    return `${startPoint.name || 'Start'} → ${endPoint.name || 'End'}`
+    return `${startDisplayName} → ${endDisplayName}`
   }
 
   // Fetch journey data from API
@@ -173,6 +212,21 @@ export default function JourneyDetailsPage() {
 
     fetchAllDestinations()
   }, [journey])
+
+  // Fetch home locations
+  useEffect(() => {
+    async function fetchHomeLocations() {
+      try {
+        const response = await fetch('/api/home-locations')
+        const data = await response.json()
+        setHomeLocations(data)
+      } catch (error) {
+        console.error('Failed to fetch home locations:', error)
+      }
+    }
+
+    fetchHomeLocations()
+  }, [])
 
   if (loading) {
     return <AdminLoading message="Loading Journey..." />
