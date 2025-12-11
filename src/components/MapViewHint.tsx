@@ -131,7 +131,7 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
                 component="img"
                 src={`/images/buttons/view_details_button_${locale}.png`}
                 alt="View Details"
-                sx={{ height: { xs: '3rem', sm: 'auto' }, width: { xs: 'auto', sm: '17.5rem' } }}
+                sx={{ height: { xs: 'auto', sm: 'auto' }, width: { xs: '15rem', sm: '17.5rem' } }}
                 className="hover:scale-105 transition-transform duration-200"
               />
             </Box>
