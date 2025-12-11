@@ -144,12 +144,9 @@ export function calculateRouteDisplay(journey: Journey, homeLocations: HomeLocat
     } else {
       startDisplay = journey.startDisplay
     }
-  } else if (homeLocation && journey.startLocation.name === homeLocation.name) {
-    // No display start set, but actual start is home
-    startDisplay = 'Home'
   } else {
-    // No display start set, use actual start location
-    startDisplay = journey.startLocation.name
+    // No display start set, always default to "Home"
+    startDisplay = 'Home'
   }
 
   // Use display end if set, otherwise use actual end location
@@ -244,12 +241,9 @@ export function calculateRouteDisplayCN(journey: Journey, homeLocations: HomeLoc
         startDisplayCN = journey.startDisplay
       }
     }
-  } else if (homeLocation && journey.startLocation.name === homeLocation.name) {
-    // No display start set, but actual start is home
-    startDisplayCN = '从家出发'
   } else {
-    // No display start set, use actual start location
-    startDisplayCN = getCNName(journey.startLocation)
+    // No display start set, always default to "从家出发"
+    startDisplayCN = '从家出发'
   }
 
   // Use display end if set, otherwise use actual end location
