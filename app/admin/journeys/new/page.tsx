@@ -133,23 +133,28 @@ export default function NewJourneyPage() {
     }
 
     // PRIORITY 3: Special case - if both are "Home", extract intermediate destinations
-    if (startDisplayName === 'Home' && endDisplayName === 'Home' && routePoints.length > 2) {
-      // Extract unique intermediate destinations from route points (excluding start/end)
-      const intermediatePlaces = routePoints
-        .slice(1, -1)
-        .filter((point, index, arr) => {
-          // Filter out home location and duplicates
-          if (homeLocation && point.name === homeLocation.name) return false
-          return arr.findIndex(p => p.name === point.name) === index
-        })
+    if (startDisplayName === 'Home' && endDisplayName === 'Home') {
+      if (routePoints.length > 2) {
+        // Extract unique intermediate destinations from route points (excluding start/end)
+        const intermediatePlaces = routePoints
+          .slice(1, -1)
+          .filter((point, index, arr) => {
+            // Filter out home location and duplicates
+            if (homeLocation && point.name === homeLocation.name) return false
+            return arr.findIndex(p => p.name === point.name) === index
+          })
 
-      if (intermediatePlaces.length === 1) {
-        // Single destination: "Home → [Place]"
-        return `Home → ${intermediatePlaces[0].name}`
-      } else if (intermediatePlaces.length > 1) {
-        // Multiple destinations: First → Last (excluding home)
-        return `${intermediatePlaces[0].name} → ${intermediatePlaces[intermediatePlaces.length - 1].name}`
+        if (intermediatePlaces.length === 1) {
+          // Single destination: "Home → [Place]"
+          return `Home → ${intermediatePlaces[0].name}`
+        } else if (intermediatePlaces.length > 1) {
+          // Multiple destinations: First → Last (excluding home)
+          return `${intermediatePlaces[0].name} → ${intermediatePlaces[intermediatePlaces.length - 1].name}`
+        }
       }
+
+      // No intermediate destinations: "Home → Local trip"
+      return 'Home → Local trip'
     }
 
     // Default: start → end

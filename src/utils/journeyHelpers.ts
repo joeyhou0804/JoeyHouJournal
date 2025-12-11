@@ -144,30 +144,35 @@ export function calculateRouteDisplay(journey: Journey, homeLocations: HomeLocat
   }
 
   // PRIORITY 3: Special case - if both are "Home", extract intermediate destinations
-  if (startDisplay === 'Home' && endDisplay === 'Home' && journey.segments && journey.segments.length > 0) {
-    // Extract unique intermediate destinations from segments (excluding start/end location)
-    const intermediatePlaces = new Set<string>()
+  if (startDisplay === 'Home' && endDisplay === 'Home') {
+    if (journey.segments && journey.segments.length > 0) {
+      // Extract unique intermediate destinations from segments (excluding start/end location)
+      const intermediatePlaces = new Set<string>()
 
-    journey.segments.forEach(segment => {
-      if (homeLocation) {
-        if (segment.from.name !== homeLocation.name) {
-          intermediatePlaces.add(segment.from.name)
+      journey.segments.forEach(segment => {
+        if (homeLocation) {
+          if (segment.from.name !== homeLocation.name) {
+            intermediatePlaces.add(segment.from.name)
+          }
+          if (segment.to.name !== homeLocation.name) {
+            intermediatePlaces.add(segment.to.name)
+          }
         }
-        if (segment.to.name !== homeLocation.name) {
-          intermediatePlaces.add(segment.to.name)
-        }
+      })
+
+      const uniquePlaces = Array.from(intermediatePlaces)
+
+      if (uniquePlaces.length === 1) {
+        // Single destination: "Home → [Place]"
+        return `Home → ${uniquePlaces[0]}`
+      } else if (uniquePlaces.length > 1) {
+        // Multiple destinations: First → Last (excluding home)
+        return `${uniquePlaces[0]} → ${uniquePlaces[uniquePlaces.length - 1]}`
       }
-    })
-
-    const uniquePlaces = Array.from(intermediatePlaces)
-
-    if (uniquePlaces.length === 1) {
-      // Single destination: "Home → [Place]"
-      return `Home → ${uniquePlaces[0]}`
-    } else if (uniquePlaces.length > 1) {
-      // Multiple destinations: First → Last (excluding home)
-      return `${uniquePlaces[0]} → ${uniquePlaces[uniquePlaces.length - 1]}`
     }
+
+    // No intermediate destinations: "Home → Local trip"
+    return 'Home → Local trip'
   }
 
   // Build final route string
