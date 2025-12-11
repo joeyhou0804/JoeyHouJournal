@@ -6,6 +6,7 @@ import {
   updateJourney,
   deleteJourney,
 } from '@/lib/db'
+import { sendNewJourneyEmails } from '@/lib/email'
 
 // Helper to convert DB format to API format
 function dbToApi(journey: any) {
@@ -87,6 +88,24 @@ export async function POST(request: Request) {
     const newJourney = await request.json()
     const dbJourney = apiToDb(newJourney)
     const created = await createJourney(dbJourney)
+
+    // Send email notifications to subscribers in the background
+    // Don't wait for emails to complete before responding
+    sendNewJourneyEmails({
+      id: created.id,
+      slug: created.slug,
+      name: created.name,
+      nameCN: created.name_cn,
+      startDate: created.start_date,
+      endDate: created.end_date,
+      duration: created.duration,
+      startLocation: created.start_display || created.start_location?.name || 'Unknown',
+      endLocation: created.end_display || created.end_location?.name || 'Unknown',
+      images: created.images,
+    }).catch((error) => {
+      // Log error but don't fail the journey creation
+      console.error('Failed to send journey notification emails:', error)
+    })
 
     return NextResponse.json({ success: true, journey: dbToApi(created) })
   } catch (error) {
