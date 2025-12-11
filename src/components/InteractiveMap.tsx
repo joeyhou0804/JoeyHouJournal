@@ -5,6 +5,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { isLocalTrip } from 'src/utils/journeyHelpers'
+import MapMarkerDrawer from './MapMarkerDrawer'
 
 // Fix for default marker icon in Next.js
 if (typeof window !== 'undefined') {
@@ -60,6 +61,19 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const [homeLocations, setHomeLocations] = useState<HomeLocation[]>([])
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerPlaces, setDrawerPlaces] = useState<Place[]>([])
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Detect mobile devices
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // md breakpoint
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Fetch home locations
   useEffect(() => {
@@ -621,7 +635,13 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
 
       const marker = L.marker([places[0].lat, places[0].lng], { icon }).addTo(map)
 
-      if (isMultiVisit) {
+      // Handle marker click differently for mobile vs desktop
+      if (isMobile) {
+        marker.on('click', () => {
+          setDrawerPlaces(places)
+          setDrawerOpen(true)
+        })
+      } else if (isMultiVisit) {
         // Multi-visit popup with carousel
         const carouselId = key.replace(/[,.-]/g, '_')
         let currentIndex = 0
@@ -770,8 +790,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         marker.on('popupclose', () => {
           currentIndex = 0
         })
-      } else {
-        // Single visit popup (original design)
+      } else if (!isMobile) {
+        // Single visit popup (original design) - desktop only
         const place = places[0]
         const displayName = locale === 'zh' && place.nameCN ? place.nameCN : place.name
         const displayState = tr.states[place.state] || place.state
@@ -878,7 +898,29 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         const homeTitle = locale === 'zh' ? '家的位置' : 'Home'
         const locationName = locale === 'zh' && relevantHome.nameCN ? relevantHome.nameCN : relevantHome.name
 
-        const popupContent = `
+        // Handle home marker click for mobile
+        if (isMobile) {
+          // Create a dummy Place object for home location
+          const homePlace: Place = {
+            id: 'home',
+            name: homeTitle,
+            nameCN: homeTitle,
+            date: '',
+            journeyId: null,
+            journeyName: locationName,
+            journeyNameCN: locationName,
+            state: locationName,
+            lat: relevantHome.lat,
+            lng: relevantHome.lng,
+            images: []
+          }
+          marker.on('click', () => {
+            setDrawerPlaces([homePlace])
+            setDrawerOpen(true)
+          })
+        } else {
+          // Desktop: show popup
+          const popupContent = `
           <div style="width: 280px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 8px; position: relative;">
             <div style="border: 2px solid #F6F6F6; border-radius: 6px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
               <div style="position: relative; width: 100%; height: 90px;">
@@ -894,12 +936,13 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           </div>
         `
 
-        marker.bindPopup(popupContent, {
-          maxWidth: 320,
-          minWidth: 320,
-          className: 'custom-popup',
-          closeButton: false
-        })
+          marker.bindPopup(popupContent, {
+            maxWidth: 320,
+            minWidth: 320,
+            className: 'custom-popup',
+            closeButton: false
+          })
+        }
       }
       // If there are 1+ destinations at home, they will be handled by the normal marker logic
       // (single destination = orange marker, multiple = golden marker with navigation)
@@ -909,13 +952,21 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     return () => {
       map.remove()
     }
-  }, [places, isDetailView, routeCoordinates, routeSegments, homeLocations, locale, journeyDate])
+  }, [places, isDetailView, routeCoordinates, routeSegments, homeLocations, locale, journeyDate, isMobile])
 
   return (
-    <div
-      ref={mapContainerRef}
-      style={{ aspectRatio: isDetailView ? '1/1' : undefined }}
-      className={`w-full rounded-lg overflow-hidden shadow-lg border-4 border-gray-800 ${isDetailView ? '' : 'h-[600px] xs:h-auto xs:aspect-square'}`}
-    />
+    <>
+      <div
+        ref={mapContainerRef}
+        style={{ aspectRatio: isDetailView ? '1/1' : undefined }}
+        className={`w-full rounded-lg overflow-hidden shadow-lg border-4 border-gray-800 ${isDetailView ? '' : 'h-[600px] xs:h-auto xs:aspect-square'}`}
+      />
+      <MapMarkerDrawer
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        places={drawerPlaces}
+        isDetailView={isDetailView}
+      />
+    </>
   )
 }
