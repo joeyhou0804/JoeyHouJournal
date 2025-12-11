@@ -120,7 +120,7 @@ export const zh: Translations = {
   // Email Subscription
   emailSubscription: {
     title: '邮件订阅',
-    description: '订阅以获取我的旅行更新！',
+    description: '快来订阅邮件，获得我的旅行更新吧！',
     nameLabel: '姓名',
     namePlaceholder: '请输入您的姓名',
     emailLabel: '邮箱',
@@ -130,9 +130,9 @@ export const zh: Translations = {
     confirmButton: '订阅',
     invalidEmailError: '请输入有效的邮箱地址',
     successTitle: '订阅成功！',
-    successMessage: '感谢您的订阅！您将收到我的旅行更新。',
+    successMessage: '感谢您的订阅！您将会收到我的旅行更新邮件。',
     alreadySubscribedTitle: '已订阅',
-    alreadySubscribedMessage: '此邮箱已订阅接收更新。',
+    alreadySubscribedMessage: '此邮箱已订阅过接收更新邮件。',
     okButton: '好的',
   },
 }
