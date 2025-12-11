@@ -22,6 +22,13 @@ export default function EmailSubscriptionsPage() {
   const [filteredSubscriptions, setFilteredSubscriptions] = useState<EmailSubscription[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
+  const [formData, setFormData] = useState({
+    id: 0,
+    name: '',
+    email: '',
+    preferredLocale: 'en'
+  })
+  const [editing, setEditing] = useState(false)
 
   useEffect(() => {
     fetchSubscriptions()
@@ -54,6 +61,44 @@ export default function EmailSubscriptionsPage() {
     }
   }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      preferredLocale: formData.preferredLocale,
+      _method: editing ? 'PUT' : 'POST'
+    }
+
+    try {
+      const response = await fetch('/api/admin/email-subscriptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+
+      if (response.ok) {
+        alert(editing ? 'Email subscription updated!' : 'Email subscription added!')
+        resetForm()
+        fetchSubscriptions()
+      }
+    } catch (error) {
+      console.error('Failed to save email subscription:', error)
+      alert('Failed to save email subscription')
+    }
+  }
+
+  const handleEdit = (subscription: EmailSubscription) => {
+    setFormData({
+      id: subscription.id,
+      name: subscription.name,
+      email: subscription.email,
+      preferredLocale: subscription.preferredLocale
+    })
+    setEditing(true)
+  }
+
   const handleDelete = async (email: string) => {
     if (!confirm('Are you sure you want to delete this email subscription?')) return
 
@@ -74,36 +119,32 @@ export default function EmailSubscriptionsPage() {
     }
   }
 
+  const resetForm = () => {
+    setFormData({
+      id: 0,
+      name: '',
+      email: '',
+      preferredLocale: 'en'
+    })
+    setEditing(false)
+  }
+
   if (loading) {
     return <AdminLoading message="Loading Email Subscriptions..." />
   }
 
   return (
     <Box sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, marginBottom: '2rem', gap: { xs: 2, sm: 0 } }}>
+      <Box sx={{ marginBottom: '2rem' }}>
         <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', margin: 0 }}>
           Email Subscriptions ({filteredSubscriptions.length})
         </h1>
-        <button
-          onClick={() => router.push('/admin/dashboard')}
-          style={{
-            width: '100%',
-            maxWidth: '200px',
-            padding: '0.75rem 1.5rem',
-            fontSize: '16px',
-            fontFamily: 'MarioFont, sans-serif',
-            backgroundColor: 'white',
-            border: '2px solid #373737',
-            borderRadius: '0.5rem',
-            cursor: 'pointer'
-          }}
-        >
-          Back to Dashboard
-        </button>
       </Box>
 
-      {/* Search Bar */}
+      {/* Form */}
       <Box
+        component="form"
+        onSubmit={handleSubmit}
         sx={{
           backgroundColor: 'white',
           padding: { xs: '1rem', sm: '2rem' },
@@ -113,39 +154,109 @@ export default function EmailSubscriptionsPage() {
         }}
       >
         <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', marginBottom: '1.5rem' }}>
-          Search Subscriptions
+          {editing ? 'Edit Email Subscription' : 'Add New Email Subscription'}
         </Typography>
 
-        <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '1rem' }}>
           <TextField
-            label="Search by name or email"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            label="Name"
+            value={formData.name}
+            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+            required
             fullWidth
-            placeholder="Enter name or email..."
-            InputProps={{
-              startAdornment: <SearchIcon sx={{ color: '#999', marginRight: '0.5rem' }} />
-            }}
             sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
           />
-          {searchTerm && (
+          <TextField
+            label="Email"
+            type="email"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            required
+            fullWidth
+            disabled={editing}
+            sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
+          />
+          <FormControl fullWidth>
+            <InputLabel sx={{ fontFamily: 'MarioFont, sans-serif' }}>Preferred Language</InputLabel>
+            <Select
+              value={formData.preferredLocale}
+              onChange={(e) => setFormData({ ...formData, preferredLocale: e.target.value })}
+              label="Preferred Language"
+              sx={{ '& .MuiSelect-select': { fontFamily: 'MarioFont, sans-serif' } }}
+            >
+              <MenuItem value="en" sx={{ fontFamily: 'MarioFont, sans-serif' }}>English</MenuItem>
+              <MenuItem value="zh" sx={{ fontFamily: 'MarioFont, sans-serif' }}>Chinese</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Box sx={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexDirection: { xs: 'column', sm: 'row' } }}>
+          <button
+            type="submit"
+            style={{
+              padding: '0.75rem 2rem',
+              fontSize: '16px',
+              fontFamily: 'MarioFont, sans-serif',
+              backgroundColor: '#FFD701',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              width: '100%'
+            }}
+          >
+            {editing ? 'Update' : 'Add'} Email Subscription
+          </button>
+          {editing && (
             <button
-              onClick={() => setSearchTerm('')}
+              type="button"
+              onClick={resetForm}
               style={{
-                padding: '0.75rem 1.5rem',
+                padding: '0.75rem 2rem',
                 fontSize: '16px',
                 fontFamily: 'MarioFont, sans-serif',
                 backgroundColor: 'white',
                 border: '2px solid #373737',
                 borderRadius: '0.5rem',
                 cursor: 'pointer',
-                whiteSpace: 'nowrap'
+                width: '100%'
               }}
             >
-              Clear
+              Cancel
             </button>
           )}
         </Box>
+      </Box>
+
+      {/* Search Bar */}
+      <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
+        <TextField
+          label="Search by name or email"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          fullWidth
+          placeholder="Enter name or email..."
+          InputProps={{
+            startAdornment: <SearchIcon sx={{ color: '#999', marginRight: '0.5rem' }} />
+          }}
+          sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
+        />
+        {searchTerm && (
+          <button
+            onClick={() => setSearchTerm('')}
+            style={{
+              padding: '0.75rem 1.5rem',
+              fontSize: '16px',
+              fontFamily: 'MarioFont, sans-serif',
+              backgroundColor: 'white',
+              border: '2px solid #373737',
+              borderRadius: '0.5rem',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            Clear
+          </button>
+        )}
       </Box>
 
       {/* Mobile Card View */}
@@ -177,6 +288,21 @@ export default function EmailSubscriptionsPage() {
                 <Box><strong>Subscribed:</strong> {new Date(subscription.subscribedAt).toLocaleDateString()}</Box>
               </Box>
               <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+                <button
+                  onClick={() => handleEdit(subscription)}
+                  style={{
+                    flex: 1,
+                    padding: '0.5rem 1rem',
+                    fontSize: '14px',
+                    fontFamily: 'MarioFont, sans-serif',
+                    backgroundColor: '#FFD701',
+                    border: '2px solid #373737',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Edit
+                </button>
                 <button
                   onClick={() => handleDelete(subscription.email)}
                   style={{
@@ -231,6 +357,21 @@ export default function EmailSubscriptionsPage() {
                       {new Date(subscription.subscribedAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell>
+                      <button
+                        onClick={() => handleEdit(subscription)}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          backgroundColor: '#FFD701',
+                          border: '2px solid #373737',
+                          borderRadius: '0.5rem',
+                          cursor: 'pointer',
+                          marginRight: '0.5rem'
+                        }}
+                      >
+                        Edit
+                      </button>
                       <button
                         onClick={() => handleDelete(subscription.email)}
                         style={{
