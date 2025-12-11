@@ -87,6 +87,13 @@ interface Journey {
   segments?: RouteSegment[]
 }
 
+interface RoutePoint {
+  name: string
+  nameCN?: string
+  lat: number
+  lng: number
+}
+
 interface HomeLocation {
   id: string
   name: string
@@ -177,4 +184,117 @@ export function calculateRouteDisplay(journey: Journey, homeLocations: HomeLocat
 
   // Build final route string
   return `${startDisplay} → ${endDisplay}`
+}
+
+/**
+ * Calculate the Chinese route display for a journey
+ * @param journey - Journey object with location and segment information
+ * @param homeLocations - Array of home locations (optional)
+ * @returns Formatted Chinese route string
+ */
+export function calculateRouteDisplayCN(journey: Journey, homeLocations: HomeLocation[] = []): string {
+  const homeLocation = getHomeLocationForDate(journey.startDate, homeLocations)
+
+  // Helper to get Chinese name with fallback to English
+  const getCNName = (location: { name: string; nameCN?: string }): string => {
+    return location.nameCN || location.name
+  }
+
+  // PRIORITY 1: Determine effective start and end points
+  let startDisplayCN: string
+  if (journey.startDisplay) {
+    // If startDisplay is a location name, try to find its Chinese name from segments or locations
+    if (journey.startDisplay === 'Home') {
+      startDisplayCN = '从家出发'
+    } else {
+      // Try to find Chinese name from segments
+      const startSegment = journey.segments?.find(s =>
+        s.from.name === journey.startDisplay || s.to.name === journey.startDisplay
+      )
+      if (startSegment) {
+        startDisplayCN = startSegment.from.name === journey.startDisplay
+          ? (startSegment.from.nameCN || journey.startDisplay)
+          : (startSegment.to.nameCN || journey.startDisplay)
+      } else {
+        startDisplayCN = journey.startDisplay
+      }
+    }
+  } else if (homeLocation && journey.startLocation.name === homeLocation.name) {
+    startDisplayCN = '从家出发'
+  } else {
+    startDisplayCN = getCNName(journey.startLocation)
+  }
+
+  // Use display end if set, otherwise use actual end location
+  let endDisplayCN: string
+  if (journey.endDisplay) {
+    if (journey.endDisplay === 'Home') {
+      endDisplayCN = '回到家里'
+    } else {
+      // Try to find Chinese name from segments
+      const endSegment = journey.segments?.find(s =>
+        s.from.name === journey.endDisplay || s.to.name === journey.endDisplay
+      )
+      if (endSegment) {
+        endDisplayCN = endSegment.to.name === journey.endDisplay
+          ? (endSegment.to.nameCN || journey.endDisplay)
+          : (endSegment.from.nameCN || journey.endDisplay)
+      } else {
+        endDisplayCN = journey.endDisplay
+      }
+    }
+  } else {
+    endDisplayCN = getCNName(journey.endLocation)
+  }
+
+  // PRIORITY 2: Apply home location logic to both start and end
+  if (homeLocation) {
+    if (journey.startLocation.name === homeLocation.name && !journey.startDisplay) {
+      startDisplayCN = '从家出发'
+    } else if (startDisplayCN === (homeLocation.nameCN || homeLocation.name)) {
+      startDisplayCN = '从家出发'
+    }
+
+    if (journey.endLocation.name === homeLocation.name && !journey.endDisplay) {
+      endDisplayCN = '回到家里'
+    } else if (endDisplayCN === (homeLocation.nameCN || homeLocation.name)) {
+      endDisplayCN = '回到家里'
+    }
+  }
+
+  // PRIORITY 3: Special case - if both are home, extract intermediate destinations
+  if (startDisplayCN === '从家出发' && endDisplayCN === '回到家里') {
+    if (journey.segments && journey.segments.length > 0) {
+      // Extract unique intermediate destinations from segments (excluding start/end location)
+      const intermediatePlacesCN: string[] = []
+      const seen = new Set<string>()
+
+      journey.segments.forEach(segment => {
+        if (homeLocation) {
+          if (segment.from.name !== homeLocation.name && !seen.has(segment.from.name)) {
+            intermediatePlacesCN.push(segment.from.nameCN || segment.from.name)
+            seen.add(segment.from.name)
+          }
+          if (segment.to.name !== homeLocation.name && !seen.has(segment.to.name)) {
+            intermediatePlacesCN.push(segment.to.nameCN || segment.to.name)
+            seen.add(segment.to.name)
+          }
+        }
+      })
+
+      if (intermediatePlacesCN.length === 1) {
+        // Single destination
+        return `从家出发 → ${intermediatePlacesCN[0]}`
+      } else if (intermediatePlacesCN.length > 1) {
+        // Multiple destinations: First → Last
+        return `${intermediatePlacesCN[0]} → ${intermediatePlacesCN[intermediatePlacesCN.length - 1]}`
+      }
+    }
+
+    // No intermediate destinations: "从家出发 → 周围走走"
+    return '从家出发 → 周围走走'
+  }
+
+  // Build final route string
+  return `${startDisplayCN} → ${endDisplayCN}`
 }

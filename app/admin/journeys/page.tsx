@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import AdminLoading from 'src/components/AdminLoading'
-import { calculateRouteDisplay } from 'src/utils/journeyHelpers'
+import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
 
 export default function JourneysPage() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -132,7 +132,12 @@ export default function JourneysPage() {
                 </Box>
               )}
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                <Box><strong>Route:</strong> {calculateRouteDisplay(journey, homeLocations)}</Box>
+                <Box>
+                  <strong>Route:</strong> {calculateRouteDisplay(journey, homeLocations)}
+                  <div style={{ fontSize: '12px', color: '#999', marginTop: '2px' }}>
+                    {calculateRouteDisplayCN(journey, homeLocations)}
+                  </div>
+                </Box>
                 <Box><strong>Duration:</strong> {journey.days} day{journey.days > 1 ? 's' : ''}{journey.nights > 0 ? `, ${journey.nights} night${journey.nights > 1 ? 's' : ''}` : ''}</Box>
                 <Box><strong>Places:</strong> {journey.totalPlaces}</Box>
                 <Box><strong>Dates:</strong> {journey.startDate} to {journey.endDate}</Box>
@@ -188,6 +193,9 @@ export default function JourneysPage() {
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
                     {calculateRouteDisplay(journey, homeLocations)}
+                    <div style={{ fontSize: '12px', color: '#999', marginTop: '2px' }}>
+                      {calculateRouteDisplayCN(journey, homeLocations)}
+                    </div>
                   </td>
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
                     {journey.days} day{journey.days > 1 ? 's' : ''}{journey.nights > 0 ? `, ${journey.nights} night${journey.nights > 1 ? 's' : ''}` : ''}

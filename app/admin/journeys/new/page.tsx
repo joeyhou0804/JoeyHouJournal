@@ -94,6 +94,74 @@ export default function NewJourneyPage() {
     })
   }
 
+  // Helper to get Chinese route display
+  const getRouteDisplayCN = () => {
+    if (routePoints.length < 2 || !routePoints[0].name || !routePoints[routePoints.length - 1].name) {
+      return 'Not yet defined'
+    }
+
+    const startPoint = routePoints[0]
+    const endPoint = routePoints[routePoints.length - 1]
+    const homeLocation = getHomeLocationForDate(formData.startDate)
+
+    // Helper to get Chinese name
+    const getCNName = (point: any): string => point.nameCN || point.name
+
+    // PRIORITY 1: Determine effective start and end points
+    let startDisplayNameCN: string
+    if (displayStartIndex !== null) {
+      const displayPoint = routePoints[displayStartIndex]
+      startDisplayNameCN = displayPoint ? getCNName(displayPoint) : 'Start'
+    } else if (homeLocation && startPoint.name === homeLocation.name) {
+      startDisplayNameCN = '从家出发'
+    } else {
+      startDisplayNameCN = getCNName(startPoint)
+    }
+
+    let endDisplayNameCN = displayEndIndex !== null
+      ? getCNName(routePoints[displayEndIndex] || {})
+      : getCNName(endPoint)
+
+    // PRIORITY 2: Apply home location logic
+    if (homeLocation) {
+      if (displayStartIndex !== null) {
+        const displayPoint = routePoints[displayStartIndex]
+        if (displayPoint?.name === homeLocation.name) {
+          startDisplayNameCN = '从家出发'
+        }
+      }
+      if (displayEndIndex !== null) {
+        const displayPoint = routePoints[displayEndIndex]
+        if (displayPoint?.name === homeLocation.name) {
+          endDisplayNameCN = '回到家里'
+        }
+      } else if (endPoint.name === homeLocation.name) {
+        endDisplayNameCN = '回到家里'
+      }
+    }
+
+    // PRIORITY 3: Special case - if both are home
+    if (startDisplayNameCN === '从家出发' && endDisplayNameCN === '回到家里') {
+      if (routePoints.length > 2) {
+        const intermediatePlaces = routePoints
+          .slice(1, -1)
+          .filter((point, index, arr) => {
+            if (homeLocation && point.name === homeLocation.name) return false
+            return arr.findIndex(p => p.name === point.name) === index
+          })
+
+        if (intermediatePlaces.length === 1) {
+          return `从家出发 → ${getCNName(intermediatePlaces[0])}`
+        } else if (intermediatePlaces.length > 1) {
+          return `${getCNName(intermediatePlaces[0])} → ${getCNName(intermediatePlaces[intermediatePlaces.length - 1])}`
+        }
+      }
+      return '从家出发 → 周围走走'
+    }
+
+    return `${startDisplayNameCN} → ${endDisplayNameCN}`
+  }
+
   // Helper function to get route display
   const getRouteDisplay = () => {
     if (routePoints.length < 2 || !routePoints[0].name || !routePoints[routePoints.length - 1].name) {
@@ -1104,6 +1172,7 @@ export default function NewJourneyPage() {
             <li>Click "Edit" to manually adjust coordinates when the location is invalid or needs customization</li>
             <li>At least 2 points required (start and end)</li>
             <li>Current route: {getRouteDisplay()}</li>
+            <li style={{ color: '#999', fontSize: '12px' }}>中文路线: {getRouteDisplayCN()}</li>
           </ul>
         </Box>
       </Box>
