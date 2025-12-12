@@ -9,7 +9,7 @@ interface FilterByHomeDrawerProps {
 }
 
 const filterOptions: FilterOption[] = [
-  { id: 'all_destinations', iconPath: '/images/icons/filter/all_destination_icon.png', labelEn: 'All', labelZh: '显示全部' },
+  { id: 'all_destinations', iconPath: '/images/icons/filter/all_destination_icon.png', labelEn: 'Display all', labelZh: '显示全部' },
   { id: 'new_york', iconPath: '/images/icons/filter/new_york_icon.png', labelEn: 'New York', labelZh: '纽约' },
   { id: 'berkeley', iconPath: '/images/icons/filter/berkeley_icon.png', labelEn: 'Berkeley', labelZh: '伯克利' },
   { id: 'palo_alto', iconPath: '/images/icons/filter/palo_alto_icon.png', labelEn: 'Palo Alto', labelZh: '帕洛阿尔托' },
