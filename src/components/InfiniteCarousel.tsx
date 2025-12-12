@@ -62,6 +62,17 @@ function CarouselRow({
   const [viewportW, setViewportW] = useState(0)
   const [cycleW, setCycleW] = useState(0)
   const [gapPx, setGapPx] = useState(-50) // -50px gap
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Track screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   useEffect(() => {
     const measure = () => {
@@ -117,12 +128,21 @@ function CarouselRow({
         <div
           key={`${i}-${ariaHidden ? 'dup' : 'main'}`}
           className={`flex-shrink-0 carousel-image-container ${imageClassName}`}
-          style={{
-            marginLeft: i === 0 ? '0' : '-50px',
-            width: '400px',
-            height: 'auto',
-            minWidth: '400px'
-          }}
+          style={
+            isMobile
+              ? {
+                  marginLeft: i === 0 ? '15px' : '-35px',
+                  width: '300px',
+                  height: 'auto',
+                  minWidth: '300px'
+                }
+              : {
+                  marginLeft: i === 0 ? '0' : '-50px',
+                  width: '400px',
+                  height: 'auto',
+                  minWidth: '400px'
+                }
+          }
         >
           <img
             src={img}
@@ -148,15 +168,27 @@ function CarouselRow({
           to   { transform: translateX(0); }
         }
         .carousel-image-container {
-          width: 400px !important;
+          width: 300px !important;
           height: auto !important;
-          min-width: 400px !important;
+          min-width: 300px !important;
+        }
+        .carousel-image-container:first-child {
+          margin-left: 20px !important;
+        }
+        .carousel-image-container:not(:first-child) {
+          margin-left: -30px !important;
         }
         @media (min-width: 640px) {
           .carousel-image-container {
-            width: 500px !important;
+            width: 400px !important;
             height: auto !important;
-            min-width: 500px !important;
+            min-width: 400px !important;
+          }
+          .carousel-image-container:first-child {
+            margin-left: 0 !important;
+          }
+          .carousel-image-container:not(:first-child) {
+            margin-left: -50px !important;
           }
         }
         @media (min-width: 768px) {
