@@ -211,7 +211,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         <Box
           sx={{
             position: 'absolute',
-            top: { xs: '40%', sm: '50%' },
+            top: { xs: '48%', sm: '50%' },
             left: { xs: '5%', sm: '10%' },
             transform: 'translateY(-50%)',
             display: 'flex',
@@ -236,7 +236,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             component="p"
             sx={{
               fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-              fontSize: { xs: '24px', sm: '48px' },
+              fontSize: { xs: '20px', sm: '48px' },
               color: '#373737',
               margin: 0,
               textAlign: 'left',
