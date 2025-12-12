@@ -8,6 +8,8 @@ import DestinationCard from 'src/components/DestinationCard'
 import MapViewHint from 'src/components/MapViewHint'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import SortDrawer from 'src/components/SortDrawer'
+import FilterByHomeDrawer from 'src/components/FilterByHomeDrawer'
+import OtherFiltersDrawer from 'src/components/OtherFiltersDrawer'
 import MixedText from 'src/components/MixedText'
 import { useTranslation } from 'src/hooks/useTranslation'
 
@@ -37,6 +39,8 @@ export default function StationsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
+  const [isFilterByHomeDrawerOpen, setIsFilterByHomeDrawerOpen] = useState(false)
+  const [isOtherFiltersDrawerOpen, setIsOtherFiltersDrawerOpen] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 12
@@ -159,6 +163,14 @@ export default function StationsPage() {
         onClose={() => setIsSortDrawerOpen(false)}
         onSort={handleSortChange}
       />
+      <FilterByHomeDrawer
+        isOpen={isFilterByHomeDrawerOpen}
+        onClose={() => setIsFilterByHomeDrawerOpen(false)}
+      />
+      <OtherFiltersDrawer
+        isOpen={isOtherFiltersDrawerOpen}
+        onClose={() => setIsOtherFiltersDrawerOpen(false)}
+      />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
         isMenuButtonVisible={isMenuButtonVisible}
@@ -209,8 +221,8 @@ export default function StationsPage() {
             />
           </div>
 
-          {/* View Hints Button - Mobile Only */}
-          <div className="hidden xs:flex justify-center mb-12">
+          {/* View Hints and Filter Buttons - Mobile Only */}
+          <div className="hidden xs:flex flex-col items-center gap-4 mb-12">
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -218,6 +230,26 @@ export default function StationsPage() {
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => setIsFilterByHomeDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={`/images/buttons/filter_by_home_${locale}.png`}
+                alt={locale === 'zh' ? '以家的位置筛选' : 'Filter by Home'}
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => setIsOtherFiltersDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={`/images/buttons/other_filters_button_${locale}.png`}
+                alt={locale === 'zh' ? '其他筛选条件' : 'Other Filters'}
                 className="h-16 w-auto"
               />
             </button>
