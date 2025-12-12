@@ -296,15 +296,6 @@ export default function JourneysPage() {
         />
       </div>
 
-      {/* Mobile: Long Trips Image */}
-      <div className="hidden xs:block w-full">
-        <img
-          src={`/images/journey/long_trips_${locale}.png`}
-          alt="Long Trips"
-          className="w-full h-auto object-cover"
-        />
-      </div>
-
       {/* New Background Section - Full Width - Desktop Only */}
       <div className="w-full relative overflow-hidden xs:hidden">
         {/* Desktop Layout - Image overlaid on left of background */}
@@ -358,9 +349,9 @@ export default function JourneysPage() {
           </div>
 
           {/* Mobile: Map View Title */}
-          <div className="hidden xs:flex justify-center items-center mb-8 mt-4">
+          <div className="hidden xs:flex flex-col justify-center items-center mb-8 mt-4">
             <MixedText
-              text={tr.mapView}
+              text={locale === 'zh' ? '长途旅行' : 'Long Trips'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize="40px"
@@ -368,7 +359,21 @@ export default function JourneysPage() {
               component="h3"
               sx={{
                 textShadow: '2px 2px 0px #373737',
-                margin: 0
+                margin: 0,
+                marginBottom: '8px'
+              }}
+            />
+            <MixedText
+              text={locale === 'zh' ? '使用屏幕两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
+              chineseFont="MarioFontChinese, sans-serif"
+              englishFont="MarioFont, sans-serif"
+              fontSize="16px"
+              color="#F6F6F6"
+              component="p"
+              sx={{
+                margin: 0,
+                textAlign: 'center',
+                paddingX: '1rem'
               }}
             />
           </div>
@@ -641,17 +646,6 @@ export default function JourneysPage() {
         </div>
       </Box>
 
-      {/* Mobile: Day Trips Image */}
-      {dayTripJourneys.length > 0 && currentDayTrip && (
-        <div className="hidden xs:block w-full">
-          <img
-            src={`/images/journey/day_trips_${locale}.png`}
-            alt="Day Trips"
-            className="w-full h-auto object-cover"
-          />
-        </div>
-      )}
-
       {/* Day Trips & Weekend Trips Section - Mobile Only */}
       {dayTripJourneys.length > 0 && currentDayTrip && (
         <Box
@@ -665,17 +659,64 @@ export default function JourneysPage() {
         >
           <div className="max-w-7xl mx-auto px-4">
             {/* Mobile: Map View Title */}
-            <div className="flex justify-center items-center mb-8 mt-4">
+            <div className="flex flex-col justify-center items-center mb-8 mt-4 text-center">
+              <div style={{ lineHeight: '0.8' }}>
+                <MixedText
+                  text={locale === 'zh' ? '一日游&周末旅行' : 'Day Trips'}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize="40px"
+                  color="#F6F6F6"
+                  component="h3"
+                  sx={{
+                    textShadow: '2px 2px 0px #373737',
+                    margin: 0,
+                    lineHeight: 0.8
+                  }}
+                />
+                {locale === 'en' && (
+                  <>
+                    <MixedText
+                      text="&"
+                      chineseFont="MarioFontTitleChinese, sans-serif"
+                      englishFont="MarioFontTitle, sans-serif"
+                      fontSize="40px"
+                      color="#F6F6F6"
+                      component="h3"
+                      sx={{
+                        textShadow: '2px 2px 0px #373737',
+                        margin: 0,
+                        lineHeight: 0.8
+                      }}
+                    />
+                    <MixedText
+                      text="Weekend Trips"
+                      chineseFont="MarioFontTitleChinese, sans-serif"
+                      englishFont="MarioFontTitle, sans-serif"
+                      fontSize="40px"
+                      color="#F6F6F6"
+                      component="h3"
+                      sx={{
+                        textShadow: '2px 2px 0px #373737',
+                        margin: 0,
+                        lineHeight: 0.8
+                      }}
+                    />
+                  </>
+                )}
+              </div>
               <MixedText
-                text={tr.mapView}
-                chineseFont="MarioFontTitleChinese, sans-serif"
-                englishFont="MarioFontTitle, sans-serif"
-                fontSize="40px"
+                text={locale === 'zh' ? '使用屏幕两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
+                chineseFont="MarioFontChinese, sans-serif"
+                englishFont="MarioFont, sans-serif"
+                fontSize="16px"
                 color="#F6F6F6"
-                component="h3"
+                component="p"
                 sx={{
-                  textShadow: '2px 2px 0px #373737',
-                  margin: 0
+                  margin: 0,
+                  marginTop: '32px',
+                  textAlign: 'center',
+                  paddingX: '1rem'
                 }}
               />
             </div>
