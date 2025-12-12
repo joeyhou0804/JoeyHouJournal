@@ -11,6 +11,8 @@ import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import SortDrawer from 'src/components/SortDrawer'
+import TransportationFilterDrawer from 'src/components/TransportationFilterDrawer'
+import DayTripFilterDrawer from 'src/components/DayTripFilterDrawer'
 import MixedText from 'src/components/MixedText'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
@@ -46,6 +48,10 @@ export default function JourneysPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
+  const [isTransportationFilterDrawerOpen, setIsTransportationFilterDrawerOpen] = useState(false)
+  const [isDayTripFilterDrawerOpen, setIsDayTripFilterDrawerOpen] = useState(false)
+  const [selectedTransportationFilter, setSelectedTransportationFilter] = useState<string>('all_transportation')
+  const [selectedDayTripFilter, setSelectedDayTripFilter] = useState<string>('all_day_trips')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
@@ -73,6 +79,16 @@ export default function JourneysPage() {
     }
     fetchData()
   }, [])
+
+  // Reset journey index when transportation filter changes
+  useEffect(() => {
+    setCurrentJourneyIndex(0)
+  }, [selectedTransportationFilter])
+
+  // Reset day trip index when day trip filter changes
+  useEffect(() => {
+    setCurrentDayTripIndex(0)
+  }, [selectedDayTripFilter])
 
   // Transform journeys to trips format and add route string with images
   const trips = journeysData.map((journey: any) => {
@@ -110,11 +126,30 @@ export default function JourneysPage() {
   })
 
   // Filter journeys into regular and day trips
-  const regularJourneys = journeysData.filter((journey: any) => !journey.isDayTrip)
-  const dayTripJourneys = journeysData.filter((journey: any) => journey.isDayTrip)
+  const allRegularJourneys = journeysData.filter((journey: any) => !journey.isDayTrip)
+  const allDayTripJourneys = journeysData.filter((journey: any) => journey.isDayTrip)
 
-  // Get current regular journey based on index
-  const currentJourney = regularJourneys[currentJourneyIndex]
+  // Apply transportation filter to regular journeys
+  // TODO: Implement filtering logic after database fields are updated
+  const filterByTransportation = (journeys: any[]) => {
+    // Filtering disabled until database fields are added
+    return journeys
+  }
+
+  // Apply day trip filter
+  // TODO: Implement filtering logic after database fields are updated
+  const filterDayTrips = (journeys: any[]) => {
+    // Filtering disabled until database fields are added
+    return journeys
+  }
+
+  // Apply filters
+  const regularJourneys = filterByTransportation(allRegularJourneys)
+  const dayTripJourneys = filterDayTrips(allDayTripJourneys)
+
+  // Get current regular journey based on index (with safety check)
+  const safeJourneyIndex = regularJourneys.length > 0 ? Math.min(currentJourneyIndex, regularJourneys.length - 1) : 0
+  const currentJourney = regularJourneys[safeJourneyIndex]
   const currentJourneyPlaces = currentJourney ? allDestinations.filter(
     destination => destination.journeyName === currentJourney.name
   ).map((destination) => ({
@@ -133,8 +168,9 @@ export default function JourneysPage() {
   // Get the route for the current regular journey
   const currentJourneyRoute = currentJourney ? trips.find(t => t.slug === currentJourney.slug)?.route || '' : ''
 
-  // Get current day trip based on index
-  const currentDayTrip = dayTripJourneys[currentDayTripIndex]
+  // Get current day trip based on index (with safety check)
+  const safeDayTripIndex = dayTripJourneys.length > 0 ? Math.min(currentDayTripIndex, dayTripJourneys.length - 1) : 0
+  const currentDayTrip = dayTripJourneys[safeDayTripIndex]
   const currentDayTripPlaces = currentDayTrip ? allDestinations.filter(
     destination => destination.journeyName === currentDayTrip.name
   ).map((destination) => ({
@@ -192,6 +228,14 @@ export default function JourneysPage() {
     setSortOrder(order)
     setCurrentPage(1) // Reset to first page when sorting changes
     setXsDisplayCount(itemsPerPage) // Reset xs display count when sorting changes
+  }
+
+  const handleTransportationFilterChange = (filterId: string) => {
+    setSelectedTransportationFilter(filterId)
+  }
+
+  const handleDayTripFilterChange = (filterId: string) => {
+    setSelectedDayTripFilter(filterId)
   }
 
   const handleShowMore = () => {
@@ -271,6 +315,16 @@ export default function JourneysPage() {
         isOpen={isSortDrawerOpen}
         onClose={() => setIsSortDrawerOpen(false)}
         onSort={handleSortChange}
+      />
+      <TransportationFilterDrawer
+        isOpen={isTransportationFilterDrawerOpen}
+        onClose={() => setIsTransportationFilterDrawerOpen(false)}
+        onFilterChange={handleTransportationFilterChange}
+      />
+      <DayTripFilterDrawer
+        isOpen={isDayTripFilterDrawerOpen}
+        onClose={() => setIsDayTripFilterDrawerOpen(false)}
+        onFilterChange={handleDayTripFilterChange}
       />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
@@ -378,8 +432,8 @@ export default function JourneysPage() {
             />
           </div>
 
-          {/* Mobile: View Hints Button */}
-          <div className="hidden xs:flex justify-center mb-12">
+          {/* Mobile: View Hints Button and Transportation Filter */}
+          <div className="hidden xs:flex flex-col items-center gap-4 mb-12">
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -387,6 +441,20 @@ export default function JourneysPage() {
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => setIsTransportationFilterDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={
+                  selectedTransportationFilter === 'all_transportation'
+                    ? `/images/buttons/filter_button_${locale}.png`
+                    : `/images/buttons/filter_button_selected_${locale}.png`
+                }
+                alt={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
                 className="h-16 w-auto"
               />
             </button>
@@ -721,8 +789,8 @@ export default function JourneysPage() {
               />
             </div>
 
-            {/* Mobile: View Hints Button */}
-            <div className="flex justify-center mb-12">
+            {/* Mobile: View Hints Button and Day Trip Filter */}
+            <div className="flex flex-col items-center gap-4 mb-12">
               <button
                 onClick={() => setIsViewHintsDrawerOpen(true)}
                 className="hover:scale-105 transition-transform duration-200"
@@ -730,6 +798,20 @@ export default function JourneysPage() {
                 <img
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
+                  className="h-16 w-auto"
+                />
+              </button>
+              <button
+                onClick={() => setIsDayTripFilterDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={
+                    selectedDayTripFilter === 'all_day_trips'
+                      ? `/images/buttons/filter_button_${locale}.png`
+                      : `/images/buttons/filter_button_selected_${locale}.png`
+                  }
+                  alt={locale === 'zh' ? '筛选一日游' : 'Filter Day Trips'}
                   className="h-16 w-auto"
                 />
               </button>

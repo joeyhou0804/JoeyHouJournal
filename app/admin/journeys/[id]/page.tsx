@@ -50,7 +50,11 @@ export default function JourneyDetailsPage() {
     nights: 0,
     startDate: '',
     endDate: '',
-    isDayTrip: false
+    isDayTrip: false,
+    isTrainTrip: false,
+    isAroundHome: false,
+    isAroundNewYork: false,
+    tripWithOthers: false
   })
 
   // Route points state (simplified from segments)
@@ -237,7 +241,11 @@ export default function JourneyDetailsPage() {
             nights: data.nights || 0,
             startDate: data.startDate || '',
             endDate: data.endDate || '',
-            isDayTrip: data.isDayTrip || false
+            isDayTrip: data.isDayTrip || false,
+            isTrainTrip: data.isTrainTrip || false,
+            isAroundHome: data.isAroundHome || false,
+            isAroundNewYork: data.isAroundNewYork || false,
+            tripWithOthers: data.tripWithOthers || false
           })
           // Load route segments if they exist and convert to points
           if (data.segments && Array.isArray(data.segments) && data.segments.length > 0) {
@@ -385,6 +393,10 @@ export default function JourneyDetailsPage() {
         startDate: formData.startDate,
         endDate: formData.endDate,
         isDayTrip: formData.isDayTrip,
+        isTrainTrip: formData.isTrainTrip,
+        isAroundHome: formData.isAroundHome,
+        isAroundNewYork: formData.isAroundNewYork,
+        tripWithOthers: formData.tripWithOthers,
         startDisplay: displayStartIndex !== null ? routePoints[displayStartIndex].name : null,
         endDisplay: displayEndIndex !== null ? routePoints[displayEndIndex].name : null,
         startLocation,
@@ -1050,6 +1062,77 @@ export default function JourneyDetailsPage() {
               <span style={{ fontWeight: 'bold', fontSize: '16px' }}>Day Trip / Weekend Trip</span>
             </label>
           </Box>
+
+          {/* Conditional Filter Checkboxes */}
+          {!formData.isDayTrip && (
+            <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.75rem', backgroundColor: '#e3f2fd', borderRadius: '0.5rem', border: '2px solid #90caf9' }}>
+                <input
+                  type="checkbox"
+                  checked={formData.isTrainTrip}
+                  onChange={(e) => handleInputChange('isTrainTrip', e.target.checked)}
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    cursor: 'pointer'
+                  }}
+                />
+                <span style={{ fontSize: '14px' }}>Train Trip</span>
+              </label>
+            </Box>
+          )}
+
+          {formData.isDayTrip && (
+            <>
+              <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.75rem', backgroundColor: '#fff3e0', borderRadius: '0.5rem', border: '2px solid #ffcc80' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.isAroundHome}
+                    onChange={(e) => handleInputChange('isAroundHome', e.target.checked)}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  <span style={{ fontSize: '14px' }}>Around Home</span>
+                </label>
+              </Box>
+
+              <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.75rem', backgroundColor: '#e8f5e9', borderRadius: '0.5rem', border: '2px solid #a5d6a7' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.isAroundNewYork}
+                    onChange={(e) => handleInputChange('isAroundNewYork', e.target.checked)}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  <span style={{ fontSize: '14px' }}>Around New York</span>
+                </label>
+              </Box>
+
+              <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.75rem', backgroundColor: '#fce4ec', borderRadius: '0.5rem', border: '2px solid #f48fb1' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.tripWithOthers}
+                    onChange={(e) => handleInputChange('tripWithOthers', e.target.checked)}
+                    style={{
+                      width: '20px',
+                      height: '20px',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  <span style={{ fontSize: '14px' }}>Trip with Others</span>
+                </label>
+              </Box>
+            </>
+          )}
 
         </Box>
       </Box>

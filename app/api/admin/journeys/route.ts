@@ -31,6 +31,10 @@ function dbToApi(journey: any) {
     images: journey.images,
     segments: journey.segments,
     isDayTrip: journey.is_day_trip,
+    isTrainTrip: journey.is_train_trip,
+    isAroundHome: journey.is_around_home,
+    isAroundNewYork: journey.is_around_new_york,
+    tripWithOthers: journey.trip_with_others,
   }
 }
 
@@ -57,6 +61,10 @@ function apiToDb(journey: any) {
     images: journey.images || [],
     segments: journey.segments || null,
     is_day_trip: journey.isDayTrip ?? false,
+    is_train_trip: journey.isTrainTrip ?? false,
+    is_around_home: journey.isAroundHome ?? false,
+    is_around_new_york: journey.isAroundNewYork ?? false,
+    trip_with_others: journey.tripWithOthers ?? false,
   }
 }
 
