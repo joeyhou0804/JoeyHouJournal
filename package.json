@@ -10,7 +10,8 @@
     "db:migrate": "tsx scripts/migrate-to-db.ts",
     "db:import-json": "tsx scripts/migrate-json-to-db.ts",
     "sync-journey-names": "tsx scripts/sync-journey-names.ts",
-    "db:init-subscriptions": "tsx scripts/init-email-subscriptions.ts"
+    "db:init-subscriptions": "tsx scripts/init-email-subscriptions.ts",
+    "db:add-extra-info-columns": "tsx scripts/add-destination-extra-info-columns.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

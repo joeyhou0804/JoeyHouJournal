@@ -39,6 +39,9 @@ export interface Destination {
   description_cn: string | null
   show_map: boolean | null
   instagram_post_id: string | null
+  visited_by_myself: boolean | null
+  visited_on_trains: boolean | null
+  stayed_overnight: boolean | null
   created_at: Date
   updated_at: Date
 }
@@ -220,14 +223,16 @@ export async function createDestination(destination: Partial<Destination>): Prom
     INSERT INTO destinations (
       id, name, name_cn, state, country, date, coordinates,
       journey_id, journey_name, journey_name_cn,
-      images, description, description_cn, show_map, instagram_post_id
+      images, description, description_cn, show_map, instagram_post_id,
+      visited_by_myself, visited_on_trains, stayed_overnight
     ) VALUES (
       ${destination.id}, ${destination.name}, ${destination.name_cn},
       ${destination.state}, ${destination.country}, ${destination.date},
       ${JSON.stringify(destination.coordinates)}::jsonb,
       ${destination.journey_id}, ${destination.journey_name}, ${destination.journey_name_cn},
       ${images}::jsonb, ${destination.description}, ${destination.description_cn},
-      ${destination.show_map ?? false}, ${destination.instagram_post_id || null}
+      ${destination.show_map ?? false}, ${destination.instagram_post_id || null},
+      ${destination.visited_by_myself ?? false}, ${destination.visited_on_trains ?? false}, ${destination.stayed_overnight ?? false}
     )
     RETURNING *
   `
@@ -253,6 +258,9 @@ export async function updateDestination(id: string, destination: Partial<Destina
       description_cn = ${destination.description_cn},
       show_map = ${destination.show_map ?? false},
       instagram_post_id = ${destination.instagram_post_id || null},
+      visited_by_myself = ${destination.visited_by_myself ?? false},
+      visited_on_trains = ${destination.visited_on_trains ?? false},
+      stayed_overnight = ${destination.stayed_overnight ?? false},
       updated_at = NOW()
     WHERE id = ${id}
     RETURNING *

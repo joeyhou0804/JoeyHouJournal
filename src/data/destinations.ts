@@ -19,4 +19,7 @@ export interface Destination {
   descriptionCN?: string
   showMap?: boolean          // Whether to show map tab in carousel
   instagramPostId?: string   // Instagram post ID if imported from Instagram
+  visitedByMyself?: boolean  // Whether I personally visited this destination
+  visitedOnTrains?: boolean  // Whether I reached this destination by train
+  stayedOvernight?: boolean  // Whether I stayed overnight at this destination
 }

@@ -42,7 +42,10 @@ export function transformDestination(destination: DBDestination): any {
     images: destination.images || [],
     description: destination.description,
     descriptionCN: destination.description_cn,
-    showMap: destination.show_map ?? false
+    showMap: destination.show_map ?? false,
+    visitedByMyself: destination.visited_by_myself ?? false,
+    visitedOnTrains: destination.visited_on_trains ?? false,
+    stayedOvernight: destination.stayed_overnight ?? false
   }
 }
 

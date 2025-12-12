@@ -27,6 +27,9 @@ function dbToApi(destination: any) {
     descriptionCN: destination.description_cn,
     showMap: destination.show_map ?? false,
     instagram_post_id: destination.instagram_post_id,
+    visitedByMyself: destination.visited_by_myself ?? false,
+    visitedOnTrains: destination.visited_on_trains ?? false,
+    stayedOvernight: destination.stayed_overnight ?? false,
   }
 }
 
@@ -57,6 +60,9 @@ function apiToDb(destination: any) {
     description_cn: destination.descriptionCN || null,
     show_map: destination.showMap ?? false,
     instagram_post_id: destination.instagram_post_id || null,
+    visited_by_myself: destination.visitedByMyself ?? false,
+    visited_on_trains: destination.visitedOnTrains ?? false,
+    stayed_overnight: destination.stayedOvernight ?? false,
   }
 }
 

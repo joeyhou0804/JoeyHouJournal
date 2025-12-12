@@ -21,6 +21,9 @@ interface DestinationFormData {
   lng: number
   images: string[]
   showMap: boolean
+  visitedByMyself: boolean
+  visitedOnTrains: boolean
+  stayedOvernight: boolean
 }
 
 export default function DestinationFormPage() {
@@ -32,7 +35,10 @@ export default function DestinationFormPage() {
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<DestinationFormData>({
     defaultValues: {
       images: [],
-      showMap: false
+      showMap: false,
+      visitedByMyself: false,
+      visitedOnTrains: false,
+      stayedOvernight: false
     }
   })
 
@@ -740,6 +746,67 @@ export default function DestinationFormPage() {
           <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', marginTop: '0.5rem', marginLeft: '40px' }}>
             When enabled, the last tab in the destination carousel will display a map instead of the image number.
           </Typography>
+        </Box>
+
+        {/* Extra Info - Visit Details */}
+        <Box sx={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: '#f5f5f5', borderRadius: '0.5rem', border: '2px solid #373737' }}>
+          <Typography sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '1rem', color: '#373737' }}>
+            Visit Details
+          </Typography>
+
+          {/* Visited by Myself */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
+            <input
+              type="checkbox"
+              {...register('visitedByMyself')}
+              id="visitedByMyself"
+              style={{
+                width: '24px',
+                height: '24px',
+                cursor: 'pointer',
+                accentColor: '#FFD701'
+              }}
+            />
+            <label htmlFor="visitedByMyself" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+              Visited by Myself
+            </label>
+          </Box>
+
+          {/* Visited on Trains */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
+            <input
+              type="checkbox"
+              {...register('visitedOnTrains')}
+              id="visitedOnTrains"
+              style={{
+                width: '24px',
+                height: '24px',
+                cursor: 'pointer',
+                accentColor: '#FFD701'
+              }}
+            />
+            <label htmlFor="visitedOnTrains" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+              Visited on Trains
+            </label>
+          </Box>
+
+          {/* Stayed Overnight */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <input
+              type="checkbox"
+              {...register('stayedOvernight')}
+              id="stayedOvernight"
+              style={{
+                width: '24px',
+                height: '24px',
+                cursor: 'pointer',
+                accentColor: '#FFD701'
+              }}
+            />
+            <label htmlFor="stayedOvernight" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+              Stayed Overnight
+            </label>
+          </Box>
         </Box>
 
         {/* Images */}
