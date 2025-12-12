@@ -42,6 +42,7 @@ export default function StationsPage() {
   const [isFilterByHomeDrawerOpen, setIsFilterByHomeDrawerOpen] = useState(false)
   const [isOtherFiltersDrawerOpen, setIsOtherFiltersDrawerOpen] = useState(false)
   const [selectedHomeFilter, setSelectedHomeFilter] = useState<string>('all_destinations')
+  const [selectedOtherFilter, setSelectedOtherFilter] = useState<string>('all_destinations')
   const [homeLocations, setHomeLocations] = useState<any[]>([])
   const listSectionRef = useRef<HTMLDivElement>(null)
 
@@ -128,8 +129,55 @@ export default function StationsPage() {
     return filtered
   }
 
-  // Apply home filter first, then sort
-  const filteredDestinations = filterDestinationsByHome(destinations)
+  // Filter destinations by other criteria (visited by myself, stayed overnight, etc.)
+  const filterDestinationsByOther = (destinations: any[]) => {
+    if (selectedOtherFilter === 'all_destinations') {
+      console.log('Other filter: Showing all destinations')
+      return destinations
+    }
+
+    console.log('Applying other filter:', selectedOtherFilter)
+
+    switch (selectedOtherFilter) {
+      case 'visit_by_myself':
+        // Only show destinations where visitedByMyself is true
+        return destinations.filter(d => d.visitedByMyself === true)
+
+      case 'visit_with_others':
+        // Only show destinations where visitedByMyself is false
+        return destinations.filter(d => d.visitedByMyself === false)
+
+      case 'stay_overnight':
+        // Only show destinations where stayedOvernight is true
+        return destinations.filter(d => d.stayedOvernight === true)
+
+      case 'visit_on_train':
+        // Only show destinations where visitedOnTrains is true
+        return destinations.filter(d => d.visitedOnTrains === true)
+
+      case 'visit_more_than_once':
+        // Only show destinations visited more than once (same coordinates)
+        // Count visits by coordinates
+        const coordinateCounts = new Map<string, number>()
+        destinations.forEach(d => {
+          const key = `${d.lat},${d.lng}`
+          coordinateCounts.set(key, (coordinateCounts.get(key) || 0) + 1)
+        })
+
+        // Filter to only show destinations with coordinates that appear more than once
+        return destinations.filter(d => {
+          const key = `${d.lat},${d.lng}`
+          return (coordinateCounts.get(key) || 0) > 1
+        })
+
+      default:
+        return destinations
+    }
+  }
+
+  // Apply home filter first, then other filter, then sort
+  const homeFilteredDestinations = filterDestinationsByHome(destinations)
+  const filteredDestinations = filterDestinationsByOther(homeFilteredDestinations)
 
   const sortedDestinations = [...filteredDestinations].sort((a, b) => {
     const dateA = new Date(a.date).getTime()
@@ -157,6 +205,12 @@ export default function StationsPage() {
 
   const handleHomeFilterChange = (filterId: string) => {
     setSelectedHomeFilter(filterId)
+    setCurrentPage(1) // Reset to first page when filter changes
+    setXsDisplayCount(itemsPerPage) // Reset xs display count when filter changes
+  }
+
+  const handleOtherFilterChange = (filterId: string) => {
+    setSelectedOtherFilter(filterId)
     setCurrentPage(1) // Reset to first page when filter changes
     setXsDisplayCount(itemsPerPage) // Reset xs display count when filter changes
   }
@@ -247,6 +301,7 @@ export default function StationsPage() {
       <OtherFiltersDrawer
         isOpen={isOtherFiltersDrawerOpen}
         onClose={() => setIsOtherFiltersDrawerOpen(false)}
+        onFilterChange={handleOtherFilterChange}
       />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
@@ -329,7 +384,11 @@ export default function StationsPage() {
               className="hover:scale-105 transition-transform duration-200"
             >
               <img
-                src={`/images/buttons/other_filters_button_${locale}.png`}
+                src={
+                  selectedOtherFilter === 'all_destinations'
+                    ? `/images/buttons/other_filters_button_${locale}.png`
+                    : `/images/buttons/other_filters_selected_${locale}.png`
+                }
                 alt={locale === 'zh' ? '其他筛选条件' : 'Other Filters'}
                 className="h-16 w-auto"
               />
