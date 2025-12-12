@@ -11,6 +11,7 @@ import SortDrawer from 'src/components/SortDrawer'
 import FilterByHomeDrawer from 'src/components/FilterByHomeDrawer'
 import OtherFiltersDrawer from 'src/components/OtherFiltersDrawer'
 import MixedText from 'src/components/MixedText'
+import FilterDrawerBase from 'src/components/BaseDrawer'
 import { useTranslation } from 'src/hooks/useTranslation'
 
 // Dynamically import the map component to avoid SSR issues
@@ -44,6 +45,7 @@ export default function StationsPage() {
   const [selectedHomeFilter, setSelectedHomeFilter] = useState<string>('all_destinations')
   const [selectedOtherFilter, setSelectedOtherFilter] = useState<string>('all_destinations')
   const [homeLocations, setHomeLocations] = useState<any[]>([])
+  const [isNoResultsDrawerOpen, setIsNoResultsDrawerOpen] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 12
@@ -215,6 +217,21 @@ export default function StationsPage() {
     setXsDisplayCount(itemsPerPage) // Reset xs display count when filter changes
   }
 
+  // Check for no results after filters are applied
+  useEffect(() => {
+    // Only check if both drawers are closed and a non-default filter is active
+    const hasActiveFilter = selectedHomeFilter !== 'all_destinations' || selectedOtherFilter !== 'all_destinations'
+    const bothDrawersClosed = !isFilterByHomeDrawerOpen && !isOtherFiltersDrawerOpen
+
+    if (hasActiveFilter && bothDrawersClosed && filteredDestinations.length === 0) {
+      // Wait a bit for drawer close animation to complete
+      const timer = setTimeout(() => {
+        setIsNoResultsDrawerOpen(true)
+      }, 500)
+      return () => clearTimeout(timer)
+    }
+  }, [filteredDestinations, isFilterByHomeDrawerOpen, isOtherFiltersDrawerOpen, selectedHomeFilter, selectedOtherFilter])
+
   const handleShowMore = () => {
     setXsDisplayCount(prev => prev + itemsPerPage)
   }
@@ -303,6 +320,23 @@ export default function StationsPage() {
         onClose={() => setIsOtherFiltersDrawerOpen(false)}
         onFilterChange={handleOtherFilterChange}
       />
+      <FilterDrawerBase
+        isOpen={isNoResultsDrawerOpen}
+        onClose={() => setIsNoResultsDrawerOpen(false)}
+        titleEn="Oh no..."
+        titleZh="哎呀..."
+        showOkButton={true}
+      >
+        <MixedText
+          text={locale === 'zh' ? '没有符合条件的结果。' : 'There is no result.'}
+          chineseFont="MarioFontChinese, sans-serif"
+          englishFont="MarioFont, sans-serif"
+          fontSize={{ xs: '18px', sm: '20px' }}
+          color="#373737"
+          component="p"
+          sx={{ textAlign: 'center', marginBottom: '2rem' }}
+        />
+      </FilterDrawerBase>
       <NavigationMenu
         isMenuOpen={isMenuOpen}
         isMenuButtonVisible={isMenuButtonVisible}
