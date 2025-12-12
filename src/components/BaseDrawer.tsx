@@ -9,7 +9,6 @@ import { X } from 'lucide-react'
 interface FilterDrawerBaseProps {
   isOpen: boolean
   onClose: () => void
-  title: string
   titleEn: string
   titleZh: string
   children: ReactNode
