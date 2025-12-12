@@ -885,23 +885,30 @@ export default function InstagramImportPage() {
                   <Button
                     size="small"
                     onClick={() => {
-                      // Extract city name without state suffix (e.g., "San Francisco" from "San Francisco, CA")
-                      const cityName = destinationName.split(',')[0].trim()
-                      console.log('Generating Chinese name for:', { cityName, destinationState })
-                      const translation = generateChineseDestinationName(cityName, destinationState)
-                      console.log('Translation result:', translation)
-                      if (translation) {
-                        setDestinationNameCn(translation)
+                      // Extract city name and state code from destination name (e.g., "San Francisco, CA")
+                      const parts = destinationName.split(',').map(p => p.trim())
+                      if (parts.length >= 2) {
+                        const cityName = parts[0]
+                        const stateCode = parts[1]
+                        console.log('Generating Chinese name for:', { cityName, stateCode })
+                        const fullTranslation = generateChineseDestinationName(cityName, stateCode)
+                        console.log('Translation result:', fullTranslation)
+                        if (fullTranslation) {
+                          // Keep the full translation format (州名·城市名)
+                          setDestinationNameCn(fullTranslation)
+                        } else {
+                          console.warn('No translation found for:', { cityName, stateCode })
+                        }
                       } else {
-                        console.warn('No translation found for:', { cityName, destinationState })
+                        console.warn('Invalid destination name format. Expected: "City, State"')
                       }
                     }}
-                    disabled={!destinationName || !destinationState}
+                    disabled={!destinationName || !destinationName.includes(',')}
                     sx={{
                       fontFamily: 'MarioFont, sans-serif',
                       fontSize: '12px',
                       textTransform: 'none',
-                      backgroundColor: '#FFD701',
+                      backgroundColor: destinationName && destinationName.includes(',') ? '#FFD701' : '#E0E0E0',
                       color: '#373737',
                       '&:hover': { backgroundColor: '#FFC700' },
                       '&:disabled': { backgroundColor: '#E0E0E0', color: '#999' },
