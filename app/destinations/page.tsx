@@ -156,18 +156,18 @@ export default function StationsPage() {
         return destinations.filter(d => d.visitedOnTrains === true)
 
       case 'visit_more_than_once':
-        // Only show destinations visited more than once (same coordinates)
-        // Count visits by coordinates
-        const coordinateCounts = new Map<string, number>()
+        // Only show destinations visited more than once (same name)
+        // Count visits by name (matching map's grouping logic)
+        const nameCounts = new Map<string, number>()
         destinations.forEach(d => {
-          const key = `${d.lat},${d.lng}`
-          coordinateCounts.set(key, (coordinateCounts.get(key) || 0) + 1)
+          const key = d.name
+          nameCounts.set(key, (nameCounts.get(key) || 0) + 1)
         })
 
-        // Filter to only show destinations with coordinates that appear more than once
+        // Filter to only show destinations with names that appear more than once
         return destinations.filter(d => {
-          const key = `${d.lat},${d.lng}`
-          return (coordinateCounts.get(key) || 0) > 1
+          const key = d.name
+          return (nameCounts.get(key) || 0) > 1
         })
 
       default:
