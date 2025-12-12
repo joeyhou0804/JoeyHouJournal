@@ -88,11 +88,15 @@ export default function StationsPage() {
   // Filter destinations by home location date range
   const filterDestinationsByHome = (destinations: any[]) => {
     if (selectedHomeFilter === 'all_destinations') {
+      console.log('Filter: Showing all destinations')
       return destinations
     }
 
     const homeLocationName = homeFilterMap[selectedHomeFilter]
+    console.log('Selected filter:', selectedHomeFilter, '→ Home location name:', homeLocationName)
+
     if (!homeLocationName) {
+      console.warn('No mapping found for filter:', selectedHomeFilter)
       return destinations
     }
 
@@ -101,7 +105,11 @@ export default function StationsPage() {
       home => home.name === homeLocationName
     )
 
+    console.log('Home locations available:', homeLocations.map(h => h.name))
+    console.log('Matched home location:', homeLocation)
+
     if (!homeLocation) {
+      console.warn('No home location found for:', homeLocationName)
       return destinations
     }
 
@@ -109,10 +117,15 @@ export default function StationsPage() {
     const startDate = new Date(homeLocation.startDate)
     const endDate = new Date(homeLocation.endDate)
 
-    return destinations.filter(destination => {
+    console.log('Date range:', startDate, 'to', endDate)
+
+    const filtered = destinations.filter(destination => {
       const destDate = new Date(destination.date)
       return destDate >= startDate && destDate <= endDate
     })
+
+    console.log('Filtered destinations count:', filtered.length, 'out of', destinations.length)
+    return filtered
   }
 
   // Apply home filter first, then sort
