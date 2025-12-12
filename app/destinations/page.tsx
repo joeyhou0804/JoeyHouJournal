@@ -315,7 +315,11 @@ export default function StationsPage() {
               className="hover:scale-105 transition-transform duration-200"
             >
               <img
-                src={`/images/buttons/filter_by_home_${locale}.png`}
+                src={
+                  selectedHomeFilter === 'all_destinations'
+                    ? `/images/buttons/filter_by_home_${locale}.png`
+                    : `/images/buttons/filter_by_home_selected_${locale}.png`
+                }
                 alt={locale === 'zh' ? '以家的位置筛选' : 'Filter by Home'}
                 className="h-16 w-auto"
               />
