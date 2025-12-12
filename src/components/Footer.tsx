@@ -39,8 +39,8 @@ export default function Footer({ currentPage }: FooterProps = {}) {
           />
         </Link>
         <div className="flex-1 flex flex-col items-center justify-center xs:w-full">
-          {/* Button Row */}
-          <div className="flex items-center space-x-4 mb-4 xs:flex-col xs:space-x-0 xs:space-y-4 xs:w-full xs:items-center">
+          {/* Button Row - Desktop: single row, Mobile: 2x2 grid */}
+          <div className="flex items-center space-x-4 mb-4 xs:grid xs:grid-cols-2 xs:gap-4 xs:space-x-0 xs:w-full xs:justify-items-center">
             {currentPage === 'trips' ? (
               <Box className="group">
                 <Box
@@ -132,7 +132,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             </Box>
           </div>
           {/* Copyright Text */}
-          <Box component="p" className="text-gray-400 text-center">
+          <Box component="p" className="text-gray-400 text-center xs:text-xs">
             Made with ♥ by Joey Hou • 侯江天（小猴同学）• 2025
           </Box>
         </div>

@@ -126,12 +126,12 @@ export default function MapViewHint({ station, imageOnRight = false, cardNumber 
         {/* View Details Button - Only show for journey info with journeySlug */}
         {isJourneyInfo && journeySlug && (
           <Link href={`/journeys/${journeySlug}`}>
-            <Box sx={{ position: 'absolute', top: { xs: '63%', sm: '72%' }, left: { xs: '50%', sm: imageOnRight ? '30%' : '70%' }, transform: 'translate(-50%, -50%)', zIndex: 15 }}>
+            <Box sx={{ position: 'absolute', top: { xs: '63%', sm: '72%' }, left: { xs: '50%', sm: imageOnRight ? '30%' : '70%' }, transform: { xs: 'translate(-50%, -50%) scale(1.3)', sm: 'translate(-50%, -50%)' }, zIndex: 15 }}>
               <Box
                 component="img"
                 src={`/images/buttons/view_details_button_${locale}.png`}
                 alt="View Details"
-                sx={{ height: { xs: 'auto', sm: 'auto' }, width: { xs: '15rem', sm: '17.5rem' } }}
+                sx={{ height: 'auto', width: '17.5rem' }}
                 className="hover:scale-105 transition-transform duration-200"
               />
             </Box>

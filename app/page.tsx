@@ -554,7 +554,7 @@ export default function Home() {
 
               {/* View Details Button */}
               <Link href={`/journeys/${featuredTrips[currentSlide]?.slug || ''}`}>
-                <Box sx={{ position: 'absolute', top: '25%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 15 }}>
+                <Box sx={{ position: 'absolute', top: '25%', left: '50%', transform: { xs: 'translate(-50%, -50%) scale(1.3)', sm: 'translate(-50%, -50%)' }, zIndex: 15 }}>
                   <Box
                     component="img"
                     src={`/images/buttons/view_details_button_${locale}.png`}
@@ -1010,7 +1010,7 @@ export default function Home() {
 
               {/* View Details Button */}
               <Link href={`/destinations/${recentPlaces[currentDestSlide].id}`}>
-                <Box sx={{ position: 'absolute', top: '25%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 15 }}>
+                <Box sx={{ position: 'absolute', top: '25%', left: '50%', transform: { xs: 'translate(-50%, -50%) scale(1.3)', sm: 'translate(-50%, -50%)' }, zIndex: 15 }}>
                   <Box
                     component="img"
                     src={`/images/buttons/view_details_button_${locale}.png`}

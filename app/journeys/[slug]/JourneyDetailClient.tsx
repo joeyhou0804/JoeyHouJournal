@@ -305,7 +305,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-12 w-auto"
+                className="h-16 w-auto"
               />
             </button>
           </div>
