@@ -571,29 +571,45 @@ export default function Home() {
               component="button"
               onClick={prevSlide}
               disabled={currentSlide === 0}
-              className={`absolute left-2 ${currentSlide === 0 ? 'opacity-40' : ''}`}
-              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)', width: '48px', height: '48px' }}
+              className={`group absolute left-0 transition-transform duration-200 ${currentSlide === 0 ? 'opacity-40' : 'cursor-pointer'}`}
+              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)' }}
             >
               <Box
                 component="img"
-                src="/images/buttons/arrow_prev.webp"
+                src="/images/buttons/tab_prev.webp"
                 alt="Previous"
-                sx={{ width: '48px', height: '48px', display: 'block' }}
+                className={`h-24 w-auto ${currentSlide === 0 ? '' : 'group-hover:hidden'}`}
               />
+              {currentSlide !== 0 && (
+                <Box
+                  component="img"
+                  src="/images/buttons/tab_prev_hover.webp"
+                  alt="Previous"
+                  className="h-24 w-auto hidden group-hover:block"
+                />
+              )}
             </Box>
             <Box
               component="button"
               onClick={nextSlide}
               disabled={currentSlide === featuredTrips.length - 1}
-              className={`absolute right-2 ${currentSlide === featuredTrips.length - 1 ? 'opacity-40' : ''}`}
-              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)', width: '48px', height: '48px' }}
+              className={`group absolute right-0 transition-transform duration-200 ${currentSlide === featuredTrips.length - 1 ? 'opacity-40' : 'cursor-pointer'}`}
+              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)' }}
             >
               <Box
                 component="img"
-                src="/images/buttons/arrow_next.webp"
+                src="/images/buttons/tab_next.webp"
                 alt="Next"
-                sx={{ width: '48px', height: '48px', display: 'block' }}
+                className={`h-24 w-auto ${currentSlide === featuredTrips.length - 1 ? '' : 'group-hover:hidden'}`}
               />
+              {currentSlide !== featuredTrips.length - 1 && (
+                <Box
+                  component="img"
+                  src="/images/buttons/tab_next_hover.webp"
+                  alt="Next"
+                  className="h-24 w-auto hidden group-hover:block"
+                />
+              )}
             </Box>
 
             {/* Slide Indicators */}
@@ -1027,29 +1043,45 @@ export default function Home() {
               component="button"
               onClick={prevDestSlide}
               disabled={currentDestSlide === 0}
-              className={`absolute left-2 ${currentDestSlide === 0 ? 'opacity-40' : ''}`}
-              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)', width: '48px', height: '48px' }}
+              className={`group absolute left-0 transition-transform duration-200 ${currentDestSlide === 0 ? 'opacity-40' : 'cursor-pointer'}`}
+              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)' }}
             >
               <Box
                 component="img"
-                src="/images/buttons/arrow_prev.webp"
+                src="/images/buttons/tab_prev.webp"
                 alt="Previous"
-                sx={{ width: '48px', height: '48px', display: 'block' }}
+                className={`h-24 w-auto ${currentDestSlide === 0 ? '' : 'group-hover:hidden'}`}
               />
+              {currentDestSlide !== 0 && (
+                <Box
+                  component="img"
+                  src="/images/buttons/tab_prev_hover.webp"
+                  alt="Previous"
+                  className="h-24 w-auto hidden group-hover:block"
+                />
+              )}
             </Box>
             <Box
               component="button"
               onClick={nextDestSlide}
               disabled={currentDestSlide === recentPlaces.length - 1}
-              className={`absolute right-2 ${currentDestSlide === recentPlaces.length - 1 ? 'opacity-40' : ''}`}
-              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)', width: '48px', height: '48px' }}
+              className={`group absolute right-0 transition-transform duration-200 ${currentDestSlide === recentPlaces.length - 1 ? 'opacity-40' : 'cursor-pointer'}`}
+              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)' }}
             >
               <Box
                 component="img"
-                src="/images/buttons/arrow_next.webp"
+                src="/images/buttons/tab_next.webp"
                 alt="Next"
-                sx={{ width: '48px', height: '48px', display: 'block' }}
+                className={`h-24 w-auto ${currentDestSlide === recentPlaces.length - 1 ? '' : 'group-hover:hidden'}`}
               />
+              {currentDestSlide !== recentPlaces.length - 1 && (
+                <Box
+                  component="img"
+                  src="/images/buttons/tab_next_hover.webp"
+                  alt="Next"
+                  className="h-24 w-auto hidden group-hover:block"
+                />
+              )}
             </Box>
 
             {/* Slide Indicators */}
