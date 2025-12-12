@@ -847,7 +847,7 @@ export default function JourneysPage() {
             </div>
 
             {/* Day Trip Info Card - Above map */}
-            <div className="mt-12">
+            <div className="mt-16">
               <MapViewHint
                 imageOnRight={true}
                 cardNumber={3}
