@@ -387,7 +387,7 @@ export default function StationsPage() {
                 src={
                   selectedOtherFilter === 'all_destinations'
                     ? `/images/buttons/other_filters_button_${locale}.png`
-                    : `/images/buttons/other_filters_selected_${locale}.png`
+                    : `/images/buttons/other_filters_button_selected_${locale}.png`
                 }
                 alt={locale === 'zh' ? '其他筛选条件' : 'Other Filters'}
                 className="h-16 w-auto"
