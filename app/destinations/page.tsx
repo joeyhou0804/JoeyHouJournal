@@ -46,6 +46,7 @@ export default function StationsPage() {
   const [selectedOtherFilter, setSelectedOtherFilter] = useState<string>('all_destinations')
   const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isNoResultsDrawerOpen, setIsNoResultsDrawerOpen] = useState(false)
+  const lastShownFilterRef = useRef<string>('')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 12
@@ -223,12 +224,24 @@ export default function StationsPage() {
     const hasActiveFilter = selectedHomeFilter !== 'all_destinations' || selectedOtherFilter !== 'all_destinations'
     const bothDrawersClosed = !isFilterByHomeDrawerOpen && !isOtherFiltersDrawerOpen
 
+    // Create a unique key for the current filter combination
+    const currentFilterKey = `${selectedHomeFilter}|${selectedOtherFilter}`
+
     if (hasActiveFilter && bothDrawersClosed && filteredDestinations.length === 0) {
-      // Wait a bit for drawer close animation to complete
-      const timer = setTimeout(() => {
-        setIsNoResultsDrawerOpen(true)
-      }, 500)
-      return () => clearTimeout(timer)
+      // Only show drawer if we haven't shown it for this filter combination yet
+      if (lastShownFilterRef.current !== currentFilterKey) {
+        // Wait a bit for drawer close animation to complete
+        const timer = setTimeout(() => {
+          setIsNoResultsDrawerOpen(true)
+          lastShownFilterRef.current = currentFilterKey
+        }, 500)
+        return () => clearTimeout(timer)
+      }
+    }
+
+    // Reset the tracking when filters change and there ARE results
+    if (filteredDestinations.length > 0) {
+      lastShownFilterRef.current = ''
     }
   }, [filteredDestinations, isFilterByHomeDrawerOpen, isOtherFiltersDrawerOpen, selectedHomeFilter, selectedOtherFilter])
 
