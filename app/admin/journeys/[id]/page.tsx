@@ -98,12 +98,9 @@ export default function JourneyDetailsPage() {
       } else {
         startDisplayNameCN = displayPoint ? getCNName(displayPoint) : 'Start'
       }
-    } else if (homeLocation && startPoint.name === homeLocation.name) {
-      // No display start set, but actual start is home
-      startDisplayNameCN = '从家出发'
     } else {
-      // No display start set, use actual start location
-      startDisplayNameCN = getCNName(startPoint)
+      // No display start set, always default to "从家出发"
+      startDisplayNameCN = '从家出发'
     }
 
     let endDisplayNameCN: string
@@ -167,12 +164,9 @@ export default function JourneyDetailsPage() {
       } else {
         startDisplayName = displayPoint?.name || 'Start'
       }
-    } else if (homeLocation && startPoint.name === homeLocation.name) {
-      // No display start set, but actual start is home
-      startDisplayName = 'Home'
     } else {
-      // No display start set, use actual start location
-      startDisplayName = startPoint.name || 'Start'
+      // No display start set, always default to "Home"
+      startDisplayName = 'Home'
     }
 
     // Use display end if set, otherwise use actual end point
