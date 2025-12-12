@@ -224,7 +224,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
           </Box>
 
           {/* Content */}
-          <Box sx={{ position: 'relative', width: '100%', paddingTop: '0.5rem' }}>
+          <Box sx={{ position: 'relative', width: '100%', paddingTop: '0.25rem' }}>
             {/* First Row: Location Title */}
             <Box
               sx={{
@@ -232,7 +232,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
                 width: '100%',
                 display: 'flex',
                 justifyContent: 'center',
-                marginBottom: '1.5rem'
+                marginBottom: '0.75rem'
               }}
             >
               <Box
@@ -321,9 +321,22 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
               </Box>
             )}
 
+            {/* Divider - show before View Details button */}
+            {!isDetailView && place.id !== 'home' && (
+              <Box
+                sx={{
+                  width: 'calc(100% - 1rem)',
+                  height: '4px',
+                  backgroundColor: '#373737',
+                  borderRadius: '2px',
+                  margin: '0 auto 1.5rem auto'
+                }}
+              />
+            )}
+
             {/* View Details Button - hide for detail view and home markers */}
             {!isDetailView && place.id !== 'home' && (
-              <Box sx={{ textAlign: 'center', marginTop: '0.5rem', marginBottom: '1rem' }}>
+              <Box sx={{ textAlign: 'center', marginTop: '0rem', marginBottom: '1rem' }}>
                 <a
                   href={`/destinations/${place.id}`}
                   style={{ display: 'inline-block', transition: 'transform 0.2s' }}
