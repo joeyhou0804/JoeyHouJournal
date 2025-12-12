@@ -41,9 +41,19 @@ export default function StationsPage() {
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const [isFilterByHomeDrawerOpen, setIsFilterByHomeDrawerOpen] = useState(false)
   const [isOtherFiltersDrawerOpen, setIsOtherFiltersDrawerOpen] = useState(false)
+  const [selectedHomeFilter, setSelectedHomeFilter] = useState<string>('all_destinations')
+  const [homeLocations, setHomeLocations] = useState<any[]>([])
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 12
+
+  // Mapping of filter IDs to home location names
+  const homeFilterMap: { [key: string]: string } = {
+    'new_york': 'New York',
+    'berkeley': 'Berkeley',
+    'palo_alto': 'Palo Alto',
+    'san_francisco': 'San Francisco'
+  }
 
   // Fetch destinations from API
   useEffect(() => {
@@ -61,7 +71,54 @@ export default function StationsPage() {
     fetchDestinations()
   }, [])
 
-  const sortedDestinations = [...destinations].sort((a, b) => {
+  // Fetch home locations from API
+  useEffect(() => {
+    async function fetchHomeLocations() {
+      try {
+        const response = await fetch('/api/home-locations')
+        const data = await response.json()
+        setHomeLocations(data)
+      } catch (error) {
+        console.error('Error fetching home locations:', error)
+      }
+    }
+    fetchHomeLocations()
+  }, [])
+
+  // Filter destinations by home location date range
+  const filterDestinationsByHome = (destinations: any[]) => {
+    if (selectedHomeFilter === 'all_destinations') {
+      return destinations
+    }
+
+    const homeLocationName = homeFilterMap[selectedHomeFilter]
+    if (!homeLocationName) {
+      return destinations
+    }
+
+    // Find the matching home location
+    const homeLocation = homeLocations.find(
+      home => home.name === homeLocationName
+    )
+
+    if (!homeLocation) {
+      return destinations
+    }
+
+    // Filter destinations by date range
+    const startDate = new Date(homeLocation.startDate)
+    const endDate = new Date(homeLocation.endDate)
+
+    return destinations.filter(destination => {
+      const destDate = new Date(destination.date)
+      return destDate >= startDate && destDate <= endDate
+    })
+  }
+
+  // Apply home filter first, then sort
+  const filteredDestinations = filterDestinationsByHome(destinations)
+
+  const sortedDestinations = [...filteredDestinations].sort((a, b) => {
     const dateA = new Date(a.date).getTime()
     const dateB = new Date(b.date).getTime()
     return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
@@ -83,6 +140,12 @@ export default function StationsPage() {
     setSortOrder(order)
     setCurrentPage(1) // Reset to first page when sorting changes
     setXsDisplayCount(itemsPerPage) // Reset xs display count when sorting changes
+  }
+
+  const handleHomeFilterChange = (filterId: string) => {
+    setSelectedHomeFilter(filterId)
+    setCurrentPage(1) // Reset to first page when filter changes
+    setXsDisplayCount(itemsPerPage) // Reset xs display count when filter changes
   }
 
   const handleShowMore = () => {
@@ -166,6 +229,7 @@ export default function StationsPage() {
       <FilterByHomeDrawer
         isOpen={isFilterByHomeDrawerOpen}
         onClose={() => setIsFilterByHomeDrawerOpen(false)}
+        onFilterChange={handleHomeFilterChange}
       />
       <OtherFiltersDrawer
         isOpen={isOtherFiltersDrawerOpen}
@@ -294,7 +358,7 @@ export default function StationsPage() {
                 borderRadius: { xs: '0.75rem', sm: '1.5rem' }
               }}
             >
-              <InteractiveMap places={destinations} showHomeMarker={false} />
+              <InteractiveMap places={filteredDestinations} showHomeMarker={false} />
             </Box>
           </Box>
         </div>
