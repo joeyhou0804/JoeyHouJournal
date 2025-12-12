@@ -296,10 +296,19 @@ export default function JourneysPage() {
         />
       </div>
 
-      {/* New Background Section - Full Width */}
-      <div className="w-full relative overflow-hidden">
+      {/* Mobile: Long Trips Image */}
+      <div className="hidden xs:block w-full">
+        <img
+          src={`/images/journey/long_trips_${locale}.png`}
+          alt="Long Trips"
+          className="w-full h-auto object-cover"
+        />
+      </div>
+
+      {/* New Background Section - Full Width - Desktop Only */}
+      <div className="w-full relative overflow-hidden xs:hidden">
         {/* Desktop Layout - Image overlaid on left of background */}
-        <div className="xs:hidden relative">
+        <div className="relative">
           <img
             src="/images/journey/journey_page_first_section.png"
             alt="Journey Background"
@@ -319,28 +328,6 @@ export default function JourneysPage() {
             </p>
           </div>
         </div>
-
-        {/* Mobile Layout - Background with text only */}
-        <div className="hidden xs:block relative">
-          <img
-            src="/images/journey/journey_page_first_section_xs.png"
-            alt="Journey Background"
-            className="w-full h-auto object-cover"
-          />
-
-          {/* Text Content - Mobile */}
-          <div className="absolute top-36 left-10">
-            <p className="text-[#373737] mb-2" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', lineHeight: '1.4' }}>
-              {locale === 'zh' ? '想看什么样的旅程故事呢？' : 'What type of journeys are you looking for?'}
-            </p>
-            <p className="text-[#373737] mb-2" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', lineHeight: '1.4' }}>
-              {locale === 'zh' ? '想看我的长途旅行的话，请看下面的第一个地图。' : 'View the first map below if you want to see my longer trips.'}
-            </p>
-            <p className="text-[#373737]" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', lineHeight: '1.4' }}>
-              {locale === 'zh' ? '第二个地图是我的一日游和周末旅行。' : 'Checkout the second map for my day trips and weekend trips.'}
-            </p>
-          </div>
-        </div>
       </div>
 
       {/* Map View Section */}
@@ -354,7 +341,8 @@ export default function JourneysPage() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+          {/* Desktop: Map View Title */}
+          <div className="flex justify-center items-center mb-16 mt-8 xs:hidden">
             <MixedText
               text={tr.mapView}
               chineseFont="MarioFontTitleChinese, sans-serif"
@@ -369,7 +357,23 @@ export default function JourneysPage() {
             />
           </div>
 
-          {/* View Hints Button - Mobile Only */}
+          {/* Mobile: Map View Title */}
+          <div className="hidden xs:flex justify-center items-center mb-8 mt-4">
+            <MixedText
+              text={tr.mapView}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize="40px"
+              color="#F6F6F6"
+              component="h3"
+              sx={{
+                textShadow: '2px 2px 0px #373737',
+                margin: 0
+              }}
+            />
+          </div>
+
+          {/* Mobile: View Hints Button */}
           <div className="hidden xs:flex justify-center mb-12">
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
@@ -383,7 +387,7 @@ export default function JourneysPage() {
             </button>
           </div>
 
-          {/* Map View Hint - Desktop Only */}
+          {/* Desktop: Map View Hint */}
           <div className="my-36 xs:hidden">
             <MapViewHint
               cardNumber={1}
@@ -397,7 +401,7 @@ export default function JourneysPage() {
             />
           </div>
 
-          {/* Second Map View Hint - Image on right - Desktop Only */}
+          {/* Desktop: Second Map View Hint - Image on right */}
           <div className="my-36 sm:mb-24 xs:hidden">
             <MapViewHint
               imageOnRight={true}
@@ -412,8 +416,8 @@ export default function JourneysPage() {
             />
           </div>
 
-          {/* Long Trips Map Title */}
-          <div className="flex justify-center items-center mb-48 xs:mb-24">
+          {/* Desktop: Long Trips Map Title */}
+          <div className="flex justify-center items-center mb-48 xs:mb-0">
             <MixedText
               text={locale === 'zh' ? '长途旅行' : 'Long Trips'}
               chineseFont="MarioFontTitleChinese, sans-serif"
@@ -423,7 +427,8 @@ export default function JourneysPage() {
               component="h3"
               sx={{
                 textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
-                margin: 0
+                margin: 0,
+                display: { xs: 'none', sm: 'block' }
               }}
             />
           </div>
@@ -529,50 +534,33 @@ export default function JourneysPage() {
               </button>
             </Box>
 
-          {/* Day Trips & Weekend Trips Map Section */}
+          {/* Day Trips & Weekend Trips Map Section - Desktop Only */}
           {dayTripJourneys.length > 0 && currentDayTrip && (
-            <div className="mt-24 xs:mt-12">
-              {/* Day Trips Map Title */}
-              <div className="flex justify-center items-center mb-48 xs:mb-24">
+            <div className="mt-24 xs:hidden">
+              {/* Desktop: Day Trips Map Title */}
+              <div className="flex justify-center items-center mb-48">
                 <MixedText
                   text={locale === 'zh' ? '一日游 & 周末旅行' : 'Day Trips & Weekend Trips'}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
-                  fontSize={{ xs: '32px', sm: '64px' }}
+                  fontSize="64px"
                   color="#F6F6F6"
                   component="h3"
                   sx={{
-                    textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                    textShadow: '3px 3px 0px #373737',
                     margin: 0
                   }}
                 />
               </div>
 
-              {/* Day Trip Info Card - Above map on xs screens */}
-              <div className="block sm:hidden">
-                <MapViewHint
-                  imageOnRight={true}
-                  cardNumber={3}
-                  isJourneyInfo={true}
-                  journeySlug={currentDayTrip.slug}
-                  station={{
-                    id: '',
-                    name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
-                    journeyName: currentDayTripRoute,
-                    date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
-                    images: []
-                  }}
-                />
-              </div>
-
-              <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem] xs:-mt-6">
+              <Box style={{ position: 'relative' }}>
                 <Box
                   sx={{
                     backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                     backgroundRepeat: 'repeat',
                     backgroundSize: '200px auto',
-                    padding: { xs: '0.5rem', sm: '1rem' },
-                    borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                    padding: '1rem',
+                    borderRadius: '1.5rem'
                   }}
                 >
                   <InteractiveMap
@@ -612,7 +600,7 @@ export default function JourneysPage() {
                 <button
                   onClick={handlePrevDayTrip}
                   disabled={currentDayTripIndex === 0}
-                  className={`group absolute left-4 xs:left-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  className={`group absolute left-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
                     currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                   }`}
                 >
@@ -632,7 +620,7 @@ export default function JourneysPage() {
                 <button
                   onClick={handleNextDayTrip}
                   disabled={currentDayTripIndex === dayTripJourneys.length - 1}
-                  className={`group absolute right-4 xs:right-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  className={`group absolute right-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
                     currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                   }`}
                 >
@@ -652,6 +640,138 @@ export default function JourneysPage() {
           )}
         </div>
       </Box>
+
+      {/* Mobile: Day Trips Image */}
+      {dayTripJourneys.length > 0 && currentDayTrip && (
+        <div className="hidden xs:block w-full">
+          <img
+            src={`/images/journey/day_trips_${locale}.png`}
+            alt="Day Trips"
+            className="w-full h-auto object-cover"
+          />
+        </div>
+      )}
+
+      {/* Day Trips & Weekend Trips Section - Mobile Only */}
+      {dayTripJourneys.length > 0 && currentDayTrip && (
+        <Box
+          component="section"
+          className="hidden xs:block w-full py-12"
+          sx={{
+            backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '200px auto',
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4">
+            {/* Mobile: Map View Title */}
+            <div className="flex justify-center items-center mb-8 mt-4">
+              <MixedText
+                text={tr.mapView}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize="40px"
+                color="#F6F6F6"
+                component="h3"
+                sx={{
+                  textShadow: '2px 2px 0px #373737',
+                  margin: 0
+                }}
+              />
+            </div>
+
+            {/* Mobile: View Hints Button */}
+            <div className="flex justify-center mb-12">
+              <button
+                onClick={() => setIsViewHintsDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={`/images/buttons/view_hints_button_${locale}.png`}
+                  alt="View Hints"
+                  className="h-12 w-auto"
+                />
+              </button>
+            </div>
+
+            {/* Day Trip Info Card - Above map */}
+            <div>
+              <MapViewHint
+                imageOnRight={true}
+                cardNumber={3}
+                isJourneyInfo={true}
+                journeySlug={currentDayTrip.slug}
+                station={{
+                  id: '',
+                  name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
+                  journeyName: currentDayTripRoute,
+                  date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
+                  images: []
+                }}
+              />
+            </div>
+
+            <Box style={{ position: 'relative' }} className="mx-[-0.5rem] -mt-6">
+              <Box
+                sx={{
+                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '200px auto',
+                  padding: '0.5rem',
+                  borderRadius: '0.75rem'
+                }}
+              >
+                <InteractiveMap
+                  places={currentDayTripPlaces}
+                  routeSegments={currentDayTrip?.segments}
+                  routeCoordinates={getRouteCoordinatesFromSegments(currentDayTrip?.segments)}
+                  journeyDate={currentDayTrip?.startDate}
+                />
+              </Box>
+
+              {/* Previous Button */}
+              <button
+                onClick={handlePrevDayTrip}
+                disabled={currentDayTripIndex === 0}
+                className={`group absolute left-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_prev.webp"
+                  alt={tr.previousJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_prev_hover.webp"
+                  alt={tr.previousJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNextDayTrip}
+                disabled={currentDayTripIndex === dayTripJourneys.length - 1}
+                className={`group absolute right-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_next.webp"
+                  alt={tr.nextJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_next_hover.webp"
+                  alt={tr.nextJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
+            </Box>
+          </div>
+        </Box>
+      )}
 
       <Box
         component="section"
