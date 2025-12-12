@@ -47,12 +47,12 @@ export default function StationsPage() {
 
   const itemsPerPage = 12
 
-  // Mapping of filter IDs to home location names
+  // Mapping of filter IDs to home location names (must match database exactly)
   const homeFilterMap: { [key: string]: string } = {
-    'new_york': 'New York',
-    'berkeley': 'Berkeley',
-    'palo_alto': 'Palo Alto',
-    'san_francisco': 'San Francisco'
+    'new_york': 'New York, NY',
+    'berkeley': 'Berkeley, CA',
+    'palo_alto': 'Palo Alto, CA',
+    'san_francisco': 'San Francisco, CA'
   }
 
   // Fetch destinations from API
