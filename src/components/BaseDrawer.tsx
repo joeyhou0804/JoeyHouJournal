@@ -210,8 +210,8 @@ export default function FilterDrawerBase({
                     src={`/images/buttons/ok_button_${locale}.png`}
                     alt={locale === 'zh' ? '确定' : 'OK'}
                     sx={{
-                      height: 'auto',
-                      width: '12rem'
+                      height: '4rem',
+                      width: 'auto'
                     }}
                   />
                 </Box>
