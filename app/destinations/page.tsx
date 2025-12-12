@@ -328,7 +328,7 @@ export default function StationsPage() {
         showOkButton={true}
       >
         <MixedText
-          text={locale === 'zh' ? '没有符合条件的结果。' : 'There is no result.'}
+          text={locale === 'zh' ? '没有符合条件的结果。' : 'There is no matching result.'}
           chineseFont="MarioFontChinese, sans-serif"
           englishFont="MarioFont, sans-serif"
           fontSize={{ xs: '18px', sm: '20px' }}
