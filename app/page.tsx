@@ -560,6 +560,7 @@ export default function Home() {
                     src={`/images/buttons/view_details_button_${locale}.png`}
                     alt="View Details"
                     className="h-12 w-auto hover:scale-105 transition-transform duration-200"
+                    sx={{ objectFit: 'contain', display: 'block' }}
                   />
                 </Box>
               </Link>
@@ -774,7 +775,7 @@ export default function Home() {
                   component="img"
                   src={`/images/buttons/view_details_button_${locale}.png`}
                   alt="View Details"
-                  sx={{ height: '70px', width: 'auto', display: 'block' }}
+                  sx={{ height: '70px', width: 'auto', display: 'block', objectFit: 'contain' }}
                 />
               </Box>
             </Box>
@@ -1015,6 +1016,7 @@ export default function Home() {
                     src={`/images/buttons/view_details_button_${locale}.png`}
                     alt="View Details"
                     className="h-12 w-auto hover:scale-105 transition-transform duration-200"
+                    sx={{ objectFit: 'contain', display: 'block' }}
                   />
                 </Box>
               </Link>
@@ -1199,7 +1201,7 @@ export default function Home() {
                   component="img"
                   src={`/images/buttons/view_details_button_${locale}.png`}
                   alt="View Details"
-                  sx={{ height: '70px', width: 'auto', display: 'block' }}
+                  sx={{ height: '70px', width: 'auto', display: 'block', objectFit: 'contain' }}
                 />
               </Box>
             </Box>

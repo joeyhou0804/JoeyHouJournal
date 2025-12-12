@@ -44,7 +44,7 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               left: { xs: 'auto', sm: '-50px' },
               top: { xs: 'auto', sm: '50%' },
               transform: { xs: 'none', sm: 'translateY(-50%)' },
-              width: { xs: 'calc(100% - 1rem)', sm: '400px' },
+              width: { xs: 'calc(75% - 0.5rem)', sm: '400px' },
               height: { xs: 'auto', sm: '400px' },
               aspectRatio: { xs: '1', sm: 'auto' },
               borderRadius: '20px',
@@ -53,7 +53,7 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
               marginTop: { xs: '-3rem', sm: '0' },
               marginLeft: { xs: '0.5rem', sm: '0' },
-              marginRight: { xs: '0.5rem', sm: '0' }
+              marginRight: { xs: 'auto', sm: '0' }
             }}
           >
             {journey.image ? (
@@ -142,7 +142,7 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               right: { xs: 'auto', sm: '-50px' },
               top: { xs: 'auto', sm: '50%' },
               transform: { xs: 'none', sm: 'translateY(-50%)' },
-              width: { xs: 'calc(100% - 1rem)', sm: '400px' },
+              width: { xs: 'calc(75% - 0.5rem)', sm: '400px' },
               height: { xs: 'auto', sm: '400px' },
               aspectRatio: { xs: '1', sm: 'auto' },
               borderRadius: '20px',
@@ -150,7 +150,7 @@ export default function JourneyCard({ journey, index }: JourneyCardProps) {
               zIndex: 10,
               boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
               marginTop: { xs: '-3rem', sm: '0' },
-              marginLeft: { xs: '0.5rem', sm: '0' },
+              marginLeft: { xs: 'auto', sm: '0' },
               marginRight: { xs: '0.5rem', sm: '0' }
             }}
           >
