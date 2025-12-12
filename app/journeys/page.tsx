@@ -536,7 +536,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Journey Info Card - Above map on xs screens */}
-          <div className="block sm:hidden">
+          <div className="block sm:hidden mt-12">
             <MapViewHint
               imageOnRight={true}
               cardNumber={2}
@@ -847,7 +847,7 @@ export default function JourneysPage() {
             </div>
 
             {/* Day Trip Info Card - Above map */}
-            <div>
+            <div className="mt-12">
               <MapViewHint
                 imageOnRight={true}
                 cardNumber={3}
