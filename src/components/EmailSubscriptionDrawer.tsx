@@ -226,7 +226,7 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
             fontSize={{ xs: locale === 'zh' ? '32px' : '28px', sm: locale === 'zh' ? '36px' : '32px' }}
             color="#373737"
             component="h2"
-            sx={{ textAlign: 'center', marginBottom: '1.5rem' }}
+            sx={{ textAlign: 'center', marginBottom: { xs: '1rem', sm: '1.5rem' } }}
           />
 
           {/* Description */}
@@ -236,14 +236,14 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
               fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
               color: '#373737',
               textAlign: 'center',
-              marginBottom: '2rem'
+              marginBottom: { xs: '1.25rem', sm: '2rem' }
             }}
           >
             {t.emailSubscription?.description || 'Subscribe to get updates about my travels!'}
           </Box>
 
           {/* Name Field */}
-          <Box sx={{ marginBottom: '1.5rem' }}>
+          <Box sx={{ marginBottom: { xs: '1rem', sm: '1.5rem' } }}>
             <Box
               component="label"
               sx={{
@@ -276,7 +276,7 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
           </Box>
 
           {/* Email Field */}
-          <Box sx={{ marginBottom: '1.5rem' }}>
+          <Box sx={{ marginBottom: { xs: '1rem', sm: '1.5rem' } }}>
             <Box
               component="label"
               sx={{
@@ -325,7 +325,7 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
           </Box>
 
           {/* Language Toggle */}
-          <Box sx={{ marginBottom: '2rem' }}>
+          <Box sx={{ marginBottom: { xs: '1.25rem', sm: '2rem' } }}>
             <Box
               component="label"
               sx={{
@@ -406,6 +406,17 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
               </Box>
             </Box>
           </Box>
+
+          {/* Divider */}
+          <Box
+            sx={{
+              width: 'calc(100% - 1rem)',
+              height: '4px',
+              backgroundColor: '#373737',
+              borderRadius: '2px',
+              margin: '0 auto 2rem auto'
+            }}
+          />
 
           {/* Subscribe Button */}
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

@@ -152,6 +152,17 @@ export default function SubscriptionResultDrawer({
             {message}
           </Box>
 
+          {/* Divider */}
+          <Box
+            sx={{
+              width: 'calc(100% - 1rem)',
+              height: '4px',
+              backgroundColor: '#373737',
+              borderRadius: '2px',
+              margin: '0 auto 2rem auto'
+            }}
+          />
+
           {/* OK Button */}
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <Box
@@ -169,7 +180,10 @@ export default function SubscriptionResultDrawer({
                 component="img"
                 src={`/images/buttons/ok_button_${locale}.png`}
                 alt="OK"
-                className="h-16 w-auto xs:h-14"
+                sx={{
+                  height: 'auto',
+                  width: { xs: '15rem', sm: '16rem' }
+                }}
               />
             </Box>
           </Box>
