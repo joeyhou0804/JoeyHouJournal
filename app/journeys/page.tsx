@@ -130,16 +130,45 @@ export default function JourneysPage() {
   const allDayTripJourneys = journeysData.filter((journey: any) => journey.isDayTrip)
 
   // Apply transportation filter to regular journeys
-  // TODO: Implement filtering logic after database fields are updated
   const filterByTransportation = (journeys: any[]) => {
-    // Filtering disabled until database fields are added
+    if (selectedTransportationFilter === 'all_transportation') {
+      return journeys
+    }
+
+    if (selectedTransportationFilter === 'train_only') {
+      // Show only train trips (isTrainTrip === true)
+      return journeys.filter((journey: any) => journey.isTrainTrip === true)
+    }
+
+    if (selectedTransportationFilter === 'other_transportation') {
+      // Show other transportation (isTrainTrip === false)
+      return journeys.filter((journey: any) => journey.isTrainTrip === false)
+    }
+
     return journeys
   }
 
   // Apply day trip filter
-  // TODO: Implement filtering logic after database fields are updated
   const filterDayTrips = (journeys: any[]) => {
-    // Filtering disabled until database fields are added
+    if (selectedDayTripFilter === 'all_day_trips') {
+      return journeys
+    }
+
+    if (selectedDayTripFilter === 'around_home') {
+      // Show trips around home (isAroundHome === true)
+      return journeys.filter((journey: any) => journey.isAroundHome === true)
+    }
+
+    if (selectedDayTripFilter === 'around_new_york') {
+      // Show trips around New York (isAroundNewYork === true)
+      return journeys.filter((journey: any) => journey.isAroundNewYork === true)
+    }
+
+    if (selectedDayTripFilter === 'with_others') {
+      // Show trips with others (tripWithOthers === true)
+      return journeys.filter((journey: any) => journey.tripWithOthers === true)
+    }
+
     return journeys
   }
 
