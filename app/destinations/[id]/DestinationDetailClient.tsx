@@ -257,18 +257,31 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
 
         {/* About/Description - Full Width */}
         {station.description && (
-          <Box sx={{ textAlign: 'center', width: '100%', margin: '0 auto 3rem', paddingX: { xs: '1rem', sm: '2rem', md: '2rem', lg: '3rem' } }}>
+          <Box sx={{ textAlign: { xs: 'left', sm: 'center' }, width: '100%', margin: '0 auto 3rem', paddingX: { xs: '1rem', sm: '2rem', md: '2rem', lg: '3rem' } }}>
             <Box
               component="div"
               sx={{
                 fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                fontSize: { xs: '18px', sm: '26px', md: '28px' },
+                fontSize: { xs: '16px', sm: '26px', md: '28px' },
                 color: '#373737',
-                whiteSpace: 'pre-line',
-                lineHeight: { xs: '1.7', sm: '1.8' }
+                lineHeight: { xs: '1.7', sm: '1.8' },
+                fontWeight: { xs: 'bold', sm: 'normal' },
+                '& > *:not(:last-child)': {
+                  marginBottom: { xs: locale === 'zh' ? '0' : '1.5rem', sm: '0' }
+                }
               }}
             >
-              {locale === 'zh' && station.descriptionCN ? station.descriptionCN : station.description}
+              {isXsScreen
+                ? (locale === 'zh' && station.descriptionCN ? station.descriptionCN : station.description)
+                    .split('\n')
+                    .filter(line => line.trim())
+                    .map((paragraph, index) => (
+                      <Box key={index} component="p" sx={{ margin: 0 }}>
+                        {paragraph}
+                      </Box>
+                    ))
+                : (locale === 'zh' && station.descriptionCN ? station.descriptionCN : station.description)
+              }
             </Box>
           </Box>
         )}

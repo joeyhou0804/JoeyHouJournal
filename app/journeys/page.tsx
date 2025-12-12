@@ -10,6 +10,7 @@ import JourneyCard from 'src/components/JourneyCard'
 import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
+import SortDrawer from 'src/components/SortDrawer'
 import MixedText from 'src/components/MixedText'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
@@ -44,6 +45,7 @@ export default function JourneysPage() {
   const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
+  const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
@@ -264,6 +266,11 @@ export default function JourneysPage() {
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
+      />
+      <SortDrawer
+        isOpen={isSortDrawerOpen}
+        onClose={() => setIsSortDrawerOpen(false)}
+        onSort={handleSortChange}
       />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
@@ -675,15 +682,15 @@ export default function JourneysPage() {
               text={tr.clickToViewDetails}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
-              fontSize={{ xs: '20px', sm: '28px' }}
+              fontSize={{ xs: '16px', sm: '28px' }}
               color="#373737"
               component="p"
               sx={{ margin: 0 }}
             />
           </div>
 
-          {/* Sort Buttons */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:mb-12 xs:flex-col">
+          {/* Sort Buttons - Desktop */}
+          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
             <button
               onClick={() => handleSortChange('latest')}
               className="hover:scale-105 transition-transform duration-200"
@@ -691,7 +698,7 @@ export default function JourneysPage() {
               <img
                 src={`/images/buttons/latest_first_button_${locale}.png`}
                 alt={tr.latestFirst}
-                className="h-16 w-auto xs:h-12"
+                className="h-16 w-auto"
               />
             </button>
             <button
@@ -701,7 +708,21 @@ export default function JourneysPage() {
               <img
                 src={`/images/buttons/earliest_first_button_${locale}.png`}
                 alt={tr.earliestFirst}
-                className="h-16 w-auto xs:h-12"
+                className="h-16 w-auto"
+              />
+            </button>
+          </div>
+
+          {/* Sort Button - Mobile */}
+          <div className="hidden xs:flex justify-center items-center mb-12">
+            <button
+              onClick={() => setIsSortDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={`/images/buttons/sort_button_${locale}.png`}
+                alt={locale === 'zh' ? '排序' : 'Sort'}
+                className="h-16 w-auto"
               />
             </button>
           </div>
