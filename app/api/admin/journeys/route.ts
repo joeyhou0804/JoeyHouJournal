@@ -5,6 +5,7 @@ import {
   createJourney,
   updateJourney,
   deleteJourney,
+  syncJourneyNamesToDestinations,
 } from '@/lib/db'
 import { sendNewJourneyEmails } from '@/lib/email'
 
@@ -137,6 +138,10 @@ export async function PUT(request: Request) {
     if (!updated) {
       return NextResponse.json({ error: 'Journey not found' }, { status: 404 })
     }
+
+    // Sync journey names to all destinations that reference this journey
+    const syncedCount = await syncJourneyNamesToDestinations(updatedJourney.id)
+    console.log(`Synced journey names to ${syncedCount} destination(s)`)
 
     return NextResponse.json({ success: true, journey: dbToApi(updated) })
   } catch (error) {

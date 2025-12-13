@@ -200,6 +200,22 @@ export async function updateJourney(id: string, journey: Partial<Journey>): Prom
   return rows[0]
 }
 
+export async function syncJourneyNamesToDestinations(journeyId: string): Promise<number> {
+  // Update all destinations that reference this journey with the latest journey names
+  const result = await sql`
+    UPDATE destinations d
+    SET
+      journey_name = j.name,
+      journey_name_cn = j.name_cn,
+      updated_at = NOW()
+    FROM journeys j
+    WHERE d.journey_id = j.id
+      AND d.journey_id = ${journeyId}
+      AND (d.journey_name != j.name OR d.journey_name_cn != j.name_cn OR d.journey_name IS NULL)
+  `
+  return result.rowCount || 0
+}
+
 export async function deleteJourney(id: string): Promise<boolean> {
   // First, clear the journey relationship from all associated destinations
   await sql`
