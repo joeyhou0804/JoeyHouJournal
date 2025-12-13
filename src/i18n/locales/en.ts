@@ -37,6 +37,8 @@ export const en = {
     mapHint2Date: 'Use the side buttons to navigate through them.',
     duration: 'Duration',
     places: 'places',
+    noResults: 'Oh no...',
+    noMatchingResult: 'There is no matching result.',
   },
 
   // Destinations Page

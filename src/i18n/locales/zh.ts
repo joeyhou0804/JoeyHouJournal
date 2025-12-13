@@ -38,6 +38,8 @@ export const zh: Translations = {
     mapHint2Route: '金色标记表示多次访问的城市。',
     mapHint2Date: '使用侧边按钮浏览它们。',
     duration: '时长',
+    noResults: '哎呀...',
+    noMatchingResult: '没有符合条件的结果。',
     places: '个地点',
   },
 

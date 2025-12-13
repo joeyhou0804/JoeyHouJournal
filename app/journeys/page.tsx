@@ -15,6 +15,9 @@ import TransportationFilterDrawer from 'src/components/TransportationFilterDrawe
 import DayTripFilterDrawer from 'src/components/DayTripFilterDrawer'
 import GroupSizeFilterDrawer from 'src/components/GroupSizeFilterDrawer'
 import DayTripGroupSizeFilterDrawer from 'src/components/DayTripGroupSizeFilterDrawer'
+import TripLengthFilterDrawer from 'src/components/TripLengthFilterDrawer'
+import ListGroupSizeFilterDrawer from 'src/components/ListGroupSizeFilterDrawer'
+import CombinedOtherFilterDrawer from 'src/components/CombinedOtherFilterDrawer'
 import MixedText from 'src/components/MixedText'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
@@ -54,10 +57,16 @@ export default function JourneysPage() {
   const [isDayTripFilterDrawerOpen, setIsDayTripFilterDrawerOpen] = useState(false)
   const [isGroupSizeFilterDrawerOpen, setIsGroupSizeFilterDrawerOpen] = useState(false)
   const [isDayTripGroupSizeFilterDrawerOpen, setIsDayTripGroupSizeFilterDrawerOpen] = useState(false)
+  const [isTripLengthFilterDrawerOpen, setIsTripLengthFilterDrawerOpen] = useState(false)
   const [selectedTransportationFilter, setSelectedTransportationFilter] = useState<string>('all_transportation')
   const [selectedDayTripFilter, setSelectedDayTripFilter] = useState<string>('all_day_trips')
   const [selectedGroupSizeFilter, setSelectedGroupSizeFilter] = useState<string>('all_group_sizes')
   const [selectedDayTripGroupSizeFilter, setSelectedDayTripGroupSizeFilter] = useState<string>('all_day_trip_group_sizes')
+  const [selectedTripLengthFilter, setSelectedTripLengthFilter] = useState<string>('all_trips')
+  const [isListGroupSizeFilterDrawerOpen, setIsListGroupSizeFilterDrawerOpen] = useState(false)
+  const [selectedListGroupSizeFilter, setSelectedListGroupSizeFilter] = useState<string>('all_group_sizes')
+  const [isCombinedOtherFilterDrawerOpen, setIsCombinedOtherFilterDrawerOpen] = useState(false)
+  const [selectedCombinedOtherFilter, setSelectedCombinedOtherFilter] = useState<string>('all_transportation')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
@@ -283,7 +292,76 @@ export default function JourneysPage() {
     setCurrentDayTripIndex((prev) => (prev + 1) % dayTripJourneys.length)
   }
 
-  const sortedTrips = [...trips].sort((a, b) => {
+  // Filter trips by trip length and group size combined
+  const filterTrips = (trips: any[]) => {
+    let filtered = trips
+
+    // First filter by trip length
+    if (selectedTripLengthFilter === 'long_trips') {
+      filtered = filtered.filter((trip) => {
+        const journey = journeysData.find(j => j.slug === trip.slug)
+        return journey && journey.isDayTrip === false
+      })
+    } else if (selectedTripLengthFilter === 'day_trips') {
+      filtered = filtered.filter((trip) => {
+        const journey = journeysData.find(j => j.slug === trip.slug)
+        return journey && journey.isDayTrip === true
+      })
+    }
+
+    // Then filter by group size based on trip length context
+    if (selectedListGroupSizeFilter !== 'all_group_sizes') {
+      filtered = filtered.filter((trip) => {
+        const journey = journeysData.find(j => j.slug === trip.slug)
+        if (!journey) return false
+
+        const isAlone = selectedListGroupSizeFilter === 'visit_by_myself'
+
+        // For day trips, use tripWithOthers field
+        if (journey.isDayTrip) {
+          return isAlone ? journey.tripWithOthers === false : journey.tripWithOthers === true
+        } else {
+          // For long trips, use travelWithOthers field
+          return isAlone ? journey.travelWithOthers === false : journey.travelWithOthers === true
+        }
+      })
+    }
+
+    // Finally filter by combined other filter
+    if (selectedTripLengthFilter === 'long_trips') {
+      // Apply transportation filter for long trips
+      if (selectedCombinedOtherFilter === 'train_only') {
+        filtered = filtered.filter((trip) => {
+          const journey = journeysData.find(j => j.slug === trip.slug)
+          return journey && journey.isTrainTrip === true
+        })
+      } else if (selectedCombinedOtherFilter === 'other_transportation') {
+        filtered = filtered.filter((trip) => {
+          const journey = journeysData.find(j => j.slug === trip.slug)
+          return journey && journey.isTrainTrip === false
+        })
+      }
+    } else if (selectedTripLengthFilter === 'day_trips') {
+      // Apply day trip location filter
+      if (selectedCombinedOtherFilter === 'around_home') {
+        filtered = filtered.filter((trip) => {
+          const journey = journeysData.find(j => j.slug === trip.slug)
+          return journey && journey.isAroundHome === true
+        })
+      } else if (selectedCombinedOtherFilter === 'around_new_york') {
+        filtered = filtered.filter((trip) => {
+          const journey = journeysData.find(j => j.slug === trip.slug)
+          return journey && journey.isAroundNewYork === true
+        })
+      }
+    }
+
+    return filtered
+  }
+
+  const filteredTrips = filterTrips(trips)
+
+  const sortedTrips = [...filteredTrips].sort((a, b) => {
     // Sort by index/order - latest means start of list, earliest means end
     const indexA = trips.indexOf(a)
     const indexB = trips.indexOf(b)
@@ -322,6 +400,33 @@ export default function JourneysPage() {
 
   const handleDayTripGroupSizeFilterChange = (filterId: string) => {
     setSelectedDayTripGroupSizeFilter(filterId)
+  }
+
+  const handleTripLengthFilterChange = (filterId: string) => {
+    setSelectedTripLengthFilter(filterId)
+    setSelectedListGroupSizeFilter('all_group_sizes') // Reset group size filter when trip length changes
+    // Reset combined other filter based on new trip length
+    if (filterId === 'long_trips') {
+      setSelectedCombinedOtherFilter('all_transportation')
+    } else if (filterId === 'day_trips') {
+      setSelectedCombinedOtherFilter('all_day_trips')
+    } else {
+      setSelectedCombinedOtherFilter('all_transportation')
+    }
+    setCurrentPage(1) // Reset to first page when filter changes
+    setXsDisplayCount(itemsPerPage) // Reset xs display count when filter changes
+  }
+
+  const handleListGroupSizeFilterChange = (filterId: string) => {
+    setSelectedListGroupSizeFilter(filterId)
+    setCurrentPage(1) // Reset to first page when filter changes
+    setXsDisplayCount(itemsPerPage) // Reset xs display count when filter changes
+  }
+
+  const handleCombinedOtherFilterChange = (filterId: string) => {
+    setSelectedCombinedOtherFilter(filterId)
+    setCurrentPage(1) // Reset to first page when filter changes
+    setXsDisplayCount(itemsPerPage) // Reset xs display count when filter changes
   }
 
   const handleShowMore = () => {
@@ -421,6 +526,23 @@ export default function JourneysPage() {
         isOpen={isDayTripGroupSizeFilterDrawerOpen}
         onClose={() => setIsDayTripGroupSizeFilterDrawerOpen(false)}
         onFilterChange={handleDayTripGroupSizeFilterChange}
+      />
+      <TripLengthFilterDrawer
+        isOpen={isTripLengthFilterDrawerOpen}
+        onClose={() => setIsTripLengthFilterDrawerOpen(false)}
+        onFilterChange={handleTripLengthFilterChange}
+      />
+      <ListGroupSizeFilterDrawer
+        key={selectedTripLengthFilter}
+        isOpen={isListGroupSizeFilterDrawerOpen}
+        onClose={() => setIsListGroupSizeFilterDrawerOpen(false)}
+        onFilterChange={handleListGroupSizeFilterChange}
+      />
+      <CombinedOtherFilterDrawer
+        isOpen={isCombinedOtherFilterDrawerOpen}
+        onClose={() => setIsCombinedOtherFilterDrawerOpen(false)}
+        tripLengthFilter={selectedTripLengthFilter}
+        onFilterChange={handleCombinedOtherFilterChange}
       />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
@@ -633,23 +755,26 @@ export default function JourneysPage() {
           </div>
 
           {/* Journey Info Card - Above map on xs screens */}
-          <div className="block sm:hidden mt-12">
-            <MapViewHint
-              imageOnRight={true}
-              cardNumber={2}
-              isJourneyInfo={true}
-              journeySlug={currentJourney.slug}
-              station={{
-                id: '',
-                name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
-                journeyName: currentJourneyRoute,
-                date: formatDuration(currentJourney.days, currentJourney.nights, tr),
-                images: []
-              }}
-            />
-          </div>
+          {currentJourney && (
+            <div className="block sm:hidden mt-12">
+              <MapViewHint
+                imageOnRight={true}
+                cardNumber={2}
+                isJourneyInfo={true}
+                journeySlug={currentJourney.slug}
+                station={{
+                  id: '',
+                  name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
+                  journeyName: currentJourneyRoute,
+                  date: formatDuration(currentJourney.days, currentJourney.nights, tr),
+                  images: []
+                }}
+              />
+            </div>
+          )}
 
-          <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem] xs:-mt-6">
+          {currentJourney && (
+            <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem] xs:-mt-6">
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
@@ -732,6 +857,7 @@ export default function JourneysPage() {
                 />
               </button>
             </Box>
+          )}
 
           {/* Day Trips & Weekend Trips Map Section - Desktop Only */}
           {dayTripJourneys.length > 0 && currentDayTrip && (
@@ -1112,8 +1238,8 @@ export default function JourneysPage() {
             </button>
           </div>
 
-          {/* Sort Button - Mobile */}
-          <div className="hidden xs:flex justify-center items-center mb-12">
+          {/* Sort Button and Filter Buttons - Mobile */}
+          <div className="hidden xs:flex flex-col items-center gap-2 mb-12">
             <button
               onClick={() => setIsSortDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -1124,21 +1250,98 @@ export default function JourneysPage() {
                 className="h-16 w-auto"
               />
             </button>
+            <button
+              onClick={() => setIsTripLengthFilterDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={
+                  selectedTripLengthFilter === 'all_trips'
+                    ? `/images/buttons/filter_by_trip_length_${locale}.png`
+                    : `/images/buttons/filter_by_trip_length_selected_${locale}.png`
+                }
+                alt={locale === 'zh' ? '用旅行时长筛选' : 'Filter by Trip Length'}
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => setIsListGroupSizeFilterDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={
+                  selectedListGroupSizeFilter === 'all_group_sizes'
+                    ? `/images/buttons/filter_by_group_size_${locale}.png`
+                    : `/images/buttons/filter_by_group_size_selected_${locale}.png`
+                }
+                alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => setIsCombinedOtherFilterDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={
+                  (selectedTripLengthFilter === 'long_trips' && selectedCombinedOtherFilter === 'all_transportation') ||
+                  (selectedTripLengthFilter === 'day_trips' && selectedCombinedOtherFilter === 'all_day_trips') ||
+                  selectedTripLengthFilter === 'all_trips'
+                    ? `/images/buttons/other_filters_button_${locale}.png`
+                    : `/images/buttons/other_filters_button_selected_${locale}.png`
+                }
+                alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
+                className="h-16 w-auto"
+              />
+            </button>
           </div>
+
+          {/* Empty State - When no results */}
+          {sortedTrips.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-24">
+              <MixedText
+                text={tr.noResults}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize={{ xs: '32px', sm: '48px' }}
+                color="#373737"
+                component="h2"
+                sx={{
+                  textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                  margin: 0,
+                  marginBottom: '16px',
+                  textAlign: 'center'
+                }}
+              />
+              <MixedText
+                text={tr.noMatchingResult}
+                chineseFont="MarioFontChinese, sans-serif"
+                englishFont="MarioFont, sans-serif"
+                fontSize={{ xs: '16px', sm: '24px' }}
+                color="#373737"
+                component="p"
+                sx={{ margin: 0, textAlign: 'center' }}
+              />
+            </div>
+          )}
 
           {/* Journeys Grid - Desktop with pagination */}
-          <div className="hidden sm:grid grid-cols-1 gap-48">
-            {displayedTrips.map((trip, index) => (
-              <JourneyCard key={trip.slug} journey={trip} index={index} />
-            ))}
-          </div>
+          {sortedTrips.length > 0 && (
+            <div className="hidden sm:grid grid-cols-1 gap-48">
+              {displayedTrips.map((trip, index) => (
+                <JourneyCard key={trip.slug} journey={trip} index={index} />
+              ))}
+            </div>
+          )}
 
           {/* Journeys Grid - XS with show more */}
-          <div className="grid sm:hidden grid-cols-1 gap-12">
-            {displayedTripsXs.map((trip, index) => (
-              <JourneyCard key={trip.slug} journey={trip} index={index} />
-            ))}
-          </div>
+          {sortedTrips.length > 0 && (
+            <div className="grid sm:hidden grid-cols-1 gap-12">
+              {displayedTripsXs.map((trip, index) => (
+                <JourneyCard key={trip.slug} journey={trip} index={index} />
+              ))}
+            </div>
+          )}
 
           {/* Show More Button - XS only */}
           {xsDisplayCount < sortedTrips.length && (
