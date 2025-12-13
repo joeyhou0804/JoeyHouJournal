@@ -287,10 +287,10 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize={{ xs: '40px', sm: '64px' }}
-              color="#373737"
+              color="#F6F6F6"
               component="h2"
               sx={{
-                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
                 margin: 0
               }}
             />

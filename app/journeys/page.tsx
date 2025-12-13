@@ -392,7 +392,7 @@ export default function JourneysPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
@@ -529,7 +529,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Mobile: View Hints Button and Filters */}
-          <div className="hidden xs:flex flex-col items-center gap-6 mb-12">
+          <div className="hidden xs:flex flex-col items-center mb-12">
             {/* View Hints Button */}
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
@@ -541,6 +541,17 @@ export default function JourneysPage() {
                 className="h-16 w-auto"
               />
             </button>
+
+            {/* Divider - Light */}
+            <Box
+              sx={{
+                width: 'calc(100% - 2rem)',
+                height: '4px',
+                backgroundColor: '#F6F6F6',
+                borderRadius: '2px',
+                margin: '1.5rem auto 1.5rem auto'
+              }}
+            />
 
             {/* Filter Buttons Group */}
             <div className="flex flex-col items-center gap-2">
@@ -905,7 +916,7 @@ export default function JourneysPage() {
             </div>
 
             {/* Mobile: View Hints Button and Day Trip Filters */}
-            <div className="flex flex-col items-center gap-6 mb-12">
+            <div className="flex flex-col items-center mb-12">
               {/* View Hints Button */}
               <button
                 onClick={() => setIsViewHintsDrawerOpen(true)}
@@ -917,6 +928,17 @@ export default function JourneysPage() {
                   className="h-16 w-auto"
                 />
               </button>
+
+              {/* Divider - Light */}
+              <Box
+                sx={{
+                  width: 'calc(100% - 2rem)',
+                  height: '4px',
+                  backgroundColor: '#F6F6F6',
+                  borderRadius: '2px',
+                  margin: '1.5rem auto 1.5rem auto'
+                }}
+              />
 
               {/* Filter Buttons Group */}
               <div className="flex flex-col items-center gap-2">

@@ -418,17 +418,17 @@ export default function StationsPage() {
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize={{ xs: '40px', sm: '64px' }}
-              color="#373737"
+              color="#F6F6F6"
               component="h2"
               sx={{
-                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
                 margin: 0
               }}
             />
           </div>
 
           {/* View Hints and Filter Buttons - Mobile Only */}
-          <div className="hidden xs:flex flex-col items-center gap-6 mb-12">
+          <div className="hidden xs:flex flex-col items-center mb-12">
             {/* View Hints Button */}
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
@@ -440,6 +440,17 @@ export default function StationsPage() {
                 className="h-16 w-auto"
               />
             </button>
+
+            {/* Divider - Light */}
+            <Box
+              sx={{
+                width: 'calc(100% - 2rem)',
+                height: '4px',
+                backgroundColor: '#F6F6F6',
+                borderRadius: '2px',
+                margin: '1.5rem auto 1.5rem auto'
+              }}
+            />
 
             {/* Filter Buttons Group */}
             <div className="flex flex-col items-center gap-2">
