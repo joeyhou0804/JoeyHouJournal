@@ -13,6 +13,7 @@ interface FilterDrawerBaseProps {
   titleZh: string
   children: ReactNode
   showOkButton?: boolean
+  buttonType?: 'ok' | 'all_set'
   width?: { xs: string, sm?: string }
 }
 
@@ -23,6 +24,7 @@ export default function FilterDrawerBase({
   titleZh,
   children,
   showOkButton = true,
+  buttonType = 'ok',
   width = { xs: '90%' }
 }: FilterDrawerBaseProps) {
   const { locale } = useLanguage()
@@ -207,8 +209,8 @@ export default function FilterDrawerBase({
                 >
                   <Box
                     component="img"
-                    src={`/images/buttons/ok_button_${locale}.png`}
-                    alt={locale === 'zh' ? '确定' : 'OK'}
+                    src={`/images/buttons/${buttonType === 'all_set' ? 'all_set_button' : 'ok_button'}_${locale}.png`}
+                    alt={locale === 'zh' ? (buttonType === 'all_set' ? '设置完成' : '确定') : (buttonType === 'all_set' ? 'All Set' : 'OK')}
                     sx={{
                       height: 'auto',
                       width: { xs: '15rem', sm: '16rem' }

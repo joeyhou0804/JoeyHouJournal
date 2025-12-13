@@ -51,6 +51,7 @@ export default function SingleSelectFilterDrawer({
       onClose={onClose}
       titleEn={titleEn}
       titleZh={titleZh}
+      buttonType="all_set"
     >
       {/* Selected filter display banner */}
       {showSelectedBanner && (
