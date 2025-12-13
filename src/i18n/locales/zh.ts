@@ -58,6 +58,8 @@ export const zh: Translations = {
     location: '位置',
     route: '路线',
     date: '日期',
+    noResults: '哎呀...',
+    noMatchingResult: '没有符合条件的结果。',
   },
 
   // Buttons & Actions

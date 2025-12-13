@@ -1217,8 +1217,14 @@ export default function JourneysPage() {
           {/* Sort Buttons - Desktop */}
           <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
             <button
-              onClick={() => handleSortChange('latest')}
+              onClick={() => sortedTrips.length > 0 && handleSortChange('latest')}
+              disabled={sortedTrips.length === 0}
               className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedTrips.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedTrips.length === 0 ? 0.5 : 1,
+                filter: sortedTrips.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
             >
               <img
                 src={`/images/buttons/latest_first_button_${locale}.png`}
@@ -1227,8 +1233,14 @@ export default function JourneysPage() {
               />
             </button>
             <button
-              onClick={() => handleSortChange('earliest')}
+              onClick={() => sortedTrips.length > 0 && handleSortChange('earliest')}
+              disabled={sortedTrips.length === 0}
               className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedTrips.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedTrips.length === 0 ? 0.5 : 1,
+                filter: sortedTrips.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
             >
               <img
                 src={`/images/buttons/earliest_first_button_${locale}.png`}
@@ -1241,8 +1253,14 @@ export default function JourneysPage() {
           {/* Sort Button and Filter Buttons - Mobile */}
           <div className="hidden xs:flex flex-col items-center gap-2 mb-12">
             <button
-              onClick={() => setIsSortDrawerOpen(true)}
+              onClick={() => sortedTrips.length > 0 && setIsSortDrawerOpen(true)}
+              disabled={sortedTrips.length === 0}
               className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedTrips.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedTrips.length === 0 ? 0.5 : 1,
+                filter: sortedTrips.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
             >
               <img
                 src={`/images/buttons/sort_button_${locale}.png`}

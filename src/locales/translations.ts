@@ -42,6 +42,10 @@ export const translations = {
     latestFirst: 'Latest First',
     earliestFirst: 'Earliest First',
 
+    // Empty State
+    noResults: 'Oh no...',
+    noMatchingResult: 'There is no matching result.',
+
     // Button Labels & Alt Text
     previous: 'Previous',
     next: 'Next',
@@ -154,6 +158,10 @@ export const translations = {
     // Sort Options
     latestFirst: '最新优先',
     earliestFirst: '最早优先',
+
+    // Empty State
+    noResults: '哎呀...',
+    noMatchingResult: '没有符合条件的结果。',
 
     // Button Labels & Alt Text
     previous: '上一页',

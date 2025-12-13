@@ -56,6 +56,8 @@ export const en = {
     location: 'Location',
     route: 'Route',
     date: 'Date',
+    noResults: 'Oh no...',
+    noMatchingResult: 'There is no matching result.',
   },
 
   // Buttons & Actions

@@ -399,8 +399,14 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
           {/* Sort Buttons - Desktop */}
           <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
             <button
-              onClick={() => handleSortChange('latest')}
+              onClick={() => sortedPlaces.length > 0 && handleSortChange('latest')}
+              disabled={sortedPlaces.length === 0}
               className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedPlaces.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedPlaces.length === 0 ? 0.5 : 1,
+                filter: sortedPlaces.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
             >
               <img
                 src={`/images/buttons/latest_first_button_${locale}.png`}
@@ -409,8 +415,14 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               />
             </button>
             <button
-              onClick={() => handleSortChange('earliest')}
+              onClick={() => sortedPlaces.length > 0 && handleSortChange('earliest')}
+              disabled={sortedPlaces.length === 0}
               className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedPlaces.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedPlaces.length === 0 ? 0.5 : 1,
+                filter: sortedPlaces.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
             >
               <img
                 src={`/images/buttons/earliest_first_button_${locale}.png`}
@@ -423,8 +435,14 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
           {/* Sort Button - Mobile */}
           <div className="hidden xs:flex justify-center items-center mb-12">
             <button
-              onClick={() => setIsSortDrawerOpen(true)}
+              onClick={() => sortedPlaces.length > 0 && setIsSortDrawerOpen(true)}
+              disabled={sortedPlaces.length === 0}
               className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedPlaces.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedPlaces.length === 0 ? 0.5 : 1,
+                filter: sortedPlaces.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
             >
               <img
                 src={`/images/buttons/sort_button_${locale}.png`}
@@ -434,19 +452,52 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             </button>
           </div>
 
+          {/* Empty State - When no results */}
+          {sortedPlaces.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-24">
+              <MixedText
+                text={tr.noResults}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize={{ xs: '32px', sm: '48px' }}
+                color="#373737"
+                component="h2"
+                sx={{
+                  textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                  margin: 0,
+                  marginBottom: '16px',
+                  textAlign: 'center'
+                }}
+              />
+              <MixedText
+                text={tr.noMatchingResult}
+                chineseFont="MarioFontChinese, sans-serif"
+                englishFont="MarioFont, sans-serif"
+                fontSize={{ xs: '16px', sm: '24px' }}
+                color="#373737"
+                component="p"
+                sx={{ margin: 0, textAlign: 'center' }}
+              />
+            </div>
+          )}
+
           {/* Places Grid - Desktop with pagination */}
-          <div className={`hidden sm:grid grid-cols-1 gap-48 ${totalPages <= 1 ? 'mb-48' : ''}`}>
-            {displayedPlaces.map((place, index) => (
-              <DestinationCard key={place.id} station={place} index={index} />
-            ))}
-          </div>
+          {sortedPlaces.length > 0 && (
+            <div className={`hidden sm:grid grid-cols-1 gap-48 ${totalPages <= 1 ? 'mb-48' : ''}`}>
+              {displayedPlaces.map((place, index) => (
+                <DestinationCard key={place.id} station={place} index={index} />
+              ))}
+            </div>
+          )}
 
           {/* Places Grid - XS with show more */}
-          <div className={`grid sm:hidden grid-cols-1 gap-12 ${xsDisplayCount >= sortedPlaces.length ? 'mb-12' : ''}`}>
-            {displayedPlacesXs.map((place, index) => (
-              <DestinationCard key={place.id} station={place} index={index} />
-            ))}
-          </div>
+          {sortedPlaces.length > 0 && (
+            <div className={`grid sm:hidden grid-cols-1 gap-12 ${xsDisplayCount >= sortedPlaces.length ? 'mb-12' : ''}`}>
+              {displayedPlacesXs.map((place, index) => (
+                <DestinationCard key={place.id} station={place} index={index} />
+              ))}
+            </div>
+          )}
 
           {/* Show More Button - XS only */}
           {xsDisplayCount < sortedPlaces.length && (

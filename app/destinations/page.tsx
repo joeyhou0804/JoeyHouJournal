@@ -583,8 +583,14 @@ export default function StationsPage() {
           {/* Sort Buttons - Desktop */}
           <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
             <button
-              onClick={() => handleSortChange('latest')}
+              onClick={() => sortedDestinations.length > 0 && handleSortChange('latest')}
+              disabled={sortedDestinations.length === 0}
               className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
+                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
             >
               <img
                 src={`/images/buttons/latest_first_button_${locale}.png`}
@@ -593,8 +599,14 @@ export default function StationsPage() {
               />
             </button>
             <button
-              onClick={() => handleSortChange('earliest')}
+              onClick={() => sortedDestinations.length > 0 && handleSortChange('earliest')}
+              disabled={sortedDestinations.length === 0}
               className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
+                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
             >
               <img
                 src={`/images/buttons/earliest_first_button_${locale}.png`}
@@ -604,11 +616,17 @@ export default function StationsPage() {
             </button>
           </div>
 
-          {/* Sort Button - Mobile */}
-          <div className="hidden xs:flex justify-center items-center mb-12">
+          {/* Sort Button and Filter Buttons - Mobile */}
+          <div className="hidden xs:flex flex-col items-center gap-2 mb-12">
             <button
-              onClick={() => setIsSortDrawerOpen(true)}
+              onClick={() => sortedDestinations.length > 0 && setIsSortDrawerOpen(true)}
+              disabled={sortedDestinations.length === 0}
               className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
+                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
             >
               <img
                 src={`/images/buttons/sort_button_${locale}.png`}
@@ -616,21 +634,108 @@ export default function StationsPage() {
                 className="h-16 w-auto"
               />
             </button>
+
+            {/* Divider - Dark */}
+            <Box
+              sx={{
+                width: 'calc(100% - 2rem)',
+                height: '4px',
+                backgroundColor: '#373737',
+                borderRadius: '2px',
+                margin: '1.5rem auto 1.5rem auto'
+              }}
+            />
+
+            <button
+              onClick={() => setIsFilterByHomeDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={
+                  selectedHomeFilter === 'all_destinations'
+                    ? `/images/buttons/filter_by_home_${locale}.png`
+                    : `/images/buttons/filter_by_home_selected_${locale}.png`
+                }
+                alt={locale === 'zh' ? '以家的位置筛选' : 'Filter by Home'}
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={
+                  selectedGroupSizeFilter === 'all_group_sizes'
+                    ? `/images/buttons/filter_by_group_size_${locale}.png`
+                    : `/images/buttons/filter_by_group_size_selected_${locale}.png`
+                }
+                alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => setIsOtherFiltersDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={
+                  selectedOtherFilter === 'all_destinations'
+                    ? `/images/buttons/other_filters_button_${locale}.png`
+                    : `/images/buttons/other_filters_button_selected_${locale}.png`
+                }
+                alt={locale === 'zh' ? '其他筛选条件' : 'Other Filters'}
+                className="h-16 w-auto"
+              />
+            </button>
           </div>
+
+          {/* Empty State - When no results */}
+          {sortedDestinations.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-24">
+              <MixedText
+                text={tr.noResults}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize={{ xs: '32px', sm: '48px' }}
+                color="#373737"
+                component="h2"
+                sx={{
+                  textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                  margin: 0,
+                  marginBottom: '16px',
+                  textAlign: 'center'
+                }}
+              />
+              <MixedText
+                text={tr.noMatchingResult}
+                chineseFont="MarioFontChinese, sans-serif"
+                englishFont="MarioFont, sans-serif"
+                fontSize={{ xs: '16px', sm: '24px' }}
+                color="#373737"
+                component="p"
+                sx={{ margin: 0, textAlign: 'center' }}
+              />
+            </div>
+          )}
 
           {/* Destinations Grid - Desktop with pagination */}
-          <div className="hidden sm:grid grid-cols-1 gap-48">
-            {displayedDestinations.map((destination, index) => (
-              <DestinationCard key={destination.id} station={destination} index={index} />
-            ))}
-          </div>
+          {sortedDestinations.length > 0 && (
+            <div className="hidden sm:grid grid-cols-1 gap-48">
+              {displayedDestinations.map((destination, index) => (
+                <DestinationCard key={destination.id} station={destination} index={index} />
+              ))}
+            </div>
+          )}
 
           {/* Destinations Grid - XS with show more */}
-          <div className="grid sm:hidden grid-cols-1 gap-12">
-            {displayedDestinationsXs.map((destination, index) => (
-              <DestinationCard key={destination.id} station={destination} index={index} />
-            ))}
-          </div>
+          {sortedDestinations.length > 0 && (
+            <div className="grid sm:hidden grid-cols-1 gap-12">
+              {displayedDestinationsXs.map((destination, index) => (
+                <DestinationCard key={destination.id} station={destination} index={index} />
+              ))}
+            </div>
+          )}
 
           {/* Show More Button - XS only */}
           {xsDisplayCount < sortedDestinations.length && (
