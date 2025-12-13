@@ -13,6 +13,7 @@ import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import SortDrawer from 'src/components/SortDrawer'
 import TransportationFilterDrawer from 'src/components/TransportationFilterDrawer'
 import DayTripFilterDrawer from 'src/components/DayTripFilterDrawer'
+import GroupSizeFilterDrawer from 'src/components/GroupSizeFilterDrawer'
 import MixedText from 'src/components/MixedText'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
@@ -50,8 +51,10 @@ export default function JourneysPage() {
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const [isTransportationFilterDrawerOpen, setIsTransportationFilterDrawerOpen] = useState(false)
   const [isDayTripFilterDrawerOpen, setIsDayTripFilterDrawerOpen] = useState(false)
+  const [isGroupSizeFilterDrawerOpen, setIsGroupSizeFilterDrawerOpen] = useState(false)
   const [selectedTransportationFilter, setSelectedTransportationFilter] = useState<string>('all_transportation')
   const [selectedDayTripFilter, setSelectedDayTripFilter] = useState<string>('all_day_trips')
+  const [selectedGroupSizeFilter, setSelectedGroupSizeFilter] = useState<string>('all_group_sizes')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
@@ -267,6 +270,11 @@ export default function JourneysPage() {
     setSelectedDayTripFilter(filterId)
   }
 
+  const handleGroupSizeFilterChange = (filterId: string) => {
+    setSelectedGroupSizeFilter(filterId)
+    // Note: Actual filtering logic will be added later when database columns are ready
+  }
+
   const handleShowMore = () => {
     setXsDisplayCount(prev => prev + itemsPerPage)
   }
@@ -354,6 +362,11 @@ export default function JourneysPage() {
         isOpen={isDayTripFilterDrawerOpen}
         onClose={() => setIsDayTripFilterDrawerOpen(false)}
         onFilterChange={handleDayTripFilterChange}
+      />
+      <GroupSizeFilterDrawer
+        isOpen={isGroupSizeFilterDrawerOpen}
+        onClose={() => setIsGroupSizeFilterDrawerOpen(false)}
+        onFilterChange={handleGroupSizeFilterChange}
       />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
@@ -461,7 +474,7 @@ export default function JourneysPage() {
             />
           </div>
 
-          {/* Mobile: View Hints Button and Transportation Filter */}
+          {/* Mobile: View Hints Button and Filters */}
           <div className="hidden xs:flex flex-col items-center gap-4 mb-12">
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
@@ -480,10 +493,24 @@ export default function JourneysPage() {
               <img
                 src={
                   selectedTransportationFilter === 'all_transportation'
-                    ? `/images/buttons/filter_button_${locale}.png`
-                    : `/images/buttons/filter_button_selected_${locale}.png`
+                    ? `/images/buttons/filter_by_transportation_${locale}.png`
+                    : `/images/buttons/filter_by_transportation_selected_${locale}.png`
                 }
                 alt={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={
+                  selectedGroupSizeFilter === 'all_group_sizes'
+                    ? `/images/buttons/filter_by_group_size_${locale}.png`
+                    : `/images/buttons/filter_by_group_size_selected_${locale}.png`
+                }
+                alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
                 className="h-16 w-auto"
               />
             </button>

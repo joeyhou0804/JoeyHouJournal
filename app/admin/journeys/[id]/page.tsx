@@ -52,6 +52,7 @@ export default function JourneyDetailsPage() {
     endDate: '',
     isDayTrip: false,
     isTrainTrip: false,
+    travelWithOthers: false,
     isAroundHome: false,
     isAroundNewYork: false,
     tripWithOthers: false
@@ -243,6 +244,7 @@ export default function JourneyDetailsPage() {
             endDate: data.endDate || '',
             isDayTrip: data.isDayTrip || false,
             isTrainTrip: data.isTrainTrip || false,
+            travelWithOthers: data.travelWithOthers || false,
             isAroundHome: data.isAroundHome || false,
             isAroundNewYork: data.isAroundNewYork || false,
             tripWithOthers: data.tripWithOthers || false
@@ -394,6 +396,7 @@ export default function JourneyDetailsPage() {
         endDate: formData.endDate,
         isDayTrip: formData.isDayTrip,
         isTrainTrip: formData.isTrainTrip,
+        travelWithOthers: formData.travelWithOthers,
         isAroundHome: formData.isAroundHome,
         isAroundNewYork: formData.isAroundNewYork,
         tripWithOthers: formData.tripWithOthers,
@@ -1073,23 +1076,44 @@ export default function JourneyDetailsPage() {
 
             {/* Train Trip - Only show for non-day trips */}
             {!formData.isDayTrip && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
-                <input
-                  type="checkbox"
-                  checked={formData.isTrainTrip}
-                  onChange={(e) => handleInputChange('isTrainTrip', e.target.checked)}
-                  id="isTrainTrip"
-                  style={{
-                    width: '24px',
-                    height: '24px',
-                    cursor: 'pointer',
-                    accentColor: '#FFD701'
-                  }}
-                />
-                <label htmlFor="isTrainTrip" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
-                  Train Trip
-                </label>
-              </Box>
+              <>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.isTrainTrip}
+                    onChange={(e) => handleInputChange('isTrainTrip', e.target.checked)}
+                    id="isTrainTrip"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      cursor: 'pointer',
+                      accentColor: '#FFD701'
+                    }}
+                  />
+                  <label htmlFor="isTrainTrip" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+                    Train Trip
+                  </label>
+                </Box>
+
+                {/* Travel with Others - Only show for non-day trips */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.travelWithOthers}
+                    onChange={(e) => handleInputChange('travelWithOthers', e.target.checked)}
+                    id="travelWithOthers"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      cursor: 'pointer',
+                      accentColor: '#FFD701'
+                    }}
+                  />
+                  <label htmlFor="travelWithOthers" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+                    Travel with Others
+                  </label>
+                </Box>
+              </>
             )}
 
             {/* Day trip specific options */}

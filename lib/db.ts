@@ -21,6 +21,7 @@ export interface Journey {
   is_day_trip: boolean
   // Fields for non-day trips
   is_train_trip: boolean | null
+  travel_with_others: boolean | null
   // Fields for day trips
   is_around_home: boolean | null
   is_around_new_york: boolean | null
@@ -142,7 +143,7 @@ export async function createJourney(journey: Partial<Journey>): Promise<Journey>
       start_date, end_date, duration, days, nights,
       start_location, end_location, start_display, end_display,
       visited_place_ids, total_places, images, segments, is_day_trip,
-      is_train_trip, is_around_home, is_around_new_york, trip_with_others
+      is_train_trip, travel_with_others, is_around_home, is_around_new_york, trip_with_others
     ) VALUES (
       ${journey.id}, ${journey.slug}, ${journey.name}, ${journey.name_cn},
       ${journey.start_date}, ${journey.end_date}, ${journey.duration},
@@ -157,6 +158,7 @@ export async function createJourney(journey: Partial<Journey>): Promise<Journey>
       ${JSON.stringify(journey.segments)}::jsonb,
       ${journey.is_day_trip ?? false},
       ${journey.is_train_trip ?? false},
+      ${journey.travel_with_others ?? false},
       ${journey.is_around_home ?? false},
       ${journey.is_around_new_york ?? false},
       ${journey.trip_with_others ?? false}
@@ -190,6 +192,7 @@ export async function updateJourney(id: string, journey: Partial<Journey>): Prom
       segments = ${JSON.stringify(journey.segments)}::jsonb,
       is_day_trip = ${journey.is_day_trip ?? false},
       is_train_trip = ${journey.is_train_trip ?? false},
+      travel_with_others = ${journey.travel_with_others ?? false},
       is_around_home = ${journey.is_around_home ?? false},
       is_around_new_york = ${journey.is_around_new_york ?? false},
       trip_with_others = ${journey.trip_with_others ?? false},

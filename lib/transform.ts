@@ -22,6 +22,7 @@ export function transformJourney(journey: DBJourney): any {
     segments: journey.segments,
     isDayTrip: journey.is_day_trip,
     isTrainTrip: journey.is_train_trip,
+    travelWithOthers: journey.travel_with_others,
     isAroundHome: journey.is_around_home,
     isAroundNewYork: journey.is_around_new_york,
     tripWithOthers: journey.trip_with_others
