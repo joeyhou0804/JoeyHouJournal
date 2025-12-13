@@ -14,6 +14,7 @@ import SortDrawer from 'src/components/SortDrawer'
 import TransportationFilterDrawer from 'src/components/TransportationFilterDrawer'
 import DayTripFilterDrawer from 'src/components/DayTripFilterDrawer'
 import GroupSizeFilterDrawer from 'src/components/GroupSizeFilterDrawer'
+import DayTripGroupSizeFilterDrawer from 'src/components/DayTripGroupSizeFilterDrawer'
 import MixedText from 'src/components/MixedText'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
@@ -52,9 +53,11 @@ export default function JourneysPage() {
   const [isTransportationFilterDrawerOpen, setIsTransportationFilterDrawerOpen] = useState(false)
   const [isDayTripFilterDrawerOpen, setIsDayTripFilterDrawerOpen] = useState(false)
   const [isGroupSizeFilterDrawerOpen, setIsGroupSizeFilterDrawerOpen] = useState(false)
+  const [isDayTripGroupSizeFilterDrawerOpen, setIsDayTripGroupSizeFilterDrawerOpen] = useState(false)
   const [selectedTransportationFilter, setSelectedTransportationFilter] = useState<string>('all_transportation')
   const [selectedDayTripFilter, setSelectedDayTripFilter] = useState<string>('all_day_trips')
   const [selectedGroupSizeFilter, setSelectedGroupSizeFilter] = useState<string>('all_group_sizes')
+  const [selectedDayTripGroupSizeFilter, setSelectedDayTripGroupSizeFilter] = useState<string>('all_day_trip_group_sizes')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
@@ -97,6 +100,11 @@ export default function JourneysPage() {
   useEffect(() => {
     setCurrentDayTripIndex(0)
   }, [selectedDayTripFilter])
+
+  // Reset day trip index when day trip group size filter changes
+  useEffect(() => {
+    setCurrentDayTripIndex(0)
+  }, [selectedDayTripGroupSizeFilter])
 
   // Transform journeys to trips format and add route string with images
   const trips = journeysData.map((journey: any) => {
@@ -175,7 +183,26 @@ export default function JourneysPage() {
     return journeys
   }
 
-  // Apply day trip filter
+  // Apply group size filter to day trips
+  const filterDayTripsByGroupSize = (journeys: any[]) => {
+    if (selectedDayTripGroupSizeFilter === 'all_day_trip_group_sizes') {
+      return journeys
+    }
+
+    if (selectedDayTripGroupSizeFilter === 'day_trip_by_myself') {
+      // Show day trips by myself (tripWithOthers === false)
+      return journeys.filter((journey: any) => journey.tripWithOthers === false)
+    }
+
+    if (selectedDayTripGroupSizeFilter === 'day_trip_with_others') {
+      // Show day trips with others (tripWithOthers === true)
+      return journeys.filter((journey: any) => journey.tripWithOthers === true)
+    }
+
+    return journeys
+  }
+
+  // Apply day trip filter (other filters: location-based)
   const filterDayTrips = (journeys: any[]) => {
     if (selectedDayTripFilter === 'all_day_trips') {
       return journeys
@@ -191,17 +218,12 @@ export default function JourneysPage() {
       return journeys.filter((journey: any) => journey.isAroundNewYork === true)
     }
 
-    if (selectedDayTripFilter === 'with_others') {
-      // Show trips with others (tripWithOthers === true)
-      return journeys.filter((journey: any) => journey.tripWithOthers === true)
-    }
-
     return journeys
   }
 
   // Apply filters
   const regularJourneys = filterByGroupSize(filterByTransportation(allRegularJourneys))
-  const dayTripJourneys = filterDayTrips(allDayTripJourneys)
+  const dayTripJourneys = filterDayTrips(filterDayTripsByGroupSize(allDayTripJourneys))
 
   // Get current regular journey based on index (with safety check)
   const safeJourneyIndex = regularJourneys.length > 0 ? Math.min(currentJourneyIndex, regularJourneys.length - 1) : 0
@@ -296,7 +318,10 @@ export default function JourneysPage() {
 
   const handleGroupSizeFilterChange = (filterId: string) => {
     setSelectedGroupSizeFilter(filterId)
-    // Note: Actual filtering logic will be added later when database columns are ready
+  }
+
+  const handleDayTripGroupSizeFilterChange = (filterId: string) => {
+    setSelectedDayTripGroupSizeFilter(filterId)
   }
 
   const handleShowMore = () => {
@@ -391,6 +416,11 @@ export default function JourneysPage() {
         isOpen={isGroupSizeFilterDrawerOpen}
         onClose={() => setIsGroupSizeFilterDrawerOpen(false)}
         onFilterChange={handleGroupSizeFilterChange}
+      />
+      <DayTripGroupSizeFilterDrawer
+        isOpen={isDayTripGroupSizeFilterDrawerOpen}
+        onClose={() => setIsDayTripGroupSizeFilterDrawerOpen(false)}
+        onFilterChange={handleDayTripGroupSizeFilterChange}
       />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
@@ -869,7 +899,7 @@ export default function JourneysPage() {
               />
             </div>
 
-            {/* Mobile: View Hints Button and Day Trip Filter */}
+            {/* Mobile: View Hints Button and Day Trip Filters */}
             <div className="flex flex-col items-center gap-4 mb-12">
               <button
                 onClick={() => setIsViewHintsDrawerOpen(true)}
@@ -882,16 +912,30 @@ export default function JourneysPage() {
                 />
               </button>
               <button
+                onClick={() => setIsDayTripGroupSizeFilterDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={
+                    selectedDayTripGroupSizeFilter === 'all_day_trip_group_sizes'
+                      ? `/images/buttons/filter_by_group_size_${locale}.png`
+                      : `/images/buttons/filter_by_group_size_selected_${locale}.png`
+                  }
+                  alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                  className="h-16 w-auto"
+                />
+              </button>
+              <button
                 onClick={() => setIsDayTripFilterDrawerOpen(true)}
                 className="hover:scale-105 transition-transform duration-200"
               >
                 <img
                   src={
                     selectedDayTripFilter === 'all_day_trips'
-                      ? `/images/buttons/filter_button_${locale}.png`
-                      : `/images/buttons/filter_button_selected_${locale}.png`
+                      ? `/images/buttons/other_filters_button_${locale}.png`
+                      : `/images/buttons/other_filters_button_selected_${locale}.png`
                   }
-                  alt={locale === 'zh' ? '筛选一日游' : 'Filter Day Trips'}
+                  alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
                   className="h-16 w-auto"
                 />
               </button>
