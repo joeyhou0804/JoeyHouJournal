@@ -9,6 +9,7 @@ import MapViewHint from 'src/components/MapViewHint'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import SortDrawer from 'src/components/SortDrawer'
 import FilterByHomeDrawer from 'src/components/FilterByHomeDrawer'
+import DestinationGroupSizeFilterDrawer from 'src/components/DestinationGroupSizeFilterDrawer'
 import OtherFiltersDrawer from 'src/components/OtherFiltersDrawer'
 import MixedText from 'src/components/MixedText'
 import FilterDrawerBase from 'src/components/BaseDrawer'
@@ -41,8 +42,10 @@ export default function StationsPage() {
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const [isFilterByHomeDrawerOpen, setIsFilterByHomeDrawerOpen] = useState(false)
+  const [isGroupSizeFilterDrawerOpen, setIsGroupSizeFilterDrawerOpen] = useState(false)
   const [isOtherFiltersDrawerOpen, setIsOtherFiltersDrawerOpen] = useState(false)
   const [selectedHomeFilter, setSelectedHomeFilter] = useState<string>('all_destinations')
+  const [selectedGroupSizeFilter, setSelectedGroupSizeFilter] = useState<string>('all_group_sizes')
   const [selectedOtherFilter, setSelectedOtherFilter] = useState<string>('all_destinations')
   const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isNoResultsDrawerOpen, setIsNoResultsDrawerOpen] = useState(false)
@@ -133,6 +136,26 @@ export default function StationsPage() {
   }
 
   // Filter destinations by other criteria (visited by myself, stayed overnight, etc.)
+  // Filter destinations by group size
+  const filterDestinationsByGroupSize = (destinations: any[]) => {
+    if (selectedGroupSizeFilter === 'all_group_sizes') {
+      return destinations
+    }
+
+    switch (selectedGroupSizeFilter) {
+      case 'visit_by_myself':
+        // Only show destinations where visitedByMyself is true
+        return destinations.filter(d => d.visitedByMyself === true)
+
+      case 'visit_with_others':
+        // Only show destinations where visitedByMyself is false
+        return destinations.filter(d => d.visitedByMyself === false)
+
+      default:
+        return destinations
+    }
+  }
+
   const filterDestinationsByOther = (destinations: any[]) => {
     if (selectedOtherFilter === 'all_destinations') {
       console.log('Other filter: Showing all destinations')
@@ -142,14 +165,6 @@ export default function StationsPage() {
     console.log('Applying other filter:', selectedOtherFilter)
 
     switch (selectedOtherFilter) {
-      case 'visit_by_myself':
-        // Only show destinations where visitedByMyself is true
-        return destinations.filter(d => d.visitedByMyself === true)
-
-      case 'visit_with_others':
-        // Only show destinations where visitedByMyself is false
-        return destinations.filter(d => d.visitedByMyself === false)
-
       case 'stay_overnight':
         // Only show destinations where stayedOvernight is true
         return destinations.filter(d => d.stayedOvernight === true)
@@ -180,7 +195,8 @@ export default function StationsPage() {
 
   // Apply home filter first, then other filter, then sort
   const homeFilteredDestinations = filterDestinationsByHome(destinations)
-  const filteredDestinations = filterDestinationsByOther(homeFilteredDestinations)
+  const groupSizeFilteredDestinations = filterDestinationsByGroupSize(homeFilteredDestinations)
+  const filteredDestinations = filterDestinationsByOther(groupSizeFilteredDestinations)
 
   const sortedDestinations = [...filteredDestinations].sort((a, b) => {
     const dateA = new Date(a.date).getTime()
@@ -212,6 +228,12 @@ export default function StationsPage() {
     setXsDisplayCount(itemsPerPage) // Reset xs display count when filter changes
   }
 
+  const handleGroupSizeFilterChange = (filterId: string) => {
+    setSelectedGroupSizeFilter(filterId)
+    setCurrentPage(1) // Reset to first page when filter changes
+    setXsDisplayCount(itemsPerPage) // Reset xs display count when filter changes
+  }
+
   const handleOtherFilterChange = (filterId: string) => {
     setSelectedOtherFilter(filterId)
     setCurrentPage(1) // Reset to first page when filter changes
@@ -220,14 +242,14 @@ export default function StationsPage() {
 
   // Check for no results after filters are applied
   useEffect(() => {
-    // Only check if both drawers are closed and a non-default filter is active
-    const hasActiveFilter = selectedHomeFilter !== 'all_destinations' || selectedOtherFilter !== 'all_destinations'
-    const bothDrawersClosed = !isFilterByHomeDrawerOpen && !isOtherFiltersDrawerOpen
+    // Only check if all drawers are closed and a non-default filter is active
+    const hasActiveFilter = selectedHomeFilter !== 'all_destinations' || selectedGroupSizeFilter !== 'all_group_sizes' || selectedOtherFilter !== 'all_destinations'
+    const allDrawersClosed = !isFilterByHomeDrawerOpen && !isGroupSizeFilterDrawerOpen && !isOtherFiltersDrawerOpen
 
     // Create a unique key for the current filter combination
-    const currentFilterKey = `${selectedHomeFilter}|${selectedOtherFilter}`
+    const currentFilterKey = `${selectedHomeFilter}|${selectedGroupSizeFilter}|${selectedOtherFilter}`
 
-    if (hasActiveFilter && bothDrawersClosed && filteredDestinations.length === 0) {
+    if (hasActiveFilter && allDrawersClosed && filteredDestinations.length === 0) {
       // Only show drawer if we haven't shown it for this filter combination yet
       if (lastShownFilterRef.current !== currentFilterKey) {
         // Wait a bit for drawer close animation to complete
@@ -243,7 +265,7 @@ export default function StationsPage() {
     if (filteredDestinations.length > 0) {
       lastShownFilterRef.current = ''
     }
-  }, [filteredDestinations, isFilterByHomeDrawerOpen, isOtherFiltersDrawerOpen, selectedHomeFilter, selectedOtherFilter])
+  }, [filteredDestinations, isFilterByHomeDrawerOpen, isGroupSizeFilterDrawerOpen, isOtherFiltersDrawerOpen, selectedHomeFilter, selectedGroupSizeFilter, selectedOtherFilter])
 
   const handleShowMore = () => {
     setXsDisplayCount(prev => prev + itemsPerPage)
@@ -327,6 +349,11 @@ export default function StationsPage() {
         isOpen={isFilterByHomeDrawerOpen}
         onClose={() => setIsFilterByHomeDrawerOpen(false)}
         onFilterChange={handleHomeFilterChange}
+      />
+      <DestinationGroupSizeFilterDrawer
+        isOpen={isGroupSizeFilterDrawerOpen}
+        onClose={() => setIsGroupSizeFilterDrawerOpen(false)}
+        onFilterChange={handleGroupSizeFilterChange}
       />
       <OtherFiltersDrawer
         isOpen={isOtherFiltersDrawerOpen}
@@ -423,6 +450,20 @@ export default function StationsPage() {
                     : `/images/buttons/filter_by_home_selected_${locale}.png`
                 }
                 alt={locale === 'zh' ? '以家的位置筛选' : 'Filter by Home'}
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={
+                  selectedGroupSizeFilter === 'all_group_sizes'
+                    ? `/images/buttons/filter_by_group_size_${locale}.png`
+                    : `/images/buttons/filter_by_group_size_selected_${locale}.png`
+                }
+                alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
                 className="h-16 w-auto"
               />
             </button>
