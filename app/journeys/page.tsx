@@ -529,7 +529,8 @@ export default function JourneysPage() {
           </div>
 
           {/* Mobile: View Hints Button and Filters */}
-          <div className="hidden xs:flex flex-col items-center gap-4 mb-12">
+          <div className="hidden xs:flex flex-col items-center gap-6 mb-12">
+            {/* View Hints Button */}
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -540,34 +541,38 @@ export default function JourneysPage() {
                 className="h-16 w-auto"
               />
             </button>
-            <button
-              onClick={() => setIsTransportationFilterDrawerOpen(true)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={
-                  selectedTransportationFilter === 'all_transportation'
-                    ? `/images/buttons/filter_by_transportation_${locale}.png`
-                    : `/images/buttons/filter_by_transportation_selected_${locale}.png`
-                }
-                alt={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
-                className="h-16 w-auto"
-              />
-            </button>
-            <button
-              onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={
-                  selectedGroupSizeFilter === 'all_group_sizes'
-                    ? `/images/buttons/filter_by_group_size_${locale}.png`
-                    : `/images/buttons/filter_by_group_size_selected_${locale}.png`
-                }
-                alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                className="h-16 w-auto"
-              />
-            </button>
+
+            {/* Filter Buttons Group */}
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={() => setIsTransportationFilterDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={
+                    selectedTransportationFilter === 'all_transportation'
+                      ? `/images/buttons/filter_by_transportation_${locale}.png`
+                      : `/images/buttons/filter_by_transportation_selected_${locale}.png`
+                  }
+                  alt={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
+                  className="h-16 w-auto"
+                />
+              </button>
+              <button
+                onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={
+                    selectedGroupSizeFilter === 'all_group_sizes'
+                      ? `/images/buttons/filter_by_group_size_${locale}.png`
+                      : `/images/buttons/filter_by_group_size_selected_${locale}.png`
+                  }
+                  alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                  className="h-16 w-auto"
+                />
+              </button>
+            </div>
           </div>
 
           {/* Desktop: Map View Hint */}
@@ -900,7 +905,8 @@ export default function JourneysPage() {
             </div>
 
             {/* Mobile: View Hints Button and Day Trip Filters */}
-            <div className="flex flex-col items-center gap-4 mb-12">
+            <div className="flex flex-col items-center gap-6 mb-12">
+              {/* View Hints Button */}
               <button
                 onClick={() => setIsViewHintsDrawerOpen(true)}
                 className="hover:scale-105 transition-transform duration-200"
@@ -911,34 +917,38 @@ export default function JourneysPage() {
                   className="h-16 w-auto"
                 />
               </button>
-              <button
-                onClick={() => setIsDayTripGroupSizeFilterDrawerOpen(true)}
-                className="hover:scale-105 transition-transform duration-200"
-              >
-                <img
-                  src={
-                    selectedDayTripGroupSizeFilter === 'all_day_trip_group_sizes'
-                      ? `/images/buttons/filter_by_group_size_${locale}.png`
-                      : `/images/buttons/filter_by_group_size_selected_${locale}.png`
-                  }
-                  alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                  className="h-16 w-auto"
-                />
-              </button>
-              <button
-                onClick={() => setIsDayTripFilterDrawerOpen(true)}
-                className="hover:scale-105 transition-transform duration-200"
-              >
-                <img
-                  src={
-                    selectedDayTripFilter === 'all_day_trips'
-                      ? `/images/buttons/other_filters_button_${locale}.png`
-                      : `/images/buttons/other_filters_button_selected_${locale}.png`
-                  }
-                  alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
-                  className="h-16 w-auto"
-                />
-              </button>
+
+              {/* Filter Buttons Group */}
+              <div className="flex flex-col items-center gap-3">
+                <button
+                  onClick={() => setIsDayTripGroupSizeFilterDrawerOpen(true)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={
+                      selectedDayTripGroupSizeFilter === 'all_day_trip_group_sizes'
+                        ? `/images/buttons/filter_by_group_size_${locale}.png`
+                        : `/images/buttons/filter_by_group_size_selected_${locale}.png`
+                    }
+                    alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                    className="h-16 w-auto"
+                  />
+                </button>
+                <button
+                  onClick={() => setIsDayTripFilterDrawerOpen(true)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={
+                      selectedDayTripFilter === 'all_day_trips'
+                        ? `/images/buttons/other_filters_button_${locale}.png`
+                        : `/images/buttons/other_filters_button_selected_${locale}.png`
+                    }
+                    alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
+                    className="h-16 w-auto"
+                  />
+                </button>
+              </div>
             </div>
 
             {/* Day Trip Info Card - Above map */}

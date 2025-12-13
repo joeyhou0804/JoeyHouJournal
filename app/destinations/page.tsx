@@ -428,7 +428,8 @@ export default function StationsPage() {
           </div>
 
           {/* View Hints and Filter Buttons - Mobile Only */}
-          <div className="hidden xs:flex flex-col items-center gap-4 mb-12">
+          <div className="hidden xs:flex flex-col items-center gap-6 mb-12">
+            {/* View Hints Button */}
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -439,48 +440,52 @@ export default function StationsPage() {
                 className="h-16 w-auto"
               />
             </button>
-            <button
-              onClick={() => setIsFilterByHomeDrawerOpen(true)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={
-                  selectedHomeFilter === 'all_destinations'
-                    ? `/images/buttons/filter_by_home_${locale}.png`
-                    : `/images/buttons/filter_by_home_selected_${locale}.png`
-                }
-                alt={locale === 'zh' ? '以家的位置筛选' : 'Filter by Home'}
-                className="h-16 w-auto"
-              />
-            </button>
-            <button
-              onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={
-                  selectedGroupSizeFilter === 'all_group_sizes'
-                    ? `/images/buttons/filter_by_group_size_${locale}.png`
-                    : `/images/buttons/filter_by_group_size_selected_${locale}.png`
-                }
-                alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                className="h-16 w-auto"
-              />
-            </button>
-            <button
-              onClick={() => setIsOtherFiltersDrawerOpen(true)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={
-                  selectedOtherFilter === 'all_destinations'
-                    ? `/images/buttons/other_filters_button_${locale}.png`
-                    : `/images/buttons/other_filters_button_selected_${locale}.png`
-                }
-                alt={locale === 'zh' ? '其他筛选条件' : 'Other Filters'}
-                className="h-16 w-auto"
-              />
-            </button>
+
+            {/* Filter Buttons Group */}
+            <div className="flex flex-col items-center gap-3">
+              <button
+                onClick={() => setIsFilterByHomeDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={
+                    selectedHomeFilter === 'all_destinations'
+                      ? `/images/buttons/filter_by_home_${locale}.png`
+                      : `/images/buttons/filter_by_home_selected_${locale}.png`
+                  }
+                  alt={locale === 'zh' ? '以家的位置筛选' : 'Filter by Home'}
+                  className="h-16 w-auto"
+                />
+              </button>
+              <button
+                onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={
+                    selectedGroupSizeFilter === 'all_group_sizes'
+                      ? `/images/buttons/filter_by_group_size_${locale}.png`
+                      : `/images/buttons/filter_by_group_size_selected_${locale}.png`
+                  }
+                  alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                  className="h-16 w-auto"
+                />
+              </button>
+              <button
+                onClick={() => setIsOtherFiltersDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={
+                    selectedOtherFilter === 'all_destinations'
+                      ? `/images/buttons/other_filters_button_${locale}.png`
+                      : `/images/buttons/other_filters_button_selected_${locale}.png`
+                  }
+                  alt={locale === 'zh' ? '其他筛选条件' : 'Other Filters'}
+                  className="h-16 w-auto"
+                />
+              </button>
+            </div>
           </div>
 
           {/* Map View Hint - Desktop Only */}
