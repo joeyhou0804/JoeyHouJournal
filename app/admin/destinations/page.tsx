@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Box, Drawer } from '@mui/material'
+import { Box } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import AdminLoading from 'src/components/AdminLoading'
-import { Trash2 } from 'lucide-react'
 
 interface Destination {
   id: string
@@ -23,8 +22,6 @@ export default function DestinationsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
-  const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false)
-  const [destinationToDelete, setDestinationToDelete] = useState<Destination | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -53,35 +50,6 @@ export default function DestinationsPage() {
       console.error('Failed to fetch destinations:', error)
     } finally {
       setLoading(false)
-    }
-  }
-
-  const openDeleteDrawer = (dest: Destination) => {
-    setDestinationToDelete(dest)
-    setDeleteDrawerOpen(true)
-  }
-
-  const closeDeleteDrawer = () => {
-    setDeleteDrawerOpen(false)
-    setDestinationToDelete(null)
-  }
-
-  const handleDelete = async () => {
-    if (!destinationToDelete) return
-
-    try {
-      const response = await fetch(`/api/admin/destinations?id=${destinationToDelete.id}`, {
-        method: 'DELETE'
-      })
-
-      if (response.ok) {
-        fetchDestinations()
-        closeDeleteDrawer()
-      } else {
-        alert('Failed to delete destination')
-      }
-    } catch (error) {
-      alert('Error deleting destination')
     }
   }
 
@@ -162,55 +130,31 @@ export default function DestinationsPage() {
           paginatedDestinations.map((dest) => (
             <Box
               key={dest.id}
+              onClick={() => router.push(`/admin/destinations/${dest.id}`)}
               sx={{
                 backgroundColor: 'white',
                 borderRadius: '1rem',
                 padding: '1rem',
                 marginBottom: '1rem',
                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                position: 'relative'
+                cursor: 'pointer',
+                '&:hover': { backgroundColor: '#f5f5f5' }
               }}
             >
-              <Box
-                onClick={() => router.push(`/admin/destinations/${dest.id}`)}
-                sx={{ cursor: 'pointer', '&:hover': { opacity: 0.8 } }}
-              >
-                <Box sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '0.5rem', color: '#373737' }}>
-                  {dest.name}
-                </Box>
-                {dest.nameCN && (
-                  <Box sx={{ fontSize: '14px', color: '#666', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
-                    {dest.nameCN}
-                  </Box>
-                )}
-                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                  <Box><strong>Date:</strong> {dest.date}</Box>
-                  <Box><strong>State:</strong> {dest.state}</Box>
-                  <Box sx={{ gridColumn: '1 / -1' }}><strong>Journey:</strong> {dest.journeyName}</Box>
-                  <Box><strong>Images:</strong> {dest.images?.length || 0}</Box>
-                </Box>
+              <Box sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '0.5rem', color: '#373737' }}>
+                {dest.name}
               </Box>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  openDeleteDrawer(dest)
-                }}
-                style={{
-                  position: 'absolute',
-                  top: '1rem',
-                  right: '1rem',
-                  padding: '0.5rem',
-                  backgroundColor: '#ff4444',
-                  border: '2px solid #373737',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                <Trash2 size={18} color="white" />
-              </button>
+              {dest.nameCN && (
+                <Box sx={{ fontSize: '14px', color: '#666', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
+                  {dest.nameCN}
+                </Box>
+              )}
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
+                <Box><strong>Date:</strong> {dest.date}</Box>
+                <Box><strong>State:</strong> {dest.state}</Box>
+                <Box sx={{ gridColumn: '1 / -1' }}><strong>Journey:</strong> {dest.journeyName}</Box>
+                <Box><strong>Images:</strong> {dest.images?.length || 0}</Box>
+              </Box>
             </Box>
           ))
         )}
@@ -234,13 +178,12 @@ export default function DestinationsPage() {
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Journey</th>
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>State</th>
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Images</th>
-              <th style={{ padding: '1rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>Delete</th>
             </tr>
           </thead>
           <tbody>
             {paginatedDestinations.length === 0 ? (
               <tr>
-                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
+                <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
                   No destinations found
                 </td>
               </tr>
@@ -248,57 +191,24 @@ export default function DestinationsPage() {
               paginatedDestinations.map((dest) => (
                 <tr
                   key={dest.id}
+                  onClick={() => router.push(`/admin/destinations/${dest.id}`)}
                   style={{
                     borderBottom: '1px solid #e0e0e0',
+                    cursor: 'pointer',
                     transition: 'background-color 0.2s'
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f5f5f5'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                 >
-                  <td
-                    onClick={() => router.push(`/admin/destinations/${dest.id}`)}
-                    style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer' }}
-                  >
+                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
                     {dest.name}
                     {dest.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{dest.nameCN}</div>}
                   </td>
-                  <td
-                    onClick={() => router.push(`/admin/destinations/${dest.id}`)}
-                    style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer' }}
-                  >{dest.date}</td>
-                  <td
-                    onClick={() => router.push(`/admin/destinations/${dest.id}`)}
-                    style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer' }}
-                  >{dest.journeyName}</td>
-                  <td
-                    onClick={() => router.push(`/admin/destinations/${dest.id}`)}
-                    style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer' }}
-                  >{dest.state}</td>
-                  <td
-                    onClick={() => router.push(`/admin/destinations/${dest.id}`)}
-                    style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer' }}
-                  >
+                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.date}</td>
+                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.journeyName}</td>
+                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</td>
+                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
                     {dest.images?.length || 0}
-                  </td>
-                  <td style={{ padding: '1rem', textAlign: 'center' }}>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        openDeleteDrawer(dest)
-                      }}
-                      style={{
-                        padding: '0.5rem',
-                        backgroundColor: '#ff4444',
-                        border: '2px solid #373737',
-                        borderRadius: '0.5rem',
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}
-                    >
-                      <Trash2 size={18} color="white" />
-                    </button>
                   </td>
                 </tr>
               ))
@@ -419,90 +329,6 @@ export default function DestinationsPage() {
           </Box>
         </Box>
       )}
-
-      {/* Delete Confirmation Drawer */}
-      <Drawer
-        anchor="bottom"
-        open={deleteDrawerOpen}
-        onClose={closeDeleteDrawer}
-        PaperProps={{
-          sx: {
-            borderTopLeftRadius: '1rem',
-            borderTopRightRadius: '1rem',
-            padding: '2rem',
-            maxWidth: '600px',
-            margin: '0 auto',
-            left: 0,
-            right: 0
-          }
-        }}
-      >
-        <Box sx={{ textAlign: 'center' }}>
-          <Box sx={{
-            fontFamily: 'MarioFontTitle, sans-serif',
-            fontSize: '24px',
-            marginBottom: '1rem',
-            color: '#373737'
-          }}>
-            Delete Destination?
-          </Box>
-
-          {destinationToDelete && (
-            <Box sx={{
-              fontFamily: 'MarioFont, sans-serif',
-              fontSize: '16px',
-              marginBottom: '2rem',
-              color: '#666'
-            }}>
-              Are you sure you want to delete <strong>{destinationToDelete.name}</strong>
-              {destinationToDelete.nameCN && ` (${destinationToDelete.nameCN})`}?
-              <br />
-              This action cannot be undone.
-            </Box>
-          )}
-
-          <Box sx={{
-            display: 'flex',
-            gap: '1rem',
-            justifyContent: 'center',
-            flexDirection: { xs: 'column', sm: 'row' }
-          }}>
-            <button
-              onClick={closeDeleteDrawer}
-              style={{
-                padding: '0.75rem 2rem',
-                fontSize: '16px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: '#e0e0e0',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                height: '64px',
-                minWidth: '120px'
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              onClick={handleDelete}
-              style={{
-                padding: '0.75rem 2rem',
-                fontSize: '16px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: '#ff4444',
-                color: 'white',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                height: '64px',
-                minWidth: '120px'
-              }}
-            >
-              Delete
-            </button>
-          </Box>
-        </Box>
-      </Drawer>
     </Box>
   )
 }
