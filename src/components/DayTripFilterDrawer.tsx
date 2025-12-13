@@ -20,7 +20,7 @@ export default function DayTripFilterDrawer({ isOpen, onClose, onFilterChange }:
       isOpen={isOpen}
       onClose={onClose}
       titleEn="Other Filters"
-      titleZh="其他筛选"
+      titleZh="其他筛选条件"
       filterOptions={filterOptions}
       defaultSelected="all_day_trips"
       onFilterChange={onFilterChange}
