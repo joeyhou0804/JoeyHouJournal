@@ -36,7 +36,12 @@ export default function NewJourneyPage() {
     nights: 0,
     startDate: '',
     endDate: '',
-    isDayTrip: false
+    isDayTrip: false,
+    isTrainTrip: false,
+    travelWithOthers: false,
+    isAroundHome: false,
+    isAroundNewYork: false,
+    tripWithOthers: false
   })
 
   // Route points state (minimum 2 points required)
@@ -319,7 +324,12 @@ export default function NewJourneyPage() {
         totalPlaces: 0,
         images: [],
         segments: segments,
-        isDayTrip: formData.isDayTrip
+        isDayTrip: formData.isDayTrip,
+        isTrainTrip: formData.isTrainTrip,
+        travelWithOthers: formData.travelWithOthers,
+        isAroundHome: formData.isAroundHome,
+        isAroundNewYork: formData.isAroundNewYork,
+        tripWithOthers: formData.tripWithOthers
       }
 
       const response = await fetch('/api/admin/journeys', {
@@ -852,21 +862,134 @@ export default function NewJourneyPage() {
             />
           </Box>
 
-          {/* Day Trip Checkbox - Full width row */}
-          <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' } }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontFamily: 'MarioFont, sans-serif', cursor: 'pointer', padding: '0.75rem', backgroundColor: '#f5f5f5', borderRadius: '0.5rem', border: '2px solid #e0e0e0' }}>
+          {/* Trip Details */}
+          <Box sx={{ gridColumn: { xs: '1', sm: '1 / -1' }, marginTop: '1.5rem', padding: '1.5rem', backgroundColor: '#f5f5f5', borderRadius: '0.5rem', border: '2px solid #373737' }}>
+            <Typography sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '1rem', color: '#373737' }}>
+              Trip Details
+            </Typography>
+
+            {/* Day Trip Checkbox */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
               <input
                 type="checkbox"
                 checked={formData.isDayTrip}
                 onChange={(e) => handleInputChange('isDayTrip', e.target.checked)}
+                id="isDayTrip"
                 style={{
-                  width: '20px',
-                  height: '20px',
-                  cursor: 'pointer'
+                  width: '24px',
+                  height: '24px',
+                  cursor: 'pointer',
+                  accentColor: '#FFD701'
                 }}
               />
-              <span style={{ fontWeight: 'bold', fontSize: '16px' }}>Day Trip / Weekend Trip</span>
-            </label>
+              <label htmlFor="isDayTrip" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+                Day Trip / Weekend Trip
+              </label>
+            </Box>
+
+            {/* Train Trip - Only show for non-day trips */}
+            {!formData.isDayTrip && (
+              <>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.isTrainTrip}
+                    onChange={(e) => handleInputChange('isTrainTrip', e.target.checked)}
+                    id="isTrainTrip"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      cursor: 'pointer',
+                      accentColor: '#FFD701'
+                    }}
+                  />
+                  <label htmlFor="isTrainTrip" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+                    Train Trip
+                  </label>
+                </Box>
+
+                {/* Travel with Others - Only show for non-day trips */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.travelWithOthers}
+                    onChange={(e) => handleInputChange('travelWithOthers', e.target.checked)}
+                    id="travelWithOthers"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      cursor: 'pointer',
+                      accentColor: '#FFD701'
+                    }}
+                  />
+                  <label htmlFor="travelWithOthers" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+                    Travel with Others
+                  </label>
+                </Box>
+              </>
+            )}
+
+            {/* Day trip specific options */}
+            {formData.isDayTrip && (
+              <>
+                {/* Around Home */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.isAroundHome}
+                    onChange={(e) => handleInputChange('isAroundHome', e.target.checked)}
+                    id="isAroundHome"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      cursor: 'pointer',
+                      accentColor: '#FFD701'
+                    }}
+                  />
+                  <label htmlFor="isAroundHome" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+                    Around Home
+                  </label>
+                </Box>
+
+                {/* Around New York */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.isAroundNewYork}
+                    onChange={(e) => handleInputChange('isAroundNewYork', e.target.checked)}
+                    id="isAroundNewYork"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      cursor: 'pointer',
+                      accentColor: '#FFD701'
+                    }}
+                  />
+                  <label htmlFor="isAroundNewYork" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+                    Around New York
+                  </label>
+                </Box>
+
+                {/* Trip with Others */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <input
+                    type="checkbox"
+                    checked={formData.tripWithOthers}
+                    onChange={(e) => handleInputChange('tripWithOthers', e.target.checked)}
+                    id="tripWithOthers"
+                    style={{
+                      width: '24px',
+                      height: '24px',
+                      cursor: 'pointer',
+                      accentColor: '#FFD701'
+                    }}
+                  />
+                  <label htmlFor="tripWithOthers" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
+                    Trip with Others
+                  </label>
+                </Box>
+              </>
+            )}
           </Box>
 
         </Box>
