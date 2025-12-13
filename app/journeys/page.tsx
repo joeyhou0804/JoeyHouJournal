@@ -88,6 +88,11 @@ export default function JourneysPage() {
     setCurrentJourneyIndex(0)
   }, [selectedTransportationFilter])
 
+  // Reset journey index when group size filter changes
+  useEffect(() => {
+    setCurrentJourneyIndex(0)
+  }, [selectedGroupSizeFilter])
+
   // Reset day trip index when day trip filter changes
   useEffect(() => {
     setCurrentDayTripIndex(0)
@@ -151,6 +156,25 @@ export default function JourneysPage() {
     return journeys
   }
 
+  // Apply group size filter to regular journeys (long trips)
+  const filterByGroupSize = (journeys: any[]) => {
+    if (selectedGroupSizeFilter === 'all_group_sizes') {
+      return journeys
+    }
+
+    if (selectedGroupSizeFilter === 'visit_by_myself') {
+      // Show trips by myself (travelWithOthers === false)
+      return journeys.filter((journey: any) => journey.travelWithOthers === false)
+    }
+
+    if (selectedGroupSizeFilter === 'visit_with_others') {
+      // Show trips with others (travelWithOthers === true)
+      return journeys.filter((journey: any) => journey.travelWithOthers === true)
+    }
+
+    return journeys
+  }
+
   // Apply day trip filter
   const filterDayTrips = (journeys: any[]) => {
     if (selectedDayTripFilter === 'all_day_trips') {
@@ -176,7 +200,7 @@ export default function JourneysPage() {
   }
 
   // Apply filters
-  const regularJourneys = filterByTransportation(allRegularJourneys)
+  const regularJourneys = filterByGroupSize(filterByTransportation(allRegularJourneys))
   const dayTripJourneys = filterDayTrips(allDayTripJourneys)
 
   // Get current regular journey based on index (with safety check)
