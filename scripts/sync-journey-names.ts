@@ -1,6 +1,6 @@
 /**
- * Script to sync journey_name_cn from journeys table to destinations table
- * This ensures destinations have the Chinese journey names cached
+ * Script to sync journey names (both English and Chinese) from journeys table to destinations table
+ * This ensures destinations have the correct journey names cached
  * Run with: POSTGRES_URL='...' pnpm sync-journey-names
  */
 
@@ -21,26 +21,25 @@ async function syncJourneyNames() {
     console.log(`Target database: ${host}`)
     console.log('')
 
-    // Update all destinations to have the journey_name_cn from their associated journey
+    // Update all destinations to have the journey names from their associated journey
     const result = await sql`
       UPDATE destinations d
       SET
+        journey_name = j.name,
         journey_name_cn = j.name_cn,
         updated_at = NOW()
       FROM journeys j
       WHERE d.journey_id = j.id
-        AND j.name_cn IS NOT NULL
-        AND (d.journey_name_cn IS NULL OR d.journey_name_cn != j.name_cn)
+        AND (d.journey_name != j.name OR d.journey_name_cn != j.name_cn OR d.journey_name IS NULL)
     `
 
-    console.log(`✓ Updated ${result.rowCount} destinations with Chinese journey names`)
+    console.log(`✓ Updated ${result.rowCount} destinations with journey names`)
 
     // Show updated destinations
     const updated = await sql`
-      SELECT d.id, d.name, d.journey_name, d.journey_name_cn, j.name_cn as journey_cn
+      SELECT d.id, d.name, d.journey_name, d.journey_name_cn, j.name as journey_en, j.name_cn as journey_cn
       FROM destinations d
       JOIN journeys j ON d.journey_id = j.id
-      WHERE j.name_cn IS NOT NULL
       LIMIT 10
     `
 
