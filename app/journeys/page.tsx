@@ -1250,6 +1250,18 @@ export default function JourneysPage() {
                 className="h-16 w-auto"
               />
             </button>
+
+            {/* Divider - Dark */}
+            <Box
+              sx={{
+                width: 'calc(100% - 2rem)',
+                height: '4px',
+                backgroundColor: '#373737',
+                borderRadius: '2px',
+                margin: '1.5rem auto 1.5rem auto'
+              }}
+            />
+
             <button
               onClick={() => setIsTripLengthFilterDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
