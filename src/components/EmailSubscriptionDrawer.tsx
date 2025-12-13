@@ -335,8 +335,8 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
               src={`/images/buttons/subscribe_button_${locale}.png`}
               alt="Subscribe"
               sx={{
-                height: '4rem',
-                width: 'auto',
+                height: 'auto',
+                width: { xs: '15rem', sm: '16rem' },
                 opacity: isSubmitting ? 0.6 : 1
               }}
             />
