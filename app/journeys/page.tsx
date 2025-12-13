@@ -832,7 +832,7 @@ export default function JourneysPage() {
           sx={{
             backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
             backgroundRepeat: 'repeat',
-            backgroundSize: '200px auto',
+            backgroundSize: '100vw auto',
           }}
         >
           <div className="max-w-7xl mx-auto px-4">
