@@ -543,7 +543,7 @@ export default function JourneysPage() {
             </button>
 
             {/* Filter Buttons Group */}
-            <div className="flex flex-col items-center gap-3">
+            <div className="flex flex-col items-center gap-2">
               <button
                 onClick={() => setIsTransportationFilterDrawerOpen(true)}
                 className="hover:scale-105 transition-transform duration-200"
@@ -919,7 +919,7 @@ export default function JourneysPage() {
               </button>
 
               {/* Filter Buttons Group */}
-              <div className="flex flex-col items-center gap-3">
+              <div className="flex flex-col items-center gap-2">
                 <button
                   onClick={() => setIsDayTripGroupSizeFilterDrawerOpen(true)}
                   className="hover:scale-105 transition-transform duration-200"
