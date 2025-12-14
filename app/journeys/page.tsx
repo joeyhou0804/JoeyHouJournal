@@ -1051,7 +1051,7 @@ export default function JourneysPage() {
               <div
                 className="flex justify-center items-center gap-8"
                 style={{
-                  backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
+                  backgroundImage: 'url(/images/backgrounds/filter_desktop_background_yellow.png)',
                   backgroundRepeat: 'no-repeat',
                   backgroundSize: 'contain',
                   backgroundPosition: 'center',
