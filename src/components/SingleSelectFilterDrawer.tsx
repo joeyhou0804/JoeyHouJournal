@@ -52,6 +52,7 @@ export default function SingleSelectFilterDrawer({
       titleEn={titleEn}
       titleZh={titleZh}
       buttonType="all_set"
+      width={{ xs: '90%', sm: '600px' }}
     >
       {/* Selected filter display banner */}
       {showSelectedBanner && (
@@ -77,7 +78,7 @@ export default function SingleSelectFilterDrawer({
                 component="h3"
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-                  fontSize: '20px',
+                  fontSize: { xs: '20px', sm: '24px' },
                   color: '#FFD701',
                   margin: 0,
                   whiteSpace: 'nowrap'
@@ -96,8 +97,8 @@ export default function SingleSelectFilterDrawer({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '0.5rem',
+          gridTemplateColumns: { xs: 'repeat(3, 1fr)', sm: 'repeat(4, 1fr)' },
+          gap: { xs: '0.5rem', sm: '0.75rem' },
           marginBottom: '2rem'
         }}
       >
@@ -140,10 +141,10 @@ export default function SingleSelectFilterDrawer({
                   alt="Selected"
                   sx={{
                     position: 'absolute',
-                    top: '4px',
-                    left: '4px',
-                    width: '24px',
-                    height: '24px',
+                    top: { xs: '4px', sm: '6px' },
+                    left: { xs: '4px', sm: '6px' },
+                    width: { xs: '24px', sm: '32px' },
+                    height: { xs: '24px', sm: '32px' },
                     animation: 'fadeIn 0.2s ease-in-out'
                   }}
                 />

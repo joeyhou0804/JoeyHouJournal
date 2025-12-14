@@ -1,11 +1,10 @@
 'use client'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import DestinationCard from 'src/components/DestinationCard'
-import MapViewHint from 'src/components/MapViewHint'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import SortDrawer from 'src/components/SortDrawer'
 import FilterByHomeDrawer from 'src/components/FilterByHomeDrawer'
@@ -40,6 +39,9 @@ export default function StationsPage() {
   const [destinations, setDestinations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
+  const [isFilterByHomeHovered, setIsFilterByHomeHovered] = useState(false)
+  const [isFilterByGroupSizeHovered, setIsFilterByGroupSizeHovered] = useState(false)
+  const [isOtherFiltersHovered, setIsOtherFiltersHovered] = useState(false)
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const [isFilterByHomeDrawerOpen, setIsFilterByHomeDrawerOpen] = useState(false)
   const [isGroupSizeFilterDrawerOpen, setIsGroupSizeFilterDrawerOpen] = useState(false)
@@ -60,6 +62,29 @@ export default function StationsPage() {
     'berkeley': 'Berkeley, CA',
     'palo_alto': 'Palo Alto, CA',
     'san_francisco': 'San Francisco, CA'
+  }
+
+  // Mapping of filter IDs to icon paths
+  const homeFilterIconMap: { [key: string]: string } = {
+    'all_destinations': '/images/icons/filter/around_home_destination.png',
+    'new_york': '/images/icons/filter/new_york_icon.png',
+    'berkeley': '/images/icons/filter/berkeley_icon.png',
+    'palo_alto': '/images/icons/filter/palo_alto_icon.png',
+    'san_francisco': '/images/icons/filter/san_francisco_icon.png'
+  }
+
+  const groupSizeFilterIconMap: { [key: string]: string } = {
+    'all_group_sizes': '/images/icons/filter/all_group_sizes.png',
+    'visit_by_myself': '/images/icons/filter/visit_by_myself.png',
+    'visit_with_others': '/images/icons/filter/visit_with_others.png'
+  }
+
+  const otherFilterIconMap: { [key: string]: string } = {
+    'all_destinations': '/images/icons/filter/all_destination_icon.png',
+    'stay_overnight': '/images/icons/filter/stay_overnight.png',
+    'visit_on_train': '/images/icons/filter/visit_on_train.png',
+    'photo_stops_on_trains': '/images/icons/filter/photo_stops_on_trains.png',
+    'visit_more_than_once': '/images/icons/filter/visit_more_than_once.png'
   }
 
   // Fetch destinations from API
@@ -197,16 +222,20 @@ export default function StationsPage() {
     }
   }
 
-  // Apply home filter first, then other filter, then sort
-  const homeFilteredDestinations = filterDestinationsByHome(destinations)
-  const groupSizeFilteredDestinations = filterDestinationsByGroupSize(homeFilteredDestinations)
-  const filteredDestinations = filterDestinationsByOther(groupSizeFilteredDestinations)
+  // Apply home filter first, then other filter, then sort - memoized to prevent unnecessary recalculations
+  const filteredDestinations = useMemo(() => {
+    const homeFilteredDestinations = filterDestinationsByHome(destinations)
+    const groupSizeFilteredDestinations = filterDestinationsByGroupSize(homeFilteredDestinations)
+    return filterDestinationsByOther(groupSizeFilteredDestinations)
+  }, [destinations, homeLocations, selectedHomeFilter, selectedGroupSizeFilter, selectedOtherFilter])
 
-  const sortedDestinations = [...filteredDestinations].sort((a, b) => {
-    const dateA = new Date(a.date).getTime()
-    const dateB = new Date(b.date).getTime()
-    return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
-  })
+  const sortedDestinations = useMemo(() => {
+    return [...filteredDestinations].sort((a, b) => {
+      const dateA = new Date(a.date).getTime()
+      const dateB = new Date(b.date).getTime()
+      return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
+    })
+  }, [filteredDestinations, sortOrder])
 
   const totalPages = Math.ceil(sortedDestinations.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -503,33 +532,165 @@ export default function StationsPage() {
             </div>
           </div>
 
-          {/* Map View Hint - Desktop Only */}
-          <div className="my-36 xs:hidden">
-            <MapViewHint
-              cardNumber={1}
-              station={{
-                id: '',
-                name: tr.mapHint1.title,
-                journeyName: tr.mapHint1.description1,
-                date: tr.mapHint1.description2,
-                images: ['/images/destinations/hints/map_view_hint.jpg']
-              }}
-            />
+          {/* View Hints Button - Desktop Only - Second Row */}
+          <div className="flex justify-center mb-12 xs:hidden">
+            <button
+              onClick={() => setIsViewHintsDrawerOpen(true)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src={`/images/buttons/view_hints_button_${locale}.png`}
+                alt="View Hints"
+                className="h-20 w-auto"
+              />
+            </button>
           </div>
 
-          {/* Second Map View Hint - Image on right - Desktop Only */}
-          <div className="my-36 xs:hidden">
-            <MapViewHint
-              imageOnRight={true}
-              cardNumber={2}
-              station={{
-                id: '',
-                name: tr.mapHint2.title,
-                journeyName: tr.mapHint2.description1,
-                date: tr.mapHint2.description2,
-                images: ['/images/destinations/hints/map_view_hint_2.png']
-              }}
-            />
+          {/* Horizontal Divider - Desktop Only */}
+          <Box
+            className="xs:hidden"
+            sx={{
+              width: 'calc(100% - 4rem)',
+              height: '4px',
+              backgroundColor: '#F6F6F6',
+              borderRadius: '2px',
+              margin: '0 auto 3rem auto'
+            }}
+          />
+
+          {/* Filter Buttons - Desktop Only - Third Row */}
+          <div className="flex justify-center items-center gap-8 my-16 xs:hidden">
+            {/* Filter by Home Button */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setIsFilterByHomeDrawerOpen(true)}
+                onMouseEnter={() => setIsFilterByHomeHovered(true)}
+                onMouseLeave={() => setIsFilterByHomeHovered(false)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={homeFilterIconMap[selectedHomeFilter] || homeFilterIconMap['all_destinations']}
+                  alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                  className="h-32 w-auto"
+                  style={{
+                    filter: selectedHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                  }}
+                />
+              </button>
+              {isFilterByHomeHovered && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginTop: '0.5rem',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <MixedText
+                    text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="24px"
+                    color="#F6F6F6"
+                    component="p"
+                    sx={{
+                      textShadow: '2px 2px 0px #373737',
+                      margin: 0
+                    }}
+                  />
+                </Box>
+              )}
+            </div>
+
+            {/* Filter by Group Size Button */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+                onMouseEnter={() => setIsFilterByGroupSizeHovered(true)}
+                onMouseLeave={() => setIsFilterByGroupSizeHovered(false)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={groupSizeFilterIconMap[selectedGroupSizeFilter] || groupSizeFilterIconMap['all_group_sizes']}
+                  alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                  className="h-32 w-auto"
+                  style={{
+                    filter: selectedGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                  }}
+                />
+              </button>
+              {isFilterByGroupSizeHovered && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginTop: '0.5rem',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <MixedText
+                    text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="24px"
+                    color="#F6F6F6"
+                    component="p"
+                    sx={{
+                      textShadow: '2px 2px 0px #373737',
+                      margin: 0
+                    }}
+                  />
+                </Box>
+              )}
+            </div>
+
+            {/* Other Filters Button */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setIsOtherFiltersDrawerOpen(true)}
+                onMouseEnter={() => setIsOtherFiltersHovered(true)}
+                onMouseLeave={() => setIsOtherFiltersHovered(false)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={otherFilterIconMap[selectedOtherFilter] || otherFilterIconMap['all_destinations']}
+                  alt={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
+                  className="h-32 w-auto"
+                  style={{
+                    filter: selectedOtherFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                  }}
+                />
+              </button>
+              {isOtherFiltersHovered && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginTop: '0.5rem',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <MixedText
+                    text={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="24px"
+                    color="#F6F6F6"
+                    component="p"
+                    sx={{
+                      textShadow: '2px 2px 0px #373737',
+                      margin: 0
+                    }}
+                  />
+                </Box>
+              )}
+            </div>
           </div>
 
           <Box className="xs:mx-[-0.5rem]">

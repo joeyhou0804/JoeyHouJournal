@@ -6,7 +6,6 @@ import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
-import MapViewHint from 'src/components/MapViewHint'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import SortDrawer from 'src/components/SortDrawer'
 import MixedText from 'src/components/MixedText'
@@ -63,6 +62,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
+  const [isHintButtonHovered, setIsHintButtonHovered] = useState(false)
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
@@ -310,33 +310,45 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             </button>
           </div>
 
-          {/* Map View Hint - Desktop Only */}
-          <div className="my-36 xs:hidden">
-            <MapViewHint
-              cardNumber={1}
-              station={{
-                id: '',
-                name: tr.mapHint1.title,
-                journeyName: tr.mapHint1.description1,
-                date: tr.mapHint1.description2,
-                images: ['/images/destinations/hints/map_view_hint.jpg']
-              }}
-            />
-          </div>
-
-          {/* Second Map View Hint - Image on right - Desktop Only */}
-          <div className="my-36 xs:hidden">
-            <MapViewHint
-              imageOnRight={true}
-              cardNumber={2}
-              station={{
-                id: '',
-                name: tr.mapHint2.title,
-                journeyName: tr.mapHint2.description1,
-                date: tr.mapHint2.description2,
-                images: ['/images/destinations/hints/map_view_hint_2.png']
-              }}
-            />
+          {/* View Hints Button - Desktop Only */}
+          <div className="flex flex-col items-center my-36 xs:hidden" style={{ position: 'relative' }}>
+            <button
+              onClick={() => setIsViewHintsDrawerOpen(true)}
+              onMouseEnter={() => setIsHintButtonHovered(true)}
+              onMouseLeave={() => setIsHintButtonHovered(false)}
+              className="hover:scale-105 transition-transform duration-200"
+            >
+              <img
+                src="/images/icons/hint_icon.png"
+                alt="View Hints"
+                className="h-24 w-auto"
+              />
+            </button>
+            {isHintButtonHovered && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  marginTop: '1rem',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <MixedText
+                  text={locale === 'zh' ? '查看提示' : 'View Hints'}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize="24px"
+                  color="#F6F6F6"
+                  component="p"
+                  sx={{
+                    textShadow: '2px 2px 0px #373737',
+                    margin: 0
+                  }}
+                />
+              </Box>
+            )}
           </div>
 
           <Box className="xs:mx-[-0.5rem]">
