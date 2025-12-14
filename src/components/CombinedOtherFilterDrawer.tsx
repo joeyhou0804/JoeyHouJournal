@@ -17,6 +17,7 @@ interface CombinedOtherFilterDrawerProps {
   isOpen: boolean
   onClose: () => void
   tripLengthFilter: string
+  selectedFilter?: string
   onFilterChange?: (filterId: string) => void
 }
 
@@ -38,6 +39,7 @@ export default function CombinedOtherFilterDrawer({
   isOpen,
   onClose,
   tripLengthFilter,
+  selectedFilter: selectedFilterProp,
   onFilterChange
 }: CombinedOtherFilterDrawerProps) {
   const { locale } = useLanguage()
@@ -79,17 +81,12 @@ export default function CombinedOtherFilterDrawer({
     return 'all_transportation'
   }
 
-  const [selectedFilter, setSelectedFilter] = useState<string>(getDefaultSelected())
+  const selectedFilter = selectedFilterProp || getDefaultSelected()
   const [tooltipVisible, setTooltipVisible] = useState(false)
   const [tooltipMessage, setTooltipMessage] = useState<{ en: string; zh: string }>({ en: '', zh: '' })
   const [tooltipTargetId, setTooltipTargetId] = useState<string>('')
   const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 })
   const tooltipTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-
-  // Reset selected filter when trip length changes
-  useEffect(() => {
-    setSelectedFilter(getDefaultSelected())
-  }, [tripLengthFilter])
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -145,7 +142,6 @@ export default function CombinedOtherFilterDrawer({
       return
     }
 
-    setSelectedFilter(filterId)
     if (onFilterChange) {
       onFilterChange(filterId)
     }
@@ -161,6 +157,7 @@ export default function CombinedOtherFilterDrawer({
       titleEn={titleEn}
       titleZh={titleZh}
       buttonType="all_set"
+      width={{ xs: '90%', sm: '600px' }}
     >
       {/* Selected filter display banner */}
       <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
@@ -185,7 +182,7 @@ export default function CombinedOtherFilterDrawer({
               component="h3"
               sx={{
                 fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-                fontSize: '20px',
+                fontSize: { xs: '20px', sm: '24px' },
                 color: '#FFD701',
                 margin: 0,
                 whiteSpace: 'nowrap'
@@ -203,8 +200,8 @@ export default function CombinedOtherFilterDrawer({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: '0.5rem',
+          gridTemplateColumns: { xs: 'repeat(3, 1fr)', sm: 'repeat(4, 1fr)' },
+          gap: { xs: '0.5rem', sm: '0.75rem' },
           marginBottom: '2rem',
           position: 'relative'
         }}
@@ -252,10 +249,10 @@ export default function CombinedOtherFilterDrawer({
                   alt="Selected"
                   sx={{
                     position: 'absolute',
-                    top: '4px',
-                    left: '4px',
-                    width: '24px',
-                    height: '24px',
+                    top: { xs: '4px', sm: '6px' },
+                    left: { xs: '4px', sm: '6px' },
+                    width: { xs: '24px', sm: '32px' },
+                    height: { xs: '24px', sm: '32px' },
                     animation: 'fadeIn 0.2s ease-in-out'
                   }}
                 />

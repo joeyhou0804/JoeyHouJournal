@@ -5,6 +5,7 @@ import SingleSelectFilterDrawer, { FilterOption } from './SingleSelectFilterDraw
 interface TransportationFilterDrawerProps {
   isOpen: boolean
   onClose: () => void
+  selectedFilter?: string
   onFilterChange?: (filterId: string) => void
 }
 
@@ -14,7 +15,7 @@ const filterOptions: FilterOption[] = [
   { id: 'other_transportation', iconPath: '/images/icons/filter/other_transport_icon.png', labelEn: 'Other transportation', labelZh: '其他交通方式' }
 ]
 
-export default function TransportationFilterDrawer({ isOpen, onClose, onFilterChange }: TransportationFilterDrawerProps) {
+export default function TransportationFilterDrawer({ isOpen, onClose, selectedFilter, onFilterChange }: TransportationFilterDrawerProps) {
   return (
     <SingleSelectFilterDrawer
       isOpen={isOpen}
@@ -23,6 +24,7 @@ export default function TransportationFilterDrawer({ isOpen, onClose, onFilterCh
       titleZh="以交通方式筛选"
       filterOptions={filterOptions}
       defaultSelected="all_transportation"
+      selectedFilter={selectedFilter}
       onFilterChange={onFilterChange}
       showSelectedBanner={true}
     />

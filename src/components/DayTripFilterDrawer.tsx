@@ -5,6 +5,7 @@ import SingleSelectFilterDrawer, { FilterOption } from './SingleSelectFilterDraw
 interface DayTripFilterDrawerProps {
   isOpen: boolean
   onClose: () => void
+  selectedFilter?: string
   onFilterChange?: (filterId: string) => void
 }
 
@@ -14,7 +15,7 @@ const filterOptions: FilterOption[] = [
   { id: 'around_new_york', iconPath: '/images/icons/filter/around_new_york_icon.png', labelEn: 'Around New York', labelZh: '在纽约附近' }
 ]
 
-export default function DayTripFilterDrawer({ isOpen, onClose, onFilterChange }: DayTripFilterDrawerProps) {
+export default function DayTripFilterDrawer({ isOpen, onClose, selectedFilter, onFilterChange }: DayTripFilterDrawerProps) {
   return (
     <SingleSelectFilterDrawer
       isOpen={isOpen}
@@ -23,6 +24,7 @@ export default function DayTripFilterDrawer({ isOpen, onClose, onFilterChange }:
       titleZh="其他筛选条件"
       filterOptions={filterOptions}
       defaultSelected="all_day_trips"
+      selectedFilter={selectedFilter}
       onFilterChange={onFilterChange}
       showSelectedBanner={true}
     />

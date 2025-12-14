@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import { MapPin, Calendar, Train, Clock } from 'lucide-react'
 import NavigationMenu from 'src/components/NavigationMenu'
 import Footer from 'src/components/Footer'
@@ -53,6 +53,13 @@ export default function JourneysPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [isHintButtonHovered, setIsHintButtonHovered] = useState(false)
+  const [isTransportationFilterHovered, setIsTransportationFilterHovered] = useState(false)
+  const [isLongTripGroupSizeFilterHovered, setIsLongTripGroupSizeFilterHovered] = useState(false)
+  const [isDayTripGroupSizeFilterHovered, setIsDayTripGroupSizeFilterHovered] = useState(false)
+  const [isDayTripLocationFilterHovered, setIsDayTripLocationFilterHovered] = useState(false)
+  const [isTripLengthFilterHovered, setIsTripLengthFilterHovered] = useState(false)
+  const [isListGroupSizeFilterHovered, setIsListGroupSizeFilterHovered] = useState(false)
+  const [isCombinedOtherFilterHovered, setIsCombinedOtherFilterHovered] = useState(false)
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const [isTransportationFilterDrawerOpen, setIsTransportationFilterDrawerOpen] = useState(false)
   const [isDayTripFilterDrawerOpen, setIsDayTripFilterDrawerOpen] = useState(false)
@@ -71,6 +78,57 @@ export default function JourneysPage() {
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
+
+  // Icon maps for filters
+  const transportationFilterIconMap: { [key: string]: string } = {
+    'all_transportation': '/images/icons/filter/all_transport_icon.png',
+    'train_only': '/images/icons/filter/train_only_icon.png',
+    'other_transportation': '/images/icons/filter/other_transport_icon.png'
+  }
+
+  const longTripGroupSizeFilterIconMap: { [key: string]: string } = {
+    'all_group_sizes': '/images/icons/filter/all_group_sizes.png',
+    'visit_by_myself': '/images/icons/filter/visit_by_myself.png',
+    'visit_with_others': '/images/icons/filter/visit_with_others.png'
+  }
+
+  const dayTripGroupSizeFilterIconMap: { [key: string]: string } = {
+    'all_day_trip_group_sizes': '/images/icons/filter/all_group_sizes.png',
+    'day_trip_by_myself': '/images/icons/filter/visit_by_myself.png',
+    'day_trip_with_others': '/images/icons/filter/visit_with_others.png'
+  }
+
+  const dayTripLocationFilterIconMap: { [key: string]: string } = {
+    'all_day_trips': '/images/icons/filter/all_destination_icon.png',
+    'around_home': '/images/icons/filter/around_home_destination.png',
+    'around_new_york': '/images/icons/filter/around_new_york_icon.png'
+  }
+
+  const tripLengthFilterIconMap: { [key: string]: string } = {
+    'all_trips': '/images/icons/filter/all_destination_icon.png',
+    'long_trips': '/images/icons/filter/long_trip_icon.png',
+    'day_trips': '/images/icons/filter/day_trip_icon.png'
+  }
+
+  const listGroupSizeFilterIconMap: { [key: string]: string } = {
+    'all_group_sizes': '/images/icons/filter/all_group_sizes.png',
+    'visit_by_myself': '/images/icons/filter/visit_by_myself.png',
+    'visit_with_others': '/images/icons/filter/visit_with_others.png'
+  }
+
+  // Combined other filter icon map (changes based on trip length)
+  const getCombinedOtherFilterIcon = () => {
+    if (selectedTripLengthFilter === 'long_trips') {
+      // Use transportation icons for long trips
+      return transportationFilterIconMap[selectedCombinedOtherFilter] || transportationFilterIconMap['all_transportation']
+    } else if (selectedTripLengthFilter === 'day_trips') {
+      // Use day trip location icons for day trips
+      return dayTripLocationFilterIconMap[selectedCombinedOtherFilter] || dayTripLocationFilterIconMap['all_day_trips']
+    } else {
+      // Default to all destination icon
+      return '/images/icons/filter/all_destination_icon.png'
+    }
+  }
 
   // Fetch data from API
   useEffect(() => {
@@ -238,44 +296,54 @@ export default function JourneysPage() {
   // Get current regular journey based on index (with safety check)
   const safeJourneyIndex = regularJourneys.length > 0 ? Math.min(currentJourneyIndex, regularJourneys.length - 1) : 0
   const currentJourney = regularJourneys[safeJourneyIndex]
-  const currentJourneyPlaces = currentJourney ? allDestinations.filter(
-    destination => destination.journeyName === currentJourney.name
-  ).map((destination) => ({
-    id: destination.id,
-    name: destination.name,
-    nameCN: destination.nameCN,
-    date: destination.date,
-    journeyName: destination.journeyName,
-    journeyNameCN: destination.journeyNameCN,
-    state: destination.state,
-    images: destination.images || [],
-    lat: destination.lat,
-    lng: destination.lng
-  })) : []
+  const currentJourneyPlaces = useMemo(() => {
+    return currentJourney ? allDestinations.filter(
+      destination => destination.journeyName === currentJourney.name
+    ).map((destination) => ({
+      id: destination.id,
+      name: destination.name,
+      nameCN: destination.nameCN,
+      date: destination.date,
+      journeyName: destination.journeyName,
+      journeyNameCN: destination.journeyNameCN,
+      state: destination.state,
+      images: destination.images || [],
+      lat: destination.lat,
+      lng: destination.lng
+    })) : []
+  }, [currentJourney, allDestinations])
 
   // Get the route for the current regular journey
   const currentJourneyRoute = currentJourney ? trips.find(t => t.slug === currentJourney.slug)?.route || '' : ''
+  const currentJourneyRouteCoordinates = useMemo(() => {
+    return currentJourney ? getRouteCoordinatesFromSegments(currentJourney.segments) : []
+  }, [currentJourney])
 
   // Get current day trip based on index (with safety check)
   const safeDayTripIndex = dayTripJourneys.length > 0 ? Math.min(currentDayTripIndex, dayTripJourneys.length - 1) : 0
   const currentDayTrip = dayTripJourneys[safeDayTripIndex]
-  const currentDayTripPlaces = currentDayTrip ? allDestinations.filter(
-    destination => destination.journeyName === currentDayTrip.name
-  ).map((destination) => ({
-    id: destination.id,
-    name: destination.name,
-    nameCN: destination.nameCN,
-    date: destination.date,
-    journeyName: destination.journeyName,
-    journeyNameCN: destination.journeyNameCN,
-    state: destination.state,
-    images: destination.images || [],
-    lat: destination.lat,
-    lng: destination.lng
-  })) : []
+  const currentDayTripPlaces = useMemo(() => {
+    return currentDayTrip ? allDestinations.filter(
+      destination => destination.journeyName === currentDayTrip.name
+    ).map((destination) => ({
+      id: destination.id,
+      name: destination.name,
+      nameCN: destination.nameCN,
+      date: destination.date,
+      journeyName: destination.journeyName,
+      journeyNameCN: destination.journeyNameCN,
+      state: destination.state,
+      images: destination.images || [],
+      lat: destination.lat,
+      lng: destination.lng
+    })) : []
+  }, [currentDayTrip, allDestinations])
 
   // Get the route for the current day trip
   const currentDayTripRoute = currentDayTrip ? trips.find(t => t.slug === currentDayTrip.slug)?.route || '' : ''
+  const currentDayTripRouteCoordinates = useMemo(() => {
+    return currentDayTrip ? getRouteCoordinatesFromSegments(currentDayTrip.segments) : []
+  }, [currentDayTrip])
 
   const handlePrevJourney = () => {
     setCurrentJourneyIndex((prev) => (prev - 1 + regularJourneys.length) % regularJourneys.length)
@@ -511,38 +579,45 @@ export default function JourneysPage() {
       <TransportationFilterDrawer
         isOpen={isTransportationFilterDrawerOpen}
         onClose={() => setIsTransportationFilterDrawerOpen(false)}
+        selectedFilter={selectedTransportationFilter}
         onFilterChange={handleTransportationFilterChange}
       />
       <DayTripFilterDrawer
         isOpen={isDayTripFilterDrawerOpen}
         onClose={() => setIsDayTripFilterDrawerOpen(false)}
+        selectedFilter={selectedDayTripFilter}
         onFilterChange={handleDayTripFilterChange}
       />
       <GroupSizeFilterDrawer
         isOpen={isGroupSizeFilterDrawerOpen}
         onClose={() => setIsGroupSizeFilterDrawerOpen(false)}
+        selectedFilter={selectedGroupSizeFilter}
         onFilterChange={handleGroupSizeFilterChange}
       />
       <DayTripGroupSizeFilterDrawer
         isOpen={isDayTripGroupSizeFilterDrawerOpen}
         onClose={() => setIsDayTripGroupSizeFilterDrawerOpen(false)}
+        selectedFilter={selectedDayTripGroupSizeFilter}
         onFilterChange={handleDayTripGroupSizeFilterChange}
       />
       <TripLengthFilterDrawer
         isOpen={isTripLengthFilterDrawerOpen}
         onClose={() => setIsTripLengthFilterDrawerOpen(false)}
+        selectedFilter={selectedTripLengthFilter}
         onFilterChange={handleTripLengthFilterChange}
       />
       <ListGroupSizeFilterDrawer
         key={selectedTripLengthFilter}
         isOpen={isListGroupSizeFilterDrawerOpen}
         onClose={() => setIsListGroupSizeFilterDrawerOpen(false)}
+        selectedFilter={selectedListGroupSizeFilter}
         onFilterChange={handleListGroupSizeFilterChange}
       />
       <CombinedOtherFilterDrawer
         isOpen={isCombinedOtherFilterDrawerOpen}
         onClose={() => setIsCombinedOtherFilterDrawerOpen(false)}
         tripLengthFilter={selectedTripLengthFilter}
+        selectedFilter={selectedCombinedOtherFilter}
         onFilterChange={handleCombinedOtherFilterChange}
       />
       <NavigationMenu
@@ -569,32 +644,7 @@ export default function JourneysPage() {
         />
       </div>
 
-      {/* New Background Section - Full Width - Desktop Only */}
-      <div className="w-full relative overflow-hidden xs:hidden">
-        {/* Desktop Layout - Image overlaid on left of background */}
-        <div className="relative">
-          <img
-            src="/images/journey/journey_page_first_section.png"
-            alt="Journey Background"
-            className="w-full h-auto object-cover"
-          />
-
-          {/* Text Content - Desktop */}
-          <div className="absolute left-[30%] md:left-[35%] lg:left-[38%] top-1/2 -translate-y-1/2">
-            <p className="text-[#373737] mb-2 whitespace-nowrap" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '24px', lineHeight: '1.4' }}>
-              {locale === 'zh' ? '想看什么样的旅程故事呢？' : 'What type of journeys are you looking for?'}
-            </p>
-            <p className="text-[#373737] mb-2 whitespace-nowrap" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '24px', lineHeight: '1.4' }}>
-              {locale === 'zh' ? '想看我的长途旅行的话，请看下面的第一个地图。' : 'View the first map below if you want to see my longer trips.'}
-            </p>
-            <p className="text-[#373737] whitespace-nowrap" style={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '24px', lineHeight: '1.4' }}>
-              {locale === 'zh' ? '第二个地图是我的一日游和周末旅行。' : 'Checkout the second map for my day trips and weekend trips.'}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Map View Section */}
+      {/* Long Trips Map Section */}
       <Box
         component="section"
         className="w-full py-24 xs:py-12"
@@ -605,23 +655,33 @@ export default function JourneysPage() {
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Desktop: Map View Title */}
-          <div className="flex justify-center items-center mb-16 mt-8 xs:hidden">
+          {/* Desktop: Long Trips Title and Description */}
+          <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:hidden">
             <MixedText
-              text={tr.mapView}
+              text={locale === 'zh' ? '长途旅行' : 'Long Trips'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '40px', sm: '64px' }}
-              color="#373737"
+              fontSize="64px"
+              color="#F6F6F6"
               component="h2"
               sx={{
-                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
-                margin: 0
+                textShadow: '3px 3px 0px #373737',
+                margin: 0,
+                marginBottom: '16px'
               }}
+            />
+            <MixedText
+              text={locale === 'zh' ? '使用屏幕两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
+              chineseFont="MarioFontChinese, sans-serif"
+              englishFont="MarioFont, sans-serif"
+              fontSize="28px"
+              color="#F6F6F6"
+              component="p"
+              sx={{ margin: 0, textAlign: 'center' }}
             />
           </div>
 
-          {/* Mobile: Map View Title */}
+          {/* Mobile: Long Trips Title and Description */}
           <div className="hidden xs:flex flex-col justify-center items-center mb-8 mt-4">
             <MixedText
               text={locale === 'zh' ? '长途旅行' : 'Long Trips'}
@@ -710,61 +770,121 @@ export default function JourneysPage() {
           </div>
 
           {/* View Hints Button - Desktop Only */}
-          <div className="flex flex-col items-center my-36 xs:hidden" style={{ position: 'relative' }}>
+          <div className="flex justify-center my-16 xs:hidden">
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
-              onMouseEnter={() => setIsHintButtonHovered(true)}
-              onMouseLeave={() => setIsHintButtonHovered(false)}
               className="hover:scale-105 transition-transform duration-200"
             >
               <img
-                src="/images/icons/hint_icon.png"
+                src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-24 w-auto"
+                className="h-20 w-auto"
               />
             </button>
-            {isHintButtonHovered && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: '100%',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  marginTop: '1rem',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                <MixedText
-                  text={locale === 'zh' ? '查看提示' : 'View Hints'}
-                  chineseFont="MarioFontTitleChinese, sans-serif"
-                  englishFont="MarioFontTitle, sans-serif"
-                  fontSize="24px"
-                  color="#F6F6F6"
-                  component="p"
-                  sx={{
-                    textShadow: '2px 2px 0px #373737',
-                    margin: 0
-                  }}
-                />
-              </Box>
-            )}
           </div>
 
-          {/* Desktop: Long Trips Map Title */}
-          <div className="flex justify-center items-center mb-48 xs:mb-0">
-            <MixedText
-              text={locale === 'zh' ? '长途旅行' : 'Long Trips'}
-              chineseFont="MarioFontTitleChinese, sans-serif"
-              englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '40px', sm: '64px' }}
-              color="#F6F6F6"
-              component="h3"
-              sx={{
-                textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
-                margin: 0,
-                display: { xs: 'none', sm: 'block' }
+          {/* Filter Buttons - Desktop Only - Long Trips */}
+          <div className="flex justify-center items-center mb-48 xs:hidden">
+            <div
+              className="flex justify-center items-center gap-8"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                height: '140px',
+                width: '100%',
+                maxWidth: '900px'
               }}
-            />
+            >
+              {/* Transportation Filter Button */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setIsTransportationFilterDrawerOpen(true)}
+                  onMouseEnter={() => setIsTransportationFilterHovered(true)}
+                  onMouseLeave={() => setIsTransportationFilterHovered(false)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={transportationFilterIconMap[selectedTransportationFilter] || transportationFilterIconMap['all_transportation']}
+                    alt={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
+                    className="h-24 w-auto"
+                    style={{
+                      filter: selectedTransportationFilter !== 'all_transportation' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
+                {isTransportationFilterHovered && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      marginTop: '0.5rem',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <MixedText
+                      text={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
+                      chineseFont="MarioFontTitleChinese, sans-serif"
+                      englishFont="MarioFontTitle, sans-serif"
+                      fontSize="24px"
+                      color="#F6F6F6"
+                      component="p"
+                      sx={{
+                        textShadow: '2px 2px 0px #373737',
+                        margin: 0
+                      }}
+                    />
+                  </Box>
+                )}
+              </div>
+
+              {/* Group Size Filter Button */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+                  onMouseEnter={() => setIsLongTripGroupSizeFilterHovered(true)}
+                  onMouseLeave={() => setIsLongTripGroupSizeFilterHovered(false)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={longTripGroupSizeFilterIconMap[selectedGroupSizeFilter] || longTripGroupSizeFilterIconMap['all_group_sizes']}
+                    alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                    className="h-24 w-auto"
+                    style={{
+                      filter: selectedGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
+                {isLongTripGroupSizeFilterHovered && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      marginTop: '0.5rem',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <MixedText
+                      text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                      chineseFont="MarioFontTitleChinese, sans-serif"
+                      englishFont="MarioFontTitle, sans-serif"
+                      fontSize="24px"
+                      color="#F6F6F6"
+                      component="p"
+                      sx={{
+                        textShadow: '2px 2px 0px #373737',
+                        margin: 0
+                      }}
+                    />
+                  </Box>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Journey Info Card - Above map on xs screens */}
@@ -800,7 +920,7 @@ export default function JourneysPage() {
                 <InteractiveMap
                   places={currentJourneyPlaces}
                   routeSegments={currentJourney?.segments}
-                  routeCoordinates={getRouteCoordinatesFromSegments(currentJourney?.segments)}
+                  routeCoordinates={currentJourneyRouteCoordinates}
                   journeyDate={currentJourney?.startDate}
                 />
               </Box>
@@ -871,113 +991,250 @@ export default function JourneysPage() {
               </button>
             </Box>
           )}
-
-          {/* Day Trips & Weekend Trips Map Section - Desktop Only */}
-          {dayTripJourneys.length > 0 && currentDayTrip && (
-            <div className="mt-24 xs:hidden">
-              {/* Desktop: Day Trips Map Title */}
-              <div className="flex justify-center items-center mb-48">
-                <MixedText
-                  text={locale === 'zh' ? '一日游 & 周末旅行' : 'Day Trips & Weekend Trips'}
-                  chineseFont="MarioFontTitleChinese, sans-serif"
-                  englishFont="MarioFontTitle, sans-serif"
-                  fontSize="64px"
-                  color="#F6F6F6"
-                  component="h3"
-                  sx={{
-                    textShadow: '3px 3px 0px #373737',
-                    margin: 0
-                  }}
-                />
-              </div>
-
-              <Box style={{ position: 'relative' }}>
-                <Box
-                  sx={{
-                    backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
-                    backgroundRepeat: 'repeat',
-                    backgroundSize: '200px auto',
-                    padding: '1rem',
-                    borderRadius: '1.5rem'
-                  }}
-                >
-                  <InteractiveMap
-                    places={currentDayTripPlaces}
-                    routeSegments={currentDayTrip?.segments}
-                    routeCoordinates={getRouteCoordinatesFromSegments(currentDayTrip?.segments)}
-                    journeyDate={currentDayTrip?.startDate}
-                  />
-                </Box>
-
-                {/* Day Trip Info Card - Top Left Corner on desktop only */}
-                <Box
-                  sx={{
-                    display: { xs: 'none', sm: 'block' },
-                    position: 'absolute',
-                    top: '-100px',
-                    left: '-600px',
-                    zIndex: 1000
-                  }}
-                >
-                  <MapViewHint
-                    imageOnRight={false}
-                    cardNumber={3}
-                    isJourneyInfo={true}
-                    journeySlug={currentDayTrip.slug}
-                    station={{
-                      id: '',
-                      name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
-                      journeyName: currentDayTripRoute,
-                      date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
-                      images: []
-                    }}
-                  />
-                </Box>
-
-                {/* Previous Button */}
-                <button
-                  onClick={handlePrevDayTrip}
-                  disabled={currentDayTripIndex === 0}
-                  className={`group absolute left-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
-                    currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
-                  }`}
-                >
-                  <img
-                    src="/images/buttons/tab_prev.webp"
-                    alt={tr.previousJourney}
-                    className={`h-24 w-auto ${currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}`}
-                  />
-                  <img
-                    src="/images/buttons/tab_prev_hover.webp"
-                    alt={tr.previousJourney}
-                    className={`h-24 w-auto ${currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
-                  />
-                </button>
-
-                {/* Next Button */}
-                <button
-                  onClick={handleNextDayTrip}
-                  disabled={currentDayTripIndex === dayTripJourneys.length - 1}
-                  className={`group absolute right-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
-                    currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
-                  }`}
-                >
-                  <img
-                    src="/images/buttons/tab_next.webp"
-                    alt={tr.nextJourney}
-                    className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
-                  />
-                  <img
-                    src="/images/buttons/tab_next_hover.webp"
-                    alt={tr.nextJourney}
-                    className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
-                  />
-                </button>
-              </Box>
-            </div>
-          )}
         </div>
       </Box>
+
+      {/* Day Trips & Weekend Trips Section - Desktop Only */}
+      {dayTripJourneys.length > 0 && currentDayTrip && (
+        <Box
+          component="section"
+          className="w-full py-24 xs:hidden"
+          sx={{
+            backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '100vw auto',
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Desktop: Day Trips Title and Description */}
+            <div className="flex flex-col justify-center items-center mb-16 mt-8">
+              <MixedText
+                text={locale === 'zh' ? '一日游 & 周末旅行' : 'Day Trips & Weekend Trips'}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize="64px"
+                color="#F6F6F6"
+                component="h2"
+                sx={{
+                  textShadow: '3px 3px 0px #373737',
+                  margin: 0,
+                  marginBottom: '16px'
+                }}
+              />
+              <MixedText
+                text={locale === 'zh' ? '使用屏幕两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
+                chineseFont="MarioFontChinese, sans-serif"
+                englishFont="MarioFont, sans-serif"
+                fontSize="28px"
+                color="#F6F6F6"
+                component="p"
+                sx={{ margin: 0, textAlign: 'center' }}
+              />
+            </div>
+
+            {/* View Hints Button - Desktop Only */}
+            <div className="flex justify-center my-16">
+              <button
+                onClick={() => setIsViewHintsDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={`/images/buttons/view_hints_button_${locale}.png`}
+                  alt="View Hints"
+                  className="h-20 w-auto"
+                />
+              </button>
+            </div>
+
+            {/* Filter Buttons - Desktop Only - Day Trips */}
+            <div className="flex justify-center items-center mb-48">
+              <div
+                className="flex justify-center items-center gap-8"
+                style={{
+                  backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'contain',
+                  backgroundPosition: 'center',
+                  height: '140px',
+                  width: '100%',
+                  maxWidth: '900px'
+                }}
+              >
+                {/* Day Trip Group Size Filter Button */}
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setIsDayTripGroupSizeFilterDrawerOpen(true)}
+                    onMouseEnter={() => setIsDayTripGroupSizeFilterHovered(true)}
+                    onMouseLeave={() => setIsDayTripGroupSizeFilterHovered(false)}
+                    className="hover:scale-105 transition-transform duration-200"
+                  >
+                    <img
+                      src={dayTripGroupSizeFilterIconMap[selectedDayTripGroupSizeFilter] || dayTripGroupSizeFilterIconMap['all_day_trip_group_sizes']}
+                      alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                      className="h-24 w-auto"
+                      style={{
+                        filter: selectedDayTripGroupSizeFilter !== 'all_day_trip_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      }}
+                    />
+                  </button>
+                  {isDayTripGroupSizeFilterHovered && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        marginTop: '0.5rem',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      <MixedText
+                        text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                        chineseFont="MarioFontTitleChinese, sans-serif"
+                        englishFont="MarioFontTitle, sans-serif"
+                        fontSize="24px"
+                        color="#F6F6F6"
+                        component="p"
+                        sx={{
+                          textShadow: '2px 2px 0px #373737',
+                          margin: 0
+                        }}
+                      />
+                    </Box>
+                  )}
+                </div>
+
+                {/* Day Trip Location Filter Button */}
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setIsDayTripFilterDrawerOpen(true)}
+                    onMouseEnter={() => setIsDayTripLocationFilterHovered(true)}
+                    onMouseLeave={() => setIsDayTripLocationFilterHovered(false)}
+                    className="hover:scale-105 transition-transform duration-200"
+                  >
+                    <img
+                      src={dayTripLocationFilterIconMap[selectedDayTripFilter] || dayTripLocationFilterIconMap['all_day_trips']}
+                      alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
+                      className="h-24 w-auto"
+                      style={{
+                        filter: selectedDayTripFilter !== 'all_day_trips' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      }}
+                    />
+                  </button>
+                  {isDayTripLocationFilterHovered && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        marginTop: '0.5rem',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      <MixedText
+                        text={locale === 'zh' ? '其他筛选' : 'Other Filters'}
+                        chineseFont="MarioFontTitleChinese, sans-serif"
+                        englishFont="MarioFontTitle, sans-serif"
+                        fontSize="24px"
+                        color="#F6F6F6"
+                        component="p"
+                        sx={{
+                          textShadow: '2px 2px 0px #373737',
+                          margin: 0
+                        }}
+                      />
+                    </Box>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <Box style={{ position: 'relative' }}>
+              <Box
+                sx={{
+                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '200px auto',
+                  padding: '1rem',
+                  borderRadius: '1.5rem'
+                }}
+              >
+                <InteractiveMap
+                  places={currentDayTripPlaces}
+                  routeSegments={currentDayTrip?.segments}
+                  routeCoordinates={currentDayTripRouteCoordinates}
+                  journeyDate={currentDayTrip?.startDate}
+                />
+              </Box>
+
+              {/* Day Trip Info Card - Top Left Corner */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '-100px',
+                  left: '-600px',
+                  zIndex: 1000
+                }}
+              >
+                <MapViewHint
+                  imageOnRight={false}
+                  cardNumber={3}
+                  isJourneyInfo={true}
+                  journeySlug={currentDayTrip.slug}
+                  station={{
+                    id: '',
+                    name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
+                    journeyName: currentDayTripRoute,
+                    date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
+                    images: []
+                  }}
+                />
+              </Box>
+
+              {/* Previous Button */}
+              <button
+                onClick={handlePrevDayTrip}
+                disabled={currentDayTripIndex === 0}
+                className={`group absolute left-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_prev.webp"
+                  alt={tr.previousJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_prev_hover.webp"
+                  alt={tr.previousJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNextDayTrip}
+                disabled={currentDayTripIndex === dayTripJourneys.length - 1}
+                className={`group absolute right-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_next.webp"
+                  alt={tr.nextJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_next_hover.webp"
+                  alt={tr.nextJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
+            </Box>
+          </div>
+        </Box>
+      )}
 
       {/* Day Trips & Weekend Trips Section - Mobile Only */}
       {dayTripJourneys.length > 0 && currentDayTrip && (
@@ -1142,7 +1399,7 @@ export default function JourneysPage() {
                 <InteractiveMap
                   places={currentDayTripPlaces}
                   routeSegments={currentDayTrip?.segments}
-                  routeCoordinates={getRouteCoordinatesFromSegments(currentDayTrip?.segments)}
+                  routeCoordinates={currentDayTripRouteCoordinates}
                   journeyDate={currentDayTrip?.startDate}
                 />
               </Box>
@@ -1228,7 +1485,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
+          <div className="flex justify-center items-center gap-4 mb-16 xs:hidden">
             <button
               onClick={() => sortedTrips.length > 0 && handleSortChange('latest')}
               disabled={sortedTrips.length === 0}
@@ -1261,6 +1518,157 @@ export default function JourneysPage() {
                 className="h-16 w-auto"
               />
             </button>
+          </div>
+
+          {/* Filter Buttons - Desktop Only - List Section */}
+          <div className="flex justify-center items-center mb-48 xs:hidden">
+            <div
+              className="flex justify-center items-center gap-8"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                height: '140px',
+                width: '100%',
+                maxWidth: '900px'
+              }}
+            >
+              {/* Trip Length Filter Button */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setIsTripLengthFilterDrawerOpen(true)}
+                  onMouseEnter={() => setIsTripLengthFilterHovered(true)}
+                  onMouseLeave={() => setIsTripLengthFilterHovered(false)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={tripLengthFilterIconMap[selectedTripLengthFilter] || tripLengthFilterIconMap['all_trips']}
+                    alt={locale === 'zh' ? '用旅行时长筛选' : 'Filter by Trip Length'}
+                    className="h-24 w-auto"
+                    style={{
+                      filter: selectedTripLengthFilter !== 'all_trips' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
+                {isTripLengthFilterHovered && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      marginTop: '0.5rem',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <MixedText
+                      text={locale === 'zh' ? '用旅行时长筛选' : 'Filter by Trip Length'}
+                      chineseFont="MarioFontTitleChinese, sans-serif"
+                      englishFont="MarioFontTitle, sans-serif"
+                      fontSize="24px"
+                      color="#373737"
+                      component="p"
+                      sx={{
+                        textShadow: '2px 2px 0px #F6F6F6',
+                        margin: 0
+                      }}
+                    />
+                  </Box>
+                )}
+              </div>
+
+              {/* Group Size Filter Button */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setIsListGroupSizeFilterDrawerOpen(true)}
+                  onMouseEnter={() => setIsListGroupSizeFilterHovered(true)}
+                  onMouseLeave={() => setIsListGroupSizeFilterHovered(false)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={listGroupSizeFilterIconMap[selectedListGroupSizeFilter] || listGroupSizeFilterIconMap['all_group_sizes']}
+                    alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                    className="h-24 w-auto"
+                    style={{
+                      filter: selectedListGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
+                {isListGroupSizeFilterHovered && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      marginTop: '0.5rem',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <MixedText
+                      text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                      chineseFont="MarioFontTitleChinese, sans-serif"
+                      englishFont="MarioFontTitle, sans-serif"
+                      fontSize="24px"
+                      color="#373737"
+                      component="p"
+                      sx={{
+                        textShadow: '2px 2px 0px #F6F6F6',
+                        margin: 0
+                      }}
+                    />
+                  </Box>
+                )}
+              </div>
+
+              {/* Combined Other Filter Button */}
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setIsCombinedOtherFilterDrawerOpen(true)}
+                  onMouseEnter={() => setIsCombinedOtherFilterHovered(true)}
+                  onMouseLeave={() => setIsCombinedOtherFilterHovered(false)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={getCombinedOtherFilterIcon()}
+                    alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
+                    className="h-24 w-auto"
+                    style={{
+                      filter: (selectedTripLengthFilter === 'long_trips' && selectedCombinedOtherFilter !== 'all_transportation') ||
+                             (selectedTripLengthFilter === 'day_trips' && selectedCombinedOtherFilter !== 'all_day_trips') ||
+                             (selectedTripLengthFilter === 'all_trips' && selectedCombinedOtherFilter !== 'all_transportation')
+                             ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
+                {isCombinedOtherFilterHovered && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      marginTop: '0.5rem',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <MixedText
+                      text={locale === 'zh' ? '其他筛选' : 'Other Filters'}
+                      chineseFont="MarioFontTitleChinese, sans-serif"
+                      englishFont="MarioFontTitle, sans-serif"
+                      fontSize="24px"
+                      color="#373737"
+                      component="p"
+                      sx={{
+                        textShadow: '2px 2px 0px #F6F6F6',
+                        margin: 0
+                      }}
+                    />
+                  </Box>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Sort Button and Filter Buttons - Mobile */}

@@ -19,6 +19,7 @@ interface SingleSelectFilterDrawerProps {
   titleZh: string
   filterOptions: FilterOption[]
   defaultSelected?: string
+  selectedFilter?: string
   onFilterChange?: (filterId: string) => void
   showSelectedBanner?: boolean
   bannerImagePath?: string
@@ -31,15 +32,15 @@ export default function SingleSelectFilterDrawer({
   titleZh,
   filterOptions,
   defaultSelected,
+  selectedFilter: selectedFilterProp,
   onFilterChange,
   showSelectedBanner = true,
   bannerImagePath = '/images/destinations/hints/map_view_hint_title.webp'
 }: SingleSelectFilterDrawerProps) {
   const { locale } = useLanguage()
-  const [selectedFilter, setSelectedFilter] = useState<string>(defaultSelected || filterOptions[0]?.id)
+  const selectedFilter = selectedFilterProp || defaultSelected || filterOptions[0]?.id
 
   const handleFilterSelect = (filterId: string) => {
-    setSelectedFilter(filterId)
     if (onFilterChange) {
       onFilterChange(filterId)
     }

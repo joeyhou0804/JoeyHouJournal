@@ -5,6 +5,7 @@ import SingleSelectFilterDrawer, { FilterOption } from './SingleSelectFilterDraw
 interface DayTripGroupSizeFilterDrawerProps {
   isOpen: boolean
   onClose: () => void
+  selectedFilter?: string
   onFilterChange?: (filterId: string) => void
 }
 
@@ -14,7 +15,7 @@ const filterOptions: FilterOption[] = [
   { id: 'day_trip_with_others', iconPath: '/images/icons/filter/visit_with_others.png', labelEn: 'With others', labelZh: '和别人旅行' }
 ]
 
-export default function DayTripGroupSizeFilterDrawer({ isOpen, onClose, onFilterChange }: DayTripGroupSizeFilterDrawerProps) {
+export default function DayTripGroupSizeFilterDrawer({ isOpen, onClose, selectedFilter, onFilterChange }: DayTripGroupSizeFilterDrawerProps) {
   return (
     <SingleSelectFilterDrawer
       isOpen={isOpen}
@@ -23,6 +24,7 @@ export default function DayTripGroupSizeFilterDrawer({ isOpen, onClose, onFilter
       titleZh="用人数筛选"
       filterOptions={filterOptions}
       defaultSelected="all_day_trip_group_sizes"
+      selectedFilter={selectedFilter}
       onFilterChange={onFilterChange}
       showSelectedBanner={true}
     />

@@ -5,6 +5,7 @@ import SingleSelectFilterDrawer, { FilterOption } from './SingleSelectFilterDraw
 interface ListGroupSizeFilterDrawerProps {
   isOpen: boolean
   onClose: () => void
+  selectedFilter?: string
   onFilterChange?: (filterId: string) => void
 }
 
@@ -14,7 +15,7 @@ const filterOptions: FilterOption[] = [
   { id: 'visit_with_others', iconPath: '/images/icons/filter/visit_with_others.png', labelEn: 'With others', labelZh: '和别人一起' }
 ]
 
-export default function ListGroupSizeFilterDrawer({ isOpen, onClose, onFilterChange }: ListGroupSizeFilterDrawerProps) {
+export default function ListGroupSizeFilterDrawer({ isOpen, onClose, selectedFilter, onFilterChange }: ListGroupSizeFilterDrawerProps) {
   return (
     <SingleSelectFilterDrawer
       isOpen={isOpen}
@@ -23,6 +24,7 @@ export default function ListGroupSizeFilterDrawer({ isOpen, onClose, onFilterCha
       titleZh="用人数筛选"
       filterOptions={filterOptions}
       defaultSelected="all_group_sizes"
+      selectedFilter={selectedFilter}
       onFilterChange={onFilterChange}
       showSelectedBanner={true}
     />
