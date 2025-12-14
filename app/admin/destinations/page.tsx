@@ -14,6 +14,10 @@ interface Destination {
   date: string
   journeyName: string
   images?: string[]
+  showMap?: boolean
+  visitedByMyself?: boolean
+  visitedOnTrains?: boolean
+  stayedOvernight?: boolean
 }
 
 export default function DestinationsPage() {
@@ -154,6 +158,12 @@ export default function DestinationsPage() {
                 <Box><strong>State:</strong> {dest.state}</Box>
                 <Box sx={{ gridColumn: '1 / -1' }}><strong>Journey:</strong> {dest.journeyName}</Box>
                 <Box><strong>Images:</strong> {dest.images?.length || 0}</Box>
+                <Box sx={{ gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '0.25rem' }}>
+                  {dest.showMap && <span style={{ color: '#4CAF50', fontSize: '12px' }}>✓ Show Map</span>}
+                  {dest.visitedByMyself && <span style={{ color: '#4CAF50', fontSize: '12px' }}>✓ Visited Myself</span>}
+                  {dest.visitedOnTrains && <span style={{ color: '#4CAF50', fontSize: '12px' }}>✓ On Trains</span>}
+                  {dest.stayedOvernight && <span style={{ color: '#4CAF50', fontSize: '12px' }}>✓ Stayed Night</span>}
+                </Box>
               </Box>
             </Box>
           ))
@@ -178,12 +188,13 @@ export default function DestinationsPage() {
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Journey</th>
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>State</th>
               <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Images</th>
+              <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Details</th>
             </tr>
           </thead>
           <tbody>
             {paginatedDestinations.length === 0 ? (
               <tr>
-                <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
+                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
                   No destinations found
                 </td>
               </tr>
@@ -209,6 +220,17 @@ export default function DestinationsPage() {
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>{dest.state}</td>
                   <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
                     {dest.images?.length || 0}
+                  </td>
+                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '12px' }}>
+                      {dest.showMap && <span style={{ color: '#4CAF50' }}>✓ Show Map</span>}
+                      {dest.visitedByMyself && <span style={{ color: '#4CAF50' }}>✓ Visited Myself</span>}
+                      {dest.visitedOnTrains && <span style={{ color: '#4CAF50' }}>✓ On Trains</span>}
+                      {dest.stayedOvernight && <span style={{ color: '#4CAF50' }}>✓ Stayed Night</span>}
+                      {!dest.showMap && !dest.visitedByMyself && !dest.visitedOnTrains && !dest.stayedOvernight && (
+                        <span style={{ color: '#999' }}>—</span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))
