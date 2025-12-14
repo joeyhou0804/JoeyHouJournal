@@ -671,7 +671,7 @@ export default function JourneysPage() {
               }}
             />
             <MixedText
-              text={locale === 'zh' ? '使用屏幕两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
+              text={locale === 'zh' ? '使用地图两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
               fontSize="28px"
@@ -1022,7 +1022,7 @@ export default function JourneysPage() {
                 }}
               />
               <MixedText
-                text={locale === 'zh' ? '使用屏幕两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
+                text={locale === 'zh' ? '使用地图两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
                 chineseFont="MarioFontChinese, sans-serif"
                 englishFont="MarioFont, sans-serif"
                 fontSize="28px"
