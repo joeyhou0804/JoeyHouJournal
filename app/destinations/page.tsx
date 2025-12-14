@@ -747,7 +747,7 @@ export default function StationsPage() {
           </div>
 
           {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
+          <div className="flex justify-center items-center gap-4 mb-16 xs:hidden">
             <button
               onClick={() => sortedDestinations.length > 0 && handleSortChange('latest')}
               disabled={sortedDestinations.length === 0}
@@ -780,6 +780,154 @@ export default function StationsPage() {
                 className="h-16 w-auto"
               />
             </button>
+          </div>
+
+          {/* Filter Buttons - Desktop Only - Below Sort */}
+          <div className="flex justify-center items-center mb-48 xs:hidden">
+            <div
+              className="flex justify-center items-center gap-8"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                height: '140px',
+                width: '100%',
+                maxWidth: '900px'
+              }}
+            >
+            {/* Filter by Home Button */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setIsFilterByHomeDrawerOpen(true)}
+                onMouseEnter={() => setIsFilterByHomeHovered(true)}
+                onMouseLeave={() => setIsFilterByHomeHovered(false)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={homeFilterIconMap[selectedHomeFilter] || homeFilterIconMap['all_destinations']}
+                  alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                  className="h-24 w-auto"
+                  style={{
+                    filter: selectedHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                  }}
+                />
+              </button>
+              {isFilterByHomeHovered && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginTop: '0.5rem',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <MixedText
+                    text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="24px"
+                    color="#373737"
+                    component="p"
+                    sx={{
+                      textShadow: '2px 2px 0px #F6F6F6',
+                      margin: 0
+                    }}
+                  />
+                </Box>
+              )}
+            </div>
+
+            {/* Filter by Group Size Button */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+                onMouseEnter={() => setIsFilterByGroupSizeHovered(true)}
+                onMouseLeave={() => setIsFilterByGroupSizeHovered(false)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={groupSizeFilterIconMap[selectedGroupSizeFilter] || groupSizeFilterIconMap['all_group_sizes']}
+                  alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                  className="h-24 w-auto"
+                  style={{
+                    filter: selectedGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                  }}
+                />
+              </button>
+              {isFilterByGroupSizeHovered && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginTop: '0.5rem',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <MixedText
+                    text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="24px"
+                    color="#373737"
+                    component="p"
+                    sx={{
+                      textShadow: '2px 2px 0px #F6F6F6',
+                      margin: 0
+                    }}
+                  />
+                </Box>
+              )}
+            </div>
+
+            {/* Other Filters Button */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setIsOtherFiltersDrawerOpen(true)}
+                onMouseEnter={() => setIsOtherFiltersHovered(true)}
+                onMouseLeave={() => setIsOtherFiltersHovered(false)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={otherFilterIconMap[selectedOtherFilter] || otherFilterIconMap['all_destinations']}
+                  alt={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
+                  className="h-24 w-auto"
+                  style={{
+                    filter: selectedOtherFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                  }}
+                />
+              </button>
+              {isOtherFiltersHovered && (
+                <Box
+                  sx={{
+                    position: 'absolute',
+                    top: '100%',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    marginTop: '0.5rem',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <MixedText
+                    text={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize="24px"
+                    color="#373737"
+                    component="p"
+                    sx={{
+                      textShadow: '2px 2px 0px #F6F6F6',
+                      margin: 0
+                    }}
+                  />
+                </Box>
+              )}
+            </div>
+            </div>
           </div>
 
           {/* Sort Button and Filter Buttons - Mobile */}
