@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
@@ -82,20 +82,27 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   }, [])
 
   // Filter places for this journey
-  const places = journey ? allDestinations.filter(
-    destination => destination.journeyName === journey.name
-  ).map((destination) => ({
-    id: destination.id,
-    name: destination.name,
-    nameCN: destination.nameCN,
-    date: destination.date,
-    journeyName: destination.journeyName,
-    journeyNameCN: destination.journeyNameCN,
-    state: destination.state,
-    images: destination.images || [],
-    lat: destination.lat,
-    lng: destination.lng
-  })) : []
+  const places = useMemo(() => {
+    return journey ? allDestinations.filter(
+      destination => destination.journeyName === journey.name
+    ).map((destination) => ({
+      id: destination.id,
+      name: destination.name,
+      nameCN: destination.nameCN,
+      date: destination.date,
+      journeyName: destination.journeyName,
+      journeyNameCN: destination.journeyNameCN,
+      state: destination.state,
+      images: destination.images || [],
+      lat: destination.lat,
+      lng: destination.lng
+    })) : []
+  }, [journey, allDestinations])
+
+  // Memoize route coordinates to prevent map re-rendering
+  const routeCoordinates = useMemo(() => {
+    return getRouteCoordinatesFromSegments(journey?.segments)
+  }, [journey?.segments])
 
   const itemsPerPage = 12
 
@@ -336,7 +343,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               <InteractiveMap
                 places={places}
                 routeSegments={journey?.segments}
-                routeCoordinates={getRouteCoordinatesFromSegments(journey?.segments)}
+                routeCoordinates={routeCoordinates}
                 journeyDate={journey?.startDate}
               />
             </Box>
