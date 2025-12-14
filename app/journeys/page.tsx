@@ -93,7 +93,7 @@ export default function JourneysPage() {
   }
 
   const dayTripGroupSizeFilterIconMap: { [key: string]: string } = {
-    'all_day_trip_group_sizes': '/images/icons/filter/all_group_sizes.png',
+    'all_day_trip_group_sizes': '/images/icons/filter/all_group_sizes_dark.png',
     'day_trip_by_myself': '/images/icons/filter/visit_by_myself.png',
     'day_trip_with_others': '/images/icons/filter/visit_with_others.png'
   }
