@@ -309,7 +309,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 component="div"
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                  fontSize: '18px',
+                  fontSize: '20px',
                   color: '#373737',
                   whiteSpace: 'pre-line',
                   lineHeight: '1.8'
