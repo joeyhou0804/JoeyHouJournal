@@ -105,7 +105,7 @@ export default function JourneysPage() {
   }
 
   const tripLengthFilterIconMap: { [key: string]: string } = {
-    'all_trips': '/images/icons/filter/all_destination_icon.png',
+    'all_trips': '/images/icons/filter/all_trip_icon.png',
     'long_trips': '/images/icons/filter/long_trip_icon.png',
     'day_trips': '/images/icons/filter/day_trip_icon.png'
   }

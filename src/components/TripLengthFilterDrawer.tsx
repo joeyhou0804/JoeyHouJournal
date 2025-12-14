@@ -10,7 +10,7 @@ interface TripLengthFilterDrawerProps {
 }
 
 const filterOptions: FilterOption[] = [
-  { id: 'all_trips', iconPath: '/images/icons/filter/all_destination_icon.png', labelEn: 'All trips', labelZh: '全部旅行' },
+  { id: 'all_trips', iconPath: '/images/icons/filter/all_trip_icon.png', labelEn: 'All trips', labelZh: '全部旅行' },
   { id: 'long_trips', iconPath: '/images/icons/filter/long_trip_icon.png', labelEn: 'Long trips', labelZh: '长途旅行' },
   { id: 'day_trips', iconPath: '/images/icons/filter/day_trip_icon.png', labelEn: 'Day trips & Weekend trips', labelZh: '一日游&周末旅行' }
 ]
