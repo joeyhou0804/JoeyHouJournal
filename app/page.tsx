@@ -11,6 +11,7 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import HeroSection from 'src/components/HeroSection'
 import MixedText from 'src/components/MixedText'
+import ImageLightbox from 'src/components/ImageLightbox'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { formatDuration } from 'src/utils/formatDuration'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
@@ -141,6 +142,14 @@ export default function Home() {
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(false)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
+
+  // Lightbox state for journeys carousel
+  const [isJourneyLightboxOpen, setIsJourneyLightboxOpen] = useState(false)
+  const [journeyLightboxIndex, setJourneyLightboxIndex] = useState(0)
+
+  // Lightbox state for destinations carousel
+  const [isDestLightboxOpen, setIsDestLightboxOpen] = useState(false)
+  const [destLightboxIndex, setDestLightboxIndex] = useState(0)
 
   // Get latest 8 destinations from destinations data sorted by date
   const recentPlaces = useMemo(() => {
@@ -483,6 +492,10 @@ export default function Home() {
             <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column-reverse', overflow: 'visible' }}>
               {/* Journey Image - Rounded Square (now rendered first but appears on top) */}
               <Box
+                onClick={() => {
+                  setJourneyLightboxIndex(0)
+                  setIsJourneyLightboxOpen(true)
+                }}
                 sx={{
                   position: 'relative',
                   width: '75%',
@@ -493,7 +506,12 @@ export default function Home() {
                   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                   marginTop: '-3rem',
                   marginLeft: 'auto',
-                  marginRight: 'auto'
+                  marginRight: 'auto',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'scale(1.02)'
+                  }
                 }}
               >
                 <Box
@@ -952,6 +970,10 @@ export default function Home() {
             <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column-reverse', overflow: 'visible' }}>
               {/* Destination Image - Rounded Square (now rendered first but appears on top) */}
               <Box
+                onClick={() => {
+                  setDestLightboxIndex(0)
+                  setIsDestLightboxOpen(true)
+                }}
                 sx={{
                   position: 'relative',
                   width: '75%',
@@ -962,7 +984,12 @@ export default function Home() {
                   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                   marginTop: '-3rem',
                   marginLeft: 'auto',
-                  marginRight: 'auto'
+                  marginRight: 'auto',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'scale(1.02)'
+                  }
                 }}
               >
                 <Box
@@ -1272,6 +1299,32 @@ export default function Home() {
           </Container>
         </Container>
       </Section>
+
+      {/* Journey Image Lightbox */}
+      {featuredTrips.length > 0 && featuredTrips[currentSlide]?.image && (
+        <ImageLightbox
+          isOpen={isJourneyLightboxOpen}
+          images={[featuredTrips[currentSlide].image]}
+          currentIndex={journeyLightboxIndex}
+          onClose={() => setIsJourneyLightboxOpen(false)}
+          onPrevious={() => setJourneyLightboxIndex(prev => Math.max(0, prev - 1))}
+          onNext={() => setJourneyLightboxIndex(prev => prev + 1)}
+          alt={featuredTrips[currentSlide].name}
+        />
+      )}
+
+      {/* Destination Image Lightbox */}
+      {recentPlaces.length > 0 && recentPlaces[currentDestSlide]?.image && (
+        <ImageLightbox
+          isOpen={isDestLightboxOpen}
+          images={[recentPlaces[currentDestSlide].image]}
+          currentIndex={destLightboxIndex}
+          onClose={() => setIsDestLightboxOpen(false)}
+          onPrevious={() => setDestLightboxIndex(prev => Math.max(0, prev - 1))}
+          onNext={() => setDestLightboxIndex(prev => prev + 1)}
+          alt={recentPlaces[currentDestSlide].name}
+        />
+      )}
 
       <Footer />
     </Box>
