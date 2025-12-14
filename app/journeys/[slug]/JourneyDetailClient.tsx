@@ -62,7 +62,6 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
-  const [isHintButtonHovered, setIsHintButtonHovered] = useState(false)
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
@@ -311,44 +310,17 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
           </div>
 
           {/* View Hints Button - Desktop Only */}
-          <div className="flex flex-col items-center my-36 xs:hidden" style={{ position: 'relative' }}>
+          <div className="flex justify-center my-16 xs:hidden">
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
-              onMouseEnter={() => setIsHintButtonHovered(true)}
-              onMouseLeave={() => setIsHintButtonHovered(false)}
               className="hover:scale-105 transition-transform duration-200"
             >
               <img
-                src="/images/icons/hint_icon.png"
+                src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-24 w-auto"
+                className="h-20 w-auto"
               />
             </button>
-            {isHintButtonHovered && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: '100%',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  marginTop: '1rem',
-                  whiteSpace: 'nowrap'
-                }}
-              >
-                <MixedText
-                  text={locale === 'zh' ? '查看提示' : 'View Hints'}
-                  chineseFont="MarioFontTitleChinese, sans-serif"
-                  englishFont="MarioFontTitle, sans-serif"
-                  fontSize="24px"
-                  color="#F6F6F6"
-                  component="p"
-                  sx={{
-                    textShadow: '2px 2px 0px #373737',
-                    margin: 0
-                  }}
-                />
-              </Box>
-            )}
           </div>
 
           <Box className="xs:mx-[-0.5rem]">
