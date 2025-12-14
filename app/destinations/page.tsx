@@ -546,20 +546,20 @@ export default function StationsPage() {
             </button>
           </div>
 
-          {/* Horizontal Divider - Desktop Only */}
-          <Box
-            className="xs:hidden"
-            sx={{
-              width: 'calc(100% - 4rem)',
-              height: '4px',
-              backgroundColor: '#F6F6F6',
-              borderRadius: '2px',
-              margin: '0 auto 3rem auto'
-            }}
-          />
-
           {/* Filter Buttons - Desktop Only - Third Row */}
-          <div className="flex justify-center items-center gap-8 my-16 xs:hidden">
+          <div className="flex justify-center items-center my-16 xs:hidden">
+            <div
+              className="flex justify-center items-center gap-8"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                height: '140px',
+                width: '100%',
+                maxWidth: '900px'
+              }}
+            >
             {/* Filter by Home Button */}
             <div style={{ position: 'relative' }}>
               <button
@@ -571,7 +571,7 @@ export default function StationsPage() {
                 <img
                   src={homeFilterIconMap[selectedHomeFilter] || homeFilterIconMap['all_destinations']}
                   alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
-                  className="h-32 w-auto"
+                  className="h-24 w-auto"
                   style={{
                     filter: selectedHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
                   }}
@@ -615,7 +615,7 @@ export default function StationsPage() {
                 <img
                   src={groupSizeFilterIconMap[selectedGroupSizeFilter] || groupSizeFilterIconMap['all_group_sizes']}
                   alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                  className="h-32 w-auto"
+                  className="h-24 w-auto"
                   style={{
                     filter: selectedGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
                   }}
@@ -659,7 +659,7 @@ export default function StationsPage() {
                 <img
                   src={otherFilterIconMap[selectedOtherFilter] || otherFilterIconMap['all_destinations']}
                   alt={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
-                  className="h-32 w-auto"
+                  className="h-24 w-auto"
                   style={{
                     filter: selectedOtherFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
                   }}
@@ -690,6 +690,7 @@ export default function StationsPage() {
                   />
                 </Box>
               )}
+            </div>
             </div>
           </div>
 
