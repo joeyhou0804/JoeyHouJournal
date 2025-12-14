@@ -480,30 +480,20 @@ export default function Home() {
           {/* XS Layout - JourneyCard Style */}
           {featuredTrips.length > 0 && (
           <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw] mt-8" sx={{ minHeight: '500px', zIndex: 10, padding: 0 }}>
-            <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column', overflow: 'visible' }}>
-              {/* Card Background */}
-              <Box sx={{ position: 'relative', zIndex: 5 }}>
-                <Box
-                  component="img"
-                  src="/images/destinations/destination_card_xs_odd.webp"
-                  alt="Card"
-                  sx={{ width: '100vw', height: 'auto', display: 'block' }}
-                />
-              </Box>
-
-              {/* Journey Image - Rounded Square */}
+            <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column-reverse', overflow: 'visible' }}>
+              {/* Journey Image - Rounded Square (now rendered first but appears on top) */}
               <Box
                 sx={{
                   position: 'relative',
-                  width: 'calc(100% - 1rem)',
+                  width: '75%',
                   aspectRatio: '1',
                   borderRadius: '20px',
                   overflow: 'hidden',
-                  zIndex: 1,
+                  zIndex: 10,
                   boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                   marginTop: '-3rem',
-                  marginLeft: '0.5rem',
-                  marginRight: '0.5rem'
+                  marginLeft: 'auto',
+                  marginRight: 'auto'
                 }}
               >
                 <Box
@@ -511,6 +501,16 @@ export default function Home() {
                   src={featuredTrips[currentSlide]?.image || ''}
                   alt={featuredTrips[currentSlide]?.name}
                   sx={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              </Box>
+
+              {/* Card Background */}
+              <Box sx={{ position: 'relative', zIndex: 5 }}>
+                <Box
+                  component="img"
+                  src="/images/destinations/destination_card_xs_odd.webp"
+                  alt="Card"
+                  sx={{ width: '100vw', height: 'auto', display: 'block' }}
                 />
               </Box>
 
@@ -542,19 +542,16 @@ export default function Home() {
                 />
               </Box>
 
-              {/* Route and Duration */}
-              <Box sx={{ position: 'absolute', top: '15%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', textAlign: 'center', zIndex: 15 }}>
-                <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', color: '#F6F6F6', marginBottom: '4px', marginTop: 0, lineHeight: '1.4' }}>
-                  {featuredTrips[currentSlide]?.route || ''}
-                </Box>
+              {/* Route Info */}
+              <Box sx={{ position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', textAlign: 'center', zIndex: 15 }}>
                 <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', color: '#F6F6F6', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
-                  {featuredTrips[currentSlide]?.duration || ''}
+                  {featuredTrips[currentSlide]?.route || ''}
                 </Box>
               </Box>
 
               {/* View Details Button */}
               <Link href={`/journeys/${featuredTrips[currentSlide]?.slug || ''}`}>
-                <Box sx={{ position: 'absolute', top: '25%', left: '50%', transform: { xs: 'translate(-50%, -50%) scale(1.3)', sm: 'translate(-50%, -50%)' }, zIndex: 15 }}>
+                <Box sx={{ position: 'absolute', top: '19%', left: '50%', transform: { xs: 'translate(-50%, -50%) scale(1.3)', sm: 'translate(-50%, -50%)' }, zIndex: 15 }}>
                   <Box
                     component="img"
                     src={`/images/buttons/view_details_button_${locale}.png`}
@@ -572,7 +569,7 @@ export default function Home() {
               onClick={prevSlide}
               disabled={currentSlide === 0}
               className={`group absolute left-0 transition-transform duration-200 ${currentSlide === 0 ? 'opacity-40' : 'cursor-pointer'}`}
-              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)' }}
+              sx={{ zIndex: 30, top: '50%', transform: 'translateY(-50%)' }}
             >
               <Box
                 component="img"
@@ -594,7 +591,7 @@ export default function Home() {
               onClick={nextSlide}
               disabled={currentSlide === featuredTrips.length - 1}
               className={`group absolute right-0 transition-transform duration-200 ${currentSlide === featuredTrips.length - 1 ? 'opacity-40' : 'cursor-pointer'}`}
-              sx={{ zIndex: 30, top: 'calc(50% + 3rem)', transform: 'translateY(-50%)' }}
+              sx={{ zIndex: 30, top: '50%', transform: 'translateY(-50%)' }}
             >
               <Box
                 component="img"
