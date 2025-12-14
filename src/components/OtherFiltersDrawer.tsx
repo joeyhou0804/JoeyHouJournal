@@ -12,6 +12,7 @@ const filterOptions: FilterOption[] = [
   { id: 'all_destinations', iconPath: '/images/icons/filter/all_destination_icon.png', labelEn: 'Display all', labelZh: '显示全部' },
   { id: 'stay_overnight', iconPath: '/images/icons/filter/stay_overnight.png', labelEn: 'Stayed overnight', labelZh: '在当地过夜' },
   { id: 'visit_on_train', iconPath: '/images/icons/filter/visit_on_train.png', labelEn: 'Visited on trains', labelZh: '坐火车旅游' },
+  { id: 'photo_stops_on_trains', iconPath: '/images/icons/filter/photo_stops_on_trains.png', labelEn: 'Photo stops on trains', labelZh: '火车的短暂停留点' },
   { id: 'visit_more_than_once', iconPath: '/images/icons/filter/visit_more_than_once.png', labelEn: 'Visited more than once', labelZh: '去过超过一次' }
 ]
 

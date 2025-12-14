@@ -173,6 +173,10 @@ export default function StationsPage() {
         // Only show destinations where visitedOnTrains is true
         return destinations.filter(d => d.visitedOnTrains === true)
 
+      case 'photo_stops_on_trains':
+        // Only show destinations where visitedOnTrains is true AND stayedOvernight is false
+        return destinations.filter(d => d.visitedOnTrains === true && d.stayedOvernight === false)
+
       case 'visit_more_than_once':
         // Only show destinations visited more than once (same name)
         // Count visits by name (matching map's grouping logic)
