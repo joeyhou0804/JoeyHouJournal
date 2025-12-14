@@ -12,6 +12,7 @@ import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import { useTranslation } from 'src/hooks/useTranslation'
 import MixedText from 'src/components/MixedText'
 import { translations } from 'src/locales/translations'
+import ImageLightbox from 'src/components/ImageLightbox'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -38,6 +39,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   const [isXsScreen, setIsXsScreen] = useState(false)
   const [isTabsReady, setIsTabsReady] = useState(false)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const tabContainerRef = useRef<HTMLDivElement>(null)
 
   // Detect xs screen size
@@ -199,6 +201,15 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
+      />
+      <ImageLightbox
+        isOpen={isLightboxOpen}
+        images={station.images}
+        currentIndex={currentImageIndex}
+        onClose={() => setIsLightboxOpen(false)}
+        onPrevious={prevImage}
+        onNext={nextImage}
+        alt={station.name}
       />
 
       {/* Back Button */}
@@ -413,11 +424,17 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 component="img"
                 src={station.images[currentImageIndex]}
                 alt={`${station.name} - Image ${currentImageIndex + 1}`}
+                onClick={() => setIsLightboxOpen(true)}
                 sx={{
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  borderRadius: { xs: '0.5rem', sm: '1rem' }
+                  borderRadius: { xs: '0.5rem', sm: '1rem' },
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                  '&:hover': {
+                    transform: 'scale(1.02)'
+                  }
                 }}
               />
 
