@@ -81,7 +81,7 @@ export default function JourneysPage() {
 
   // Icon maps for filters
   const transportationFilterIconMap: { [key: string]: string } = {
-    'all_transportation': '/images/icons/filter/all_transport_icon.png',
+    'all_transportation': '/images/icons/filter/all_destination_icon.png',
     'train_only': '/images/icons/filter/train_only_icon.png',
     'other_transportation': '/images/icons/filter/other_transport_icon.png'
   }
