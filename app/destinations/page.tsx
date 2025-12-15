@@ -546,8 +546,7 @@ export default function StationsPage() {
               component="p"
               sx={{
                 textShadow: '2px 2px 0px #373737',
-                margin: 0,
-                marginBottom: '0.5rem'
+                margin: 0
               }}
             />
             <div
@@ -896,7 +895,41 @@ export default function StationsPage() {
             />
           </div>
 
-          {/* Filter Buttons - Desktop Only - Below Sort */}
+          {/* Search Bar - Desktop */}
+          <div className="flex justify-center items-center mb-8 xs:hidden">
+            <div
+              className="w-full max-w-2xl flex justify-center items-center"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/search_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                padding: '1.5rem 1rem',
+                height: '110px'
+              }}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={locale === 'zh' ? '搜索目的地...' : 'Search places...'}
+                className="destination-search-input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.75rem 0.75rem 6rem',
+                  fontSize: '24px',
+                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#F6F6F6',
+                  outline: 'none'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Filter Buttons - Desktop Only */}
           <div className="flex flex-col items-center mb-16 xs:hidden">
             {/* Filters Label */}
             <MixedText
@@ -1059,7 +1092,7 @@ export default function StationsPage() {
           </div>
 
           {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-16 xs:hidden">
+          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
             <button
               onClick={() => sortedDestinations.length > 0 && handleSortChange('latest')}
               disabled={sortedDestinations.length === 0}
@@ -1094,116 +1127,8 @@ export default function StationsPage() {
             </button>
           </div>
 
-          {/* Search Bar - Desktop */}
-          <div className="flex justify-center items-center mb-48 xs:hidden">
-            <div
-              className="w-full max-w-2xl flex justify-center items-center"
-              style={{
-                backgroundImage: 'url(/images/backgrounds/search_background.png)',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'contain',
-                backgroundPosition: 'center',
-                padding: '1.5rem 1rem',
-                height: '110px'
-              }}
-            >
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={locale === 'zh' ? '搜索目的地...' : 'Search places...'}
-                className="destination-search-input"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 0.75rem 0.75rem 6rem',
-                  fontSize: '24px',
-                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
-                  borderRadius: '0.5rem',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: '#F6F6F6',
-                  outline: 'none'
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Sort Button and Filter Buttons - Mobile */}
-          <div className="hidden xs:flex flex-col items-center gap-2 mb-12">
-            <button
-              onClick={() => sortedDestinations.length > 0 && setIsSortDrawerOpen(true)}
-              disabled={sortedDestinations.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
-                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/sort_button_${locale}.png`}
-                alt={locale === 'zh' ? '排序' : 'Sort'}
-                className="h-16 w-auto"
-              />
-            </button>
-
-            {/* Divider - Dark */}
-            <Box
-              sx={{
-                width: 'calc(100% - 2rem)',
-                height: '4px',
-                backgroundColor: '#373737',
-                borderRadius: '2px',
-                margin: '1.5rem auto 1.5rem auto'
-              }}
-            />
-
-            <button
-              onClick={() => setIsFilterByHomeDrawerOpen(true)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={
-                  selectedHomeFilter === 'all_destinations'
-                    ? `/images/buttons/filter_by_home_${locale}.png`
-                    : `/images/buttons/filter_by_home_selected_${locale}.png`
-                }
-                alt={locale === 'zh' ? '以家的位置筛选' : 'Filter by Home'}
-                className="h-16 w-auto"
-              />
-            </button>
-            <button
-              onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={
-                  selectedGroupSizeFilter === 'all_group_sizes'
-                    ? `/images/buttons/filter_by_group_size_${locale}.png`
-                    : `/images/buttons/filter_by_group_size_selected_${locale}.png`
-                }
-                alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                className="h-16 w-auto"
-              />
-            </button>
-            <button
-              onClick={() => setIsOtherFiltersDrawerOpen(true)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={
-                  selectedOtherFilter === 'all_destinations'
-                    ? `/images/buttons/other_filters_button_${locale}.png`
-                    : `/images/buttons/other_filters_button_selected_${locale}.png`
-                }
-                alt={locale === 'zh' ? '其他筛选条件' : 'Other Filters'}
-                className="h-16 w-auto"
-              />
-            </button>
-          </div>
-
           {/* Search Bar - Mobile */}
-          <div className="hidden xs:flex justify-center items-center mb-16">
+          <div className="hidden xs:flex justify-center items-center mb-4">
             <div
               className="w-full max-w-2xl flex justify-center items-center"
               style={{
@@ -1233,6 +1158,188 @@ export default function StationsPage() {
                 }}
               />
             </div>
+          </div>
+
+          {/* Filter Buttons and Sort Button - Mobile */}
+          <div className="hidden xs:flex flex-col items-center gap-2 mb-12">
+            {/* Filter Buttons Group - Icon Style */}
+            <div className="flex flex-col items-center w-full">
+              {/* Filters Label */}
+              <MixedText
+                text={locale === 'zh' ? '筛选条件' : 'Filters'}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize="24px"
+                color="#373737"
+                component="p"
+                sx={{
+                  textShadow: '2px 2px 0px #F6F6F6',
+                  margin: 0
+                }}
+              />
+              <div
+                className="flex justify-center items-center gap-4"
+                style={{
+                  backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'contain',
+                  backgroundPosition: 'center',
+                  height: '100px',
+                  width: '100%',
+                  maxWidth: '400px'
+                }}
+              >
+                {/* Filter by Home Button */}
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setIsFilterByHomeDrawerOpen(true)}
+                    onMouseEnter={() => setIsFilterByHomeHovered(true)}
+                    onMouseLeave={() => setIsFilterByHomeHovered(false)}
+                    className="hover:scale-105 transition-transform duration-200"
+                  >
+                    <img
+                      src={homeFilterIconMap[selectedHomeFilter] || homeFilterIconMap['all_destinations']}
+                      alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                      className="h-16 w-auto"
+                      style={{
+                        filter: selectedHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      }}
+                    />
+                  </button>
+                  {isFilterByHomeHovered && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        marginTop: '0.5rem',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      <MixedText
+                        text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                        chineseFont="MarioFontTitleChinese, sans-serif"
+                        englishFont="MarioFontTitle, sans-serif"
+                        fontSize="18px"
+                        color="#373737"
+                        component="p"
+                        sx={{
+                          textShadow: '2px 2px 0px #F6F6F6',
+                          margin: 0
+                        }}
+                      />
+                    </Box>
+                  )}
+                </div>
+
+                {/* Filter by Group Size Button */}
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+                    onMouseEnter={() => setIsFilterByGroupSizeHovered(true)}
+                    onMouseLeave={() => setIsFilterByGroupSizeHovered(false)}
+                    className="hover:scale-105 transition-transform duration-200"
+                  >
+                    <img
+                      src={groupSizeFilterIconMap[selectedGroupSizeFilter] || groupSizeFilterIconMap['all_group_sizes']}
+                      alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                      className="h-16 w-auto"
+                      style={{
+                        filter: selectedGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      }}
+                    />
+                  </button>
+                  {isFilterByGroupSizeHovered && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        marginTop: '0.5rem',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      <MixedText
+                        text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                        chineseFont="MarioFontTitleChinese, sans-serif"
+                        englishFont="MarioFontTitle, sans-serif"
+                        fontSize="18px"
+                        color="#373737"
+                        component="p"
+                        sx={{
+                          textShadow: '2px 2px 0px #F6F6F6',
+                          margin: 0
+                        }}
+                      />
+                    </Box>
+                  )}
+                </div>
+
+                {/* Other Filters Button */}
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setIsOtherFiltersDrawerOpen(true)}
+                    onMouseEnter={() => setIsOtherFiltersHovered(true)}
+                    onMouseLeave={() => setIsOtherFiltersHovered(false)}
+                    className="hover:scale-105 transition-transform duration-200"
+                  >
+                    <img
+                      src={otherFilterIconMap[selectedOtherFilter] || otherFilterIconMap['all_destinations']}
+                      alt={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
+                      className="h-16 w-auto"
+                      style={{
+                        filter: selectedOtherFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      }}
+                    />
+                  </button>
+                  {isOtherFiltersHovered && (
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        marginTop: '0.5rem',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      <MixedText
+                        text={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
+                        chineseFont="MarioFontTitleChinese, sans-serif"
+                        englishFont="MarioFontTitle, sans-serif"
+                        fontSize="18px"
+                        color="#373737"
+                        component="p"
+                        sx={{
+                          textShadow: '2px 2px 0px #F6F6F6',
+                          margin: 0
+                        }}
+                      />
+                    </Box>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Sort Button */}
+            <button
+              onClick={() => sortedDestinations.length > 0 && setIsSortDrawerOpen(true)}
+              disabled={sortedDestinations.length === 0}
+              className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
+                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
+            >
+              <img
+                src={`/images/buttons/sort_button_${locale}.png`}
+                alt={locale === 'zh' ? '排序' : 'Sort'}
+                className="h-16 w-auto"
+              />
+            </button>
           </div>
 
           {/* Empty State - When no results */}
