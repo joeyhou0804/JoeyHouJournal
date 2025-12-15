@@ -5,6 +5,7 @@ import { useRouter, useParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { Box, TextField, MenuItem, Drawer, Typography, Button, Alert } from '@mui/material'
 import { Delete as DeleteIcon } from '@mui/icons-material'
+import { generateChineseDestinationName } from 'lib/cityTranslations'
 
 interface DestinationFormData {
   id?: string
@@ -386,12 +387,25 @@ export default function DestinationFormPage() {
               <button
                 type="button"
                 onClick={() => {
-                  const { generateChineseDestinationName } = require('lib/cityTranslations')
-                  const name = watch('name')
-                  const state = watch('state')
-                  const translation = generateChineseDestinationName(name, state)
+                  let cityName = watch('name')
+                  let stateInput = watch('state')
+
+                  // If name contains comma (e.g., "New Orleans, LA"), split it
+                  if (cityName && cityName.includes(',')) {
+                    const parts = cityName.split(',').map(p => p.trim())
+                    cityName = parts[0]
+                    // If state code is provided in name, use it; otherwise use state field
+                    if (parts.length >= 2 && parts[1]) {
+                      stateInput = parts[1]
+                    }
+                  }
+
+                  const translation = generateChineseDestinationName(cityName, stateInput)
                   if (translation) {
                     setValue('nameCN', translation)
+                  } else {
+                    console.warn('No translation found for:', { cityName, stateInput })
+                    alert(`Unable to generate Chinese name for "${cityName}, ${stateInput}". The city or state may not be in the translation database. Please enter manually.`)
                   }
                 }}
                 disabled={!watch('name') || !watch('state')}
