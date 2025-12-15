@@ -810,7 +810,7 @@ export default function JourneysPage() {
           </div>
 
           {/* View Hints Button - Desktop Only */}
-          <div className="flex justify-center my-16 xs:hidden">
+          <div className="flex justify-center mb-48 mt-16 xs:hidden">
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -823,8 +823,113 @@ export default function JourneysPage() {
             </button>
           </div>
 
+          {/* Journey Info Card - Above map on xs screens */}
+          {currentJourney && (
+            <div className="block sm:hidden mt-12">
+              <MapViewHint
+                imageOnRight={true}
+                cardNumber={2}
+                isJourneyInfo={true}
+                journeySlug={currentJourney.slug}
+                station={{
+                  id: '',
+                  name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
+                  journeyName: currentJourneyRoute,
+                  date: formatDuration(currentJourney.days, currentJourney.nights, tr),
+                  images: []
+                }}
+              />
+            </div>
+          )}
+
+          {currentJourney && (
+            <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem] xs:-mt-6">
+              <Box
+                sx={{
+                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '200px auto',
+                  padding: { xs: '0.5rem', sm: '1rem' },
+                  borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                }}
+              >
+                <InteractiveMap
+                  places={currentJourneyPlaces}
+                  routeSegments={currentJourney?.segments}
+                  routeCoordinates={currentJourneyRouteCoordinates}
+                  journeyDate={currentJourney?.startDate}
+                />
+              </Box>
+
+              {/* Journey Info Card - Top Right Corner on desktop only */}
+              <Box
+                sx={{
+                  display: { xs: 'none', sm: 'block' },
+                  position: 'absolute',
+                  top: '-100px',
+                  right: '-600px',
+                  zIndex: 1000
+                }}
+              >
+                <MapViewHint
+                  imageOnRight={true}
+                  cardNumber={2}
+                  isJourneyInfo={true}
+                  journeySlug={currentJourney.slug}
+                  station={{
+                    id: '',
+                    name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
+                    journeyName: currentJourneyRoute,
+                    date: formatDuration(currentJourney.days, currentJourney.nights, tr),
+                    images: []
+                  }}
+                />
+              </Box>
+
+              {/* Previous Button */}
+              <button
+                onClick={handlePrevJourney}
+                disabled={currentJourneyIndex === 0}
+                className={`group absolute left-4 xs:left-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentJourneyIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_prev.webp"
+                  alt={tr.previousJourney}
+                  className={`h-24 w-auto ${currentJourneyIndex === 0 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_prev_hover.webp"
+                  alt={tr.previousJourney}
+                  className={`h-24 w-auto ${currentJourneyIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNextJourney}
+                disabled={currentJourneyIndex === regularJourneys.length - 1}
+                className={`group absolute right-4 xs:right-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentJourneyIndex === regularJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_next.webp"
+                  alt={tr.nextJourney}
+                  className={`h-24 w-auto ${currentJourneyIndex === regularJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_next_hover.webp"
+                  alt={tr.nextJourney}
+                  className={`h-24 w-auto ${currentJourneyIndex === regularJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
+            </Box>
+          )}
+
           {/* Filter Buttons - Desktop Only - Long Trips */}
-          <div className="flex flex-col items-center mb-48 xs:hidden">
+          <div className="flex flex-col items-center mt-16 xs:hidden">
             {/* Filters Label */}
             <MixedText
               text={locale === 'zh' ? '筛选条件' : 'Filters'}
@@ -940,111 +1045,6 @@ export default function JourneysPage() {
               </div>
             </div>
           </div>
-
-          {/* Journey Info Card - Above map on xs screens */}
-          {currentJourney && (
-            <div className="block sm:hidden mt-12">
-              <MapViewHint
-                imageOnRight={true}
-                cardNumber={2}
-                isJourneyInfo={true}
-                journeySlug={currentJourney.slug}
-                station={{
-                  id: '',
-                  name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
-                  journeyName: currentJourneyRoute,
-                  date: formatDuration(currentJourney.days, currentJourney.nights, tr),
-                  images: []
-                }}
-              />
-            </div>
-          )}
-
-          {currentJourney && (
-            <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem] xs:-mt-6">
-              <Box
-                sx={{
-                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
-                  backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: { xs: '0.5rem', sm: '1rem' },
-                  borderRadius: { xs: '0.75rem', sm: '1.5rem' }
-                }}
-              >
-                <InteractiveMap
-                  places={currentJourneyPlaces}
-                  routeSegments={currentJourney?.segments}
-                  routeCoordinates={currentJourneyRouteCoordinates}
-                  journeyDate={currentJourney?.startDate}
-                />
-              </Box>
-
-              {/* Journey Info Card - Top Right Corner on desktop only */}
-              <Box
-                sx={{
-                  display: { xs: 'none', sm: 'block' },
-                  position: 'absolute',
-                  top: '-100px',
-                  right: '-600px',
-                  zIndex: 1000
-                }}
-              >
-                <MapViewHint
-                  imageOnRight={true}
-                  cardNumber={2}
-                  isJourneyInfo={true}
-                  journeySlug={currentJourney.slug}
-                  station={{
-                    id: '',
-                    name: locale === 'zh' && currentJourney.nameCN ? currentJourney.nameCN : currentJourney.name,
-                    journeyName: currentJourneyRoute,
-                    date: formatDuration(currentJourney.days, currentJourney.nights, tr),
-                    images: []
-                  }}
-                />
-              </Box>
-
-              {/* Previous Button */}
-              <button
-                onClick={handlePrevJourney}
-                disabled={currentJourneyIndex === 0}
-                className={`group absolute left-4 xs:left-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
-                  currentJourneyIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
-                }`}
-              >
-                <img
-                  src="/images/buttons/tab_prev.webp"
-                  alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === 0 ? '' : 'group-hover:hidden'}`}
-                />
-                <img
-                  src="/images/buttons/tab_prev_hover.webp"
-                  alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
-                />
-              </button>
-
-              {/* Next Button */}
-              <button
-                onClick={handleNextJourney}
-                disabled={currentJourneyIndex === regularJourneys.length - 1}
-                className={`group absolute right-4 xs:right-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
-                  currentJourneyIndex === regularJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
-                }`}
-              >
-                <img
-                  src="/images/buttons/tab_next.webp"
-                  alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === regularJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
-                />
-                <img
-                  src="/images/buttons/tab_next_hover.webp"
-                  alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === regularJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
-                />
-              </button>
-            </Box>
-          )}
         </div>
       </Box>
 
@@ -1087,7 +1087,7 @@ export default function JourneysPage() {
             </div>
 
             {/* View Hints Button - Desktop Only */}
-            <div className="flex justify-center my-16">
+            <div className="flex justify-center mb-48 mt-16">
               <button
                 onClick={() => setIsViewHintsDrawerOpen(true)}
                 className="hover:scale-105 transition-transform duration-200"
@@ -1100,8 +1100,91 @@ export default function JourneysPage() {
               </button>
             </div>
 
+            <Box style={{ position: 'relative' }}>
+              <Box
+                sx={{
+                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '200px auto',
+                  padding: '1rem',
+                  borderRadius: '1.5rem'
+                }}
+              >
+                <InteractiveMap
+                  places={currentDayTripPlaces}
+                  routeSegments={currentDayTrip?.segments}
+                  routeCoordinates={currentDayTripRouteCoordinates}
+                  journeyDate={currentDayTrip?.startDate}
+                />
+              </Box>
+
+              {/* Day Trip Info Card - Top Left Corner */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: '-100px',
+                  left: '-600px',
+                  zIndex: 1000
+                }}
+              >
+                <MapViewHint
+                  imageOnRight={false}
+                  cardNumber={3}
+                  isJourneyInfo={true}
+                  journeySlug={currentDayTrip.slug}
+                  station={{
+                    id: '',
+                    name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
+                    journeyName: currentDayTripRoute,
+                    date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
+                    images: []
+                  }}
+                />
+              </Box>
+
+              {/* Previous Button */}
+              <button
+                onClick={handlePrevDayTrip}
+                disabled={currentDayTripIndex === 0}
+                className={`group absolute left-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_prev.webp"
+                  alt={tr.previousJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_prev_hover.webp"
+                  alt={tr.previousJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNextDayTrip}
+                disabled={currentDayTripIndex === dayTripJourneys.length - 1}
+                className={`group absolute right-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                }`}
+              >
+                <img
+                  src="/images/buttons/tab_next.webp"
+                  alt={tr.nextJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
+                />
+                <img
+                  src="/images/buttons/tab_next_hover.webp"
+                  alt={tr.nextJourney}
+                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                />
+              </button>
+            </Box>
+
             {/* Filter Buttons - Desktop Only - Day Trips */}
-            <div className="flex flex-col items-center mb-48">
+            <div className="flex flex-col items-center mt-16">
               {/* Filters Label */}
               <MixedText
                 text={locale === 'zh' ? '筛选条件' : 'Filters'}
@@ -1217,89 +1300,6 @@ export default function JourneysPage() {
                 </div>
               </div>
             </div>
-
-            <Box style={{ position: 'relative' }}>
-              <Box
-                sx={{
-                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
-                  backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: '1rem',
-                  borderRadius: '1.5rem'
-                }}
-              >
-                <InteractiveMap
-                  places={currentDayTripPlaces}
-                  routeSegments={currentDayTrip?.segments}
-                  routeCoordinates={currentDayTripRouteCoordinates}
-                  journeyDate={currentDayTrip?.startDate}
-                />
-              </Box>
-
-              {/* Day Trip Info Card - Top Left Corner */}
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: '-100px',
-                  left: '-600px',
-                  zIndex: 1000
-                }}
-              >
-                <MapViewHint
-                  imageOnRight={false}
-                  cardNumber={3}
-                  isJourneyInfo={true}
-                  journeySlug={currentDayTrip.slug}
-                  station={{
-                    id: '',
-                    name: locale === 'zh' && currentDayTrip.nameCN ? currentDayTrip.nameCN : currentDayTrip.name,
-                    journeyName: currentDayTripRoute,
-                    date: formatDuration(currentDayTrip.days, currentDayTrip.nights, tr),
-                    images: []
-                  }}
-                />
-              </Box>
-
-              {/* Previous Button */}
-              <button
-                onClick={handlePrevDayTrip}
-                disabled={currentDayTripIndex === 0}
-                className={`group absolute left-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
-                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
-                }`}
-              >
-                <img
-                  src="/images/buttons/tab_prev.webp"
-                  alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}`}
-                />
-                <img
-                  src="/images/buttons/tab_prev_hover.webp"
-                  alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
-                />
-              </button>
-
-              {/* Next Button */}
-              <button
-                onClick={handleNextDayTrip}
-                disabled={currentDayTripIndex === dayTripJourneys.length - 1}
-                className={`group absolute right-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
-                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
-                }`}
-              >
-                <img
-                  src="/images/buttons/tab_next.webp"
-                  alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
-                />
-                <img
-                  src="/images/buttons/tab_next_hover.webp"
-                  alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
-                />
-              </button>
-            </Box>
           </div>
         </Box>
       )}
