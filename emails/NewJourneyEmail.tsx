@@ -45,9 +45,9 @@ export const NewJourneyEmail = ({
   const isZh = locale === 'zh'
   const displayName = isZh && journeyNameCN ? journeyNameCN : journeyName
 
-  const greeting = isZh ? `你好 ${subscriberName}!` : `Hi ${subscriberName}!`
+  const greeting = isZh ? `你好${subscriberName}!` : `Hi ${subscriberName}!`
   const intro = isZh
-    ? '我刚刚添加了一段新的旅程到我的旅行日志！'
+    ? '我的旅行日记添加了一段新的旅程，快来看看吧！'
     : "I've just added a new journey to my travel journal!"
   const viewJourneyText = isZh ? '查看完整旅程' : 'View Full Journey'
   const dateLabel = isZh ? '日期' : 'Date'
@@ -55,7 +55,7 @@ export const NewJourneyEmail = ({
   const durationLabel = isZh ? '时长' : 'Duration'
   const unsubscribeText = isZh ? '取消订阅' : 'Unsubscribe'
   const footer = isZh
-    ? '您收到此邮件是因为您订阅了新旅程通知。'
+    ? '您订阅了小猴同学旅行日记的新旅程通知，所以您会收到本邮件。'
     : "You're receiving this email because you subscribed to new journey notifications."
 
   // Determine header image paths
