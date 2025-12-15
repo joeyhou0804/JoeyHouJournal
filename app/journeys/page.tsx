@@ -912,92 +912,34 @@ export default function JourneysPage() {
               }}
             >
               {/* Transportation Filter Button */}
-              <div style={{ position: 'relative' }}>
-                <button
-                  onClick={() => setIsTransportationFilterDrawerOpen(true)}
-                  onMouseEnter={() => setIsTransportationFilterHovered(true)}
-                  onMouseLeave={() => setIsTransportationFilterHovered(false)}
-                  className="hover:scale-105 transition-transform duration-200"
-                >
-                  <img
-                    src={transportationFilterIconMap[selectedTransportationFilter] || transportationFilterIconMap['all_transportation']}
-                    alt={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
-                    className="h-16 w-auto"
-                    style={{
-                      filter: selectedTransportationFilter !== 'all_transportation' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
-                    }}
-                  />
-                </button>
-                {isTransportationFilterHovered && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    <MixedText
-                      text={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
-                      chineseFont="MarioFontTitleChinese, sans-serif"
-                      englishFont="MarioFontTitle, sans-serif"
-                      fontSize="18px"
-                      color="#F6F6F6"
-                      component="p"
-                      sx={{
-                        textShadow: '2px 2px 0px #373737',
-                        margin: 0
-                      }}
-                    />
-                  </Box>
-                )}
-              </div>
+              <button
+                onClick={() => setIsTransportationFilterDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={transportationFilterIconMap[selectedTransportationFilter] || transportationFilterIconMap['all_transportation']}
+                  alt={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
+                  className="h-16 w-auto"
+                  style={{
+                    filter: selectedTransportationFilter !== 'all_transportation' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                  }}
+                />
+              </button>
 
               {/* Group Size Filter Button */}
-              <div style={{ position: 'relative' }}>
-                <button
-                  onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
-                  onMouseEnter={() => setIsLongTripGroupSizeFilterHovered(true)}
-                  onMouseLeave={() => setIsLongTripGroupSizeFilterHovered(false)}
-                  className="hover:scale-105 transition-transform duration-200"
-                >
-                  <img
-                    src={longTripGroupSizeFilterIconMap[selectedGroupSizeFilter] || longTripGroupSizeFilterIconMap['all_group_sizes']}
-                    alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                    className="h-16 w-auto"
-                    style={{
-                      filter: selectedGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
-                    }}
-                  />
-                </button>
-                {isLongTripGroupSizeFilterHovered && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    <MixedText
-                      text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                      chineseFont="MarioFontTitleChinese, sans-serif"
-                      englishFont="MarioFontTitle, sans-serif"
-                      fontSize="18px"
-                      color="#F6F6F6"
-                      component="p"
-                      sx={{
-                        textShadow: '2px 2px 0px #373737',
-                        margin: 0
-                      }}
-                    />
-                  </Box>
-                )}
-              </div>
+              <button
+                onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={longTripGroupSizeFilterIconMap[selectedGroupSizeFilter] || longTripGroupSizeFilterIconMap['all_group_sizes']}
+                  alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                  className="h-16 w-auto"
+                  style={{
+                    filter: selectedGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                  }}
+                />
+              </button>
             </div>
           </div>
 
@@ -1570,92 +1512,34 @@ export default function JourneysPage() {
                 }}
               >
                 {/* Day Trip Group Size Filter Button */}
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={() => setIsDayTripGroupSizeFilterDrawerOpen(true)}
-                    onMouseEnter={() => setIsDayTripGroupSizeFilterHovered(true)}
-                    onMouseLeave={() => setIsDayTripGroupSizeFilterHovered(false)}
-                    className="hover:scale-105 transition-transform duration-200"
-                  >
-                    <img
-                      src={dayTripGroupSizeFilterIconMap[selectedDayTripGroupSizeFilter] || dayTripGroupSizeFilterIconMap['all_day_trip_group_sizes']}
-                      alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                      className="h-16 w-auto"
-                      style={{
-                        filter: selectedDayTripGroupSizeFilter !== 'all_day_trip_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
-                      }}
-                    />
-                  </button>
-                  {isDayTripGroupSizeFilterHovered && (
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      <MixedText
-                        text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                        chineseFont="MarioFontTitleChinese, sans-serif"
-                        englishFont="MarioFontTitle, sans-serif"
-                        fontSize="18px"
-                        color="#F6F6F6"
-                        component="p"
-                        sx={{
-                          textShadow: '2px 2px 0px #373737',
-                          margin: 0
-                        }}
-                      />
-                    </Box>
-                  )}
-                </div>
+                <button
+                  onClick={() => setIsDayTripGroupSizeFilterDrawerOpen(true)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={dayTripGroupSizeFilterIconMap[selectedDayTripGroupSizeFilter] || dayTripGroupSizeFilterIconMap['all_day_trip_group_sizes']}
+                    alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                    className="h-16 w-auto"
+                    style={{
+                      filter: selectedDayTripGroupSizeFilter !== 'all_day_trip_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
 
                 {/* Day Trip Location Filter Button */}
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={() => setIsDayTripFilterDrawerOpen(true)}
-                    onMouseEnter={() => setIsDayTripLocationFilterHovered(true)}
-                    onMouseLeave={() => setIsDayTripLocationFilterHovered(false)}
-                    className="hover:scale-105 transition-transform duration-200"
-                  >
-                    <img
-                      src={dayTripLocationFilterIconMap[selectedDayTripFilter] || dayTripLocationFilterIconMap['all_day_trips']}
-                      alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
-                      className="h-16 w-auto"
-                      style={{
-                        filter: selectedDayTripFilter !== 'all_day_trips' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
-                      }}
-                    />
-                  </button>
-                  {isDayTripLocationFilterHovered && (
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      <MixedText
-                        text={locale === 'zh' ? '其他筛选' : 'Other Filters'}
-                        chineseFont="MarioFontTitleChinese, sans-serif"
-                        englishFont="MarioFontTitle, sans-serif"
-                        fontSize="18px"
-                        color="#F6F6F6"
-                        component="p"
-                        sx={{
-                          textShadow: '2px 2px 0px #373737',
-                          margin: 0
-                        }}
-                      />
-                    </Box>
-                  )}
-                </div>
+                <button
+                  onClick={() => setIsDayTripFilterDrawerOpen(true)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={dayTripLocationFilterIconMap[selectedDayTripFilter] || dayTripLocationFilterIconMap['all_day_trips']}
+                    alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
+                    className="h-16 w-auto"
+                    style={{
+                      filter: selectedDayTripFilter !== 'all_day_trips' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
               </div>
             </div>
           </div>
@@ -1996,139 +1880,52 @@ export default function JourneysPage() {
                 }}
               >
                 {/* Trip Length Filter Button */}
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={() => setIsTripLengthFilterDrawerOpen(true)}
-                    onMouseEnter={() => setIsTripLengthFilterHovered(true)}
-                    onMouseLeave={() => setIsTripLengthFilterHovered(false)}
-                    className="hover:scale-105 transition-transform duration-200"
-                  >
-                    <img
-                      src={tripLengthFilterIconMap[selectedTripLengthFilter] || tripLengthFilterIconMap['all_trips']}
-                      alt={locale === 'zh' ? '用旅行时长筛选' : 'Filter by Trip Length'}
-                      className="h-16 w-auto"
-                      style={{
-                        filter: selectedTripLengthFilter !== 'all_trips' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
-                      }}
-                    />
-                  </button>
-                  {isTripLengthFilterHovered && (
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      <MixedText
-                        text={locale === 'zh' ? '用旅行时长筛选' : 'Filter by Trip Length'}
-                        chineseFont="MarioFontTitleChinese, sans-serif"
-                        englishFont="MarioFontTitle, sans-serif"
-                        fontSize="18px"
-                        color="#373737"
-                        component="p"
-                        sx={{
-                          textShadow: '2px 2px 0px #F6F6F6',
-                          margin: 0
-                        }}
-                      />
-                    </Box>
-                  )}
-                </div>
+                <button
+                  onClick={() => setIsTripLengthFilterDrawerOpen(true)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={tripLengthFilterIconMap[selectedTripLengthFilter] || tripLengthFilterIconMap['all_trips']}
+                    alt={locale === 'zh' ? '用旅行时长筛选' : 'Filter by Trip Length'}
+                    className="h-16 w-auto"
+                    style={{
+                      filter: selectedTripLengthFilter !== 'all_trips' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
 
                 {/* Group Size Filter Button */}
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={() => setIsListGroupSizeFilterDrawerOpen(true)}
-                    onMouseEnter={() => setIsListGroupSizeFilterHovered(true)}
-                    onMouseLeave={() => setIsListGroupSizeFilterHovered(false)}
-                    className="hover:scale-105 transition-transform duration-200"
-                  >
-                    <img
-                      src={listGroupSizeFilterIconMap[selectedListGroupSizeFilter] || listGroupSizeFilterIconMap['all_group_sizes']}
-                      alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                      className="h-16 w-auto"
-                      style={{
-                        filter: selectedListGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
-                      }}
-                    />
-                  </button>
-                  {isListGroupSizeFilterHovered && (
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      <MixedText
-                        text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                        chineseFont="MarioFontTitleChinese, sans-serif"
-                        englishFont="MarioFontTitle, sans-serif"
-                        fontSize="18px"
-                        color="#373737"
-                        component="p"
-                        sx={{
-                          textShadow: '2px 2px 0px #F6F6F6',
-                          margin: 0
-                        }}
-                      />
-                    </Box>
-                  )}
-                </div>
+                <button
+                  onClick={() => setIsListGroupSizeFilterDrawerOpen(true)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={listGroupSizeFilterIconMap[selectedListGroupSizeFilter] || listGroupSizeFilterIconMap['all_group_sizes']}
+                    alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
+                    className="h-16 w-auto"
+                    style={{
+                      filter: selectedListGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
 
                 {/* Combined Other Filter Button */}
-                <div style={{ position: 'relative' }}>
-                  <button
-                    onClick={() => setIsCombinedOtherFilterDrawerOpen(true)}
-                    onMouseEnter={() => setIsCombinedOtherFilterHovered(true)}
-                    onMouseLeave={() => setIsCombinedOtherFilterHovered(false)}
-                    className="hover:scale-105 transition-transform duration-200"
-                  >
-                    <img
-                      src={getCombinedOtherFilterIcon()}
-                      alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
-                      className="h-16 w-auto"
-                      style={{
-                        filter: (selectedTripLengthFilter === 'long_trips' && selectedCombinedOtherFilter !== 'all_transportation') ||
-                               (selectedTripLengthFilter === 'day_trips' && selectedCombinedOtherFilter !== 'all_day_trips') ||
-                               (selectedTripLengthFilter === 'all_trips' && selectedCombinedOtherFilter !== 'all_transportation')
-                               ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
-                      }}
-                    />
-                  </button>
-                  {isCombinedOtherFilterHovered && (
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      <MixedText
-                        text={locale === 'zh' ? '其他筛选' : 'Other Filters'}
-                        chineseFont="MarioFontTitleChinese, sans-serif"
-                        englishFont="MarioFontTitle, sans-serif"
-                        fontSize="18px"
-                        color="#373737"
-                        component="p"
-                        sx={{
-                          textShadow: '2px 2px 0px #F6F6F6',
-                          margin: 0
-                        }}
-                      />
-                    </Box>
-                  )}
-                </div>
+                <button
+                  onClick={() => setIsCombinedOtherFilterDrawerOpen(true)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={getCombinedOtherFilterIcon()}
+                    alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
+                    className="h-16 w-auto"
+                    style={{
+                      filter: (selectedTripLengthFilter === 'long_trips' && selectedCombinedOtherFilter !== 'all_transportation') ||
+                             (selectedTripLengthFilter === 'day_trips' && selectedCombinedOtherFilter !== 'all_day_trips') ||
+                             (selectedTripLengthFilter === 'all_trips' && selectedCombinedOtherFilter !== 'all_transportation')
+                             ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
               </div>
             </div>
 

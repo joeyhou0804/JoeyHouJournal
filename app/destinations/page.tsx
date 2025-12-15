@@ -565,8 +565,6 @@ export default function StationsPage() {
               <div style={{ position: 'relative' }}>
                 <button
                   onClick={() => setIsFilterByHomeDrawerOpen(true)}
-                  onMouseEnter={() => setIsFilterByHomeHovered(true)}
-                  onMouseLeave={() => setIsFilterByHomeHovered(false)}
                   className="hover:scale-105 transition-transform duration-200"
                 >
                   <img
@@ -578,39 +576,12 @@ export default function StationsPage() {
                     }}
                   />
                 </button>
-                {isFilterByHomeHovered && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    <MixedText
-                      text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
-                      chineseFont="MarioFontTitleChinese, sans-serif"
-                      englishFont="MarioFontTitle, sans-serif"
-                      fontSize="18px"
-                      color="#F6F6F6"
-                      component="p"
-                      sx={{
-                        textShadow: '2px 2px 0px #373737',
-                        margin: 0
-                      }}
-                    />
-                  </Box>
-                )}
               </div>
 
               {/* Filter by Group Size Button */}
               <div style={{ position: 'relative' }}>
                 <button
                   onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
-                  onMouseEnter={() => setIsFilterByGroupSizeHovered(true)}
-                  onMouseLeave={() => setIsFilterByGroupSizeHovered(false)}
                   className="hover:scale-105 transition-transform duration-200"
                 >
                   <img
@@ -622,39 +593,12 @@ export default function StationsPage() {
                     }}
                   />
                 </button>
-                {isFilterByGroupSizeHovered && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    <MixedText
-                      text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                      chineseFont="MarioFontTitleChinese, sans-serif"
-                      englishFont="MarioFontTitle, sans-serif"
-                      fontSize="18px"
-                      color="#F6F6F6"
-                      component="p"
-                      sx={{
-                        textShadow: '2px 2px 0px #373737',
-                        margin: 0
-                      }}
-                    />
-                  </Box>
-                )}
               </div>
 
               {/* Other Filters Button */}
               <div style={{ position: 'relative' }}>
                 <button
                   onClick={() => setIsOtherFiltersDrawerOpen(true)}
-                  onMouseEnter={() => setIsOtherFiltersHovered(true)}
-                  onMouseLeave={() => setIsOtherFiltersHovered(false)}
                   className="hover:scale-105 transition-transform duration-200"
                 >
                   <img
@@ -666,31 +610,6 @@ export default function StationsPage() {
                     }}
                   />
                 </button>
-                {isOtherFiltersHovered && (
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '100%',
-                      left: '50%',
-                      transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    <MixedText
-                      text={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
-                      chineseFont="MarioFontTitleChinese, sans-serif"
-                      englishFont="MarioFontTitle, sans-serif"
-                      fontSize="18px"
-                      color="#F6F6F6"
-                      component="p"
-                      sx={{
-                        textShadow: '2px 2px 0px #373737',
-                        margin: 0
-                      }}
-                    />
-                  </Box>
-                )}
               </div>
             </div>
           </div>
@@ -1193,8 +1112,6 @@ export default function StationsPage() {
                 <div style={{ position: 'relative' }}>
                   <button
                     onClick={() => setIsFilterByHomeDrawerOpen(true)}
-                    onMouseEnter={() => setIsFilterByHomeHovered(true)}
-                    onMouseLeave={() => setIsFilterByHomeHovered(false)}
                     className="hover:scale-105 transition-transform duration-200"
                   >
                     <img
@@ -1206,39 +1123,12 @@ export default function StationsPage() {
                       }}
                     />
                   </button>
-                  {isFilterByHomeHovered && (
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      <MixedText
-                        text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
-                        chineseFont="MarioFontTitleChinese, sans-serif"
-                        englishFont="MarioFontTitle, sans-serif"
-                        fontSize="18px"
-                        color="#373737"
-                        component="p"
-                        sx={{
-                          textShadow: '2px 2px 0px #F6F6F6',
-                          margin: 0
-                        }}
-                      />
-                    </Box>
-                  )}
                 </div>
 
                 {/* Filter by Group Size Button */}
                 <div style={{ position: 'relative' }}>
                   <button
                     onClick={() => setIsGroupSizeFilterDrawerOpen(true)}
-                    onMouseEnter={() => setIsFilterByGroupSizeHovered(true)}
-                    onMouseLeave={() => setIsFilterByGroupSizeHovered(false)}
                     className="hover:scale-105 transition-transform duration-200"
                   >
                     <img
@@ -1250,39 +1140,12 @@ export default function StationsPage() {
                       }}
                     />
                   </button>
-                  {isFilterByGroupSizeHovered && (
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      <MixedText
-                        text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                        chineseFont="MarioFontTitleChinese, sans-serif"
-                        englishFont="MarioFontTitle, sans-serif"
-                        fontSize="18px"
-                        color="#373737"
-                        component="p"
-                        sx={{
-                          textShadow: '2px 2px 0px #F6F6F6',
-                          margin: 0
-                        }}
-                      />
-                    </Box>
-                  )}
                 </div>
 
                 {/* Other Filters Button */}
                 <div style={{ position: 'relative' }}>
                   <button
                     onClick={() => setIsOtherFiltersDrawerOpen(true)}
-                    onMouseEnter={() => setIsOtherFiltersHovered(true)}
-                    onMouseLeave={() => setIsOtherFiltersHovered(false)}
                     className="hover:scale-105 transition-transform duration-200"
                   >
                     <img
@@ -1294,31 +1157,6 @@ export default function StationsPage() {
                       }}
                     />
                   </button>
-                  {isOtherFiltersHovered && (
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '100%',
-                        left: '50%',
-                        transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      <MixedText
-                        text={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
-                        chineseFont="MarioFontTitleChinese, sans-serif"
-                        englishFont="MarioFontTitle, sans-serif"
-                        fontSize="18px"
-                        color="#373737"
-                        component="p"
-                        sx={{
-                          textShadow: '2px 2px 0px #F6F6F6',
-                          margin: 0
-                        }}
-                      />
-                    </Box>
-                  )}
                 </div>
               </div>
             </div>
