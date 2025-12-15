@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useRef, useEffect, useMemo } from 'react'
-import { MapPin, Calendar, Train, Clock } from 'lucide-react'
+import { MapPin, Calendar, Train, Clock, Search } from 'lucide-react'
 import NavigationMenu from 'src/components/NavigationMenu'
 import Footer from 'src/components/Footer'
 import Box from '@mui/material/Box'
@@ -21,6 +21,7 @@ import CombinedOtherFilterDrawer from 'src/components/CombinedOtherFilterDrawer'
 import MixedText from 'src/components/MixedText'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { useFontFamily } from 'src/hooks/useFontFamily'
 import { formatDuration } from 'src/utils/formatDuration'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
 
@@ -38,6 +39,7 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
 
 export default function JourneysPage() {
   const { locale, tr } = useTranslation()
+  const { titleFont } = useFontFamily()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
@@ -75,6 +77,7 @@ export default function JourneysPage() {
   const [selectedListGroupSizeFilter, setSelectedListGroupSizeFilter] = useState<string>('all_group_sizes')
   const [isCombinedOtherFilterDrawerOpen, setIsCombinedOtherFilterDrawerOpen] = useState(false)
   const [selectedCombinedOtherFilter, setSelectedCombinedOtherFilter] = useState<string>('all_transportation')
+  const [searchQuery, setSearchQuery] = useState('')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 5
@@ -430,7 +433,39 @@ export default function JourneysPage() {
 
   const filteredTrips = filterTrips(trips)
 
-  const sortedTrips = [...filteredTrips].sort((a, b) => {
+  // Apply search filter
+  const searchFilteredTrips = filteredTrips.filter((trip) => {
+    if (!searchQuery.trim()) return true
+    const query = searchQuery.toLowerCase()
+
+    // Search in journey name (English and Chinese)
+    const nameMatch = trip.name.toLowerCase().includes(query)
+    const nameCNMatch = trip.nameCN?.toLowerCase().includes(query)
+
+    // Search in route locations
+    const routeMatch = trip.route?.toLowerCase().includes(query)
+
+    // Search in journey description
+    const descriptionMatch = trip.description?.toLowerCase().includes(query)
+
+    // Search in destinations/places associated with this journey
+    const journey = journeysData.find(j => j.slug === trip.slug)
+    let destinationMatch = false
+    if (journey) {
+      const journeyDestinations = allDestinations.filter(
+        destination => destination.journeyName === journey.name
+      )
+      destinationMatch = journeyDestinations.some(dest =>
+        dest.name?.toLowerCase().includes(query) ||
+        dest.nameCN?.toLowerCase().includes(query) ||
+        dest.state?.toLowerCase().includes(query)
+      )
+    }
+
+    return nameMatch || nameCNMatch || routeMatch || descriptionMatch || destinationMatch
+  })
+
+  const sortedTrips = [...searchFilteredTrips].sort((a, b) => {
     // Sort by index/order - latest means start of list, earliest means end
     const indexA = trips.indexOf(a)
     const indexB = trips.indexOf(b)
@@ -567,6 +602,11 @@ export default function JourneysPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+      <style jsx>{`
+        .journey-search-input::placeholder {
+          color: #F6F6F6;
+        }
+      `}</style>
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
@@ -1636,7 +1676,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
+          <div className="flex justify-center items-center gap-4 mb-16 xs:hidden">
             <button
               onClick={() => sortedTrips.length > 0 && handleSortChange('latest')}
               disabled={sortedTrips.length === 0}
@@ -1669,6 +1709,40 @@ export default function JourneysPage() {
                 className="h-16 w-auto"
               />
             </button>
+          </div>
+
+          {/* Search Bar - Desktop */}
+          <div className="flex justify-center items-center mb-48 xs:hidden">
+            <div
+              className="w-full max-w-2xl flex justify-center items-center"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/search_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                padding: '1.5rem 1rem',
+                height: '110px'
+              }}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={locale === 'zh' ? '搜索旅行...' : 'Search journeys...'}
+                className="journey-search-input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.75rem 0.75rem 6rem',
+                  fontSize: '24px',
+                  fontFamily: titleFont,
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#F6F6F6',
+                  outline: 'none'
+                }}
+              />
+            </div>
           </div>
 
           {/* Sort Button and Filter Buttons - Mobile */}
@@ -1745,6 +1819,39 @@ export default function JourneysPage() {
                 className="h-16 w-auto"
               />
             </button>
+          </div>
+
+          {/* Search Bar - Mobile */}
+          <div className="hidden xs:flex justify-center items-center mb-16">
+            <div
+              className="w-full max-w-2xl flex justify-center items-center"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/search_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                padding: '1rem'
+              }}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={locale === 'zh' ? '搜索旅行...' : 'Search journeys...'}
+                className="journey-search-input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.75rem 0.75rem 4rem',
+                  fontSize: '24px',
+                  fontFamily: titleFont,
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#F6F6F6',
+                  outline: 'none'
+                }}
+              />
+            </div>
           </div>
 
           {/* Empty State - When no results */}
