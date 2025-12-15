@@ -824,7 +824,21 @@ export default function JourneysPage() {
           </div>
 
           {/* Filter Buttons - Desktop Only - Long Trips */}
-          <div className="flex justify-center items-center mb-48 xs:hidden">
+          <div className="flex flex-col items-center mb-48 xs:hidden">
+            {/* Filters Label */}
+            <MixedText
+              text={locale === 'zh' ? '筛选条件' : 'Filters'}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize="24px"
+              color="#F6F6F6"
+              component="p"
+              sx={{
+                textShadow: '2px 2px 0px #373737',
+                margin: 0,
+                marginBottom: '0.5rem'
+              }}
+            />
             <div
               className="flex justify-center items-center gap-8"
               style={{
@@ -1087,7 +1101,21 @@ export default function JourneysPage() {
             </div>
 
             {/* Filter Buttons - Desktop Only - Day Trips */}
-            <div className="flex justify-center items-center mb-48">
+            <div className="flex flex-col items-center mb-48">
+              {/* Filters Label */}
+              <MixedText
+                text={locale === 'zh' ? '筛选条件' : 'Filters'}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize="24px"
+                color="#F6F6F6"
+                component="p"
+                sx={{
+                  textShadow: '2px 2px 0px #373737',
+                  margin: 0,
+                  marginBottom: '0.5rem'
+                }}
+              />
               <div
                 className="flex justify-center items-center gap-8"
                 style={{
@@ -1525,7 +1553,21 @@ export default function JourneysPage() {
           </div>
 
           {/* Filter Buttons - Desktop Only - List Section */}
-          <div className="flex justify-center items-center mb-16 xs:hidden">
+          <div className="flex flex-col items-center mb-16 xs:hidden">
+            {/* Filters Label */}
+            <MixedText
+              text={locale === 'zh' ? '筛选条件' : 'Filters'}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize="24px"
+              color="#373737"
+              component="p"
+              sx={{
+                textShadow: '2px 2px 0px #F6F6F6',
+                margin: 0,
+                marginBottom: '0.5rem'
+              }}
+            />
             <div
               className="flex justify-center items-center gap-8"
               style={{
