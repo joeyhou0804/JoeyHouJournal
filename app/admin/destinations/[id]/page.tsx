@@ -477,7 +477,7 @@ export default function DestinationFormPage() {
           {/* Journey Selector */}
           <Box sx={{ gridColumn: '1 / -1' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Select Journey *
+              Select Journey
             </label>
             <TextField
               select
@@ -491,7 +491,6 @@ export default function DestinationFormPage() {
                   setValue('journeyNameCN', selectedJourney.nameCN || '')
                 }
               }}
-              error={!!errors.journeyName}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   fontFamily: 'MarioFont, sans-serif',
@@ -518,7 +517,7 @@ export default function DestinationFormPage() {
               Journey Name (English)
             </label>
             <input
-              {...register('journeyName', { required: true })}
+              {...register('journeyName')}
               readOnly
               style={{
                 width: '100%',
