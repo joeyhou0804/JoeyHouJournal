@@ -413,8 +413,42 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             />
           </div>
 
+          {/* Search Bar - Desktop */}
+          <div className="flex justify-center items-center mb-8 xs:hidden">
+            <div
+              className="w-full max-w-2xl flex justify-center items-center"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/search_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                padding: '1.5rem 1rem',
+                height: '110px'
+              }}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={locale === 'zh' ? '搜索目的地...' : 'Search places...'}
+                className="journey-detail-search-input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.75rem 0.75rem 6rem',
+                  fontSize: '24px',
+                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#F6F6F6',
+                  outline: 'none'
+                }}
+              />
+            </div>
+          </div>
+
           {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-16 xs:hidden">
+          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
             <button
               onClick={() => sortedPlaces.length > 0 && handleSortChange('latest')}
               disabled={sortedPlaces.length === 0}
@@ -449,17 +483,16 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             </button>
           </div>
 
-          {/* Search Bar - Desktop */}
-          <div className="flex justify-center items-center mb-48 xs:hidden">
+          {/* Search Bar - Mobile */}
+          <div className="hidden xs:flex justify-center items-center mb-4">
             <div
               className="w-full max-w-2xl flex justify-center items-center"
               style={{
-                backgroundImage: 'url(/images/backgrounds/search_background.png)',
+                backgroundImage: 'url(/images/backgrounds/search_background_short.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                padding: '1.5rem 1rem',
-                height: '110px'
+                padding: '1rem'
               }}
             >
               <input
@@ -470,7 +503,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 className="journey-detail-search-input"
                 style={{
                   width: '100%',
-                  padding: '0.75rem 0.75rem 0.75rem 6rem',
+                  padding: '0.75rem 0.75rem 0.75rem 3rem',
                   fontSize: '24px',
                   fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
                   borderRadius: '0.5rem',
@@ -501,39 +534,6 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 className="h-16 w-auto"
               />
             </button>
-          </div>
-
-          {/* Search Bar - Mobile */}
-          <div className="hidden xs:flex justify-center items-center mb-16">
-            <div
-              className="w-full max-w-2xl flex justify-center items-center"
-              style={{
-                backgroundImage: 'url(/images/backgrounds/search_background_short.png)',
-                backgroundRepeat: 'no-repeat',
-                backgroundSize: 'contain',
-                backgroundPosition: 'center',
-                padding: '1rem'
-              }}
-            >
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={locale === 'zh' ? '搜索目的地...' : 'Search places...'}
-                className="journey-detail-search-input"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem 0.75rem 0.75rem 3rem',
-                  fontSize: '24px',
-                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
-                  borderRadius: '0.5rem',
-                  border: 'none',
-                  backgroundColor: 'transparent',
-                  color: '#F6F6F6',
-                  outline: 'none'
-                }}
-              />
-            </div>
           </div>
 
           {/* Empty State - When no results */}
