@@ -1841,7 +1841,7 @@ export default function JourneysPage() {
                 className="journey-search-input"
                 style={{
                   width: '100%',
-                  padding: '0.75rem 0.75rem 0.75rem 4rem',
+                  padding: '0.75rem 0.75rem 0.75rem 2.5rem',
                   fontSize: '24px',
                   fontFamily: titleFont,
                   borderRadius: '0.5rem',
