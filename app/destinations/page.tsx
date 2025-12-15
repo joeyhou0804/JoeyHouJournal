@@ -746,44 +746,8 @@ export default function StationsPage() {
             />
           </div>
 
-          {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-16 xs:hidden">
-            <button
-              onClick={() => sortedDestinations.length > 0 && handleSortChange('latest')}
-              disabled={sortedDestinations.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
-                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/latest_first_button_${locale}.png`}
-                alt={tr.latestFirst}
-                className="h-16 w-auto"
-              />
-            </button>
-            <button
-              onClick={() => sortedDestinations.length > 0 && handleSortChange('earliest')}
-              disabled={sortedDestinations.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
-                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/earliest_first_button_${locale}.png`}
-                alt={tr.earliestFirst}
-                className="h-16 w-auto"
-              />
-            </button>
-          </div>
-
           {/* Filter Buttons - Desktop Only - Below Sort */}
-          <div className="flex justify-center items-center mb-48 xs:hidden">
+          <div className="flex justify-center items-center mb-16 xs:hidden">
             <div
               className="flex justify-center items-center gap-8"
               style={{
@@ -928,6 +892,42 @@ export default function StationsPage() {
               )}
             </div>
             </div>
+          </div>
+
+          {/* Sort Buttons - Desktop */}
+          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
+            <button
+              onClick={() => sortedDestinations.length > 0 && handleSortChange('latest')}
+              disabled={sortedDestinations.length === 0}
+              className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
+                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
+            >
+              <img
+                src={`/images/buttons/latest_first_button_${locale}.png`}
+                alt={tr.latestFirst}
+                className="h-16 w-auto"
+              />
+            </button>
+            <button
+              onClick={() => sortedDestinations.length > 0 && handleSortChange('earliest')}
+              disabled={sortedDestinations.length === 0}
+              className="hover:scale-105 transition-transform duration-200"
+              style={{
+                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
+                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
+                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
+              }}
+            >
+              <img
+                src={`/images/buttons/earliest_first_button_${locale}.png`}
+                alt={tr.earliestFirst}
+                className="h-16 w-auto"
+              />
+            </button>
           </div>
 
           {/* Sort Button and Filter Buttons - Mobile */}
