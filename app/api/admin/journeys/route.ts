@@ -6,6 +6,7 @@ import {
   updateJourney,
   deleteJourney,
   syncJourneyNamesToDestinations,
+  getDestinationById,
 } from '@/lib/db'
 import { sendNewJourneyEmails } from '@/lib/email'
 
@@ -103,6 +104,24 @@ export async function POST(request: Request) {
     // Send email notifications to subscribers in the background
     // Don't wait for emails to complete before responding
     console.log('🚀 Triggering email notifications for journey:', created.slug)
+
+    // Fetch first destination image if available
+    const getFirstDestinationImage = async () => {
+      if (created.visited_place_ids && created.visited_place_ids.length > 0) {
+        try {
+          const firstDestination = await getDestinationById(created.visited_place_ids[0])
+          if (firstDestination?.images && firstDestination.images.length > 0) {
+            return [firstDestination.images[0]]
+          }
+        } catch (error) {
+          console.error('Failed to fetch destination image:', error)
+        }
+      }
+      return created.images || []
+    }
+
+    const destinationImages = await getFirstDestinationImage()
+
     sendNewJourneyEmails({
       id: created.id,
       slug: created.slug,
@@ -113,7 +132,7 @@ export async function POST(request: Request) {
       duration: created.duration,
       startLocation: created.start_display || created.start_location?.name || 'Unknown',
       endLocation: created.end_display || created.end_location?.name || 'Unknown',
-      images: created.images,
+      images: destinationImages,
     })
       .then((result) => {
         console.log('✅ Email notification result:', result)

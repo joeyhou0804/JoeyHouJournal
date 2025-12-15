@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "email": "email dev",
+    "upload-email-headers": "tsx scripts/upload-email-headers.ts",
     "db:migrate": "tsx scripts/migrate-to-db.ts",
     "db:import-json": "tsx scripts/migrate-json-to-db.ts",
     "sync-journey-names": "tsx scripts/sync-journey-names.ts",
@@ -36,6 +38,7 @@
     "twilio": "^5.10.2"
   },
   "devDependencies": {
+    "@react-email/preview-server": "5.0.7",
     "@types/leaflet": "^1.9.20",
     "@types/node": "24.3.1",
     "@types/react": "19.1.12",
@@ -46,5 +49,6 @@
     "tailwindcss": "^3.4.0",
     "tsx": "^4.20.6",
     "typescript": "5.2.2"
-  }
+  },
+  "packageManager": "pnpm@10.26.0+sha512.3b3f6c725ebe712506c0ab1ad4133cf86b1f4b687effce62a9b38b4d72e3954242e643190fc51fa1642949c735f403debd44f5cb0edd657abe63a8b6a7e1e402"
 }
