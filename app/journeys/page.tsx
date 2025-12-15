@@ -1734,7 +1734,7 @@ export default function JourneysPage() {
                   width: '100%',
                   padding: '0.75rem 0.75rem 0.75rem 6rem',
                   fontSize: '24px',
-                  fontFamily: titleFont,
+                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
                   borderRadius: '0.5rem',
                   border: 'none',
                   backgroundColor: 'transparent',
@@ -1826,7 +1826,7 @@ export default function JourneysPage() {
             <div
               className="w-full max-w-2xl flex justify-center items-center"
               style={{
-                backgroundImage: 'url(/images/backgrounds/search_background.png)',
+                backgroundImage: 'url(/images/backgrounds/search_background_short.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
@@ -1841,9 +1841,9 @@ export default function JourneysPage() {
                 className="journey-search-input"
                 style={{
                   width: '100%',
-                  padding: '0.75rem 0.75rem 0.75rem 2.5rem',
+                  padding: '0.75rem 0.75rem 0.75rem 3rem',
                   fontSize: '24px',
-                  fontFamily: titleFont,
+                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
                   borderRadius: '0.5rem',
                   border: 'none',
                   backgroundColor: 'transparent',

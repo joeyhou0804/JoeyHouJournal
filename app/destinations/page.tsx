@@ -13,6 +13,7 @@ import OtherFiltersDrawer from 'src/components/OtherFiltersDrawer'
 import MixedText from 'src/components/MixedText'
 import FilterDrawerBase from 'src/components/BaseDrawer'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { Search } from 'lucide-react'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -51,6 +52,7 @@ export default function StationsPage() {
   const [selectedOtherFilter, setSelectedOtherFilter] = useState<string>('all_destinations')
   const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isNoResultsDrawerOpen, setIsNoResultsDrawerOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const lastShownFilterRef = useRef<string>('')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
@@ -229,13 +231,34 @@ export default function StationsPage() {
     return filterDestinationsByOther(groupSizeFilteredDestinations)
   }, [destinations, homeLocations, selectedHomeFilter, selectedGroupSizeFilter, selectedOtherFilter])
 
+  // Apply search filter
+  const searchFilteredDestinations = useMemo(() => {
+    if (!searchQuery.trim()) return filteredDestinations
+
+    const query = searchQuery.toLowerCase()
+    return filteredDestinations.filter((destination) => {
+      // Search in destination name (English and Chinese)
+      const nameMatch = destination.name?.toLowerCase().includes(query)
+      const nameCNMatch = destination.nameCN?.toLowerCase().includes(query)
+
+      // Search in state
+      const stateMatch = destination.state?.toLowerCase().includes(query)
+
+      // Search in journey name (English and Chinese)
+      const journeyNameMatch = destination.journeyName?.toLowerCase().includes(query)
+      const journeyNameCNMatch = destination.journeyNameCN?.toLowerCase().includes(query)
+
+      return nameMatch || nameCNMatch || stateMatch || journeyNameMatch || journeyNameCNMatch
+    })
+  }, [filteredDestinations, searchQuery])
+
   const sortedDestinations = useMemo(() => {
-    return [...filteredDestinations].sort((a, b) => {
+    return [...searchFilteredDestinations].sort((a, b) => {
       const dateA = new Date(a.date).getTime()
       const dateB = new Date(b.date).getTime()
       return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
     })
-  }, [filteredDestinations, sortOrder])
+  }, [searchFilteredDestinations, sortOrder])
 
   const totalPages = Math.ceil(sortedDestinations.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -369,6 +392,11 @@ export default function StationsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <style jsx>{`
+        .destination-search-input::placeholder {
+          color: #F6F6F6;
+        }
+      `}</style>
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
@@ -895,7 +923,7 @@ export default function StationsPage() {
           </div>
 
           {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
+          <div className="flex justify-center items-center gap-4 mb-16 xs:hidden">
             <button
               onClick={() => sortedDestinations.length > 0 && handleSortChange('latest')}
               disabled={sortedDestinations.length === 0}
@@ -928,6 +956,40 @@ export default function StationsPage() {
                 className="h-16 w-auto"
               />
             </button>
+          </div>
+
+          {/* Search Bar - Desktop */}
+          <div className="flex justify-center items-center mb-48 xs:hidden">
+            <div
+              className="w-full max-w-2xl flex justify-center items-center"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/search_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                padding: '1.5rem 1rem',
+                height: '110px'
+              }}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={locale === 'zh' ? '搜索目的地...' : 'Search places...'}
+                className="destination-search-input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.75rem 0.75rem 6rem',
+                  fontSize: '24px',
+                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#F6F6F6',
+                  outline: 'none'
+                }}
+              />
+            </div>
           </div>
 
           {/* Sort Button and Filter Buttons - Mobile */}
@@ -1002,6 +1064,39 @@ export default function StationsPage() {
                 className="h-16 w-auto"
               />
             </button>
+          </div>
+
+          {/* Search Bar - Mobile */}
+          <div className="hidden xs:flex justify-center items-center mb-16">
+            <div
+              className="w-full max-w-2xl flex justify-center items-center"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/search_background_short.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                padding: '1rem'
+              }}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={locale === 'zh' ? '搜索目的地...' : 'Search places...'}
+                className="destination-search-input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.75rem 0.75rem 3rem',
+                  fontSize: '24px',
+                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#F6F6F6',
+                  outline: 'none'
+                }}
+              />
+            </div>
           </div>
 
           {/* Empty State - When no results */}

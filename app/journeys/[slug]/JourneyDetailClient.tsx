@@ -12,6 +12,7 @@ import MixedText from 'src/components/MixedText'
 import DestinationCard from 'src/components/DestinationCard'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { Search } from 'lucide-react'
 
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
@@ -63,6 +64,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   // Fetch destinations from API
@@ -106,11 +108,30 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
 
   const itemsPerPage = 12
 
-  const sortedPlaces = [...places].sort((a, b) => {
-    const dateA = new Date(a.date).getTime()
-    const dateB = new Date(b.date).getTime()
-    return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
-  })
+  // Apply search filter
+  const searchFilteredPlaces = useMemo(() => {
+    if (!searchQuery.trim()) return places
+
+    const query = searchQuery.toLowerCase()
+    return places.filter((place) => {
+      // Search in place name (English and Chinese)
+      const nameMatch = place.name?.toLowerCase().includes(query)
+      const nameCNMatch = place.nameCN?.toLowerCase().includes(query)
+
+      // Search in state
+      const stateMatch = place.state?.toLowerCase().includes(query)
+
+      return nameMatch || nameCNMatch || stateMatch
+    })
+  }, [places, searchQuery])
+
+  const sortedPlaces = useMemo(() => {
+    return [...searchFilteredPlaces].sort((a, b) => {
+      const dateA = new Date(a.date).getTime()
+      const dateB = new Date(b.date).getTime()
+      return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
+    })
+  }, [searchFilteredPlaces, sortOrder])
 
   const totalPages = Math.ceil(sortedPlaces.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -184,6 +205,11 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         backgroundSize: '100% auto, 400px auto',
       }}
     >
+      <style jsx>{`
+        .journey-detail-search-input::placeholder {
+          color: #F6F6F6;
+        }
+      `}</style>
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
@@ -388,7 +414,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
           </div>
 
           {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
+          <div className="flex justify-center items-center gap-4 mb-16 xs:hidden">
             <button
               onClick={() => sortedPlaces.length > 0 && handleSortChange('latest')}
               disabled={sortedPlaces.length === 0}
@@ -423,6 +449,40 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             </button>
           </div>
 
+          {/* Search Bar - Desktop */}
+          <div className="flex justify-center items-center mb-48 xs:hidden">
+            <div
+              className="w-full max-w-2xl flex justify-center items-center"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/search_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                padding: '1.5rem 1rem',
+                height: '110px'
+              }}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={locale === 'zh' ? '搜索目的地...' : 'Search places...'}
+                className="journey-detail-search-input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.75rem 0.75rem 6rem',
+                  fontSize: '24px',
+                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#F6F6F6',
+                  outline: 'none'
+                }}
+              />
+            </div>
+          </div>
+
           {/* Sort Button - Mobile */}
           <div className="hidden xs:flex justify-center items-center mb-12">
             <button
@@ -441,6 +501,39 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 className="h-16 w-auto"
               />
             </button>
+          </div>
+
+          {/* Search Bar - Mobile */}
+          <div className="hidden xs:flex justify-center items-center mb-16">
+            <div
+              className="w-full max-w-2xl flex justify-center items-center"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/search_background_short.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                padding: '1rem'
+              }}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={locale === 'zh' ? '搜索目的地...' : 'Search places...'}
+                className="journey-detail-search-input"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 0.75rem 0.75rem 3rem',
+                  fontSize: '24px',
+                  fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
+                  borderRadius: '0.5rem',
+                  border: 'none',
+                  backgroundColor: 'transparent',
+                  color: '#F6F6F6',
+                  outline: 'none'
+                }}
+              />
+            </div>
           </div>
 
           {/* Empty State - When no results */}
