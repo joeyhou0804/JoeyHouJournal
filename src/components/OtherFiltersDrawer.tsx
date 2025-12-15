@@ -6,6 +6,7 @@ interface OtherFiltersDrawerProps {
   isOpen: boolean
   onClose: () => void
   onFilterChange?: (filterId: string) => void
+  selectedFilter?: string
 }
 
 const filterOptions: FilterOption[] = [
@@ -16,7 +17,7 @@ const filterOptions: FilterOption[] = [
   { id: 'visit_more_than_once', iconPath: '/images/icons/filter/visit_more_than_once.png', labelEn: 'Visited more than once', labelZh: '去过超过一次' }
 ]
 
-export default function OtherFiltersDrawer({ isOpen, onClose, onFilterChange }: OtherFiltersDrawerProps) {
+export default function OtherFiltersDrawer({ isOpen, onClose, onFilterChange, selectedFilter }: OtherFiltersDrawerProps) {
   return (
     <SingleSelectFilterDrawer
       isOpen={isOpen}
@@ -25,6 +26,7 @@ export default function OtherFiltersDrawer({ isOpen, onClose, onFilterChange }: 
       titleZh="其他筛选条件"
       filterOptions={filterOptions}
       defaultSelected="all_destinations"
+      selectedFilter={selectedFilter}
       onFilterChange={onFilterChange}
       showSelectedBanner={true}
     />

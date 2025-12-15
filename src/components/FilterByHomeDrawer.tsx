@@ -6,6 +6,7 @@ interface FilterByHomeDrawerProps {
   isOpen: boolean
   onClose: () => void
   onFilterChange?: (filterId: string) => void
+  selectedFilter?: string
 }
 
 const filterOptions: FilterOption[] = [
@@ -16,7 +17,7 @@ const filterOptions: FilterOption[] = [
   { id: 'san_francisco', iconPath: '/images/icons/filter/san_francisco_icon.png', labelEn: 'San Francisco', labelZh: '旧金山' }
 ]
 
-export default function FilterByHomeDrawer({ isOpen, onClose, onFilterChange }: FilterByHomeDrawerProps) {
+export default function FilterByHomeDrawer({ isOpen, onClose, onFilterChange, selectedFilter }: FilterByHomeDrawerProps) {
   return (
     <SingleSelectFilterDrawer
       isOpen={isOpen}
@@ -25,6 +26,7 @@ export default function FilterByHomeDrawer({ isOpen, onClose, onFilterChange }: 
       titleZh="以家的位置筛选"
       filterOptions={filterOptions}
       defaultSelected="all_destinations"
+      selectedFilter={selectedFilter}
       onFilterChange={onFilterChange}
       showSelectedBanner={true}
     />

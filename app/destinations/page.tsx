@@ -410,16 +410,19 @@ export default function StationsPage() {
         isOpen={isFilterByHomeDrawerOpen}
         onClose={() => setIsFilterByHomeDrawerOpen(false)}
         onFilterChange={handleHomeFilterChange}
+        selectedFilter={selectedHomeFilter}
       />
       <DestinationGroupSizeFilterDrawer
         isOpen={isGroupSizeFilterDrawerOpen}
         onClose={() => setIsGroupSizeFilterDrawerOpen(false)}
         onFilterChange={handleGroupSizeFilterChange}
+        selectedFilter={selectedGroupSizeFilter}
       />
       <OtherFiltersDrawer
         isOpen={isOtherFiltersDrawerOpen}
         onClose={() => setIsOtherFiltersDrawerOpen(false)}
         onFilterChange={handleOtherFilterChange}
+        selectedFilter={selectedOtherFilter}
       />
       <FilterDrawerBase
         isOpen={isNoResultsDrawerOpen}

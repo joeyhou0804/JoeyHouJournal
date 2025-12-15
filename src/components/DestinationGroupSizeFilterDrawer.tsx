@@ -6,6 +6,7 @@ interface DestinationGroupSizeFilterDrawerProps {
   isOpen: boolean
   onClose: () => void
   onFilterChange?: (filterId: string) => void
+  selectedFilter?: string
 }
 
 const filterOptions: FilterOption[] = [
@@ -14,7 +15,7 @@ const filterOptions: FilterOption[] = [
   { id: 'visit_with_others', iconPath: '/images/icons/filter/visit_with_others.png', labelEn: 'Visited with others', labelZh: '和别人旅游' }
 ]
 
-export default function DestinationGroupSizeFilterDrawer({ isOpen, onClose, onFilterChange }: DestinationGroupSizeFilterDrawerProps) {
+export default function DestinationGroupSizeFilterDrawer({ isOpen, onClose, onFilterChange, selectedFilter }: DestinationGroupSizeFilterDrawerProps) {
   return (
     <SingleSelectFilterDrawer
       isOpen={isOpen}
@@ -23,6 +24,7 @@ export default function DestinationGroupSizeFilterDrawer({ isOpen, onClose, onFi
       titleZh="用人数筛选"
       filterOptions={filterOptions}
       defaultSelected="all_group_sizes"
+      selectedFilter={selectedFilter}
       onFilterChange={onFilterChange}
       showSelectedBanner={true}
     />
