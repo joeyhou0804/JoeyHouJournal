@@ -19,8 +19,11 @@ interface NewJourneyEmailProps {
   startDate: string
   endDate: string
   duration: string
+  durationCN?: string | null
   startLocation: string
+  startLocationCN?: string | null
   endLocation: string
+  endLocationCN?: string | null
   images?: string[]
   journeyUrl: string
   unsubscribeUrl: string
@@ -34,8 +37,11 @@ export const NewJourneyEmail = ({
   startDate,
   endDate,
   duration,
+  durationCN,
   startLocation,
+  startLocationCN,
   endLocation,
+  endLocationCN,
   images = [],
   journeyUrl,
   unsubscribeUrl,
@@ -44,6 +50,9 @@ export const NewJourneyEmail = ({
 }: NewJourneyEmailProps) => {
   const isZh = locale === 'zh'
   const displayName = isZh && journeyNameCN ? journeyNameCN : journeyName
+  const displayDuration = isZh && durationCN ? durationCN : duration
+  const displayStartLocation = isZh && startLocationCN ? startLocationCN : startLocation
+  const displayEndLocation = isZh && endLocationCN ? endLocationCN : endLocation
 
   const greeting = isZh ? `你好${subscriberName}!` : `Hi ${subscriberName}!`
   const intro = isZh
@@ -148,9 +157,9 @@ export const NewJourneyEmail = ({
                     <Section style={labelBg}>
                       <Text style={infoLabel}>{routeLabel}</Text>
                     </Section>
-                    <Text style={infoValue}>{startLocation}</Text>
+                    <Text style={infoValue}>{displayStartLocation}</Text>
                     <Text style={infoValue}>↓</Text>
-                    <Text style={infoValue}>{endLocation}</Text>
+                    <Text style={infoValue}>{displayEndLocation}</Text>
                   </Section>
 
                   {/* Duration */}
@@ -158,7 +167,7 @@ export const NewJourneyEmail = ({
                     <Section style={labelBg}>
                       <Text style={infoLabel}>{durationLabel}</Text>
                     </Section>
-                    <Text style={infoValue}>{duration}</Text>
+                    <Text style={infoValue}>{displayDuration}</Text>
                   </Section>
                 </Section>
 

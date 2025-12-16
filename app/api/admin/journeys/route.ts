@@ -130,8 +130,11 @@ export async function POST(request: Request) {
       startDate: created.start_date,
       endDate: created.end_date,
       duration: created.duration,
+      durationCN: null, // TODO: Add duration_cn field to database and journey form
       startLocation: created.start_display || created.start_location?.name || 'Unknown',
+      startLocationCN: null, // TODO: Add start_display_cn field to database and journey form
       endLocation: created.end_display || created.end_location?.name || 'Unknown',
+      endLocationCN: null, // TODO: Add end_display_cn field to database and journey form
       images: destinationImages,
     })
       .then((result) => {

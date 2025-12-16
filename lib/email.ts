@@ -9,8 +9,11 @@ interface JourneyEmailData {
   startDate: string
   endDate: string
   duration: string
+  durationCN?: string | null
   startLocation: string
+  startLocationCN?: string | null
   endLocation: string
+  endLocationCN?: string | null
   images?: string[]
 }
 
@@ -73,6 +76,11 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
       const footer = isZh
         ? '您订阅了小猴同学旅行日记的新旅程通知，所以您会收到本邮件。'
         : "You're receiving this email because you subscribed to new journey notifications."
+
+      // Use Chinese versions when available and locale is Chinese
+      const displayDuration = isZh && journey.durationCN ? journey.durationCN : journey.duration
+      const displayStartLocation = isZh && journey.startLocationCN ? journey.startLocationCN : journey.startLocation
+      const displayEndLocation = isZh && journey.endLocationCN ? journey.endLocationCN : journey.endLocation
 
       // Determine header images (hosted on Cloudinary for email deliverability)
       const headerDesktop = isZh
@@ -154,9 +162,9 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
             <div style="background-image: url(${labelBackground}); background-repeat: no-repeat; background-size: 245px auto; background-position: center; padding: 16px 20px; margin: 0 0 12px;">
               <p style="color: #F6F6F6; font-size: 16px; font-weight: 600; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">${routeLabel}</p>
             </div>
-            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${journey.startLocation}</p>
+            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${displayStartLocation}</p>
             <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">↓</p>
-            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${journey.endLocation}</p>
+            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${displayEndLocation}</p>
           </div>
 
           <!-- Duration -->
@@ -164,7 +172,7 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
             <div style="background-image: url(${labelBackground}); background-repeat: no-repeat; background-size: 245px auto; background-position: center; padding: 16px 20px; margin: 0 0 12px;">
               <p style="color: #F6F6F6; font-size: 16px; font-weight: 600; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">${durationLabel}</p>
             </div>
-            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${journey.duration}</p>
+            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${displayDuration}</p>
           </div>
         </div>
 
