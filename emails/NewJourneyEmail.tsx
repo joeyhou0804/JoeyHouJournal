@@ -82,7 +82,7 @@ export const NewJourneyEmail = ({
     : '/static/view_details_button_en.png'
 
   // Journey title banner
-  const titleBanner = '/static/journeys_map_description_title.webp'
+  const titleBanner = '/static/email_journey_title_background.png'
   const labelBackground = '/static/filter_desktop_background_long.png'
   const cardBackground = '/static/email_subscription_background.png'
 
@@ -254,7 +254,7 @@ const text = {
 }
 
 const titleBannerSection = {
-  backgroundImage: 'url(/static/journeys_map_description_title.webp)',
+  backgroundImage: 'url(/static/email_journey_title_background.png)',
   backgroundSize: '400px auto',
   backgroundPosition: 'center',
   backgroundRepeat: 'no-repeat',

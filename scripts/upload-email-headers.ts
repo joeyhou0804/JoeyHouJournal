@@ -50,12 +50,8 @@ const imagesToUpload = [
     publicId: 'emails/view_details_button_zh',
   },
   {
-    path: 'public/emails/images/title_background.webp',
-    publicId: 'emails/title_background',
-  },
-  {
-    path: 'public/emails/images/journeys_map_description_title.webp',
-    publicId: 'emails/journeys_map_description_title',
+    path: 'public/emails/images/email_journey_title_background.png',
+    publicId: 'emails/email_journey_title_background',
   },
   {
     path: 'public/images/backgrounds/filter_desktop_background_long.png',
