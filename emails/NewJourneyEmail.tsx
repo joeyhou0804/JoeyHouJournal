@@ -108,31 +108,32 @@ export const NewJourneyEmail = ({
           : `New Journey: ${displayName}`}
       </Preview>
       <Body style={main}>
-        <Container style={bgWrapper} className="bg-wrapper">
-          <Container style={container}>
-            {/* Header and Greeting Section */}
-            <Section style={headerGreetingSection}>
-              {/* Desktop Header */}
-              <Img
-                src={headerDesktop}
-                alt={isZh ? '新旅程' : 'New Journey'}
-                style={headerImageDesktop}
-                className="desktop-header"
-              />
-              {/* Mobile Header */}
-              <Img
-                src={headerMobile}
-                alt={isZh ? '新旅程' : 'New Journey'}
-                style={headerImageMobile}
-                className="mobile-header"
-              />
-              {/* Greeting Text */}
-              <Section style={greetingText}>
-                <Heading style={h1}>{greeting}</Heading>
-                <Text style={text}>{intro}</Text>
-              </Section>
+        <Container style={container}>
+          {/* Header and Greeting Section */}
+          <Section style={headerGreetingSection}>
+            {/* Desktop Header */}
+            <Img
+              src={headerDesktop}
+              alt={isZh ? '新旅程' : 'New Journey'}
+              style={headerImageDesktop}
+              className="desktop-header"
+            />
+            {/* Mobile Header */}
+            <Img
+              src={headerMobile}
+              alt={isZh ? '新旅程' : 'New Journey'}
+              style={headerImageMobile}
+              className="mobile-header"
+            />
+            {/* Greeting Text */}
+            <Section style={greetingText}>
+              <Heading style={h1}>{greeting}</Heading>
+              <Text style={text}>{intro}</Text>
             </Section>
+          </Section>
 
+          {/* Journey Card Section with Background */}
+          <Section style={cardSectionWithBackground}>
             {/* Journey Title Banner */}
             <Section style={titleBannerSection}>
               <Heading style={journeyTitle}>{displayName}</Heading>
@@ -184,6 +185,7 @@ export const NewJourneyEmail = ({
                 </Link>
               </Section>
             </Section>
+          </Section>
 
           <Hr style={hr} />
 
@@ -193,7 +195,6 @@ export const NewJourneyEmail = ({
           <Link href={unsubscribeUrl} style={unsubscribeLink}>
             {unsubscribeText}
           </Link>
-          </Container>
         </Container>
       </Body>
     </Html>
@@ -209,19 +210,16 @@ const main = {
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
 }
 
-const bgWrapper = {
-  maxWidth: '600px',
-  margin: '0 auto',
-  backgroundImage: 'url(/static/email_background.avif)',
-  backgroundRepeat: 'repeat',
-  backgroundSize: '200px',
-}
-
 const container = {
   margin: '0 auto',
-  padding: '0 0 48px',
-  marginBottom: '64px',
   maxWidth: '600px',
+}
+
+const cardSectionWithBackground = {
+  backgroundImage: 'url(/static/email_background.png)',
+  backgroundRepeat: 'repeat',
+  backgroundSize: '200px',
+  padding: '20px 0 48px',
 }
 
 const headerGreetingSection = {

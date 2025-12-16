@@ -121,8 +121,7 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
   </style>
 </head>
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif; background-color: #ffffff;">
-  <div class="bg-wrapper" style="max-width: 600px; margin: 0 auto; background-image: url(${emailBackground}); background-repeat: repeat; background-size: 200px;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 0 0 48px; margin-bottom: 64px;">
+  <div style="max-width: 600px; margin: 0 auto;">
     <!-- Header and Greeting Section -->
     <div style="background-image: url(https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765840876/emails/email_greeting_background.webp); background-repeat: repeat; background-size: 200px; margin: 0; padding: 0; display: block;">
       <!-- Desktop Header -->
@@ -136,18 +135,20 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
       </div>
     </div>
 
-    <!-- Journey Title Banner -->
-    <table cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 600px; margin: 10px auto 10px;">
-      <tr>
-        <td style="background-image: url(${titleBanner}); background-size: 400px auto; background-position: center; background-repeat: no-repeat; padding: 40px 20px; text-align: center;">
-          <h2 style="color: #373737; font-size: 24px; font-weight: bold; margin: 0; text-align: center; padding: 0;">${displayName}</h2>
-        </td>
-      </tr>
-    </table>
+    <!-- Journey Card Section with Background -->
+    <div style="background-image: url(${emailBackground}); background-repeat: repeat; background-size: 200px; padding: 20px 0 48px;">
+      <!-- Journey Title Banner -->
+      <table cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 600px; margin: 10px auto 10px;">
+        <tr>
+          <td style="background-image: url(${titleBanner}); background-size: 400px auto; background-position: center; background-repeat: no-repeat; padding: 40px 20px; text-align: center;">
+            <h2 style="color: #373737; font-size: 24px; font-weight: bold; margin: 0; text-align: center; padding: 0;">${displayName}</h2>
+          </td>
+        </tr>
+      </table>
 
-    <!-- Journey Card -->
-    <div style="background-image: url(${cardBackground}); background-repeat: repeat; background-size: 200px auto; padding: 8px; border-radius: 1rem; margin: auto 40px;">
-      <div style="border: 4px solid #373737; border-radius: 0.75rem; padding: 2rem 1rem; background-image: url(${cardBackground}); background-repeat: repeat; background-size: 200px auto;">
+      <!-- Journey Card -->
+      <div style="background-image: url(${cardBackground}); background-repeat: repeat; background-size: 200px auto; padding: 8px; border-radius: 1rem; margin: auto 40px;">
+        <div style="border: 4px solid #373737; border-radius: 0.75rem; padding: 2rem 1rem; background-image: url(${cardBackground}); background-repeat: repeat; background-size: 200px auto;">
         <div style="padding: 0; background-color: transparent; text-align: center;">
           <!-- Date -->
           <div style="margin: 0 0 20px;">
@@ -185,12 +186,12 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
         </a>
       </div>
     </div>
+    </div>
 
     <hr style="border-color: #e6ebf1; margin: 20px 40px;" />
 
     <p style="color: #8898aa; font-size: 12px; line-height: 16px; padding: 0 40px; margin: 10px 0;">${footer}</p>
     <a href="${unsubscribeUrl}" style="color: #8898aa; font-size: 12px; text-decoration: underline; padding: 0 40px;">${unsubscribeText}</a>
-    </div>
   </div>
 </body>
 </html>
