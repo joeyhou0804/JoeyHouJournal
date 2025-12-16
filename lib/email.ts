@@ -51,9 +51,9 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
       return { success: true, sent: 0, message: 'No active subscribers' }
     }
 
-    // Base URL for journey links (use VERCEL_URL in production, localhost in dev)
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
+    // Base URL for journey links (use custom domain in production, localhost in dev)
+    const baseUrl = process.env.NODE_ENV === 'production'
+      ? 'https://joeyhoujournal.com'
       : 'http://localhost:3000'
 
     const journeyUrl = `${baseUrl}/journeys/${journey.slug}`
