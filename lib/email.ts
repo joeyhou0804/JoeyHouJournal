@@ -82,24 +82,26 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
       const displayStartLocation = isZh && journey.startLocationCN ? journey.startLocationCN : journey.startLocation
       const displayEndLocation = isZh && journey.endLocationCN ? journey.endLocationCN : journey.endLocation
 
-      // Determine header images (hosted on Cloudinary for email deliverability)
+      // Determine header images (hosted on Cloudinary with optimization)
+      // f_auto = auto format, q_auto = auto quality, w_600 = width for email
       const headerDesktop = isZh
-        ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765833569/emails/email_header_zh.png'
-        : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765833568/emails/email_header_en.png'
+        ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/v1765833569/emails/email_header_zh.png'
+        : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/v1765833568/emails/email_header_en.png'
       const headerMobile = isZh
-        ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765833574/emails/email_header_mobile_zh.png'
-        : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765833571/emails/email_header_mobile_en.png'
+        ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/v1765833574/emails/email_header_mobile_zh.png'
+        : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/v1765833571/emails/email_header_mobile_en.png'
 
-      // Background images
-      const emailBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765843937/emails/email_background.png'
-      const cardBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765839079/emails/email_subscription_background.png'
-      const titleBanner = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765845581/emails/email_journey_title_background.png'
-      const labelBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765839078/emails/filter_desktop_background_long.png'
+      // Background images with optimization
+      const emailBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/v1765843937/emails/email_background.png'
+      const cardBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/v1765839079/emails/email_subscription_background.png'
+      const titleBanner = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_400/v1765845581/emails/email_journey_title_background.png'
+      const labelBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/v1765839078/emails/filter_desktop_background_long.png'
+      const greetingBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/v1765840876/emails/email_greeting_background.webp'
 
-      // Determine button image
+      // Determine button image with optimization
       const buttonImage = isZh
-        ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765833577/emails/view_details_button_zh.png'
-        : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765833576/emails/view_details_button_en.png'
+        ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_300/v1765833577/emails/view_details_button_zh.png'
+        : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_300/v1765833576/emails/view_details_button_en.png'
 
       // Build HTML email
       const emailHtml = `
@@ -123,7 +125,7 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
 <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif; background-color: #ffffff;">
   <div style="max-width: 600px; margin: 0 auto;">
     <!-- Header and Greeting Section -->
-    <div style="background-image: url(https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765840876/emails/email_greeting_background.webp); background-repeat: repeat; background-size: 200px; margin: 0; padding: 0; display: block;">
+    <div style="background-image: url(${greetingBackground}); background-repeat: repeat; background-size: 200px; margin: 0; padding: 0; display: block;">
       <!-- Desktop Header -->
       <img src="${headerDesktop}" alt="${isZh ? '新旅程' : 'New Journey'}" class="desktop-header" style="width: 100%; max-width: 600px; height: auto; display: block; margin: 0;" />
       <!-- Mobile Header -->
