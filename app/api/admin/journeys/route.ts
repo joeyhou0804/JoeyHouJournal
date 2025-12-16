@@ -7,8 +7,11 @@ import {
   deleteJourney,
   syncJourneyNamesToDestinations,
   getDestinationById,
+  getAllHomeLocations,
 } from '@/lib/db'
 import { sendNewJourneyEmails } from '@/lib/email'
+import { transformJourney, transformHomeLocation } from '@/lib/transform'
+import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
 
 // Helper to convert DB format to API format
 function dbToApi(journey: any) {
@@ -122,6 +125,18 @@ export async function POST(request: Request) {
 
     const destinationImages = await getFirstDestinationImage()
 
+    // Transform journey and fetch home locations for route display
+    const journey = transformJourney(created)
+    const homeLocationsFromDb = await getAllHomeLocations()
+    const homeLocations = homeLocationsFromDb.map(transformHomeLocation)
+
+    // Calculate route displays using helper functions
+    const routeDisplay = calculateRouteDisplay(journey, homeLocations)
+    const routeDisplayCN = calculateRouteDisplayCN(journey, homeLocations)
+
+    // Create Chinese duration
+    const durationCN = created.duration.replace(/\s*days?\s*/i, '天').replace(/\s*day\s*/i, '天')
+
     sendNewJourneyEmails({
       id: created.id,
       slug: created.slug,
@@ -130,11 +145,11 @@ export async function POST(request: Request) {
       startDate: created.start_date,
       endDate: created.end_date,
       duration: created.duration,
-      durationCN: null, // TODO: Add duration_cn field to database and journey form
-      startLocation: created.start_display || created.start_location?.name || 'Unknown',
-      startLocationCN: null, // TODO: Add start_display_cn field to database and journey form
-      endLocation: created.end_display || created.end_location?.name || 'Unknown',
-      endLocationCN: null, // TODO: Add end_display_cn field to database and journey form
+      durationCN: durationCN,
+      startLocation: routeDisplay.split(' → ')[0] || 'Unknown',
+      startLocationCN: routeDisplayCN.split(' → ')[0] || 'Unknown',
+      endLocation: routeDisplay.split(' → ')[1] || 'Unknown',
+      endLocationCN: routeDisplayCN.split(' → ')[1] || 'Unknown',
       images: destinationImages,
     })
       .then((result) => {
