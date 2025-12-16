@@ -135,7 +135,9 @@ export async function POST(request: Request) {
     const routeDisplayCN = calculateRouteDisplayCN(journey, homeLocations)
 
     // Create Chinese duration
-    const durationCN = created.duration.replace(/\s*days?\s*/i, '天').replace(/\s*day\s*/i, '天')
+    const durationCN = created.duration
+      .replace(/\s*days?\s*/gi, '天')
+      .replace(/\s*nights?\s*/gi, '晚')
 
     sendNewJourneyEmails({
       id: created.id,
