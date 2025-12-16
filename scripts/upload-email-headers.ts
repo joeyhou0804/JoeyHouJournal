@@ -30,7 +30,7 @@ const imagesToUpload = [
     publicId: 'emails/email_header_mobile_zh',
   },
   {
-    path: 'public/emails/images/email_background.avif',
+    path: 'public/emails/images/email_background.png',
     publicId: 'emails/email_background',
   },
   {

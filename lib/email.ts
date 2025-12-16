@@ -91,7 +91,7 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
         : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765833571/emails/email_header_mobile_en.png'
 
       // Background images
-      const emailBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765839802/emails/email_background.avif'
+      const emailBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765843937/emails/email_background.png'
       const cardBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765839079/emails/email_subscription_background.png'
       const titleBanner = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765835287/emails/journeys_map_description_title.webp'
       const labelBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/v1765839078/emails/filter_desktop_background_long.png'
