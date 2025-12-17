@@ -92,11 +92,11 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
         : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/v1765833571/emails/email_header_mobile_en.png'
 
       // Background images with optimization
-      const emailBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/v1765843937/emails/email_background.png'
-      const cardBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/v1765839079/emails/email_subscription_background.png'
+      const emailBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/v1765843937/emails/email_background.png'
+      const cardBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/v1765839079/emails/email_subscription_background.png'
       const titleBanner = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_400/v1765845581/emails/email_journey_title_background.png'
-      const labelBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/v1765839078/emails/filter_desktop_background_long.png'
-      const greetingBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/v1765840876/emails/email_greeting_background.webp'
+      const labelBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_300/v1765839078/emails/filter_desktop_background_long.png'
+      const greetingBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/v1765840876/emails/email_greeting_background.webp'
 
       // Determine button image with optimization
       const buttonImage = isZh

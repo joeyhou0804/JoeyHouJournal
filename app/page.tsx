@@ -169,12 +169,12 @@ export default function Home() {
   }, [destinationsData])
 
   const journeyImages = [
-    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_1',
-    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_2',
-    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_3',
-    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_4',
-    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_5',
-    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/journey/homepage_journey_image_6'
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_1',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_2',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_3',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_4',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_5',
+    'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_6'
   ]
 
   useEffect(() => {
@@ -381,7 +381,7 @@ export default function Home() {
         >
           <Box
             component="img"
-            src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_2"
+            src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_800/joeyhoujournal/homepage/homepage_image_2"
             alt="Homepage Image 2"
             className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
           />
@@ -480,7 +480,7 @@ export default function Home() {
           <Container className="block md:hidden w-full relative mt-32 -mb-16" sx={{ zIndex: 5 }}>
             <Box
               component="img"
-              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_3"
+              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_800/joeyhoujournal/homepage/homepage_image_3"
               alt="Train Journey"
               className="w-full h-auto object-cover"
             />
@@ -673,7 +673,7 @@ export default function Home() {
             <Container className="hidden md:block absolute -top-80 left-0" sx={{ zIndex: 35 }}>
               <Box
                 component="img"
-                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_3"
+                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_800/joeyhoujournal/homepage/homepage_image_3"
                 alt="Train Journey"
                 className="h-[32rem] w-auto object-cover"
               />

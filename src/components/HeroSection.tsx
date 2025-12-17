@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import Section from './Section'
 import Container from './Container'
@@ -7,14 +8,14 @@ import InfiniteCarousel from './InfiniteCarousel'
 import { useTranslation } from 'src/hooks/useTranslation'
 
 const carouselImages = [
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_1',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_2',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_3',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_4',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_5',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_6',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_7',
-  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/carousel/title_carousel_8'
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/joeyhoujournal/carousel/title_carousel_1',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/joeyhoujournal/carousel/title_carousel_2',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/joeyhoujournal/carousel/title_carousel_3',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/joeyhoujournal/carousel/title_carousel_4',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/joeyhoujournal/carousel/title_carousel_5',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/joeyhoujournal/carousel/title_carousel_6',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/joeyhoujournal/carousel/title_carousel_7',
+  'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/joeyhoujournal/carousel/title_carousel_8'
 ]
 
 interface HeroSectionProps {
@@ -24,6 +25,24 @@ interface HeroSectionProps {
 
 export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSectionProps) {
   const { locale } = useTranslation()
+  const [isMobile, setIsMobile] = useState(false)
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false)
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768) // md breakpoint
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // Mobile-optimized video URL (you'll create this smaller version)
+  const videoUrl = isMobile
+    ? 'https://ydafzxmh0skb2hzr.public.blob.vercel-storage.com/homepage/homepage_title_video_mobile.mp4'
+    : 'https://ydafzxmh0skb2hzr.public.blob.vercel-storage.com/homepage/homepage_title_video.mp4'
 
   return (
     <>
@@ -34,6 +53,17 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
           component="section"
           className="relative w-full overflow-hidden h-[120vh]"
         >
+          {/* Poster image - shows while video loads */}
+          {!isVideoLoaded && (
+            <Box
+              component="img"
+              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/homepage/homepage_image_1"
+              alt="Loading"
+              className="absolute top-0 left-0 w-full h-full object-cover"
+              sx={{ filter: 'brightness(0.8)' }}
+            />
+          )}
+
           {/* Video Background */}
           <Box
             component="video"
@@ -41,9 +71,12 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             loop
             muted
             playsInline
-            preload="auto"
+            preload={isMobile ? 'none' : 'metadata'}
+            onLoadedData={() => setIsVideoLoaded(true)}
             className="absolute top-0 left-0 w-full h-full object-cover"
             sx={{
+              opacity: isVideoLoaded ? 1 : 0,
+              transition: 'opacity 0.5s ease-in',
               '&::-webkit-media-controls': {
                 display: 'none !important'
               },
@@ -52,7 +85,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
               }
             }}
           >
-            <source src="https://ydafzxmh0skb2hzr.public.blob.vercel-storage.com/homepage/homepage_title_video.mp4" type="video/mp4" />
+            <source src={videoUrl} type="video/mp4" />
           </Box>
 
           {/* Logo - Full width with padding on xs, Top Left on md+ */}
@@ -120,7 +153,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             <Container className="col-span-12 md:col-span-7 relative z-20">
               <Box
                 component="img"
-                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_1"
+                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/homepage/homepage_image_1"
                 alt="Homepage Image 1"
                 className="w-full h-auto"
               />
@@ -177,7 +210,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
           <Container className="block md:hidden relative mt-8 -mb-32">
             <Box
               component="img"
-              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/homepage/homepage_image_2"
+              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_800/joeyhoujournal/homepage/homepage_image_2"
               alt="Homepage Image 2"
               className="w-full h-auto"
             />

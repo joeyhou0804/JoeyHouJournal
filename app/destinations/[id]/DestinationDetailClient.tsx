@@ -368,17 +368,17 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   // Desktop logic with Cloudinary URLs and selected/hover states
                   if (useMapTab) {
                     tabSrc = isSelected
-                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_selected_${locale}.png`
-                      : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_${locale}.png`
+                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_map_selected_${locale}.png`
+                      : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_map_${locale}.png`
                   } else {
                     tabSrc = isSelected
-                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_selected.png`
-                      : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}.png`
+                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_${tabNumber}_selected.png`
+                      : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_${tabNumber}.png`
                   }
 
                   hoverSrc = useMapTab
-                    ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_map_hover_${locale}.png`
-                    : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/buttons/tabs/tab_${tabNumber}_hover.png`
+                    ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_map_hover_${locale}.png`
+                    : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_${tabNumber}_hover.png`
                 }
 
                 return (
