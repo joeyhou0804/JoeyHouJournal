@@ -44,6 +44,8 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   const [isTabsReady, setIsTabsReady] = useState(false)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
+  const [allDestinations, setAllDestinations] = useState<any[]>([])
+  const [isLoadingDestinations, setIsLoadingDestinations] = useState(true)
   const tabContainerRef = useRef<HTMLDivElement>(null)
 
   // Detect xs screen size
@@ -135,6 +137,22 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
     }
   }, [isXsScreen, station])
 
+  // Fetch all destinations for the journey
+  useEffect(() => {
+    async function fetchDestinations() {
+      try {
+        const response = await fetch('/api/destinations')
+        const data = await response.json()
+        setAllDestinations(data)
+      } catch (error) {
+        console.error('Error fetching destinations:', error)
+      } finally {
+        setIsLoadingDestinations(false)
+      }
+    }
+    fetchDestinations()
+  }, [])
+
   const nextImage = () => {
     if (station && station.images.length > 0) {
       setCurrentImageIndex((prev) => (prev + 1) % station.images.length)
@@ -147,10 +165,29 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
     }
   }
 
-  // Memoize places array to prevent map re-rendering
+  // Memoize places array to prevent map re-rendering (for station-only map)
   const mapPlaces = useMemo(() => {
     return station ? [station] : []
   }, [station])
+
+  // Memoize journey places (all destinations in the journey for Related Journey section)
+  const journeyPlaces = useMemo(() => {
+    if (!journey || !station) return []
+    return allDestinations.filter(
+      destination => destination.journeyName === station.journeyName
+    ).map((destination) => ({
+      id: destination.id,
+      name: destination.name,
+      nameCN: destination.nameCN,
+      date: destination.date,
+      journeyName: destination.journeyName,
+      journeyNameCN: destination.journeyNameCN,
+      state: destination.state,
+      images: destination.images || [],
+      lat: destination.lat,
+      lng: destination.lng
+    }))
+  }, [journey, station, allDestinations])
 
   // Memoize journey route calculations
   const journeyRouteCoordinates = useMemo(() => {
@@ -312,7 +349,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 }}
               >
                 <InteractiveMap
-                  places={mapPlaces}
+                  places={journeyPlaces}
                   routeSegments={journey.segments}
                   routeCoordinates={journeyRouteCoordinates}
                   journeyDate={journey.startDate}
@@ -418,7 +455,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 }}
               >
                 <InteractiveMap
-                  places={mapPlaces}
+                  places={journeyPlaces}
                   routeSegments={journey.segments}
                   routeCoordinates={journeyRouteCoordinates}
                   journeyDate={journey.startDate}
