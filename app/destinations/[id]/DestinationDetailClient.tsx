@@ -13,6 +13,10 @@ import { useTranslation } from 'src/hooks/useTranslation'
 import MixedText from 'src/components/MixedText'
 import { translations } from 'src/locales/translations'
 import ImageLightbox from 'src/components/ImageLightbox'
+import MapViewHint from 'src/components/MapViewHint'
+import { formatDuration } from 'src/utils/formatDuration'
+import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
+import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
@@ -148,6 +152,16 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
     return station ? [station] : []
   }, [station])
 
+  // Memoize journey route calculations
+  const journeyRouteCoordinates = useMemo(() => {
+    return getRouteCoordinatesFromSegments(journey?.segments)
+  }, [journey?.segments])
+
+  const journeyRoute = useMemo(() => {
+    if (!journey) return ''
+    return locale === 'zh' && journey.routeCN ? journey.routeCN : journey.route
+  }, [journey, locale])
+
   const openMenu = () => {
     setIsMenuButtonAnimating(true)
     setTimeout(() => {
@@ -244,6 +258,109 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
           className="hidden xs:block w-full h-auto object-cover"
         />
       </Box>
+
+      {/* Related Journey Section */}
+      {journey && (
+        <Box
+          component="section"
+          className="w-full py-24 xs:py-12"
+          sx={{
+            backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '100vw auto',
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 xs:px-2 sm:px-6 lg:px-8">
+            {/* Title */}
+            <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+              <MixedText
+                text={locale === 'zh' ? '相关旅程' : 'Related Journey'}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize={{ xs: '40px', sm: '64px' }}
+                color="#F6F6F6"
+                component="h2"
+                sx={{
+                  textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                  margin: 0
+                }}
+              />
+            </div>
+
+            {/* View Hints Button - Desktop Only */}
+            <div className="flex justify-center mb-48 mt-16 xs:hidden">
+              <button
+                onClick={() => setIsViewHintsDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={`/images/buttons/view_hints_button_${locale}.png`}
+                  alt="View Hints"
+                  className="h-20 w-auto"
+                />
+              </button>
+            </div>
+
+            {/* View Hints Button - Mobile Only */}
+            <div className="hidden xs:flex justify-center mb-12">
+              <button
+                onClick={() => setIsViewHintsDrawerOpen(true)}
+                className="hover:scale-105 transition-transform duration-200"
+              >
+                <img
+                  src={`/images/buttons/view_hints_button_${locale}.png`}
+                  alt="View Hints"
+                  className="h-16 w-auto"
+                />
+              </button>
+            </div>
+
+            <Box className="xs:mx-[-0.5rem]" style={{ position: 'relative' }}>
+              <Box
+                sx={{
+                  backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                  backgroundRepeat: 'repeat',
+                  backgroundSize: '200px auto',
+                  padding: { xs: '0.5rem', sm: '1rem' },
+                  borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                }}
+              >
+                <InteractiveMap
+                  places={mapPlaces}
+                  routeSegments={journey.segments}
+                  routeCoordinates={journeyRouteCoordinates}
+                  journeyDate={journey.startDate}
+                />
+              </Box>
+
+              {/* Journey Info Card - Top Left Corner - Desktop Only */}
+              <Box
+                className="xs:hidden"
+                sx={{
+                  position: 'absolute',
+                  top: '-100px',
+                  left: '-600px',
+                  zIndex: 1000
+                }}
+              >
+                <MapViewHint
+                  imageOnRight={false}
+                  cardNumber={3}
+                  isJourneyInfo={true}
+                  journeySlug={journey.slug}
+                  station={{
+                    id: '',
+                    name: locale === 'zh' && journey.nameCN ? journey.nameCN : journey.name,
+                    journeyName: journeyRoute,
+                    date: formatDuration(journey.days, journey.nights, tr),
+                    images: []
+                  }}
+                />
+              </Box>
+            </Box>
+          </div>
+        </Box>
+      )}
 
       {/* Content */}
       <div className="pt-8">
