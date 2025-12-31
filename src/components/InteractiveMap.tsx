@@ -54,9 +54,10 @@ interface InteractiveMapProps {
   routeSegments?: RouteSegment[] // Array of route segments with transport methods
   journeyDate?: string // Journey start date to determine which home to show
   showHomeMarker?: boolean // Whether to show home marker (default: true for journey maps, false for destinations list)
+  currentDestinationId?: string // ID of the current destination being viewed (for highlighting on detail pages)
 }
 
-export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate, showHomeMarker }: InteractiveMapProps) {
+export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate, showHomeMarker, currentDestinationId }: InteractiveMapProps) {
   const { locale, tr } = useTranslation()
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -213,6 +214,22 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
           <path d="M12.5 0C5.596 0 0 5.596 0 12.5c0 8.437 12.5 28.5 12.5 28.5S25 20.937 25 12.5C25 5.596 19.404 0 12.5 0z" fill="#373737"/>
           <path d="M12.5 6L7 11v7h3v-5h5v5h3v-7z" fill="white"/>
+        </svg>
+      `),
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+      shadowSize: [41, 41],
+      shadowAnchor: [12, 41]
+    })
+
+    // Create custom dark marker icon (for non-current destinations)
+    const darkIcon = L.icon({
+      iconUrl: 'data:image/svg+xml;base64,' + btoa(`
+        <svg width="25" height="41" viewBox="0 0 25 41" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12.5 0C5.596 0 0 5.596 0 12.5c0 8.437 12.5 28.5 12.5 28.5S25 20.937 25 12.5C25 5.596 19.404 0 12.5 0z" fill="#373737"/>
+          <circle cx="12.5" cy="12.5" r="6" fill="white"/>
         </svg>
       `),
       iconSize: [25, 41],
@@ -630,7 +647,15 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       if (isAtHome) {
         icon = isMultiVisit ? goldenHomeIcon : homeIcon
       } else {
-        icon = isMultiVisit ? goldenIcon : orangeIcon
+        // If currentDestinationId is provided (destination detail page), use special coloring
+        if (currentDestinationId) {
+          // Check if any of the places at this location is the current destination
+          const isCurrentDestination = places.some(p => p.id === currentDestinationId)
+          icon = isCurrentDestination ? orangeIcon : darkIcon
+        } else {
+          // Default behavior: golden for multi-visit, orange for single visit
+          icon = isMultiVisit ? goldenIcon : orangeIcon
+        }
       }
 
       const marker = L.marker([places[0].lat, places[0].lng], { icon }).addTo(map)

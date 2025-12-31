@@ -316,6 +316,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   routeSegments={journey.segments}
                   routeCoordinates={journeyRouteCoordinates}
                   journeyDate={journey.startDate}
+                  currentDestinationId={station.id}
                 />
               </Box>
 
@@ -421,6 +422,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   routeSegments={journey.segments}
                   routeCoordinates={journeyRouteCoordinates}
                   journeyDate={journey.startDate}
+                  currentDestinationId={station.id}
                 />
               </Box>
             </Box>
@@ -788,7 +790,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   borderRadius: { xs: '0.75rem', sm: '1.5rem' }
                 }}
               >
-                <InteractiveMap places={mapPlaces} isDetailView={true} journeyDate={station.date} />
+                <InteractiveMap places={mapPlaces} isDetailView={true} journeyDate={station.date} currentDestinationId={station.id} />
               </Box>
             </Box>
           </div>
