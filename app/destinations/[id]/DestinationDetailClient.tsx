@@ -231,6 +231,20 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
         />
       </Box>
 
+      {/* Header Banner */}
+      <Box sx={{ width: '100%' }}>
+        <img
+          src={`/images/destinations/destination_details_title_${locale}.png`}
+          alt={station.name}
+          className="w-full h-auto object-cover xs:hidden"
+        />
+        <img
+          src={`/images/destinations/destination_details_title_xs_${locale}.png`}
+          alt={station.name}
+          className="hidden xs:block w-full h-auto object-cover"
+        />
+      </Box>
+
       {/* Content */}
       <div className="pt-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -274,8 +288,6 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             </Box>
           </Box>
         </Box>
-
-        </div>
 
         {/* About/Description - Full Width */}
         {station.description && (
@@ -526,6 +538,8 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
           </Box>
           </div>
         )}
+
+        </div>
 
         {/* Map View Section */}
         <Box
