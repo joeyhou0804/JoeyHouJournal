@@ -293,11 +293,11 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
       <Box
         component={Link}
         href="/journeys"
-        className="fixed top-8 left-4 z-50 p-2 hover:scale-105 transition-all duration-150"
+        className="fixed top-8 left-4 xs:top-28 xs:right-4 xs:left-auto z-50 p-2 hover:scale-105 transition-all duration-150"
       >
         <Box
           component="img"
-          src="/images/buttons/back_button.png"
+          src={`/images/icons/back_${locale}.png`}
           alt={tr.backToJourneys}
           className="w-16 h-16"
         />
