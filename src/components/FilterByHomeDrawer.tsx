@@ -22,7 +22,7 @@ export default function FilterByHomeDrawer({ isOpen, onClose, onFilterChange, se
     <SingleSelectFilterDrawer
       isOpen={isOpen}
       onClose={onClose}
-      titleEn="Filter by Home"
+      titleEn="Filter by Home Location"
       titleZh="以家的位置筛选"
       filterOptions={filterOptions}
       defaultSelected="all_destinations"

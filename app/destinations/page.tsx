@@ -726,7 +726,7 @@ export default function StationsPage() {
                 >
                   <img
                     src={homeFilterIconMap[selectedMapHomeFilter] || homeFilterIconMap['all_destinations']}
-                    alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                    alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home Location'}
                     className="h-16 w-auto"
                     style={{
                       filter: selectedMapHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
@@ -818,7 +818,7 @@ export default function StationsPage() {
                 >
                   <img
                     src={homeFilterIconMap[selectedMapHomeFilter] || homeFilterIconMap['all_destinations']}
-                    alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                    alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home Location'}
                     className="h-24 w-auto"
                     style={{
                       filter: selectedMapHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
@@ -837,7 +837,7 @@ export default function StationsPage() {
                     }}
                   >
                     <MixedText
-                      text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                      text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home Location'}
                       chineseFont="MarioFontTitleChinese, sans-serif"
                       englishFont="MarioFontTitle, sans-serif"
                       fontSize="24px"
@@ -1061,7 +1061,7 @@ export default function StationsPage() {
               >
                 <img
                   src={homeFilterIconMap[selectedListHomeFilter] || homeFilterIconMap['all_destinations']}
-                  alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                  alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home Location'}
                   className="h-24 w-auto"
                   style={{
                     filter: selectedListHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
@@ -1080,7 +1080,7 @@ export default function StationsPage() {
                   }}
                 >
                   <MixedText
-                    text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                    text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home Location'}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
                     fontSize="24px"
@@ -1300,7 +1300,7 @@ export default function StationsPage() {
                   >
                     <img
                       src={homeFilterIconMap[selectedListHomeFilter] || homeFilterIconMap['all_destinations']}
-                      alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home'}
+                      alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home Location'}
                       className="h-16 w-auto"
                       style={{
                         filter: selectedListHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
