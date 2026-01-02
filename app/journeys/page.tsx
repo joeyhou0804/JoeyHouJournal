@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import { MapPin, Calendar, Train, Clock, Search } from 'lucide-react'
+import Fuse from 'fuse.js'
 import NavigationMenu from 'src/components/NavigationMenu'
 import Footer from 'src/components/Footer'
 import Box from '@mui/material/Box'
@@ -433,37 +434,53 @@ export default function JourneysPage() {
 
   const filteredTrips = filterTrips(trips)
 
-  // Apply search filter
-  const searchFilteredTrips = filteredTrips.filter((trip) => {
-    if (!searchQuery.trim()) return true
-    const query = searchQuery.toLowerCase()
+  // Apply intelligent search filter with fuzzy matching
+  const searchFilteredTrips = useMemo(() => {
+    if (!searchQuery.trim()) return filteredTrips
 
-    // Search in journey name (English and Chinese)
-    const nameMatch = trip.name.toLowerCase().includes(query)
-    const nameCNMatch = trip.nameCN?.toLowerCase().includes(query)
+    // Prepare trips with associated destination data for comprehensive search
+    const tripsWithDestinations = filteredTrips.map(trip => {
+      const journey = journeysData.find(j => j.slug === trip.slug)
+      let destinationSearchText = ''
 
-    // Search in route locations
-    const routeMatch = trip.route?.toLowerCase().includes(query)
+      if (journey) {
+        const journeyDestinations = allDestinations.filter(
+          destination => destination.journeyName === journey.name
+        )
+        // Combine all destination names and states into searchable text
+        destinationSearchText = journeyDestinations
+          .map(dest => [dest.name, dest.nameCN, dest.state].filter(Boolean).join(' '))
+          .join(' ')
+      }
 
-    // Search in journey description
-    const descriptionMatch = trip.description?.toLowerCase().includes(query)
+      return {
+        ...trip,
+        destinationSearchText
+      }
+    })
 
-    // Search in destinations/places associated with this journey
-    const journey = journeysData.find(j => j.slug === trip.slug)
-    let destinationMatch = false
-    if (journey) {
-      const journeyDestinations = allDestinations.filter(
-        destination => destination.journeyName === journey.name
-      )
-      destinationMatch = journeyDestinations.some(dest =>
-        dest.name?.toLowerCase().includes(query) ||
-        dest.nameCN?.toLowerCase().includes(query) ||
-        dest.state?.toLowerCase().includes(query)
-      )
-    }
+    // Configure Fuse.js for intelligent fuzzy search
+    const fuse = new Fuse(tripsWithDestinations, {
+      keys: [
+        { name: 'name', weight: 4 },                    // Highest priority: Journey name (EN)
+        { name: 'nameCN', weight: 4 },                  // Highest priority: Journey name (CN)
+        { name: 'route', weight: 2.5 },                 // High priority: Route description
+        { name: 'destinationSearchText', weight: 2 },   // Medium priority: Associated destinations
+        { name: 'description', weight: 1 }              // Lower priority: Journey description
+      ],
+      threshold: 0.4,              // Allow moderate fuzziness (0=exact, 1=match anything)
+      distance: 100,               // Max distance for match location
+      minMatchCharLength: 2,       // Require at least 2 characters to match
+      ignoreLocation: true,        // Search anywhere in the string
+      includeScore: true,          // Include relevance scores for ranking
+      useExtendedSearch: false,
+      findAllMatches: true
+    })
 
-    return nameMatch || nameCNMatch || routeMatch || descriptionMatch || destinationMatch
-  })
+    // Perform fuzzy search and return results sorted by relevance
+    const results = fuse.search(searchQuery)
+    return results.map(result => result.item)
+  }, [filteredTrips, searchQuery, journeysData, allDestinations])
 
   const sortedTrips = [...searchFilteredTrips].sort((a, b) => {
     // Sort by index/order - latest means start of list, earliest means end

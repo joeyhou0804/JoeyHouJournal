@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
+import Fuse from 'fuse.js'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import DestinationCard from 'src/components/DestinationCard'
@@ -352,25 +353,31 @@ export default function StationsPage() {
     return filterListDestinationsByOther(groupSizeFilteredDestinations)
   }, [destinations, homeLocations, selectedListHomeFilter, selectedListGroupSizeFilter, selectedListOtherFilter])
 
-  // Apply search filter (on list destinations)
+  // Apply intelligent search filter with fuzzy matching (on list destinations)
   const searchFilteredDestinations = useMemo(() => {
     if (!searchQuery.trim()) return filteredListDestinations
 
-    const query = searchQuery.toLowerCase()
-    return filteredListDestinations.filter((destination) => {
-      // Search in destination name (English and Chinese)
-      const nameMatch = destination.name?.toLowerCase().includes(query)
-      const nameCNMatch = destination.nameCN?.toLowerCase().includes(query)
-
-      // Search in state
-      const stateMatch = destination.state?.toLowerCase().includes(query)
-
-      // Search in journey name (English and Chinese)
-      const journeyNameMatch = destination.journeyName?.toLowerCase().includes(query)
-      const journeyNameCNMatch = destination.journeyNameCN?.toLowerCase().includes(query)
-
-      return nameMatch || nameCNMatch || stateMatch || journeyNameMatch || journeyNameCNMatch
+    // Configure Fuse.js for intelligent fuzzy search
+    const fuse = new Fuse(filteredListDestinations, {
+      keys: [
+        { name: 'name', weight: 3 },           // Highest priority: English name
+        { name: 'nameCN', weight: 3 },         // Highest priority: Chinese name
+        { name: 'state', weight: 2 },          // Medium priority: State/province
+        { name: 'journeyName', weight: 1.5 },  // Lower priority: Journey name (EN)
+        { name: 'journeyNameCN', weight: 1.5 } // Lower priority: Journey name (CN)
+      ],
+      threshold: 0.4,              // Allow moderate fuzziness (0=exact, 1=match anything)
+      distance: 100,               // Max distance for match location
+      minMatchCharLength: 2,       // Require at least 2 characters to match
+      ignoreLocation: true,        // Search anywhere in the string
+      includeScore: true,          // Include relevance scores for ranking
+      useExtendedSearch: false,
+      findAllMatches: true
     })
+
+    // Perform fuzzy search and return results sorted by relevance
+    const results = fuse.search(searchQuery)
+    return results.map(result => result.item)
   }, [filteredListDestinations, searchQuery])
 
   const sortedDestinations = useMemo(() => {

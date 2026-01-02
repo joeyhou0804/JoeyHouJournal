@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
+import Fuse from 'fuse.js'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
@@ -108,21 +109,29 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
 
   const itemsPerPage = 12
 
-  // Apply search filter
+  // Apply intelligent search filter with fuzzy matching
   const searchFilteredPlaces = useMemo(() => {
     if (!searchQuery.trim()) return places
 
-    const query = searchQuery.toLowerCase()
-    return places.filter((place) => {
-      // Search in place name (English and Chinese)
-      const nameMatch = place.name?.toLowerCase().includes(query)
-      const nameCNMatch = place.nameCN?.toLowerCase().includes(query)
-
-      // Search in state
-      const stateMatch = place.state?.toLowerCase().includes(query)
-
-      return nameMatch || nameCNMatch || stateMatch
+    // Configure Fuse.js for intelligent fuzzy search
+    const fuse = new Fuse(places, {
+      keys: [
+        { name: 'name', weight: 3 },     // Highest priority: English name
+        { name: 'nameCN', weight: 3 },   // Highest priority: Chinese name
+        { name: 'state', weight: 2 }     // Medium priority: State/province
+      ],
+      threshold: 0.4,              // Allow moderate fuzziness (0=exact, 1=match anything)
+      distance: 100,               // Max distance for match location
+      minMatchCharLength: 2,       // Require at least 2 characters to match
+      ignoreLocation: true,        // Search anywhere in the string
+      includeScore: true,          // Include relevance scores for ranking
+      useExtendedSearch: false,
+      findAllMatches: true
     })
+
+    // Perform fuzzy search and return results sorted by relevance
+    const results = fuse.search(searchQuery)
+    return results.map(result => result.item)
   }, [places, searchQuery])
 
   const sortedPlaces = useMemo(() => {
