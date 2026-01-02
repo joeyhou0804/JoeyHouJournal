@@ -557,8 +557,8 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
 
         {/* Image Carousel */}
         {station.images && station.images.length > 0 && (
-          <div className="max-w-7xl mx-auto px-2 xs:px-2 sm:px-6 lg:px-8 mb-36 xs:mb-12">
-          <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
+          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-36 xs:mb-12">
+          <Box sx={{ maxWidth: { xs: '100%', sm: '800px' }, margin: '0 auto', px: { xs: 0, sm: 0 } }}>
             {/* Tab Navigation */}
             <Box
               ref={tabContainerRef}
@@ -655,10 +655,11 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 backgroundRepeat: 'repeat',
                 backgroundSize: '200px auto',
                 padding: { xs: '0.5rem', sm: '1rem' },
-                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                borderRadius: { xs: '0.75rem', sm: '1.5rem' },
+                mx: { xs: '-0.5rem', sm: 0 }
               }}
             >
-            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1' }}>
+            <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', overflow: 'visible' }}>
               <Box
                 component="img"
                 src={station.images[currentImageIndex]}
