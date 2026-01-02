@@ -690,9 +690,9 @@ export default function StationsPage() {
 
           {/* Filter Buttons - Mobile Only - Below Map */}
           <div className="hidden xs:flex flex-col items-center mt-12 w-full">
-            {/* Filters Label */}
+            {/* Map Filters Label */}
             <MixedText
-              text={locale === 'zh' ? '筛选条件' : 'Filters'}
+              text={locale === 'zh' ? '地图筛选条件' : 'Map Filters'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize="24px"
@@ -779,9 +779,9 @@ export default function StationsPage() {
 
           {/* Filter Buttons - Desktop Only - Below Map */}
           <div className="flex flex-col items-center mt-16 xs:hidden">
-            {/* Filters Label */}
+            {/* Map Filters Label */}
             <MixedText
-              text={locale === 'zh' ? '筛选条件' : 'Filters'}
+              text={locale === 'zh' ? '地图筛选条件' : 'Map Filters'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize="24px"
@@ -1022,9 +1022,9 @@ export default function StationsPage() {
 
           {/* Filter Buttons - Desktop Only */}
           <div className="flex flex-col items-center mb-16 xs:hidden">
-            {/* Filters Label */}
+            {/* List Filters Label */}
             <MixedText
-              text={locale === 'zh' ? '筛选条件' : 'Filters'}
+              text={locale === 'zh' ? '列表筛选条件' : 'List Filters'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize="24px"
@@ -1264,9 +1264,9 @@ export default function StationsPage() {
           <div className="hidden xs:flex flex-col items-center gap-2 mb-12">
             {/* Filter Buttons Group - Icon Style */}
             <div className="flex flex-col items-center w-full">
-              {/* Filters Label */}
+              {/* List Filters Label */}
               <MixedText
-                text={locale === 'zh' ? '筛选条件' : 'Filters'}
+                text={locale === 'zh' ? '列表筛选条件' : 'List Filters'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
                 fontSize="24px"
