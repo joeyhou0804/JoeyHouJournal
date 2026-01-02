@@ -228,66 +228,17 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         closeMenu={closeMenu}
       />
 
-      <Box sx={{ position: 'relative', width: '100%' }}>
+      <Box sx={{ width: '100%' }}>
         <img
-          src="/images/journey/journey_details_page_title.png"
+          src={`/images/journey/journey_details_title_${locale}.png`}
           alt={tr.journeyDetails}
           className="w-full h-auto object-cover xs:hidden"
         />
         <img
-          src="/images/journey/journey_details_page_title_xs.png"
+          src={`/images/journey/journey_details_title_xs_${locale}.png`}
           alt={tr.journeyDetails}
           className="hidden xs:block w-full h-auto object-cover"
         />
-
-        <Box
-          sx={{
-            position: 'absolute',
-            top: { xs: '48%', sm: '50%' },
-            left: { xs: '5%', sm: '10%' },
-            transform: 'translateY(-50%)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: { xs: '0.25rem', sm: '0.5rem' }
-          }}
-        >
-          <MixedText
-            text={locale === 'zh' && journey.nameCN ? journey.nameCN : journey.name}
-            chineseFont="MarioFontTitleChinese, sans-serif"
-            englishFont="MarioFontTitle, sans-serif"
-            fontSize={{ xs: '40px', sm: '96px' }}
-            color="#373737"
-            component="h1"
-            sx={{
-              margin: 0,
-              textAlign: 'left',
-              textShadow: { xs: '2px 2px 0px rgba(246, 246, 246, 1)', sm: '4px 4px 0px rgba(246, 246, 246, 1)' }
-            }}
-          />
-          <Box
-            component="p"
-            sx={{
-              fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-              fontSize: { xs: '20px', sm: '48px' },
-              color: '#373737',
-              margin: 0,
-              textAlign: 'left',
-              textShadow: { xs: '1px 1px 0px rgba(246, 246, 246, 1)', sm: '4px 4px 0px rgba(246, 246, 246, 1)' }
-            }}
-          >
-            {(() => {
-              const displayRoute = locale === 'zh' && journey.routeCN ? journey.routeCN : journey.route
-              return (
-                <>
-                  <span className="xs:hidden">{displayRoute}</span>
-                  <span className="hidden xs:inline">
-                    {displayRoute.split(' → ')[0]}<br />↓<br />{displayRoute.split(' → ')[1]}
-                  </span>
-                </>
-              )
-            })()}
-          </Box>
-        </Box>
       </Box>
 
       <Box
@@ -313,14 +264,50 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Journey Title with Background */}
+          <Box sx={{ width: '100%', maxWidth: '800px', margin: '2rem auto 2rem' }}>
+            <Box sx={{ position: 'relative', width: '100%', marginBottom: '2rem' }}>
+              <Box
+                component="img"
+                src="/images/destinations/destination_location_title.webp"
+                alt="Journey Title"
+                sx={{ width: '100%', height: 'auto', display: 'block' }}
+              />
+              <Box
+                component="div"
+                sx={{
+                  margin: 0,
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  whiteSpace: 'nowrap',
+                  textAlign: 'center',
+                  width: '100%'
+                }}
+              >
+                <MixedText
+                  text={locale === 'zh' && journey.nameCN ? journey.nameCN : journey.name}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize={{ xs: '28px', sm: '48px' }}
+                  color="#373737"
+                  component="h2"
+                  sx={{ margin: 0 }}
+                />
+              </Box>
+            </Box>
+          </Box>
+
+          {/* Route Display */}
           <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
             <MixedText
-              text={tr.mapView}
+              text={locale === 'zh' && journey.routeCN ? journey.routeCN : journey.route}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '40px', sm: '64px' }}
+              fontSize={{ xs: '28px', sm: '48px' }}
               color="#F6F6F6"
-              component="h2"
+              component="p"
               sx={{
                 textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
                 margin: 0
@@ -328,8 +315,8 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             />
           </div>
 
-          {/* View Hints Button - Mobile Only */}
-          <div className="hidden xs:flex justify-center mb-12">
+          {/* View Hints Button */}
+          <div className="flex justify-center mb-12 xs:mb-12">
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -337,21 +324,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-16 w-auto"
-              />
-            </button>
-          </div>
-
-          {/* View Hints Button - Desktop Only */}
-          <div className="flex justify-center my-16 xs:hidden">
-            <button
-              onClick={() => setIsViewHintsDrawerOpen(true)}
-              className="hover:scale-105 transition-transform duration-200"
-            >
-              <img
-                src={`/images/buttons/view_hints_button_${locale}.png`}
-                alt="View Hints"
-                className="h-20 w-auto"
+                className="h-20 xs:h-16 w-auto"
               />
             </button>
           </div>
