@@ -699,7 +699,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                     <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
                   </div>
                 </div>
-                ${!isDetailView ? `
+                ${!isDetailView && place.id !== currentDestinationId ? `
                 <div style="text-align: center; margin-top: 4px;">
                   <a
                     href="/destinations/${place.id}"
@@ -841,7 +841,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
                 </div>
               </div>
-              ${!isDetailView ? `
+              ${!isDetailView && place.id !== currentDestinationId ? `
               <div style="text-align: center; margin-top: 4px;">
                 <a
                   href="/destinations/${place.id}"
@@ -990,6 +990,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         onClose={() => setDrawerOpen(false)}
         places={drawerPlaces}
         isDetailView={isDetailView}
+        currentDestinationId={currentDestinationId}
       />
     </>
   )

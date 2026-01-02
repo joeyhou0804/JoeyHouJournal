@@ -43,6 +43,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   const [isXsScreen, setIsXsScreen] = useState(false)
   const [isTabsReady, setIsTabsReady] = useState(false)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
+  const [viewHintsVariant, setViewHintsVariant] = useState<'default' | 'relatedJourney'>('default')
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [isLoadingDestinations, setIsLoadingDestinations] = useState(true)
@@ -257,6 +258,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
+        variant={viewHintsVariant}
       />
       <ImageLightbox
         isOpen={isLightboxOpen}
@@ -327,7 +329,10 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             {/* View Hints Button - Desktop Only */}
             <div className="flex justify-center mb-48 mt-16">
               <button
-                onClick={() => setIsViewHintsDrawerOpen(true)}
+                onClick={() => {
+                  setViewHintsVariant('relatedJourney')
+                  setIsViewHintsDrawerOpen(true)
+                }}
                 className="hover:scale-105 transition-transform duration-200"
               >
                 <img
@@ -416,7 +421,10 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             {/* Mobile: View Hints Button */}
             <div className="flex flex-col items-center mb-12">
               <button
-                onClick={() => setIsViewHintsDrawerOpen(true)}
+                onClick={() => {
+                  setViewHintsVariant('relatedJourney')
+                  setIsViewHintsDrawerOpen(true)
+                }}
                 className="hover:scale-105 transition-transform duration-200"
               >
                 <img
@@ -793,7 +801,10 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             {/* View Hints Button - Desktop Only */}
             <div className="flex justify-center my-16 xs:hidden">
               <button
-                onClick={() => setIsViewHintsDrawerOpen(true)}
+                onClick={() => {
+                  setViewHintsVariant('default')
+                  setIsViewHintsDrawerOpen(true)
+                }}
                 className="hover:scale-105 transition-transform duration-200"
               >
                 <img
@@ -807,7 +818,10 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             {/* View Hints Button - Mobile Only */}
             <div className="hidden xs:flex justify-center mb-12">
               <button
-                onClick={() => setIsViewHintsDrawerOpen(true)}
+                onClick={() => {
+                  setViewHintsVariant('default')
+                  setIsViewHintsDrawerOpen(true)
+                }}
                 className="hover:scale-105 transition-transform duration-200"
               >
                 <img

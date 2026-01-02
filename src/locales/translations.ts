@@ -22,6 +22,16 @@ export const translations = {
       description1: 'Golden markers indicate cities with multiple visits.',
       description2: 'Use the side buttons to navigate through them.',
     },
+    relatedJourneyHint1: {
+      title: 'Check out the map',
+      description1: 'The orange marker shows where the current destination is in the journey.',
+      description2: '',
+    },
+    relatedJourneyHint2: {
+      title: 'As for black markers...',
+      description1: 'Black markers are other destinations in the same journey.',
+      description2: 'You can also view more details with the button.',
+    },
 
     // Error Messages
     stationNotFound: 'Station Not Found',
@@ -138,6 +148,16 @@ export const translations = {
       title: '金黄色的标记是...',
       description1: '金黄色标记表示去过多次的地点。',
       description2: '使用侧边的按钮，就可以看到每次旅游的信息了。',
+    },
+    relatedJourneyHint1: {
+      title: '地图的查看方法',
+      description1: '橙色标记是当前目的地在旅程中的位置。',
+      description2: '',
+    },
+    relatedJourneyHint2: {
+      title: '黑色的标记是...',
+      description1: '黑色标记显示了同一段旅程中的其他目的地。',
+      description2: '之后也可以通过点击按钮了解更多细节。',
     },
 
     // Error Messages

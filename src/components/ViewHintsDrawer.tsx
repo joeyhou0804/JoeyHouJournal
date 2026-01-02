@@ -7,10 +7,17 @@ import { useTranslation } from 'src/hooks/useTranslation'
 interface ViewHintsDrawerProps {
   isOpen: boolean
   onClose: () => void
+  variant?: 'default' | 'relatedJourney'
 }
 
-export default function ViewHintsDrawer({ isOpen, onClose }: ViewHintsDrawerProps) {
+export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }: ViewHintsDrawerProps) {
   const { tr, locale } = useTranslation()
+
+  // Determine which hints to show based on variant
+  const isRelatedJourney = variant === 'relatedJourney'
+  const hint1 = isRelatedJourney ? tr.relatedJourneyHint1 : tr.mapHint1
+  const hint2 = isRelatedJourney ? tr.relatedJourneyHint2 : tr.mapHint2
+  const marker2Image = isRelatedJourney ? '/images/icons/black_marker.jpg' : '/images/icons/golden_marker.png'
 
   return (
     <BaseDrawer
@@ -53,7 +60,7 @@ export default function ViewHintsDrawer({ isOpen, onClose }: ViewHintsDrawerProp
                     whiteSpace: 'nowrap'
                   }}
                 >
-                  {tr.mapHint1.title}
+                  {hint1.title}
                 </Box>
               </Box>
             </Box>
@@ -73,7 +80,7 @@ export default function ViewHintsDrawer({ isOpen, onClose }: ViewHintsDrawerProp
               <Box
                 component="img"
                 src="/images/icons/orange_marker.png"
-                alt={tr.mapHint1.title}
+                alt={hint1.title}
                 sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             </Box>
@@ -88,7 +95,7 @@ export default function ViewHintsDrawer({ isOpen, onClose }: ViewHintsDrawerProp
                 flex: 1
               }}
             >
-              {tr.mapHint1.description1} {tr.mapHint1.description2}
+              {hint1.description1} {hint1.description2}
             </Box>
           </Box>
         </Box>
@@ -126,7 +133,7 @@ export default function ViewHintsDrawer({ isOpen, onClose }: ViewHintsDrawerProp
                     whiteSpace: 'nowrap'
                   }}
                 >
-                  {tr.mapHint2.title}
+                  {hint2.title}
                 </Box>
               </Box>
             </Box>
@@ -145,8 +152,8 @@ export default function ViewHintsDrawer({ isOpen, onClose }: ViewHintsDrawerProp
             >
               <Box
                 component="img"
-                src="/images/icons/golden_marker.png"
-                alt={tr.mapHint2.title}
+                src={marker2Image}
+                alt={hint2.title}
                 sx={{ width: '100%', height: '100%', objectFit: 'contain' }}
               />
             </Box>
@@ -161,7 +168,7 @@ export default function ViewHintsDrawer({ isOpen, onClose }: ViewHintsDrawerProp
                 flex: 1
               }}
             >
-              {tr.mapHint2.description1} {tr.mapHint2.description2}
+              {hint2.description1} {hint2.description2}
             </Box>
           </Box>
         </Box>

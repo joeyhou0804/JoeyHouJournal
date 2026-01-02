@@ -24,9 +24,10 @@ interface MapMarkerDrawerProps {
   onClose: () => void
   places: Place[]
   isDetailView?: boolean
+  currentDestinationId?: string
 }
 
-export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView = false }: MapMarkerDrawerProps) {
+export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView = false, currentDestinationId }: MapMarkerDrawerProps) {
   const { locale, tr } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -202,7 +203,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
         )}
 
         {/* Divider - show before View Details button */}
-        {!isDetailView && place.id !== 'home' && (
+        {!isDetailView && place.id !== 'home' && place.id !== currentDestinationId && (
           <Box
             sx={{
               width: 'calc(100% - 1rem)',
@@ -214,8 +215,8 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
           />
         )}
 
-        {/* View Details Button - hide for detail view and home markers */}
-        {!isDetailView && place.id !== 'home' && (
+        {/* View Details Button - hide for detail view, home markers, and current destination */}
+        {!isDetailView && place.id !== 'home' && place.id !== currentDestinationId && (
           <Box sx={{ textAlign: 'center', marginTop: '0rem', marginBottom: '1rem' }}>
             <a
               href={`/destinations/${place.id}`}
