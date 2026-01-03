@@ -25,9 +25,11 @@ interface Destination {
 interface StatesChoroplethMapProps {
   visitedStates: string[]
   destinations?: Destination[]
+  visitedColor?: string
+  unvisitedDescription?: { en: string; zh: string }
 }
 
-export default function StatesChoroplethMap({ visitedStates, destinations = [] }: StatesChoroplethMapProps) {
+export default function StatesChoroplethMap({ visitedStates, destinations = [], visitedColor = '#F06001', unvisitedDescription }: StatesChoroplethMapProps) {
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const { locale, tr } = useTranslation()
@@ -162,7 +164,7 @@ export default function StatesChoroplethMap({ visitedStates, destinations = [] }
             const isVisited = visitedSet.has(stateName)
 
             return {
-              fillColor: isVisited ? '#F06001' : '#373737',
+              fillColor: isVisited ? visitedColor : '#373737',
               weight: 1,
               opacity: 1,
               color: '#ffffff',
@@ -176,7 +178,8 @@ export default function StatesChoroplethMap({ visitedStates, destinations = [] }
             if (!isVisited) {
               // Unvisited states - show popup/drawer
               const displayState = tr.states[stateName] || stateName
-              const unvisitedDescription = locale === 'zh' ? '还没有去过...' : "Haven't been there yet..."
+              const defaultUnvisitedDesc = locale === 'zh' ? '还没有去过...' : "Haven't been there yet..."
+              const unvisitedDesc = unvisitedDescription ? (locale === 'zh' ? unvisitedDescription.zh : unvisitedDescription.en) : defaultUnvisitedDesc
 
               if (!isMobile) {
                 // Desktop: Create popup for unvisited state
@@ -185,7 +188,7 @@ export default function StatesChoroplethMap({ visitedStates, destinations = [] }
                     <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 16px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
                       <div style="text-align: center; margin-bottom: 8px;">
                         <h2 style="font-family: '${locale === 'zh' ? 'MarioFontTitleChinese' : 'MarioFontTitle'}', sans-serif; font-size: 28px; color: #F6F6F6; margin: 0 0 4px 0; font-weight: normal;">${displayState}</h2>
-                        <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #F6F6F6; margin: 0 0 16px 0; font-weight: normal;">${unvisitedDescription}</p>
+                        <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #F6F6F6; margin: 0 0 16px 0; font-weight: normal;">${unvisitedDesc}</p>
                       </div>
                     </div>
                   </div>
@@ -308,7 +311,7 @@ export default function StatesChoroplethMap({ visitedStates, destinations = [] }
         mapRef.current = null
       }
     }
-  }, [visitedStates, destinations, locale, tr, isMobile])
+  }, [visitedStates, destinations, locale, tr, isMobile, visitedColor, unvisitedDescription])
 
   return (
     <>
@@ -325,8 +328,8 @@ export default function StatesChoroplethMap({ visitedStates, destinations = [] }
             isDetailView={false}
             titleEn={drawerDestination.displayStateName || drawerDestination.state}
             titleZh={drawerDestination.displayStateName || drawerDestination.state}
-            subtitleEn="Haven't been there yet..."
-            subtitleZh="还没有去过..."
+            subtitleEn={unvisitedDescription?.en || "Haven't been there yet..."}
+            subtitleZh={unvisitedDescription?.zh || "还没有去过..."}
             showOkButton={true}
             onOk={() => setDrawerOpen(false)}
           />

@@ -36,10 +36,31 @@ export async function GET() {
     // Count territories
     const territoryCount = statesArray.filter(state => territories.has(state)).length
 
+    // Get states where at least one destination has stayed overnight
+    const overnightStates = new Set<string>()
+    destinations.forEach(dest => {
+      if (dest.state && dest.state.trim() !== '' && !excludedLocations.has(dest.state) && dest.stayed_overnight === true) {
+        overnightStates.add(dest.state)
+      }
+    })
+
+    const overnightStatesArray = Array.from(overnightStates).sort()
+
+    // Count overnight states (excluding DC and territories)
+    const overnightStateCount = overnightStatesArray.filter(state =>
+      state !== 'District of Columbia' && !territories.has(state)
+    ).length
+
+    // Count overnight territories
+    const overnightTerritoryCount = overnightStatesArray.filter(state => territories.has(state)).length
+
     return NextResponse.json({
       count: stateCount,
       territoryCount: territoryCount,
-      states: statesArray
+      states: statesArray,
+      overnightCount: overnightStateCount,
+      overnightTerritoryCount: overnightTerritoryCount,
+      overnightStates: overnightStatesArray
     }, {
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',

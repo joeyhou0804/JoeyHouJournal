@@ -62,6 +62,9 @@ export default function MapsPage() {
   const [visitedStatesCount, setVisitedStatesCount] = useState(0)
   const [visitedTerritoriesCount, setVisitedTerritoriesCount] = useState(0)
   const [visitedStates, setVisitedStates] = useState<string[]>([])
+  const [overnightStatesCount, setOvernightStatesCount] = useState(0)
+  const [overnightTerritoriesCount, setOvernightTerritoriesCount] = useState(0)
+  const [overnightStates, setOvernightStates] = useState<string[]>([])
 
   // All Destinations section filters
   const [isFilterByHomeHovered, setIsFilterByHomeHovered] = useState(false)
@@ -168,6 +171,9 @@ export default function MapsPage() {
         setVisitedStatesCount(visitedStatesData.count)
         setVisitedTerritoriesCount(visitedStatesData.territoryCount)
         setVisitedStates(visitedStatesData.states)
+        setOvernightStatesCount(visitedStatesData.overnightCount)
+        setOvernightTerritoriesCount(visitedStatesData.overnightTerritoryCount)
+        setOvernightStates(visitedStatesData.overnightStates)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -904,7 +910,7 @@ export default function MapsPage() {
               <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
                 {tr.funFacts.descriptionLine1.split('{count}')[0]}
               </Box>
-              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' } }}>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' } }}>
                 {visitedStatesCount}
               </Box>
               <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
@@ -915,7 +921,7 @@ export default function MapsPage() {
               <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
                 {tr.funFacts.descriptionLine2.split('{territoryCount}')[0]}
               </Box>
-              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' } }}>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' } }}>
                 {visitedTerritoriesCount}
               </Box>
               <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
@@ -936,6 +942,55 @@ export default function MapsPage() {
               }}
             >
               <StatesChoroplethMap visitedStates={visitedStates} destinations={allDestinations} />
+            </Box>
+          </Box>
+
+          {/* Overnight States Map */}
+          <div className="flex flex-col justify-center items-center mt-16 mb-16 xs:mt-12 xs:mb-8">
+            <Box sx={{ textAlign: 'center', lineHeight: { xs: '40px', sm: '64px' } }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+                {tr.funFacts.overnightDescriptionLine1.split('{count}')[0]}
+              </Box>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#FFD701', textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' } }}>
+                {overnightStatesCount}
+              </Box>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+                {tr.funFacts.overnightDescriptionLine1.split('{count}')[1]}
+              </Box>
+            </Box>
+            <Box sx={{ textAlign: 'center', lineHeight: { xs: '40px', sm: '64px' } }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+                {tr.funFacts.overnightDescriptionLine2.split('{territoryCount}')[0]}
+              </Box>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#FFD701', textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' } }}>
+                {overnightTerritoriesCount}
+              </Box>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+                {tr.funFacts.overnightDescriptionLine2.split('{territoryCount}')[1]}
+              </Box>
+            </Box>
+          </div>
+
+          {/* Overnight States Map */}
+          <Box className="xs:mx-[-0.5rem]">
+            <Box
+              sx={{
+                backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                backgroundRepeat: 'repeat',
+                backgroundSize: '200px auto',
+                padding: { xs: '0.5rem', sm: '1rem' },
+                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+              }}
+            >
+              <StatesChoroplethMap
+                visitedStates={overnightStates}
+                destinations={allDestinations.filter(dest => dest.stayedOvernight === true)}
+                visitedColor="#FFD701"
+                unvisitedDescription={{
+                  en: tr.funFacts.notStayedOvernight,
+                  zh: tr.funFacts.notStayedOvernight
+                }}
+              />
             </Box>
           </Box>
         </div>
