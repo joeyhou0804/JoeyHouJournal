@@ -904,7 +904,7 @@ export default function MapsPage() {
               <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
                 {tr.funFacts.descriptionLine1.split('{count}')[0]}
               </Box>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' } }}>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' } }}>
                 {visitedStatesCount}
               </Box>
               <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
@@ -915,7 +915,7 @@ export default function MapsPage() {
               <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
                 {tr.funFacts.descriptionLine2.split('{territoryCount}')[0]}
               </Box>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' } }}>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' } }}>
                 {visitedTerritoriesCount}
               </Box>
               <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
