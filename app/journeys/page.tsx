@@ -925,7 +925,7 @@ export default function JourneysPage() {
                 backgroundPosition: 'center',
                 height: '100px',
                 width: '100%',
-                maxWidth: '300px'
+                maxWidth: '400px'
               }}
             >
               {/* Transportation Filter Button */}
@@ -1525,7 +1525,7 @@ export default function JourneysPage() {
                   backgroundPosition: 'center',
                   height: '100px',
                   width: '100%',
-                  maxWidth: '300px'
+                  maxWidth: '400px'
                 }}
               >
                 {/* Day Trip Group Size Filter Button */}

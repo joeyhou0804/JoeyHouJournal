@@ -13,7 +13,7 @@ interface NavigationMenuProps {
   isMenuButtonAnimating: boolean
   openMenu: () => void
   closeMenu: () => void
-  currentPage?: 'home' | 'trips' | 'destinations'
+  currentPage?: 'home' | 'trips' | 'destinations' | 'maps'
 }
 
 export default function NavigationMenu({
@@ -133,6 +133,32 @@ export default function NavigationMenu({
                     component="img"
                     src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
                     alt="Destinations"
+                    className="w-48 h-auto hidden group-hover:block"
+                  />
+                </Link>
+              )}
+
+              {currentPage === 'maps' ? (
+                <Box className="group">
+                  <Box
+                    component="img"
+                    src={`/images/buttons/maps_button_current_${locale}.png`}
+                    alt="Maps"
+                    className="w-48 h-auto"
+                  />
+                </Box>
+              ) : (
+                <Link href="/maps" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
+                  <Box
+                    component="img"
+                    src={`/images/buttons/maps_button_${locale}.png`}
+                    alt="Maps"
+                    className="w-48 h-auto group-hover:hidden"
+                  />
+                  <Box
+                    component="img"
+                    src={`/images/buttons/maps_button_hover_${locale}.png`}
+                    alt="Maps"
                     className="w-48 h-auto hidden group-hover:block"
                   />
                 </Link>
