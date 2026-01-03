@@ -25,9 +25,15 @@ interface MapMarkerDrawerProps {
   places: Place[]
   isDetailView?: boolean
   currentDestinationId?: string
+  titleEn?: string
+  titleZh?: string
+  subtitleEn?: string
+  subtitleZh?: string
+  showOkButton?: boolean
+  onOk?: () => void
 }
 
-export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView = false, currentDestinationId }: MapMarkerDrawerProps) {
+export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView = false, currentDestinationId, titleEn = 'Details', titleZh = '地点信息', subtitleEn, subtitleZh, showOkButton = false, onOk }: MapMarkerDrawerProps) {
   const { locale, tr } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -83,9 +89,34 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
     }
   }
 
-  // Safety check: if no places, don't render
+  const subtitle = locale === 'zh' ? subtitleZh : subtitleEn
+
+  // Handle empty places (for unvisited states)
   if (!places || places.length === 0) {
-    return null
+    return (
+      <BaseDrawer
+        isOpen={isOpen}
+        onClose={onClose}
+        titleEn={titleEn}
+        titleZh={titleZh}
+        width={{ xs: '90%', sm: '500px' }}
+        showOkButton={showOkButton}
+        onOk={onOk}
+      >
+        {/* Subtitle */}
+        {subtitle && (
+          <Box sx={{ textAlign: 'center', marginTop: '-0.5rem', paddingBottom: '1rem' }}>
+            <span style={{
+              fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+              fontSize: '16px',
+              color: '#373737'
+            }}>
+              {subtitle}
+            </span>
+          </Box>
+        )}
+      </BaseDrawer>
+    )
   }
 
   const place = places[currentIndex]
@@ -99,11 +130,24 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
     <BaseDrawer
       isOpen={isOpen}
       onClose={onClose}
-      titleEn="Details"
-      titleZh="地点信息"
+      titleEn={titleEn}
+      titleZh={titleZh}
       width={{ xs: '90%', sm: '500px' }}
       showOkButton={false}
     >
+      {/* Subtitle */}
+      {subtitle && (
+        <Box sx={{ textAlign: 'center', marginBottom: '1rem', marginTop: '-0.5rem' }}>
+          <span style={{
+            fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+            fontSize: '16px',
+            color: '#373737'
+          }}>
+            {subtitle}
+          </span>
+        </Box>
+      )}
+
       {/* Content */}
       <Box sx={{ position: 'relative', width: '100%', paddingTop: '0.25rem' }}>
         {/* First Row: Location Title */}

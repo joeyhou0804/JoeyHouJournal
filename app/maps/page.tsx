@@ -33,6 +33,18 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   }
 })
 
+const StatesChoroplethMap = dynamic(() => import('src/components/StatesChoroplethMap'), {
+  ssr: false,
+  loading: () => {
+    const { tr } = useTranslation()
+    return (
+      <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
+        <p className="text-gray-600">{tr.loadingMap}</p>
+      </div>
+    )
+  }
+})
+
 export default function MapsPage() {
   const { locale, tr } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -47,6 +59,9 @@ export default function MapsPage() {
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [currentJourneyIndex, setCurrentJourneyIndex] = useState(0)
   const [currentDayTripIndex, setCurrentDayTripIndex] = useState(0)
+  const [visitedStatesCount, setVisitedStatesCount] = useState(0)
+  const [visitedTerritoriesCount, setVisitedTerritoriesCount] = useState(0)
+  const [visitedStates, setVisitedStates] = useState<string[]>([])
 
   // All Destinations section filters
   const [isFilterByHomeHovered, setIsFilterByHomeHovered] = useState(false)
@@ -136,18 +151,23 @@ export default function MapsPage() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const [destinationsRes, journeysRes, homeLocationsRes] = await Promise.all([
+        const [destinationsRes, journeysRes, homeLocationsRes, visitedStatesRes] = await Promise.all([
           fetch('/api/destinations'),
           fetch('/api/journeys'),
-          fetch('/api/home-locations')
+          fetch('/api/home-locations'),
+          fetch('/api/visited-states')
         ])
         const destinationsData = await destinationsRes.json()
         const journeys = await journeysRes.json()
         const homeLocationsData = await homeLocationsRes.json()
+        const visitedStatesData = await visitedStatesRes.json()
         setDestinations(destinationsData)
         setJourneysData(journeys)
         setAllDestinations(destinationsData)
         setHomeLocations(homeLocationsData)
+        setVisitedStatesCount(visitedStatesData.count)
+        setVisitedTerritoriesCount(visitedStatesData.territoryCount)
+        setVisitedStates(visitedStatesData.states)
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
@@ -851,6 +871,73 @@ export default function MapsPage() {
               </div>
             </div>
           </div>
+        </div>
+      </Box>
+
+      {/* Fun Facts Section */}
+      <Box
+        component="section"
+        className="w-full py-24 xs:py-12"
+        sx={{
+          backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px auto',
+        }}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Fun Facts Title and Description */}
+          <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+            <MixedText
+              text={tr.funFacts.title}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize={{ xs: '40px', sm: '64px' }}
+              color="#373737"
+              component="h2"
+              sx={{
+                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                margin: 0,
+                marginBottom: '16px'
+              }}
+            />
+            <Box sx={{ textAlign: 'center', lineHeight: { xs: '40px', sm: '64px' } }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+                {tr.funFacts.descriptionLine1.split('{count}')[0]}
+              </Box>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' } }}>
+                {visitedStatesCount}
+              </Box>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+                {tr.funFacts.descriptionLine1.split('{count}')[1]}
+              </Box>
+            </Box>
+            <Box sx={{ textAlign: 'center', lineHeight: { xs: '40px', sm: '64px' } }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+                {tr.funFacts.descriptionLine2.split('{territoryCount}')[0]}
+              </Box>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' } }}>
+                {visitedTerritoriesCount}
+              </Box>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+                {tr.funFacts.descriptionLine2.split('{territoryCount}')[1]}
+              </Box>
+            </Box>
+          </div>
+
+          {/* Map - Desktop and Mobile */}
+          <Box className="xs:mx-[-0.5rem]">
+            <Box
+              sx={{
+                backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                backgroundRepeat: 'repeat',
+                backgroundSize: '200px auto',
+                padding: { xs: '0.5rem', sm: '1rem' },
+                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+              }}
+            >
+              <StatesChoroplethMap visitedStates={visitedStates} destinations={allDestinations} />
+            </Box>
+          </Box>
         </div>
       </Box>
 

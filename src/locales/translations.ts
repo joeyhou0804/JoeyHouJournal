@@ -119,6 +119,11 @@ export const translations = {
       'Florida': 'Florida',
       'Michigan': 'Michigan',
       'Maine': 'Maine',
+      'Puerto Rico': 'Puerto Rico',
+      'Guam': 'Guam',
+      'U.S. Virgin Islands': 'U.S. Virgin Islands',
+      'American Samoa': 'American Samoa',
+      'Northern Mariana Islands': 'Northern Mariana Islands',
     } as Record<string, string>,
 
     // Duration
@@ -127,6 +132,13 @@ export const translations = {
       days: 'days',
       night: 'night',
       nights: 'nights',
+    },
+
+    // Fun Facts
+    funFacts: {
+      title: 'Fun Facts',
+      descriptionLine1: 'I have visited {count} US states,',
+      descriptionLine2: '{territoryCount} US Territories, and Washington DC.',
     },
   },
   zh: {
@@ -208,6 +220,7 @@ export const translations = {
       'Montana': '蒙大拿州',
       'Idaho': '爱达荷州',
       'Washington': '华盛顿州',
+      'Alaska': '阿拉斯加州',
       'Oregon': '俄勒冈州',
       'California': '加利福尼亚州',
       'Nevada': '内华达州',
@@ -246,6 +259,11 @@ export const translations = {
       'Florida': '佛罗里达州',
       'Michigan': '密歇根州',
       'Maine': '缅因州',
+      'Puerto Rico': '波多黎各',
+      'Guam': '关岛',
+      'U.S. Virgin Islands': '美属维尔京群岛',
+      'American Samoa': '美属萨摩亚',
+      'Northern Mariana Islands': '北马里亚纳群岛',
     } as Record<string, string>,
 
     // Duration
@@ -254,6 +272,13 @@ export const translations = {
       days: '天',
       night: '晚',
       nights: '晚',
+    },
+
+    // Fun Facts
+    funFacts: {
+      title: '冷知识',
+      descriptionLine1: '我去过美国的{count}个州，',
+      descriptionLine2: '{territoryCount}个美国领地，还有华盛顿哥伦比亚特区。',
     },
   },
 } as const
