@@ -267,8 +267,8 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             </Box>
           </div>
 
-          {/* Mobile: Row 3, Centered: Language Toggle */}
-          <div className="hidden xs:flex xs:justify-center xs:w-full xs:mb-4">
+          {/* Mobile: Row 3: Language Toggle (same size as grid items) */}
+          <div className="hidden xs:grid xs:grid-cols-2 xs:gap-4 xs:w-full xs:justify-items-center xs:mb-4">
             <Box
               component="button"
               className="group hover:scale-105 transition-transform duration-200"
