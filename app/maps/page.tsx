@@ -85,7 +85,7 @@ export default function MapsPage() {
   }
 
   const groupSizeFilterIconMap: { [key: string]: string } = {
-    'all_group_sizes': '/images/icons/filter/all_group_sizes.png',
+    'all_group_sizes': '/images/icons/filter/all_group_sizes_dark.png',
     'visit_by_myself': '/images/icons/filter/visit_by_myself.png',
     'visit_with_others': '/images/icons/filter/visit_with_others.png'
   }
