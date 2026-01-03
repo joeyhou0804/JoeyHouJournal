@@ -310,7 +310,9 @@ export default function MapsPage() {
     return journeysData
       .filter((journey: any) => journey.isTrainTrip === true)
       .flatMap((journey: any) =>
-        (journey.segments || []).filter((seg: any) => seg.method === 'train')
+        (journey.segments || [])
+          .filter((seg: any) => seg.method === 'train')
+          .map((seg: any) => ({ ...seg, journeyId: journey.id }))
       )
   }, [journeysData])
 

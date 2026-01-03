@@ -35,6 +35,7 @@ interface RouteSegment {
   from: { name: string; lat: number; lng: number }
   to: { name: string; lat: number; lng: number }
   method?: string
+  journeyId?: string // Optional journey identifier for grouping segments
 }
 
 interface HomeLocation {
@@ -320,9 +321,21 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       const segmentGroups: Array<{ method: string; segments: RouteSegment[] }> = []
 
       if (drawSegmentsIndependently) {
-        // Draw each segment independently without grouping
+        // Group consecutive segments by both method and journeyId
+        let currentGroup: { method: string; segments: RouteSegment[] } | null = null
+
         routeSegments.forEach(segment => {
-          segmentGroups.push({ method: segment.method || 'train', segments: [segment] })
+          const method = segment.method || 'train'
+          const journeyId = segment.journeyId || ''
+
+          if (!currentGroup ||
+              currentGroup.method !== method ||
+              (currentGroup.segments[currentGroup.segments.length - 1]?.journeyId || '') !== journeyId) {
+            currentGroup = { method, segments: [segment] }
+            segmentGroups.push(currentGroup)
+          } else {
+            currentGroup.segments.push(segment)
+          }
         })
       } else {
         // Group consecutive segments with the same method
