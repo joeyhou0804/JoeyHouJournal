@@ -55,9 +55,10 @@ interface InteractiveMapProps {
   journeyDate?: string // Journey start date to determine which home to show
   showHomeMarker?: boolean // Whether to show home marker (default: true for journey maps, false for destinations list)
   currentDestinationId?: string // ID of the current destination being viewed (for highlighting on detail pages)
+  drawSegmentsIndependently?: boolean // Draw each segment independently without grouping (for multi-journey maps)
 }
 
-export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate, showHomeMarker, currentDestinationId }: InteractiveMapProps) {
+export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate, showHomeMarker, currentDestinationId, drawSegmentsIndependently = false }: InteractiveMapProps) {
   const { locale, tr } = useTranslation()
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -317,17 +318,26 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
 
       // Group consecutive segments by transport method
       const segmentGroups: Array<{ method: string; segments: RouteSegment[] }> = []
-      let currentGroup: { method: string; segments: RouteSegment[] } | null = null
 
-      routeSegments.forEach(segment => {
-        const method = segment.method || 'train'
-        if (!currentGroup || currentGroup.method !== method) {
-          currentGroup = { method, segments: [segment] }
-          segmentGroups.push(currentGroup)
-        } else {
-          currentGroup.segments.push(segment)
-        }
-      })
+      if (drawSegmentsIndependently) {
+        // Draw each segment independently without grouping
+        routeSegments.forEach(segment => {
+          segmentGroups.push({ method: segment.method || 'train', segments: [segment] })
+        })
+      } else {
+        // Group consecutive segments with the same method
+        let currentGroup: { method: string; segments: RouteSegment[] } | null = null
+
+        routeSegments.forEach(segment => {
+          const method = segment.method || 'train'
+          if (!currentGroup || currentGroup.method !== method) {
+            currentGroup = { method, segments: [segment] }
+            segmentGroups.push(currentGroup)
+          } else {
+            currentGroup.segments.push(segment)
+          }
+        })
+      }
 
       // Draw each group
       segmentGroups.forEach(group => {
@@ -977,7 +987,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     return () => {
       map.remove()
     }
-  }, [places, isDetailView, routeCoordinates, routeSegments, homeLocations, locale, journeyDate, isMobile])
+  }, [places, isDetailView, routeCoordinates, routeSegments, homeLocations, locale, journeyDate, isMobile, drawSegmentsIndependently])
 
   return (
     <>

@@ -305,6 +305,15 @@ export default function MapsPage() {
   const allRegularJourneys = journeysData.filter((journey: any) => !journey.isDayTrip)
   const allDayTripJourneys = journeysData.filter((journey: any) => journey.isDayTrip)
 
+  // Get all train segments from train trips only
+  const allTrainSegments = useMemo(() => {
+    return journeysData
+      .filter((journey: any) => journey.isTrainTrip === true)
+      .flatMap((journey: any) =>
+        (journey.segments || []).filter((seg: any) => seg.method === 'train')
+      )
+  }, [journeysData])
+
   // Apply filters to journeys
   const regularJourneys = filterLongTripsByGroupSize(filterByTransportation(allRegularJourneys))
   const dayTripJourneys = filterDayTrips(filterDayTripsByGroupSize(allDayTripJourneys))
@@ -990,6 +999,42 @@ export default function MapsPage() {
                   en: tr.funFacts.notStayedOvernight,
                   zh: tr.funFacts.notStayedOvernight
                 }}
+              />
+            </Box>
+          </Box>
+
+          {/* Train Trips Map */}
+          <div className="flex flex-col justify-center items-center mt-16 mb-16 xs:mt-12 xs:mb-8">
+            <MixedText
+              text={tr.funFacts.trainTripsDescription}
+              chineseFont="MarioFontChinese, sans-serif"
+              englishFont="MarioFont, sans-serif"
+              fontSize={{ xs: '16px', sm: '28px' }}
+              color="#373737"
+              component="p"
+              sx={{ margin: 0, textAlign: 'center' }}
+            />
+          </div>
+
+          {/* Train Routes Map */}
+          <Box className="xs:mx-[-0.5rem]">
+            <Box
+              sx={{
+                backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
+                backgroundRepeat: 'repeat',
+                backgroundSize: '200px auto',
+                padding: { xs: '0.5rem', sm: '1rem' },
+                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+              }}
+            >
+              <InteractiveMap
+                places={allDestinations.filter(dest => {
+                  const journey = journeysData.find(j => j.name === dest.journeyName)
+                  return journey?.isTrainTrip === true
+                })}
+                routeSegments={allTrainSegments}
+                drawSegmentsIndependently={true}
+                showHomeMarker={false}
               />
             </Box>
           </Box>

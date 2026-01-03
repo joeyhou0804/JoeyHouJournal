@@ -143,6 +143,7 @@ export const translations = {
       overnightDescriptionLine1: 'I have stayed overnight in {count} US states,',
       overnightDescriptionLine2: '{territoryCount} US Territories, and Washington DC.',
       notStayedOvernight: "Haven't stayed overnight here yet...",
+      trainTripsDescription: 'Here is a map with all my US train trips',
     },
   },
   zh: {
@@ -287,6 +288,7 @@ export const translations = {
       overnightDescriptionLine1: '我在美国的{count}个州，',
       overnightDescriptionLine2: '{territoryCount}个美国领地，还有华盛顿哥伦比亚特区过了夜。',
       notStayedOvernight: '还没有在这里过夜过...',
+      trainTripsDescription: '我所有的美国火车旅行路线都在这张地图上了',
     },
   },
 } as const
