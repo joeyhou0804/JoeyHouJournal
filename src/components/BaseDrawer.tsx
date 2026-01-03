@@ -15,6 +15,7 @@ interface FilterDrawerBaseProps {
   showOkButton?: boolean
   buttonType?: 'ok' | 'all_set'
   width?: { xs: string, sm?: string }
+  onOk?: () => void
 }
 
 export default function FilterDrawerBase({
@@ -25,7 +26,8 @@ export default function FilterDrawerBase({
   children,
   showOkButton = true,
   buttonType = 'ok',
-  width = { xs: '90%' }
+  width = { xs: '90%' },
+  onOk
 }: FilterDrawerBaseProps) {
   const { locale } = useLanguage()
   const [isExiting, setIsExiting] = useState(false)
@@ -198,7 +200,7 @@ export default function FilterDrawerBase({
               <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Box
                   component="button"
-                  onClick={handleClose}
+                  onClick={onOk || handleClose}
                   className="hover:scale-105 transition-transform duration-200"
                   sx={{
                     border: 'none',
