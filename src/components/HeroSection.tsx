@@ -53,17 +53,6 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
           component="section"
           className="relative w-full overflow-hidden h-[120vh]"
         >
-          {/* Poster image - shows while video loads */}
-          {!isVideoLoaded && (
-            <Box
-              component="img"
-              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/homepage/homepage_image_1"
-              alt="Loading"
-              className="absolute top-0 left-0 w-full h-full object-cover"
-              sx={{ filter: 'brightness(0.8)' }}
-            />
-          )}
-
           {/* Video Background */}
           <Box
             component="video"
@@ -101,7 +90,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
 
         {/* Decorative transition (homepage head mask) */}
         <Container
-          className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full"
+          className="absolute bottom-0 left-0 right-0 z-0 h-[200px] translate-y-full"
           sx={{ transform: 'translateY(calc(0.1%))' }}
         >
         <Container
@@ -147,15 +136,19 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
         }}
       >
         {/* Image 1 + Slogan Row */}
-        <Container className="relative z-20 -mt-96 md:-mt-64">
+        <Container className="relative z-5 -mt-96 md:-mt-64">
           <Container className="grid grid-cols-12 items-center gap-8">
             {/* Image 1 — 60% */}
-            <Container className="col-span-12 md:col-span-7 relative z-20">
+            <Container className="col-span-12 md:col-span-7 relative z-0">
               <Box
                 component="img"
-                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/homepage/homepage_image_1"
+                src="/images/homepage/homepage_image_1.png"
                 alt="Homepage Image 1"
                 className="w-full h-auto"
+                sx={{
+                  transform: { xs: 'scale(1.2) translateY(10%)', md: 'scale(1.4) translateX(20%)' },
+                  transformOrigin: { xs: 'right bottom', md: 'right bottom' }
+                }}
               />
             </Container>
 
