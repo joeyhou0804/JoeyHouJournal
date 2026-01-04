@@ -29,16 +29,16 @@ export default function Footer({ currentPage }: FooterProps = {}) {
         backgroundSize: '200px'
       }}
     >
-      <div className="flex items-center justify-between xs:flex-col xs:gap-4">
-        <Link href="/" className="hover:scale-105 transition-transform duration-200 xs:w-full xs:flex xs:justify-center">
+      <div className="flex items-center gap-[8%] xs:flex-col xs:gap-4">
+        <Link href="/" className="hover:scale-105 transition-transform duration-200 flex-shrink-0 basis-[25%] xs:basis-auto xs:w-full xs:flex xs:justify-center">
           <Box
             component="img"
             src={`/images/logos/logo_${locale}.png`}
             alt="Logo"
-            className="h-60 w-auto xs:h-auto xs:w-80"
+            className="w-full h-auto xs:h-auto xs:w-80"
           />
         </Link>
-        <div className="flex-1 flex flex-col items-center justify-center xs:w-full pl-32 xs:pl-0">
+        <div className="flex-1 flex flex-col items-center justify-center xs:w-full">
           {/* Button Rows - Desktop: 2 rows (long journeys+destinations, then short maps+email+language) */}
 
           {/* Desktop First Row: Journeys, Destinations - each spans 2 columns */}
