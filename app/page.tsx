@@ -488,7 +488,7 @@ export default function Home() {
               alt="Train Journey"
               className="w-full h-auto object-cover"
               sx={{
-                transform: 'scale(1.2) translateX(-5%) translateY(-15%)',
+                transform: 'scale(1.2) translateX(-5%) translateY(0)',
                 transformOrigin: 'center'
               }}
             />
@@ -496,7 +496,7 @@ export default function Home() {
 
           {/* XS Layout - JourneyCard Style */}
           {featuredTrips.length > 0 && (
-          <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw] mt-8" sx={{ minHeight: '500px', zIndex: 10, padding: 0 }}>
+          <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw] mt-8" sx={{ minHeight: '500px', zIndex: 10, padding: 0, transform: 'translateY(15%)' }}>
             <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column-reverse', overflow: 'visible' }}>
               {/* Journey Image - Rounded Square (now rendered first but appears on top) */}
               <Box
