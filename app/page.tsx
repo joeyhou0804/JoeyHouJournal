@@ -905,7 +905,7 @@ export default function Home() {
         innerRef={recentRef}
         className="py-16 px-4 relative"
         sx={{
-          marginTop: { xs: '-8rem', md: '-2rem' },
+          marginTop: { xs: '0rem', md: '-2rem' },
           backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
           backgroundRepeat: 'repeat-y',
           backgroundSize: '100% auto',
@@ -916,13 +916,17 @@ export default function Home() {
         {/* Homepage Image 4 - Top right corner, overlapping decorative section */}
         <Container
           className="absolute top-0 right-0"
-          sx={{ transform: { xs: 'translate(0, -12rem)', md: 'translate(0, -18rem)' }, zIndex: 20 }}
+          sx={{ transform: { xs: 'translate(0, -6rem)', md: 'translate(0, -18rem)' }, zIndex: 30 }}
         >
           <Box
             component="img"
             src="/images/homepage/homepage_image_4.png"
             alt="Homepage Image 4"
             className="w-full h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
+            sx={{
+              transform: { md: 'scale(1.5) translateY(50%)' },
+              transformOrigin: { md: 'top right' }
+            }}
           />
         </Container>
 
