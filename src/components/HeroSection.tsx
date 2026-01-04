@@ -203,9 +203,13 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
           <Container className="block md:hidden relative mt-8 -mb-32">
             <Box
               component="img"
-              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_800/joeyhoujournal/homepage/homepage_image_2"
+              src="/images/homepage/homepage_image_2.png"
               alt="Homepage Image 2"
               className="w-full h-auto"
+              sx={{
+                transform: 'scale(1.3) translateX(-5%)',
+                transformOrigin: 'center'
+              }}
             />
           </Container>
         </Container>

@@ -381,9 +381,13 @@ export default function Home() {
         >
           <Box
             component="img"
-            src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_800/joeyhoujournal/homepage/homepage_image_2"
+            src="/images/homepage/homepage_image_2.png"
             alt="Homepage Image 2"
             className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
+            sx={{
+              transform: 'scale(1.75) translateX(10%) translateY(5%)',
+              transformOrigin: 'top right'
+            }}
           />
         </Container>
         <Container
