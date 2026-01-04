@@ -38,92 +38,92 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             className="h-60 w-auto xs:h-auto xs:w-80"
           />
         </Link>
-        <div className="flex-1 flex flex-col items-center justify-center xs:w-full">
-          {/* Button Rows - Desktop: 2 rows, Mobile: 2-2-1 grid */}
+        <div className="flex-1 flex flex-col items-center justify-center xs:w-full pl-32 xs:pl-0">
+          {/* Button Rows - Desktop: 2 rows (long journeys+destinations, then short maps+email+language) */}
 
-          {/* Desktop First Row: Journeys, Destinations, Maps */}
-          <div className="flex items-center space-x-4 mb-4 xs:hidden">
+          {/* Desktop First Row: Journeys, Destinations - each spans 2 columns */}
+          <div className="grid grid-cols-4 gap-4 mb-4 xs:hidden">
             {currentPage === 'trips' ? (
-              <Box className="group">
+              <Box className="group col-span-2">
                 <Box
                   component="img"
-                  src={`/images/buttons/journey_button_current_${locale}.png`}
+                  src={`/images/buttons/menu/journeys_button_hover_${locale}.png`}
                   alt="Journeys"
-                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain"
+                  className="w-full h-auto"
                 />
               </Box>
             ) : (
-              <Link href="/journeys" className="group hover:scale-105 transition-transform duration-200">
+              <Link href="/journeys" className="group hover:scale-105 transition-transform duration-200 col-span-2">
                 <Box
                   component="img"
-                  src={`/images/buttons/journey_button${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/menu/journeys_button_${locale}.png`}
                   alt="Journeys"
-                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain group-hover:hidden"
+                  className="w-full h-auto group-hover:hidden"
                 />
                 <Box
                   component="img"
-                  src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/menu/journeys_button_hover_${locale}.png`}
                   alt="Journeys"
-                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain hidden group-hover:block"
+                  className="w-full h-auto hidden group-hover:block"
                 />
               </Link>
             )}
 
             {currentPage === 'destinations' ? (
-              <Box className="group">
+              <Box className="group col-span-2">
                 <Box
                   component="img"
-                  src={`/images/buttons/destination_button_current_${locale}.png`}
+                  src={`/images/buttons/menu/destinations_button_hover_${locale}.png`}
                   alt="Destinations"
-                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain"
+                  className="w-full h-auto"
                 />
               </Box>
             ) : (
-              <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200">
+              <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200 col-span-2">
                 <Box
                   component="img"
-                  src={`/images/buttons/destination_button${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/menu/destinations_button_${locale}.png`}
                   alt="Destinations"
-                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain group-hover:hidden"
+                  className="w-full h-auto group-hover:hidden"
                 />
                 <Box
                   component="img"
-                  src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/menu/destinations_button_hover_${locale}.png`}
                   alt="Destinations"
-                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain hidden group-hover:block"
+                  className="w-full h-auto hidden group-hover:block"
                 />
               </Link>
             )}
+          </div>
 
+          {/* Desktop Second Row: Maps, Email, Language (3 buttons in 4-slot grid) */}
+          <div className="grid grid-cols-4 gap-4 mb-4 xs:hidden">
             {currentPage === 'maps' ? (
               <Box className="group">
                 <Box
                   component="img"
-                  src={`/images/buttons/maps_button_current_${locale}.png`}
+                  src={`/images/buttons/menu/maps_button_hover_${locale}.png`}
                   alt="Maps"
-                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain"
+                  className="w-full h-auto"
                 />
               </Box>
             ) : (
               <Link href="/maps" className="group hover:scale-105 transition-transform duration-200">
                 <Box
                   component="img"
-                  src={`/images/buttons/maps_button_${locale}.png`}
+                  src={`/images/buttons/menu/maps_button_${locale}.png`}
                   alt="Maps"
-                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain group-hover:hidden"
+                  className="w-full h-auto group-hover:hidden"
                 />
                 <Box
                   component="img"
-                  src={`/images/buttons/maps_button_hover_${locale}.png`}
+                  src={`/images/buttons/menu/maps_button_hover_${locale}.png`}
                   alt="Maps"
-                  className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain hidden group-hover:block"
+                  className="w-full h-auto hidden group-hover:block"
                 />
               </Link>
             )}
-          </div>
 
-          {/* Desktop Second Row: Email, Language */}
-          <div className="flex items-center space-x-4 mb-4 xs:hidden">
             <Box
               component="button"
               className="group hover:scale-105 transition-transform duration-200"
@@ -131,15 +131,15 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             >
               <Box
                 component="img"
-                src={`/images/buttons/email_subscription_button_${locale}.png`}
+                src={`/images/buttons/menu/email_subscription_button_${locale}.png`}
                 alt="Email Subscription"
-                className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain group-hover:hidden"
+                className="w-full h-auto group-hover:hidden"
               />
               <Box
                 component="img"
-                src={`/images/buttons/email_subscription_button_hover_${locale}.png`}
+                src={`/images/buttons/menu/email_subscription_button_hover_${locale}.png`}
                 alt="Email Subscription"
-                className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain hidden group-hover:block"
+                className="w-full h-auto hidden group-hover:block"
               />
             </Box>
 
@@ -150,103 +150,110 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             >
               <Box
                 component="img"
-                src={`/images/buttons/language_button_${locale}.png`}
+                src={`/images/buttons/menu/language_button_${locale}.png`}
                 alt="Language Toggle"
-                className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain group-hover:hidden"
+                className="w-full h-auto group-hover:hidden"
               />
               <Box
                 component="img"
-                src={`/images/buttons/language_button_${locale}_hover.png`}
+                src={`/images/buttons/menu/language_button_${locale}_hover.png`}
                 alt="Language Toggle"
-                className="h-20 lg:h-18 md:h-16 sm:h-14 w-auto object-contain hidden group-hover:block"
+                className="w-full h-auto hidden group-hover:block"
               />
             </Box>
+
+            {/* Empty 4th slot */}
+            <Box />
           </div>
 
-          {/* Mobile: 2-2-1 Grid Layout */}
-          <div className="hidden xs:grid xs:grid-cols-2 xs:gap-4 xs:w-full xs:justify-items-center xs:mb-4">
-            {/* Row 1, Col 1: Journeys */}
+          {/* Mobile: Row 1: Journeys (full width) */}
+          <div className="hidden xs:grid xs:grid-cols-1 xs:gap-4 xs:w-full xs:px-4 xs:mb-4">
             {currentPage === 'trips' ? (
               <Box className="group">
                 <Box
                   component="img"
-                  src={`/images/buttons/journey_button_current_${locale}.png`}
+                  src={`/images/buttons/menu/journeys_button_hover_${locale}.png`}
                   alt="Journeys"
-                  className="h-auto w-64"
+                  className="w-full h-auto"
                 />
               </Box>
             ) : (
               <Link href="/journeys" className="group hover:scale-105 transition-transform duration-200">
                 <Box
                   component="img"
-                  src={`/images/buttons/journey_button${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/menu/journeys_button_${locale}.png`}
                   alt="Journeys"
-                  className="h-auto w-64 group-hover:hidden"
+                  className="w-full h-auto group-hover:hidden"
                 />
                 <Box
                   component="img"
-                  src={`/images/buttons/journey_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/menu/journeys_button_hover_${locale}.png`}
                   alt="Journeys"
-                  className="h-auto w-64 hidden group-hover:block"
+                  className="w-full h-auto hidden group-hover:block"
                 />
               </Link>
             )}
+          </div>
 
-            {/* Row 1, Col 2: Destinations */}
+          {/* Mobile: Row 2: Destinations (full width) */}
+          <div className="hidden xs:grid xs:grid-cols-1 xs:gap-4 xs:w-full xs:px-4 xs:mb-4">
             {currentPage === 'destinations' ? (
               <Box className="group">
                 <Box
                   component="img"
-                  src={`/images/buttons/destination_button_current_${locale}.png`}
+                  src={`/images/buttons/menu/destinations_button_hover_${locale}.png`}
                   alt="Destinations"
-                  className="h-auto w-64"
+                  className="w-full h-auto"
                 />
               </Box>
             ) : (
               <Link href="/destinations" className="group hover:scale-105 transition-transform duration-200">
                 <Box
                   component="img"
-                  src={`/images/buttons/destination_button${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/menu/destinations_button_${locale}.png`}
                   alt="Destinations"
-                  className="h-auto w-64 group-hover:hidden"
+                  className="w-full h-auto group-hover:hidden"
                 />
                 <Box
                   component="img"
-                  src={`/images/buttons/destination_button_hover${locale === 'zh' ? '_zh' : ''}.png`}
+                  src={`/images/buttons/menu/destinations_button_hover_${locale}.png`}
                   alt="Destinations"
-                  className="h-auto w-64 hidden group-hover:block"
+                  className="w-full h-auto hidden group-hover:block"
                 />
               </Link>
             )}
+          </div>
 
-            {/* Row 2, Col 1: Maps */}
+          {/* Mobile: Rows 3-4: Maps, Email, Language in 2x2 grid */}
+          <div className="hidden xs:grid xs:grid-cols-2 xs:gap-4 xs:w-full xs:px-4 xs:mb-4">
+            {/* Maps */}
             {currentPage === 'maps' ? (
               <Box className="group">
                 <Box
                   component="img"
-                  src={`/images/buttons/maps_button_current_${locale}.png`}
+                  src={`/images/buttons/menu/maps_button_hover_${locale}.png`}
                   alt="Maps"
-                  className="h-auto w-64"
+                  className="w-full h-auto"
                 />
               </Box>
             ) : (
               <Link href="/maps" className="group hover:scale-105 transition-transform duration-200">
                 <Box
                   component="img"
-                  src={`/images/buttons/maps_button_${locale}.png`}
+                  src={`/images/buttons/menu/maps_button_${locale}.png`}
                   alt="Maps"
-                  className="h-auto w-64 group-hover:hidden"
+                  className="w-full h-auto group-hover:hidden"
                 />
                 <Box
                   component="img"
-                  src={`/images/buttons/maps_button_hover_${locale}.png`}
+                  src={`/images/buttons/menu/maps_button_hover_${locale}.png`}
                   alt="Maps"
-                  className="h-auto w-64 hidden group-hover:block"
+                  className="w-full h-auto hidden group-hover:block"
                 />
               </Link>
             )}
 
-            {/* Row 2, Col 2: Email Subscription */}
+            {/* Email Subscription */}
             <Box
               component="button"
               className="group hover:scale-105 transition-transform duration-200"
@@ -254,21 +261,19 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             >
               <Box
                 component="img"
-                src={`/images/buttons/email_subscription_button_${locale}.png`}
+                src={`/images/buttons/menu/email_subscription_button_${locale}.png`}
                 alt="Email Subscription"
-                className="h-auto w-64 group-hover:hidden"
+                className="w-full h-auto group-hover:hidden"
               />
               <Box
                 component="img"
-                src={`/images/buttons/email_subscription_button_hover_${locale}.png`}
+                src={`/images/buttons/menu/email_subscription_button_hover_${locale}.png`}
                 alt="Email Subscription"
-                className="h-auto w-64 hidden group-hover:block"
+                className="w-full h-auto hidden group-hover:block"
               />
             </Box>
-          </div>
 
-          {/* Mobile: Row 3: Language Toggle (same size as grid items) */}
-          <div className="hidden xs:grid xs:grid-cols-2 xs:gap-4 xs:w-full xs:justify-items-center xs:mb-4">
+            {/* Language Toggle */}
             <Box
               component="button"
               className="group hover:scale-105 transition-transform duration-200"
@@ -276,17 +281,20 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             >
               <Box
                 component="img"
-                src={`/images/buttons/language_button_${locale}.png`}
+                src={`/images/buttons/menu/language_button_${locale}.png`}
                 alt="Language Toggle"
-                className="h-auto w-64 group-hover:hidden"
+                className="w-full h-auto group-hover:hidden"
               />
               <Box
                 component="img"
-                src={`/images/buttons/language_button_${locale}_hover.png`}
+                src={`/images/buttons/menu/language_button_${locale}_hover.png`}
                 alt="Language Toggle"
-                className="h-auto w-64 hidden group-hover:block"
+                className="w-full h-auto hidden group-hover:block"
               />
             </Box>
+
+            {/* Empty 4th slot */}
+            <Box />
           </div>
           {/* Copyright Text */}
           <Box component="p" className="text-gray-400 text-center xs:text-xs">

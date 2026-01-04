@@ -139,4 +139,10 @@ export const zh: Translations = {
     alreadySubscribedMessage: '此邮箱已订阅过接收更新邮件。',
     okButton: '好的',
   },
+
+  // Fun Facts
+  funFacts: {
+    title: '顺便一提...',
+    description: '我去过了美国的{count}个州（以及华盛顿哥伦比亚特区）。',
+  },
 }

@@ -137,6 +137,12 @@ export const en = {
     alreadySubscribedMessage: 'This email is already subscribed to receive updates.',
     okButton: 'OK',
   },
+
+  // Fun Facts
+  funFacts: {
+    title: 'Fun Facts',
+    description: 'I have visited {count} US states (and Washington DC).',
+  },
 }
 
 export type Translations = typeof en
