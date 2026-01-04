@@ -484,9 +484,13 @@ export default function Home() {
           <Container className="block md:hidden w-full relative mt-32 -mb-16" sx={{ zIndex: 5 }}>
             <Box
               component="img"
-              src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_800/joeyhoujournal/homepage/homepage_image_3"
+              src="/images/homepage/homepage_image_3.png"
               alt="Train Journey"
               className="w-full h-auto object-cover"
+              sx={{
+                transform: 'scale(1.2) translateX(-5%) translateY(-15%)',
+                transformOrigin: 'center'
+              }}
             />
           </Container>
 
@@ -677,9 +681,13 @@ export default function Home() {
             <Container className="hidden md:block absolute -top-80 left-0" sx={{ zIndex: 35 }}>
               <Box
                 component="img"
-                src="https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_800/joeyhoujournal/homepage/homepage_image_3"
+                src="/images/homepage/homepage_image_3.png"
                 alt="Train Journey"
                 className="h-[32rem] w-auto object-cover"
+                sx={{
+                  transform: 'scale(1.2) translateX(-5%) translateY(-20%)',
+                  transformOrigin: 'bottom left'
+                }}
               />
             </Container>
 
