@@ -155,12 +155,6 @@ export default function InstagramImportPage() {
     setError(null)
 
     try {
-      // Fetch all Instagram posts with pagination
-      let allPosts: InstagramPost[] = []
-      let nextCursor: string | undefined = undefined
-      let pageCount = 0
-      const maxPages = 60 // Safety limit to prevent infinite loops (60 pages × 25 posts = 1500 posts max)
-
       // Fetch destinations once
       const destinationsResponse = await fetch('/api/admin/destinations')
       const destinationsData = await destinationsResponse.json()
@@ -181,34 +175,22 @@ export default function InstagramImportPage() {
         }
       })
 
-      // Fetch all pages of Instagram posts
-      do {
-        pageCount++
-        const url = nextCursor
-          ? `/api/admin/instagram/posts?limit=25&after=${nextCursor}`
-          : '/api/admin/instagram/posts?limit=25'
+      // Fetch only the most recent 25 Instagram posts
+      console.log('Fetching the most recent 25 Instagram posts...')
+      const postsResponse = await fetch('/api/admin/instagram/posts?limit=25')
 
-        console.log(`Fetching Instagram posts page ${pageCount}...`)
-        const postsResponse = await fetch(url)
+      if (!postsResponse.ok) {
+        const data = await postsResponse.json()
+        throw new Error(data.error || 'Failed to load posts')
+      }
 
-        if (!postsResponse.ok) {
-          const data = await postsResponse.json()
-          throw new Error(data.error || 'Failed to load posts')
-        }
+      const postsData = await postsResponse.json()
+      const posts = postsData.posts
 
-        const postsData = await postsResponse.json()
-        allPosts = [...allPosts, ...postsData.posts]
-
-        // Check if there's a next page
-        nextCursor = postsData.paging?.next ? postsData.paging.cursors.after : undefined
-
-        console.log(`Loaded ${postsData.posts.length} posts (total: ${allPosts.length})`)
-      } while (nextCursor && pageCount < maxPages)
-
-      console.log(`Finished loading ${allPosts.length} total posts from ${pageCount} pages`)
+      console.log(`Loaded ${posts.length} posts`)
 
       setImportedPostIds(imported)
-      setPosts(allPosts)
+      setPosts(posts)
       setIsConnected(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load posts')
@@ -792,7 +774,7 @@ export default function InstagramImportPage() {
           <TablePagination
             rowsPerPageOptions={[5, 10, 25, 50]}
             component="div"
-            count={posts.length}
+            count={filteredPosts.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}
