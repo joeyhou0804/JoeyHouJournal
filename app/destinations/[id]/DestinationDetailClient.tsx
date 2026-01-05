@@ -820,7 +820,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             </Box>
 
             {/* Station Info Below Image */}
-            <Box sx={{ padding: '2rem', display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: { xs: 'flex-start', sm: 'center' }, alignItems: { xs: 'flex-start', sm: 'center' }, gap: { xs: '1rem', sm: '3rem' } }}>
+            <Box sx={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '1rem' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <MapPin style={{ color: '#F6F6F6' }} size={24} />
                 <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
