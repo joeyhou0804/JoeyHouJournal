@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { Destination } from 'src/data/destinations'
 import Box from '@mui/material/Box'
-import { Calendar, Train, ArrowLeft, MapPin } from 'lucide-react'
+import { Calendar, Train, MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Fuse from 'fuse.js'
 import Footer from 'src/components/Footer'
@@ -344,20 +344,6 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
         onNext={nextImage}
         alt={station.name}
       />
-
-      {/* Back Button */}
-      <Box
-        component={Link}
-        href="/destinations"
-        className="fixed top-8 left-4 xs:top-28 xs:right-4 xs:left-auto z-50 p-2 hover:scale-105 transition-all duration-150"
-      >
-        <Box
-          component="img"
-          src={`/images/icons/back_${locale}.png`}
-          alt={tr.backToDestinations}
-          className="w-16 h-16"
-        />
-      </Box>
 
       {/* Header Banner */}
       <Box sx={{ width: '100%' }}>

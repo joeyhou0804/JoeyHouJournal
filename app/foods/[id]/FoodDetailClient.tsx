@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect, useMemo } from 'react'
 import Box from '@mui/material/Box'
-import { UtensilsCrossed, ArrowLeft, MapPin, Store } from 'lucide-react'
+import { UtensilsCrossed, MapPin, Store } from 'lucide-react'
 import dynamic from 'next/dynamic'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
@@ -193,20 +193,6 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
         onClose={() => setIsViewHintsDrawerOpen(false)}
         variant={viewHintsVariant}
       />
-
-      {/* Back Button */}
-      <Box
-        component={Link}
-        href="/foods"
-        className="fixed top-8 left-4 xs:top-28 xs:right-4 xs:left-auto z-50 p-2 hover:scale-105 transition-all duration-150"
-      >
-        <Box
-          component="img"
-          src={`/images/icons/back_${locale}.png`}
-          alt={locale === 'zh' ? '返回美食列表' : 'Back to Foods'}
-          className="w-16 h-16"
-        />
-      </Box>
 
       {/* Header Banner */}
       <Box sx={{ width: '100%' }}>
