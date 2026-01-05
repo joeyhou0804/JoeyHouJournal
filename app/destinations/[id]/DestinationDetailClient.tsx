@@ -6,6 +6,7 @@ import { Destination } from 'src/data/destinations'
 import Box from '@mui/material/Box'
 import { Calendar, Train, ArrowLeft, MapPin } from 'lucide-react'
 import dynamic from 'next/dynamic'
+import Fuse from 'fuse.js'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
@@ -49,6 +50,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [isLoadingDestinations, setIsLoadingDestinations] = useState(true)
   const [foods, setFoods] = useState<any[]>([])
+  const [foodSearchQuery, setFoodSearchQuery] = useState('')
   const tabContainerRef = useRef<HTMLDivElement>(null)
 
   // Detect xs screen size
@@ -211,6 +213,29 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
     }
   }
 
+  // Search functionality for foods with fuzzy matching
+  const searchFilteredFoods = useMemo(() => {
+    if (!foodSearchQuery.trim()) return foods
+
+    const fuse = new Fuse(foods, {
+      keys: [
+        { name: 'name', weight: 3 },
+        { name: 'nameCN', weight: 3 },
+        { name: 'restaurantName', weight: 2 },
+        { name: 'cuisineStyle', weight: 1 }
+      ],
+      threshold: 0.4,
+      distance: 100,
+      minMatchCharLength: 2,
+      ignoreLocation: true,
+      includeScore: true,
+      findAllMatches: true
+    })
+
+    const results = fuse.search(foodSearchQuery)
+    return results.map(result => result.item)
+  }, [foods, foodSearchQuery])
+
   // Memoize places array to prevent map re-rendering (for station-only map)
   const mapPlaces = useMemo(() => {
     return station ? [station] : []
@@ -292,6 +317,11 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
         backgroundSize: '100% auto, 400px auto',
       }}
     >
+      <style jsx>{`
+        .food-search-input::placeholder {
+          color: #F6F6F6;
+        }
+      `}</style>
       <NavigationMenu
         isMenuOpen={isMenuOpen}
         isMenuButtonVisible={isMenuButtonVisible}
@@ -881,7 +911,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
           component="section"
           className="w-full py-24 xs:py-12"
           sx={{
-            backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
+            backgroundImage: 'url(/images/backgrounds/map_background.png)',
             backgroundRepeat: 'repeat',
             backgroundSize: '300px auto',
           }}
@@ -951,6 +981,156 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             </Box>
           </div>
         </Box>
+
+        {/* Related Foods List Section */}
+        {foods.length > 0 && (
+          <Box
+            component="section"
+            className="w-full pt-24 pb-48 xs:py-12"
+            sx={{
+              backgroundImage: 'url(/images/backgrounds/pattern-food-orange-2x.png)',
+              backgroundRepeat: 'repeat',
+              backgroundSize: '300px auto',
+            }}
+          >
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+                <MixedText
+                  text={locale === 'zh' ? '美食列表' : 'List of Foods'}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize={{ xs: '40px', sm: '64px' }}
+                  color="#F6F6F6"
+                  component="h2"
+                  sx={{
+                    textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                    margin: 0,
+                    marginBottom: '16px'
+                  }}
+                />
+                <MixedText
+                  text={tr.clickToViewDetails}
+                  chineseFont="MarioFontChinese, sans-serif"
+                  englishFont="MarioFont, sans-serif"
+                  fontSize={{ xs: '16px', sm: '28px' }}
+                  color="#F6F6F6"
+                  component="p"
+                  sx={{ margin: 0 }}
+                />
+              </div>
+
+              {/* Search Bar - Desktop */}
+              <div className="flex justify-center items-center mb-48 xs:hidden">
+                <div
+                  className="w-full max-w-2xl flex justify-center items-center"
+                  style={{
+                    backgroundImage: 'url(/images/backgrounds/search_background.png)',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    padding: '1.5rem 1rem',
+                    height: '110px'
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={foodSearchQuery}
+                    onChange={(e) => setFoodSearchQuery(e.target.value)}
+                    placeholder={locale === 'zh' ? '搜索美食...' : 'Search foods...'}
+                    className="food-search-input"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 0.75rem 0.75rem 6rem',
+                      fontSize: '24px',
+                      fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
+                      borderRadius: '0.5rem',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      color: '#F6F6F6',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Search Bar - Mobile */}
+              <div className="hidden xs:flex justify-center items-center mb-12">
+                <div
+                  className="w-full max-w-2xl flex justify-center items-center"
+                  style={{
+                    backgroundImage: 'url(/images/backgrounds/search_background_short.png)',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    padding: '1rem'
+                  }}
+                >
+                  <input
+                    type="text"
+                    value={foodSearchQuery}
+                    onChange={(e) => setFoodSearchQuery(e.target.value)}
+                    placeholder={locale === 'zh' ? '搜索美食...' : 'Search foods...'}
+                    className="food-search-input"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 0.75rem 0.75rem 3rem',
+                      fontSize: '24px',
+                      fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
+                      borderRadius: '0.5rem',
+                      border: 'none',
+                      backgroundColor: 'transparent',
+                      color: '#F6F6F6',
+                      outline: 'none'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Empty State - When no results */}
+              {searchFilteredFoods.length === 0 && (
+                <div className="flex flex-col items-center justify-center py-24">
+                  <MixedText
+                    text={locale === 'zh' ? '哎呀...' : 'Oh no...'}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize={{ xs: '32px', sm: '48px' }}
+                    color="#F6F6F6"
+                    component="h2"
+                    sx={{
+                      textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                      margin: 0,
+                      marginBottom: '16px',
+                      textAlign: 'center'
+                    }}
+                  />
+                  <MixedText
+                    text={locale === 'zh' ? '没有符合条件的结果。' : 'There is no matching result.'}
+                    chineseFont="MarioFontChinese, sans-serif"
+                    englishFont="MarioFont, sans-serif"
+                    fontSize={{ xs: '16px', sm: '24px' }}
+                    color="#F6F6F6"
+                    component="p"
+                    sx={{ margin: 0, textAlign: 'center' }}
+                  />
+                </div>
+              )}
+
+              {/* Food Cards */}
+              {searchFilteredFoods.length > 0 && (
+                <div className="grid grid-cols-1 gap-48 xs:gap-12">
+                  {searchFilteredFoods.map((food: any, index: number) => (
+                    <DestinationCard
+                      key={food.id}
+                      station={convertFoodToStation(food)}
+                      index={index}
+                      linkPrefix="foods"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+          </Box>
+        )}
 
         <Footer />
       </div>
