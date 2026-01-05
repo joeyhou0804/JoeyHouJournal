@@ -325,7 +325,7 @@ export default function FoodsPage() {
       <Box
         component="section"
         ref={listSectionRef}
-        className="w-full py-24 xs:py-12"
+        className="w-full pt-24 pb-48 xs:py-12"
         sx={{
           backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
           backgroundRepeat: 'repeat-y, repeat',
