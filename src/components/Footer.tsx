@@ -7,7 +7,7 @@ import { useTranslation } from 'src/hooks/useTranslation'
 import EmailSubscriptionDrawer from './EmailSubscriptionDrawer'
 
 interface FooterProps {
-  currentPage?: 'home' | 'trips' | 'destinations' | 'maps'
+  currentPage?: 'home' | 'trips' | 'destinations' | 'foods' | 'maps'
 }
 
 export default function Footer({ currentPage }: FooterProps = {}) {
@@ -96,7 +96,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             )}
           </div>
 
-          {/* Desktop Second Row: Maps, Email, Language (3 buttons in 4-slot grid) */}
+          {/* Desktop Second Row: Maps, Foods, Email, Language */}
           <div className="grid grid-cols-4 gap-4 mb-4 xs:hidden">
             {currentPage === 'maps' ? (
               <Box className="group">
@@ -119,6 +119,32 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                   component="img"
                   src={`/images/buttons/menu/maps_button_hover_${locale}.png`}
                   alt="Maps"
+                  className="w-full h-auto hidden group-hover:block"
+                />
+              </Link>
+            )}
+
+            {currentPage === 'foods' ? (
+              <Box className="group">
+                <Box
+                  component="img"
+                  src={`/images/buttons/menu/foods_button_hover_${locale}.png`}
+                  alt="Foods"
+                  className="w-full h-auto"
+                />
+              </Box>
+            ) : (
+              <Link href="/foods" className="group hover:scale-105 transition-transform duration-200">
+                <Box
+                  component="img"
+                  src={`/images/buttons/menu/foods_button_${locale}.png`}
+                  alt="Foods"
+                  className="w-full h-auto group-hover:hidden"
+                />
+                <Box
+                  component="img"
+                  src={`/images/buttons/menu/foods_button_hover_${locale}.png`}
+                  alt="Foods"
                   className="w-full h-auto hidden group-hover:block"
                 />
               </Link>
@@ -161,9 +187,6 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                 className="w-full h-auto hidden group-hover:block"
               />
             </Box>
-
-            {/* Empty 4th slot */}
-            <Box />
           </div>
 
           {/* Mobile: Row 1: Journeys (full width) */}
@@ -224,7 +247,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             )}
           </div>
 
-          {/* Mobile: Rows 3-4: Maps, Email, Language in 2x2 grid */}
+          {/* Mobile: Rows 3-4: Maps, Foods, Email, Language in 2x2 grid */}
           <div className="hidden xs:grid xs:grid-cols-2 xs:gap-4 xs:w-full xs:px-4 xs:mb-4">
             {/* Maps */}
             {currentPage === 'maps' ? (
@@ -248,6 +271,33 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                   component="img"
                   src={`/images/buttons/menu/maps_button_hover_${locale}.png`}
                   alt="Maps"
+                  className="w-full h-auto hidden group-hover:block"
+                />
+              </Link>
+            )}
+
+            {/* Foods */}
+            {currentPage === 'foods' ? (
+              <Box className="group">
+                <Box
+                  component="img"
+                  src={`/images/buttons/menu/foods_button_hover_${locale}.png`}
+                  alt="Foods"
+                  className="w-full h-auto"
+                />
+              </Box>
+            ) : (
+              <Link href="/foods" className="group hover:scale-105 transition-transform duration-200">
+                <Box
+                  component="img"
+                  src={`/images/buttons/menu/foods_button_${locale}.png`}
+                  alt="Foods"
+                  className="w-full h-auto group-hover:hidden"
+                />
+                <Box
+                  component="img"
+                  src={`/images/buttons/menu/foods_button_hover_${locale}.png`}
+                  alt="Foods"
                   className="w-full h-auto hidden group-hover:block"
                 />
               </Link>
@@ -292,9 +342,6 @@ export default function Footer({ currentPage }: FooterProps = {}) {
                 className="w-full h-auto hidden group-hover:block"
               />
             </Box>
-
-            {/* Empty 4th slot */}
-            <Box />
           </div>
           {/* Copyright Text */}
           <Box component="p" className="text-gray-400 text-center xs:text-xs">

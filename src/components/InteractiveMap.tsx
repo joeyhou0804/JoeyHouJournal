@@ -21,14 +21,17 @@ interface Place {
   id: string
   name: string
   nameCN?: string
-  date: string
+  date?: string
   journeyId?: string | null
-  journeyName: string
+  journeyName?: string
   journeyNameCN?: string
-  state: string
+  state?: string
   lat: number
   lng: number
   images: string[]
+  // Optional fields for foods
+  restaurantName?: string
+  cuisineStyle?: string
 }
 
 interface RouteSegment {
@@ -57,9 +60,13 @@ interface InteractiveMapProps {
   showHomeMarker?: boolean // Whether to show home marker (default: true for journey maps, false for destinations list)
   currentDestinationId?: string // ID of the current destination being viewed (for highlighting on detail pages)
   drawSegmentsIndependently?: boolean // Draw each segment independently without grouping (for multi-journey maps)
+  initialCenter?: { lat: number; lng: number } // Initial map center (overrides automatic calculation)
+  initialZoom?: number // Initial zoom level (overrides automatic calculation)
+  allowViewDetailsForCurrent?: boolean // Allow View Details button for current destination (for food detail pages)
+  maxZoom?: number // Maximum zoom level (default: 10 for city-level view, use 18 for street-level view)
 }
 
-export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate, showHomeMarker, currentDestinationId, drawSegmentsIndependently = false }: InteractiveMapProps) {
+export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate, showHomeMarker, currentDestinationId, drawSegmentsIndependently = false, initialCenter, initialZoom, allowViewDetailsForCurrent = false, maxZoom = 10 }: InteractiveMapProps) {
   const { locale, tr } = useTranslation()
   const mapRef = useRef<L.Map | null>(null)
   const mapContainerRef = useRef<HTMLDivElement>(null)
@@ -97,6 +104,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
 
     // Helper function to generate mixed font HTML
     const getMixedFontHTML = (text: string, fontSize: string = '20px') => {
+      if (!text) return ''
       const chineseRegex = /[\u4e00-\u9fa5]/
       const segments: { text: string; isChinese: boolean }[] = []
 
@@ -119,22 +127,25 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     // Filter places that have coordinates
     const placesWithCoords = places.filter(p => p.lat && p.lng)
 
-    // Calculate center point (fallback to US center)
-    const center: [number, number] = placesWithCoords.length > 0
+    // Calculate center point (fallback to US center, or use provided initialCenter)
+    const center: [number, number] = initialCenter
+      ? [initialCenter.lat, initialCenter.lng]
+      : placesWithCoords.length > 0
       ? [
           placesWithCoords.reduce((sum, p) => sum + p.lat, 0) / placesWithCoords.length,
           placesWithCoords.reduce((sum, p) => sum + p.lng, 0) / placesWithCoords.length
         ]
       : [39.8283, -98.5795] // Geographic center of USA
 
-    // Determine initial zoom level based on screen size and view type
+    // Determine initial zoom level based on screen size and view type (or use provided initialZoom)
     const isSmallScreen = typeof window !== 'undefined' && window.innerWidth < 640
-    const initialZoom = (isDetailView && isSmallScreen) ? 6 : 5
+    const calculatedZoom = (isDetailView && isSmallScreen) ? 6 : 5
+    const mapZoom = initialZoom !== undefined ? initialZoom : calculatedZoom
 
     // Initialize map
     const map = L.map(mapContainerRef.current, {
       center: center,
-      zoom: initialZoom,
+      zoom: mapZoom,
       zoomControl: true
     })
     mapRef.current = map
@@ -143,7 +154,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
       minZoom: 4,
-      maxZoom: 10,
+      maxZoom: maxZoom,
     }).addTo(map)
 
     // Create custom orange marker icon (single visit)
@@ -698,7 +709,10 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           const place = places[index]
           const isFirst = index === 0
           const isLast = index === places.length - 1
-          const displayName = locale === 'zh' && place.nameCN ? place.nameCN : place.name
+          // For foods, display restaurant name; for destinations, display place name
+          const displayName = place.restaurantName
+            ? (place.journeyName || place.restaurantName)
+            : (locale === 'zh' && place.nameCN ? place.nameCN : place.name)
           const displayState = tr.states[place.state] || place.state
 
           return `
@@ -718,11 +732,15 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                     <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(displayName, '20px')}</h3>
                   </div>
                   <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
-                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
-                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                    ${place.restaurantName ? `
+                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin: 0; white-space: pre-line;">${place.date}</p>
+                    ` : `
+                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
+                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                    `}
                   </div>
                 </div>
-                ${!isDetailView && place.id !== currentDestinationId ? `
+                ${!isDetailView && !place.restaurantName && (allowViewDetailsForCurrent || place.id !== currentDestinationId) ? `
                 <div style="text-align: center; margin-top: 4px;">
                   <a
                     href="/destinations/${place.id}"
@@ -841,7 +859,10 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       } else if (!isMobile) {
         // Single visit popup (original design) - desktop only
         const place = places[0]
-        const displayName = locale === 'zh' && place.nameCN ? place.nameCN : place.name
+        // For foods, display restaurant name; for destinations, display place name
+        const displayName = place.restaurantName
+          ? (place.journeyName || place.restaurantName)
+          : (locale === 'zh' && place.nameCN ? place.nameCN : place.name)
         const displayState = tr.states[place.state] || place.state
         const popupContent = `
           <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
@@ -860,11 +881,15 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(displayName, '20px')}</h3>
                 </div>
                 <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
-                  <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
-                  <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                  ${place.restaurantName ? `
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin: 0; white-space: pre-line;">${place.date}</p>
+                  ` : `
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                  `}
                 </div>
               </div>
-              ${!isDetailView && place.id !== currentDestinationId ? `
+              ${!isDetailView && !place.restaurantName && (allowViewDetailsForCurrent || place.id !== currentDestinationId) ? `
               <div style="text-align: center; margin-top: 4px;">
                 <a
                   href="/destinations/${place.id}"
@@ -889,8 +914,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       }
     })
 
-    // Fit bounds to show all markers
-    if (placesWithCoords.length > 0) {
+    // Fit bounds to show all markers (skip if initialCenter and initialZoom are both provided)
+    if (placesWithCoords.length > 0 && !(initialCenter && initialZoom !== undefined)) {
       if (isDetailView && placesWithCoords.length === 1) {
         // For detail view with single location
         if (isSmallScreen) {
@@ -1014,6 +1039,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         places={drawerPlaces}
         isDetailView={isDetailView}
         currentDestinationId={currentDestinationId}
+        allowViewDetailsForCurrent={allowViewDetailsForCurrent}
       />
     </>
   )

@@ -307,6 +307,82 @@ export async function deleteDestination(id: string): Promise<boolean> {
   return true
 }
 
+// Food operations
+export interface Food {
+  id: string
+  destination_id: string
+  name: string
+  name_cn: string | null
+  restaurant_name: string
+  restaurant_address: string | null
+  cuisine_style: string
+  image_url: string
+  coordinates: any // JSON {lat, lng}
+  created_at: Date
+  updated_at: Date
+}
+
+export async function getAllFoods(): Promise<Food[]> {
+  const { rows } = await sql<Food>`SELECT * FROM foods ORDER BY created_at DESC`
+  return rows
+}
+
+export async function getFoodById(id: string): Promise<Food | null> {
+  const { rows } = await sql<Food>`SELECT * FROM foods WHERE id = ${id}`
+  return rows[0] || null
+}
+
+export async function getFoodsByDestinationId(destinationId: string): Promise<Food[]> {
+  const { rows } = await sql<Food>`
+    SELECT * FROM foods
+    WHERE destination_id = ${destinationId}
+    ORDER BY created_at ASC
+  `
+  return rows
+}
+
+export async function createFood(food: Partial<Food>): Promise<Food> {
+  const { rows } = await sql<Food>`
+    INSERT INTO foods (
+      id, destination_id, name, name_cn,
+      restaurant_name, restaurant_address, cuisine_style, image_url, coordinates
+    ) VALUES (
+      ${food.id}, ${food.destination_id}, ${food.name}, ${food.name_cn},
+      ${food.restaurant_name}, ${food.restaurant_address}, ${food.cuisine_style},
+      ${food.image_url}, ${JSON.stringify(food.coordinates)}::jsonb
+    )
+    RETURNING *
+  `
+  return rows[0]
+}
+
+export async function updateFood(id: string, food: Partial<Food>): Promise<Food> {
+  const { rows } = await sql<Food>`
+    UPDATE foods SET
+      name = ${food.name},
+      name_cn = ${food.name_cn},
+      restaurant_name = ${food.restaurant_name},
+      restaurant_address = ${food.restaurant_address},
+      cuisine_style = ${food.cuisine_style},
+      image_url = ${food.image_url},
+      coordinates = ${JSON.stringify(food.coordinates)}::jsonb,
+      updated_at = NOW()
+    WHERE id = ${id}
+    RETURNING *
+  `
+  return rows[0]
+}
+
+export async function deleteFood(id: string): Promise<boolean> {
+  await sql`DELETE FROM foods WHERE id = ${id}`
+  return true
+}
+
+export async function deleteFoodsByDestinationId(destinationId: string): Promise<number> {
+  const result = await sql`DELETE FROM foods WHERE destination_id = ${destinationId}`
+  return result.rowCount || 0
+}
+
 // Instagram token operations
 export interface InstagramToken {
   id: number

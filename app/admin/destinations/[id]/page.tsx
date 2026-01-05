@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { Box, TextField, MenuItem, Drawer, Typography, Button, Alert } from '@mui/material'
 import { Delete as DeleteIcon } from '@mui/icons-material'
 import { generateChineseDestinationName } from 'lib/cityTranslations'
+import type { CuisineStyle } from '@/src/data/foods'
 
 interface DestinationFormData {
   id?: string
@@ -25,6 +26,18 @@ interface DestinationFormData {
   visitedByMyself: boolean
   visitedOnTrains: boolean
   stayedOvernight: boolean
+}
+
+interface FoodFormData {
+  id?: string
+  name: string
+  nameCN: string
+  restaurantName: string
+  restaurantAddress: string
+  cuisineStyle: CuisineStyle
+  imageUrl: string
+  lat: number
+  lng: number
 }
 
 export default function DestinationFormPage() {
@@ -50,6 +63,11 @@ export default function DestinationFormPage() {
   const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [journeys, setJourneys] = useState<any[]>([])
+  const [foods, setFoods] = useState<FoodFormData[]>([])
+  const [editingFoodIndex, setEditingFoodIndex] = useState<number | null>(null)
+  const [foodDrawerOpen, setFoodDrawerOpen] = useState(false)
+  const [currentFood, setCurrentFood] = useState<Partial<FoodFormData>>({})
+  const [geocodingFoodError, setGeocodingFoodError] = useState<string | null>(null)
   const images = watch('images') || []
   const cityName = watch('name')
   const destinationName = watch('name')
@@ -129,6 +147,17 @@ export default function DestinationFormPage() {
         // Ensure lat/lng are set from the destination data
         if (destination.lat !== undefined) setValue('lat', destination.lat)
         if (destination.lng !== undefined) setValue('lng', destination.lng)
+
+        // Fetch foods for this destination
+        try {
+          const foodsResponse = await fetch(`/api/admin/foods?destinationId=${id}`)
+          if (foodsResponse.ok) {
+            const foodsData = await foodsResponse.json()
+            setFoods(foodsData)
+          }
+        } catch (error) {
+          console.error('Failed to fetch foods:', error)
+        }
       } else {
         console.error('Destination not found:', id)
       }
@@ -266,11 +295,41 @@ export default function DestinationFormPage() {
         body: JSON.stringify(formattedData)
       })
 
-      if (response.ok) {
-        router.push('/admin/destinations')
-      } else {
+      if (!response.ok) {
         alert('Failed to save destination')
+        return
       }
+
+      const savedDestination = await response.json()
+      const destinationId = savedDestination.id || data.id
+
+      // Save foods
+      // First, delete all existing foods for this destination
+      if (!isNew) {
+        const existingFoodsResponse = await fetch(`/api/admin/foods?destinationId=${destinationId}`)
+        if (existingFoodsResponse.ok) {
+          const existingFoods = await existingFoodsResponse.json()
+          for (const food of existingFoods) {
+            await fetch(`/api/admin/foods?id=${food.id}`, { method: 'DELETE' })
+          }
+        }
+      }
+
+      // Then create all foods
+      for (const food of foods) {
+        const foodData = {
+          ...food,
+          destinationId: destinationId
+        }
+
+        await fetch('/api/admin/foods', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(foodData)
+        })
+      }
+
+      router.push('/admin/destinations')
     } catch (error) {
       alert('Error saving destination')
     } finally {
@@ -963,6 +1022,172 @@ export default function DestinationFormPage() {
           )}
         </Box>
 
+        {/* Foods Section */}
+        <Box sx={{ marginTop: '3rem' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <Typography sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', fontWeight: 'bold' }}>
+              Foods & Restaurants
+            </Typography>
+            <button
+              type="button"
+              onClick={() => {
+                setCurrentFood({
+                  cuisineStyle: 'East Asian',
+                  lat: watch('lat'),
+                  lng: watch('lng')
+                })
+                setEditingFoodIndex(null)
+                setFoodDrawerOpen(true)
+              }}
+              style={{
+                padding: '0.75rem 1.5rem',
+                fontSize: '16px',
+                fontFamily: 'MarioFont, sans-serif',
+                backgroundColor: '#FFD701',
+                color: '#373737',
+                border: '2px solid #373737',
+                borderRadius: '0.5rem',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              + Add Food
+            </button>
+          </Box>
+
+          {foods.length === 0 ? (
+            <Box sx={{
+              padding: '2rem',
+              backgroundColor: '#f5f5f5',
+              borderRadius: '0.5rem',
+              border: '2px dashed #ccc',
+              textAlign: 'center'
+            }}>
+              <Typography sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
+                No foods added yet. Click "Add Food" to get started.
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+              {foods.map((food, index) => (
+                <Box
+                  key={food.id || index}
+                  sx={{
+                    backgroundColor: 'white',
+                    border: '2px solid #373737',
+                    borderRadius: '0.5rem',
+                    overflow: 'hidden',
+                    transition: 'transform 0.2s',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                    }
+                  }}
+                >
+                  <Box sx={{ position: 'relative', paddingBottom: '66.67%', backgroundColor: '#f5f5f5' }}>
+                    <img
+                      src={food.imageUrl}
+                      alt={food.name}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                      }}
+                    />
+                    <Box sx={{
+                      position: 'absolute',
+                      top: '0.5rem',
+                      right: '0.5rem',
+                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                      color: 'white',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      fontSize: '12px',
+                      fontFamily: 'MarioFont, sans-serif'
+                    }}>
+                      {food.cuisineStyle}
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ padding: '1rem' }}>
+                    <Typography sx={{
+                      fontFamily: 'MarioFontTitle, sans-serif',
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                      marginBottom: '0.25rem'
+                    }}>
+                      {food.name}
+                      {food.nameCN && (
+                        <Typography component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', marginLeft: '0.5rem' }}>
+                          ({food.nameCN})
+                        </Typography>
+                      )}
+                    </Typography>
+
+                    <Typography sx={{
+                      fontFamily: 'MarioFont, sans-serif',
+                      fontSize: '14px',
+                      color: '#666',
+                      marginBottom: '0.5rem'
+                    }}>
+                      {food.restaurantName}
+                    </Typography>
+
+                    <Box sx={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCurrentFood(food)
+                          setEditingFoodIndex(index)
+                          setFoodDrawerOpen(true)
+                        }}
+                        style={{
+                          flex: 1,
+                          padding: '0.5rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          backgroundColor: 'white',
+                          color: '#373737',
+                          border: '2px solid #373737',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm('Are you sure you want to delete this food?')) {
+                            const updatedFoods = foods.filter((_, i) => i !== index)
+                            setFoods(updatedFoods)
+                          }
+                        }}
+                        style={{
+                          flex: 1,
+                          padding: '0.5rem',
+                          fontSize: '14px',
+                          fontFamily: 'MarioFont, sans-serif',
+                          backgroundColor: '#d32f2f',
+                          color: 'white',
+                          border: '2px solid #d32f2f',
+                          borderRadius: '0.25rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </Box>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Box>
+
         {/* Form Actions */}
         <Box sx={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
           <ActionButtons insideForm={true} />
@@ -1074,6 +1299,325 @@ export default function DestinationFormPage() {
             >
               {deleting ? 'Deleting...' : 'Confirm Delete'}
             </Button>
+          </Box>
+        </Box>
+      </Drawer>
+
+      {/* Food Edit/Create Drawer */}
+      <Drawer
+        anchor="right"
+        open={foodDrawerOpen}
+        onClose={() => {
+          setFoodDrawerOpen(false)
+          setCurrentFood({})
+          setEditingFoodIndex(null)
+          setGeocodingFoodError(null)
+        }}
+      >
+        <Box sx={{ width: { xs: '100vw', sm: 500 }, padding: 3 }}>
+          <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 3 }}>
+            {editingFoodIndex !== null ? 'Edit Food' : 'Add Food'}
+          </Typography>
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {/* Image Selection */}
+            <Box>
+              <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', mb: 1 }}>
+                Select Image *
+              </Typography>
+              {images.length === 0 ? (
+                <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#999' }}>
+                  Please add destination images first
+                </Typography>
+              ) : (
+                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '0.5rem' }}>
+                  {images.map((url, idx) => (
+                    <Box
+                      key={idx}
+                      onClick={() => setCurrentFood({ ...currentFood, imageUrl: url })}
+                      sx={{
+                        position: 'relative',
+                        paddingBottom: '100%',
+                        cursor: 'pointer',
+                        border: currentFood.imageUrl === url ? '3px solid #FFD701' : '2px solid #e0e0e0',
+                        borderRadius: '0.5rem',
+                        overflow: 'hidden',
+                        transition: 'all 0.2s',
+                        '&:hover': {
+                          borderColor: '#FFD701',
+                          transform: 'scale(1.05)'
+                        }
+                      }}
+                    >
+                      <img
+                        src={url}
+                        alt={`Option ${idx + 1}`}
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover'
+                        }}
+                      />
+                      {currentFood.imageUrl === url && (
+                        <Box sx={{
+                          position: 'absolute',
+                          top: '0.25rem',
+                          right: '0.25rem',
+                          backgroundColor: '#FFD701',
+                          color: '#373737',
+                          borderRadius: '50%',
+                          width: '24px',
+                          height: '24px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontWeight: 'bold'
+                        }}>
+                          ✓
+                        </Box>
+                      )}
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+
+            {/* Food Name (English) */}
+            <TextField
+              label="Food Name (English)"
+              value={currentFood.name || ''}
+              onChange={(e) => setCurrentFood({ ...currentFood, name: e.target.value })}
+              required
+              fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontFamily: 'MarioFont, sans-serif',
+                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
+                },
+                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
+              }}
+            />
+
+            {/* Food Name (Chinese) */}
+            <TextField
+              label="Food Name (Chinese)"
+              value={currentFood.nameCN || ''}
+              onChange={(e) => setCurrentFood({ ...currentFood, nameCN: e.target.value })}
+              fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontFamily: 'MarioFont, sans-serif',
+                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
+                },
+                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
+              }}
+            />
+
+            {/* Restaurant Name */}
+            <TextField
+              label="Restaurant Name"
+              value={currentFood.restaurantName || ''}
+              onChange={(e) => setCurrentFood({ ...currentFood, restaurantName: e.target.value })}
+              required
+              fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontFamily: 'MarioFont, sans-serif',
+                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
+                },
+                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
+              }}
+            />
+
+            {/* Cuisine Style */}
+            <TextField
+              select
+              label="Cuisine Style"
+              value={currentFood.cuisineStyle || 'East Asian'}
+              onChange={(e) => setCurrentFood({ ...currentFood, cuisineStyle: e.target.value as CuisineStyle })}
+              required
+              fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontFamily: 'MarioFont, sans-serif',
+                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
+                },
+                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
+              }}
+            >
+              {['East Asian', 'American', 'European', 'Southeast Asian', 'South Asian', 'Latin American', 'Other', 'Drinks', 'Desserts'].map((style) => (
+                <MenuItem key={style} value={style} sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+                  {style}
+                </MenuItem>
+              ))}
+            </TextField>
+
+            {/* Restaurant Address */}
+            <TextField
+              label="Restaurant Address"
+              value={currentFood.restaurantAddress || ''}
+              onChange={(e) => setCurrentFood({ ...currentFood, restaurantAddress: e.target.value })}
+              fullWidth
+              multiline
+              rows={2}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  fontFamily: 'MarioFont, sans-serif',
+                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
+                },
+                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
+              }}
+            />
+
+            {/* Geocode Button */}
+            {currentFood.restaurantAddress && (
+              <Button
+                variant="outlined"
+                onClick={async () => {
+                  try {
+                    setGeocodingFoodError(null)
+                    const response = await fetch(
+                      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(currentFood.restaurantAddress!)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+                    )
+                    const data = await response.json()
+
+                    console.log('Geocoding API response:', data)
+                    console.log('Status:', data.status)
+
+                    if (data.status === 'OK' && data.results.length > 0) {
+                      const location = data.results[0].geometry.location
+                      setCurrentFood({
+                        ...currentFood,
+                        lat: location.lat,
+                        lng: location.lng
+                      })
+                    } else {
+                      console.error('Geocoding failed with status:', data.status, 'Error message:', data.error_message)
+                      setGeocodingFoodError(`Could not find coordinates for "${currentFood.restaurantAddress}". Status: ${data.status}. Please enter manually.`)
+                    }
+                  } catch (error) {
+                    console.error('Geocoding error:', error)
+                    setGeocodingFoodError('Failed to geocode address. Please enter coordinates manually.')
+                  }
+                }}
+                sx={{
+                  fontFamily: 'MarioFont, sans-serif',
+                  textTransform: 'none',
+                  borderColor: '#373737',
+                  color: '#373737'
+                }}
+              >
+                Detect Coordinates from Address
+              </Button>
+            )}
+
+            {geocodingFoodError && (
+              <Alert severity="warning" sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+                {geocodingFoodError}
+              </Alert>
+            )}
+
+            {/* Coordinates */}
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+              <TextField
+                label="Latitude"
+                type="number"
+                value={currentFood.lat || ''}
+                onChange={(e) => setCurrentFood({ ...currentFood, lat: parseFloat(e.target.value) })}
+                required
+                inputProps={{ step: 'any' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'MarioFont, sans-serif',
+                    '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
+                  },
+                  '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
+                }}
+              />
+              <TextField
+                label="Longitude"
+                type="number"
+                value={currentFood.lng || ''}
+                onChange={(e) => setCurrentFood({ ...currentFood, lng: parseFloat(e.target.value) })}
+                required
+                inputProps={{ step: 'any' }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    fontFamily: 'MarioFont, sans-serif',
+                    '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
+                  },
+                  '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
+                }}
+              />
+            </Box>
+
+            {/* Action Buttons */}
+            <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setFoodDrawerOpen(false)
+                  setCurrentFood({})
+                  setEditingFoodIndex(null)
+                }}
+                sx={{
+                  flex: 1,
+                  fontFamily: 'MarioFont, sans-serif',
+                  color: '#373737',
+                  borderColor: '#373737'
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => {
+                  if (!currentFood.name || !currentFood.restaurantName || !currentFood.imageUrl || !currentFood.cuisineStyle) {
+                    alert('Please fill in all required fields')
+                    return
+                  }
+
+                  const foodData: FoodFormData = {
+                    id: currentFood.id || Date.now().toString(16),
+                    name: currentFood.name!,
+                    nameCN: currentFood.nameCN || '',
+                    restaurantName: currentFood.restaurantName!,
+                    restaurantAddress: currentFood.restaurantAddress || '',
+                    cuisineStyle: currentFood.cuisineStyle!,
+                    imageUrl: currentFood.imageUrl!,
+                    lat: currentFood.lat!,
+                    lng: currentFood.lng!
+                  }
+
+                  if (editingFoodIndex !== null) {
+                    const updatedFoods = [...foods]
+                    updatedFoods[editingFoodIndex] = foodData
+                    setFoods(updatedFoods)
+                  } else {
+                    setFoods([...foods, foodData])
+                  }
+
+                  setFoodDrawerOpen(false)
+                  setCurrentFood({})
+                  setEditingFoodIndex(null)
+                  setGeocodingFoodError(null)
+                }}
+                disabled={!currentFood.name || !currentFood.restaurantName || !currentFood.imageUrl || !currentFood.cuisineStyle}
+                sx={{
+                  flex: 1,
+                  fontFamily: 'MarioFont, sans-serif',
+                  backgroundColor: '#FFD701',
+                  color: '#373737',
+                  '&:hover': { backgroundColor: '#FFC700' },
+                  '&.Mui-disabled': { backgroundColor: '#e0e0e0', color: '#999' }
+                }}
+              >
+                {editingFoodIndex !== null ? 'Update Food' : 'Add Food'}
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Drawer>

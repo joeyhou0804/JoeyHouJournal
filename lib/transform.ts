@@ -1,4 +1,4 @@
-import type { Journey as DBJourney, Destination as DBDestination, HomeLocation as DBHomeLocation } from './db'
+import type { Journey as DBJourney, Destination as DBDestination, HomeLocation as DBHomeLocation, Food as DBFood } from './db'
 
 // Transform database Journey to app format (snake_case to camelCase)
 export function transformJourney(journey: DBJourney): any {
@@ -63,5 +63,22 @@ export function transformHomeLocation(homeLocation: DBHomeLocation): any {
     startDate: homeLocation.start_date,
     endDate: homeLocation.end_date,
     coordinates: homeLocation.coordinates
+  }
+}
+
+// Transform database Food to app format (snake_case to camelCase)
+export function transformFood(food: DBFood): any {
+  return {
+    id: food.id,
+    destinationId: food.destination_id,
+    name: food.name,
+    nameCN: food.name_cn,
+    restaurantName: food.restaurant_name,
+    restaurantAddress: food.restaurant_address,
+    cuisineStyle: food.cuisine_style,
+    imageUrl: food.image_url,
+    lat: food.coordinates?.lat || 0,
+    lng: food.coordinates?.lng || 0,
+    coordinates: food.coordinates
   }
 }

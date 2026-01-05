@@ -13,7 +13,7 @@ interface NavigationMenuProps {
   isMenuButtonAnimating: boolean
   openMenu: () => void
   closeMenu: () => void
-  currentPage?: 'home' | 'trips' | 'destinations' | 'maps'
+  currentPage?: 'home' | 'trips' | 'destinations' | 'foods' | 'maps'
 }
 
 export default function NavigationMenu({
@@ -133,6 +133,32 @@ export default function NavigationMenu({
                     component="img"
                     src={`/images/buttons/menu_long/destinations_button_long_hover_${locale}.png`}
                     alt="Destinations"
+                    className="w-60 h-auto hidden group-hover:block"
+                  />
+                </Link>
+              )}
+
+              {currentPage === 'foods' ? (
+                <Box className="group">
+                  <Box
+                    component="img"
+                    src={`/images/buttons/menu_long/foods_button_long_hover_${locale}.png`}
+                    alt="Foods"
+                    className="w-60 h-auto"
+                  />
+                </Box>
+              ) : (
+                <Link href="/foods" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
+                  <Box
+                    component="img"
+                    src={`/images/buttons/menu_long/foods_button_long_${locale}.png`}
+                    alt="Foods"
+                    className="w-60 h-auto group-hover:hidden"
+                  />
+                  <Box
+                    component="img"
+                    src={`/images/buttons/menu_long/foods_button_long_hover_${locale}.png`}
+                    alt="Foods"
                     className="w-60 h-auto hidden group-hover:block"
                   />
                 </Link>

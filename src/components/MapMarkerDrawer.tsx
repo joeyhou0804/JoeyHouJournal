@@ -17,6 +17,10 @@ interface Place {
   lat: number
   lng: number
   images: string[]
+  // Optional fields for foods
+  restaurantName?: string
+  restaurantAddress?: string
+  cuisineStyle?: string
 }
 
 interface MapMarkerDrawerProps {
@@ -25,6 +29,7 @@ interface MapMarkerDrawerProps {
   places: Place[]
   isDetailView?: boolean
   currentDestinationId?: string
+  allowViewDetailsForCurrent?: boolean
   titleEn?: string
   titleZh?: string
   subtitleEn?: string
@@ -33,7 +38,7 @@ interface MapMarkerDrawerProps {
   onOk?: () => void
 }
 
-export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView = false, currentDestinationId, titleEn = 'Details', titleZh = '地点信息', subtitleEn, subtitleZh, showOkButton = false, onOk }: MapMarkerDrawerProps) {
+export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView = false, currentDestinationId, allowViewDetailsForCurrent = false, titleEn = 'Details', titleZh = '地点信息', subtitleEn, subtitleZh, showOkButton = false, onOk }: MapMarkerDrawerProps) {
   const { locale, tr } = useTranslation()
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -120,7 +125,10 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
   }
 
   const place = places[currentIndex]
-  const displayName = locale === 'zh' && place.nameCN ? place.nameCN : place.name
+  // For foods, display restaurant name; for destinations, display place name
+  const displayName = place.restaurantName
+    ? place.journeyName
+    : (locale === 'zh' && place.nameCN ? place.nameCN : place.name)
   const displayState = tr.states[place.state] || place.state
   const isMultiVisit = places.length > 1
   const isFirst = currentIndex === 0
@@ -192,7 +200,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
           </Box>
         </Box>
 
-        {/* Second Row: State and Date */}
+        {/* Second Row: State and Date (or just Address for foods) */}
         <Box
           sx={{
             width: '100%',
@@ -200,25 +208,42 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
             marginBottom: '1.5rem'
           }}
         >
-          <Box
-            sx={{
-              fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-              fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
-              color: '#373737',
-              marginBottom: '4px'
-            }}
-          >
-            {displayState}
-          </Box>
-          <Box
-            sx={{
-              fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-              fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
-              color: '#373737'
-            }}
-          >
-            {place.date}
-          </Box>
+          {place.restaurantName ? (
+            // For foods: only show address
+            <Box
+              sx={{
+                fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+                fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+                color: '#373737',
+                whiteSpace: 'pre-line'
+              }}
+            >
+              {place.date}
+            </Box>
+          ) : (
+            // For destinations: show state and date
+            <>
+              <Box
+                sx={{
+                  fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+                  fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+                  color: '#373737',
+                  marginBottom: '4px'
+                }}
+              >
+                {displayState}
+              </Box>
+              <Box
+                sx={{
+                  fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+                  fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+                  color: '#373737'
+                }}
+              >
+                {place.date}
+              </Box>
+            </>
+          )}
         </Box>
 
         {/* Third Row: Image */}
@@ -247,7 +272,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
         )}
 
         {/* Divider - show before View Details button */}
-        {!isDetailView && place.id !== 'home' && place.id !== currentDestinationId && (
+        {!isDetailView && place.id !== 'home' && !place.restaurantName && (allowViewDetailsForCurrent || place.id !== currentDestinationId) && (
           <Box
             sx={{
               width: 'calc(100% - 1rem)',
@@ -259,8 +284,8 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
           />
         )}
 
-        {/* View Details Button - hide for detail view, home markers, and current destination */}
-        {!isDetailView && place.id !== 'home' && place.id !== currentDestinationId && (
+        {/* View Details Button - hide for detail view, home markers, foods, and current destination (unless allowed) */}
+        {!isDetailView && place.id !== 'home' && !place.restaurantName && (allowViewDetailsForCurrent || place.id !== currentDestinationId) && (
           <Box sx={{ textAlign: 'center', marginTop: '0rem', marginBottom: '1rem' }}>
             <a
               href={`/destinations/${place.id}`}

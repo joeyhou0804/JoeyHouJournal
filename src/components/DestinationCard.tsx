@@ -20,9 +20,10 @@ interface Station {
 interface DestinationCardProps {
   station: Station
   index: number
+  linkPrefix?: string
 }
 
-export default function DestinationCard({ station, index }: DestinationCardProps) {
+export default function DestinationCard({ station, index, linkPrefix = 'destinations' }: DestinationCardProps) {
   const { locale } = useTranslation()
   const isEven = index % 2 === 0
 
@@ -32,7 +33,7 @@ export default function DestinationCard({ station, index }: DestinationCardProps
   if (isEven) {
     // Even index: Image on left, text on right
     return (
-      <Link href={`/destinations/${station.id}`}>
+      <Link href={`/${linkPrefix}/${station.id}`}>
         <Box sx={{ position: 'relative', width: { xs: '100vw', sm: '100%' }, maxWidth: { xs: '100vw', sm: '1100px' }, margin: { xs: '0 -1rem', sm: '0 auto' }, padding: { xs: '0', sm: '0' }, display: { xs: 'flex', sm: 'block' }, flexDirection: { xs: 'column-reverse', sm: 'row' }, overflow: 'visible', '&:hover': { transform: 'scale(1.05)', transition: 'transform 0.2s' } }}>
           {/* Station Image - Left side, overlapping */}
           <Box
@@ -141,7 +142,7 @@ export default function DestinationCard({ station, index }: DestinationCardProps
   } else {
     // Odd index: Image on right, text on left
     return (
-      <Link href={`/destinations/${station.id}`}>
+      <Link href={`/${linkPrefix}/${station.id}`}>
         <Box sx={{ position: 'relative', width: { xs: '100vw', sm: '100%' }, maxWidth: { xs: '100vw', sm: '1100px' }, margin: { xs: '0 -1rem', sm: '0 auto' }, padding: { xs: '0', sm: '0' }, display: { xs: 'flex', sm: 'block' }, flexDirection: { xs: 'column-reverse', sm: 'row' }, overflow: 'visible', '&:hover': { transform: 'scale(1.05)', transition: 'transform 0.2s' } }}>
           {/* Station Image - Right side, overlapping */}
           <Box
