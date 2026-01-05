@@ -876,6 +876,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           ? (locale === 'zh' && place.journeyNameCN ? place.journeyNameCN : place.journeyName || place.restaurantName)
           : (locale === 'zh' && place.nameCN ? place.nameCN : place.name)
         const displayState = tr.states[place.state] || place.state
+
         const popupContent = `
           <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
             <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
