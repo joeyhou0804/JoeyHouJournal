@@ -9,6 +9,7 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import MapViewHint from 'src/components/MapViewHint'
+import ImageLightbox from 'src/components/ImageLightbox'
 import { useTranslation } from 'src/hooks/useTranslation'
 import MixedText from 'src/components/MixedText'
 import type { Food } from '@/src/data/foods'
@@ -42,6 +43,7 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [viewHintsVariant, setViewHintsVariant] = useState<'default' | 'relatedJourney'>('default')
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [isLoadingDestinations, setIsLoadingDestinations] = useState(true)
   const [homeLocations, setHomeLocations] = useState<any[]>([])
@@ -192,6 +194,15 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
         variant={viewHintsVariant}
+      />
+      <ImageLightbox
+        isOpen={isLightboxOpen}
+        images={food ? [food.imageUrl] : []}
+        currentIndex={0}
+        onClose={() => setIsLightboxOpen(false)}
+        onPrevious={() => {}}
+        onNext={() => {}}
+        alt={food?.name || 'Food'}
       />
 
       {/* Header Banner */}
@@ -449,11 +460,17 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                     component="img"
                     src={food.imageUrl}
                     alt={food.name}
+                    onClick={() => setIsLightboxOpen(true)}
                     sx={{
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                      borderRadius: { xs: '0.5rem', sm: '1rem' }
+                      borderRadius: { xs: '0.5rem', sm: '1rem' },
+                      cursor: 'pointer',
+                      transition: 'transform 0.2s',
+                      '&:hover': {
+                        transform: 'scale(1.02)'
+                      }
                     }}
                   />
                 </Box>
