@@ -92,9 +92,9 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
       images: [food.imageUrl],
       restaurantName: food.restaurantName, // Mark as food to hide View Details
       restaurantAddress: food.restaurantAddress,
-      cuisineStyle: food.cuisineStyle
+      cuisineStyle: locale === 'zh' && food.cuisineStyleCN ? food.cuisineStyleCN : food.cuisineStyle
     }]
-  }, [food, destination])
+  }, [food, destination, locale])
 
   // Memoize journey places (all destinations in the journey for Related Journey section)
   const journeyPlaces = useMemo(() => {
@@ -492,8 +492,8 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                   {/* Cuisine Style */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <UtensilsCrossed style={{ color: '#F6F6F6' }} size={24} />
-                    <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
-                      {food.cuisineStyle}
+                    <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
+                      {locale === 'zh' && food.cuisineStyleCN ? food.cuisineStyleCN : food.cuisineStyle}
                     </Box>
                   </Box>
                 </Box>
