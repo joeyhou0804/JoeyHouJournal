@@ -92,9 +92,10 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
       images: [food.imageUrl],
       restaurantName: food.restaurantName, // Mark as food to hide View Details
       restaurantAddress: food.restaurantAddress,
-      cuisineStyle: locale === 'zh' && food.cuisineStyleCN ? food.cuisineStyleCN : food.cuisineStyle
+      cuisineStyle: food.cuisineStyle,
+      cuisineStyleCN: food.cuisineStyleCN
     }]
-  }, [food, destination, locale])
+  }, [food, destination])
 
   // Memoize journey places (all destinations in the journey for Related Journey section)
   const journeyPlaces = useMemo(() => {
