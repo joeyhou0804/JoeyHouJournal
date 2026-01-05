@@ -572,6 +572,7 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
               >
                 <InteractiveMap
                   places={mapPlaces}
+                  isDetailView={true}
                   showHomeMarker={false}
                   initialCenter={{ lat: food.coordinates.lat, lng: food.coordinates.lng }}
                   initialZoom={15}
