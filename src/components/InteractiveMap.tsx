@@ -742,10 +742,10 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                     `}
                   </div>
                 </div>
-                ${!isDetailView && !place.restaurantName && (allowViewDetailsForCurrent || place.id !== currentDestinationId) ? `
+                ${!isDetailView && (place.restaurantName || (allowViewDetailsForCurrent || place.id !== currentDestinationId)) ? `
                 <div style="text-align: center; margin-top: 4px;">
                   <a
-                    href="/destinations/${place.id}"
+                    href="${place.restaurantName ? `/foods/${place.id}` : `/destinations/${place.id}`}"
                     style="display: inline-block; transition: transform 0.2s;"
                     onmouseover="this.style.transform='scale(1.05)'"
                     onmouseout="this.style.transform='scale(1)'"
@@ -892,10 +892,10 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   `}
                 </div>
               </div>
-              ${!isDetailView && !place.restaurantName && (allowViewDetailsForCurrent || place.id !== currentDestinationId) ? `
+              ${!isDetailView && (place.restaurantName || (allowViewDetailsForCurrent || place.id !== currentDestinationId)) ? `
               <div style="text-align: center; margin-top: 4px;">
                 <a
-                  href="/destinations/${place.id}"
+                  href="${place.restaurantName ? `/foods/${place.id}` : `/destinations/${place.id}`}"
                   style="display: inline-block; transition: transform 0.2s;"
                   onmouseover="this.style.transform='scale(1.05)'"
                   onmouseout="this.style.transform='scale(1)'"

@@ -14,6 +14,7 @@ import MixedText from 'src/components/MixedText'
 import { translations } from 'src/locales/translations'
 import ImageLightbox from 'src/components/ImageLightbox'
 import MapViewHint from 'src/components/MapViewHint'
+import DestinationCard from 'src/components/DestinationCard'
 import { formatDuration } from 'src/utils/formatDuration'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
@@ -47,6 +48,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [isLoadingDestinations, setIsLoadingDestinations] = useState(true)
+  const [foods, setFoods] = useState<any[]>([])
   const tabContainerRef = useRef<HTMLDivElement>(null)
 
   // Detect xs screen size
@@ -154,6 +156,23 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
     fetchDestinations()
   }, [])
 
+  // Fetch foods for this destination
+  useEffect(() => {
+    async function fetchFoods() {
+      if (!station) return
+      try {
+        const response = await fetch('/api/foods')
+        const allFoods = await response.json()
+        // Filter foods for this destination
+        const destinationFoods = allFoods.filter((food: any) => food.destinationId === station.id)
+        setFoods(destinationFoods)
+      } catch (error) {
+        console.error('Error fetching foods:', error)
+      }
+    }
+    fetchFoods()
+  }, [station])
+
   const nextImage = () => {
     if (station && station.images.length > 0) {
       setCurrentImageIndex((prev) => (prev + 1) % station.images.length)
@@ -163,6 +182,32 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   const prevImage = () => {
     if (station && station.images.length > 0) {
       setCurrentImageIndex((prev) => (prev - 1 + station.images.length) % station.images.length)
+    }
+  }
+
+  // Helper function to check if an image is food-related
+  const isImageFoodRelated = (imageUrl: string) => {
+    return foods.some((food: any) => food.imageUrl === imageUrl)
+  }
+
+  // Get foods related to the current image
+  const relatedFoods = useMemo(() => {
+    if (!station || station.images.length === 0) return []
+    const currentImageUrl = station.images[currentImageIndex]
+    return foods.filter((food: any) => food.imageUrl === currentImageUrl)
+  }, [foods, station, currentImageIndex])
+
+  // Convert food to station format for DestinationCard
+  const convertFoodToStation = (food: any) => {
+    const cuisineDisplay = locale === 'zh' && food.cuisineStyleCN ? food.cuisineStyleCN : food.cuisineStyle
+    return {
+      id: food.id,
+      name: food.name,
+      nameCN: food.nameCN,
+      journeyName: station?.name ?? '',
+      journeyNameCN: station?.nameCN ?? '',
+      date: cuisineDisplay,
+      images: [food.imageUrl]
     }
   }
 
@@ -588,13 +633,14 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 paddingRight: { xs: 'calc(50vw - 24px)', sm: '0' }
               }}
             >
-              {station.images.map((_, index) => {
+              {station.images.map((image, index) => {
                 const isLastImage = index === station.images.length - 1
                 const isSingleImage = station.images.length === 1
                 // Use map tab for last image only if showMap is enabled
                 const useMapTab = station.showMap && isLastImage
                 const tabNumber = index + 1
                 const isSelected = currentImageIndex === index
+                const isFoodImage = isImageFoodRelated(image)
 
                 let tabSrc = ''
                 let hoverSrc = ''
@@ -608,16 +654,33 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   }
                 } else {
                   // Desktop logic with Cloudinary URLs and selected/hover states
-                  if (useMapTab) {
-                    tabSrc = isSelected
-                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_map_selected_${locale}.png`
-                      : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_map_${locale}.png`
+
+                  // Determine normal state tab (food or regular)
+                  let normalTabSrc = ''
+                  if (isFoodImage) {
+                    // Use food tab for normal state
+                    normalTabSrc = useMapTab
+                      ? `/images/buttons/tabs/tab_map_food_${locale}.png`
+                      : `/images/buttons/tabs/tab_${tabNumber}_food.png`
                   } else {
-                    tabSrc = isSelected
-                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_${tabNumber}_selected.png`
+                    // Use regular tab for normal state
+                    normalTabSrc = useMapTab
+                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_map_${locale}.png`
                       : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_${tabNumber}.png`
                   }
 
+                  // Set tabSrc based on selected state
+                  if (isSelected) {
+                    // Always use original selected tab when selected (for both food and non-food)
+                    tabSrc = useMapTab
+                      ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_map_selected_${locale}.png`
+                      : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_${tabNumber}_selected.png`
+                  } else {
+                    // Use normal tab (food or regular)
+                    tabSrc = normalTabSrc
+                  }
+
+                  // Always use original hover tab (for both food and non-food)
                   hoverSrc = useMapTab
                     ? `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_map_hover_${locale}.png`
                     : `https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/joeyhoujournal/buttons/tabs/tab_${tabNumber}_hover.png`
@@ -767,6 +830,47 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             </Box>
             </Box>
           </Box>
+          </div>
+        )}
+
+        {/* Related Foods Section */}
+        {relatedFoods.length > 0 && (
+          <div className="max-w-7xl mx-auto mb-36 xs:mb-12">
+            <div className="flex flex-col justify-center items-center mb-48 mt-8 xs:mb-12 xs:mt-4 px-4">
+              <MixedText
+                text={locale === 'zh' ? '相关美食' : 'Related Foods'}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize={{ xs: '40px', sm: '64px' }}
+                color="#373737"
+                component="h2"
+                sx={{
+                  textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                  margin: 0,
+                  marginBottom: '16px'
+                }}
+              />
+              <MixedText
+                text={tr.clickToViewDetails}
+                chineseFont="MarioFontChinese, sans-serif"
+                englishFont="MarioFont, sans-serif"
+                fontSize={{ xs: '16px', sm: '28px' }}
+                color="#373737"
+                component="p"
+                sx={{ margin: 0 }}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-48 xs:gap-12">
+              {relatedFoods.map((food: any, index: number) => (
+                <DestinationCard
+                  key={food.id}
+                  station={convertFoodToStation(food)}
+                  index={index}
+                  linkPrefix="foods"
+                />
+              ))}
+            </div>
           </div>
         )}
 

@@ -284,7 +284,9 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
         )}
 
         {/* Divider - show before View Details button */}
-        {!isDetailView && place.id !== 'home' && !place.restaurantName && (allowViewDetailsForCurrent || place.id !== currentDestinationId) && (
+        {!isDetailView && place.id !== 'home' && (
+          place.restaurantName || (allowViewDetailsForCurrent || place.id !== currentDestinationId)
+        ) && (
           <Box
             sx={{
               width: 'calc(100% - 1rem)',
@@ -296,11 +298,13 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
           />
         )}
 
-        {/* View Details Button - hide for detail view, home markers, foods, and current destination (unless allowed) */}
-        {!isDetailView && place.id !== 'home' && !place.restaurantName && (allowViewDetailsForCurrent || place.id !== currentDestinationId) && (
+        {/* View Details Button - hide for detail view and home markers only */}
+        {!isDetailView && place.id !== 'home' && (
+          place.restaurantName || (allowViewDetailsForCurrent || place.id !== currentDestinationId)
+        ) && (
           <Box sx={{ textAlign: 'center', marginTop: '0rem', marginBottom: '1rem' }}>
             <a
-              href={`/destinations/${place.id}`}
+              href={place.restaurantName ? `/foods/${place.id}` : `/destinations/${place.id}`}
               style={{ display: 'inline-block', transition: 'transform 0.2s' }}
               onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
               onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1)')}
