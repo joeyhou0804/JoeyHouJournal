@@ -22,6 +22,7 @@ export interface Food {
   restaurantName: string
   restaurantAddress?: string
   cuisineStyle: CuisineStyle
+  cuisineStyleCN?: string
   imageUrl: string  // URL from destination's images array
   lat: number
   lng: number

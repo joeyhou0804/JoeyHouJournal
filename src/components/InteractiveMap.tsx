@@ -32,6 +32,7 @@ interface Place {
   // Optional fields for foods
   restaurantName?: string
   cuisineStyle?: string
+  cuisineStyleCN?: string
 }
 
 interface RouteSegment {
@@ -709,9 +710,9 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           const place = places[index]
           const isFirst = index === 0
           const isLast = index === places.length - 1
-          // For foods, display restaurant name; for destinations, display place name
+          // For foods, display food name (with locale support); for destinations, display place name
           const displayName = place.restaurantName
-            ? (place.journeyName || place.restaurantName)
+            ? (locale === 'zh' && place.journeyNameCN ? place.journeyNameCN : place.journeyName || place.restaurantName)
             : (locale === 'zh' && place.nameCN ? place.nameCN : place.name)
           const displayState = tr.states[place.state] || place.state
 
@@ -733,7 +734,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   </div>
                   <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
                     ${place.restaurantName ? `
-                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin: 0; white-space: pre-line;">${place.date}</p>
+                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin: 0 0 2px 0;">${locale === 'zh' && place.nameCN ? place.nameCN : place.name}</p>
+                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 14px; color: #373737; margin: 0;">${locale === 'zh' && place.cuisineStyleCN ? place.cuisineStyleCN : (place.cuisineStyle || '')}</p>
                     ` : `
                       <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
                       <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
@@ -859,9 +861,9 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       } else if (!isMobile) {
         // Single visit popup (original design) - desktop only
         const place = places[0]
-        // For foods, display restaurant name; for destinations, display place name
+        // For foods, display food name (with locale support); for destinations, display place name
         const displayName = place.restaurantName
-          ? (place.journeyName || place.restaurantName)
+          ? (locale === 'zh' && place.journeyNameCN ? place.journeyNameCN : place.journeyName || place.restaurantName)
           : (locale === 'zh' && place.nameCN ? place.nameCN : place.name)
         const displayState = tr.states[place.state] || place.state
         const popupContent = `
@@ -882,7 +884,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                 </div>
                 <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
                   ${place.restaurantName ? `
-                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin: 0; white-space: pre-line;">${place.date}</p>
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin: 0 0 2px 0;">${locale === 'zh' && place.nameCN ? place.nameCN : place.name}</p>
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 14px; color: #373737; margin: 0;">${locale === 'zh' && place.cuisineStyleCN ? place.cuisineStyleCN : (place.cuisineStyle || '')}</p>
                   ` : `
                     <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
                     <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>

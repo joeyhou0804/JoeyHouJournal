@@ -76,6 +76,7 @@ export function transformFood(food: DBFood): any {
     restaurantName: food.restaurant_name,
     restaurantAddress: food.restaurant_address,
     cuisineStyle: food.cuisine_style,
+    cuisineStyleCN: food.cuisine_style_cn,
     imageUrl: food.image_url,
     lat: food.coordinates?.lat || 0,
     lng: food.coordinates?.lng || 0,

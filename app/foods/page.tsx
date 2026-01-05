@@ -32,6 +32,7 @@ export default function FoodsPage() {
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [foods, setFoods] = useState<Food[]>([])
+  const [destinations, setDestinations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [xsDisplayCount, setXsDisplayCount] = useState(12)
@@ -41,19 +42,24 @@ export default function FoodsPage() {
   const itemsPerPage = 12
 
   useEffect(() => {
-    async function fetchFoods() {
+    async function fetchData() {
       try {
-        const response = await fetch('/api/foods')
-        const data = await response.json()
-        setFoods(data)
+        const [foodsResponse, destinationsResponse] = await Promise.all([
+          fetch('/api/foods'),
+          fetch('/api/destinations')
+        ])
+        const foodsData = await foodsResponse.json()
+        const destinationsData = await destinationsResponse.json()
+        setFoods(foodsData)
+        setDestinations(destinationsData)
       } catch (error) {
-        console.error('Failed to fetch foods:', error)
+        console.error('Failed to fetch data:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    fetchFoods()
+    fetchData()
   }, [])
 
   // Search functionality with fuzzy matching
@@ -79,30 +85,53 @@ export default function FoodsPage() {
     return results.map(result => result.item)
   }, [foods, searchQuery])
 
-  // Convert foods to map places format
+  // Convert foods to map places format using destination coordinates
   const foodsForMap = useMemo(() => {
-    return foods.map(food => ({
+    // Create a lookup map from destination ID to destination
+    const destinationMap = new Map(destinations.map(dest => [dest.id, dest]))
+
+    return foods.map(food => {
+      const destination = destinationMap.get(food.destinationId)
+      return {
+        id: food.id,
+        // Use destination name for grouping (clustering) markers at the same location
+        name: destination?.name ?? food.name,
+        nameCN: destination?.nameCN ?? food.nameCN,
+        // Use food name as the title in the popup
+        journeyName: food.name,
+        journeyNameCN: food.nameCN,
+        // Use destination coordinates instead of restaurant coordinates
+        lat: destination?.lat ?? food.lat,
+        lng: destination?.lng ?? food.lng,
+        images: [food.imageUrl],
+        restaurantName: food.restaurantName,
+        cuisineStyle: food.cuisineStyle,
+        cuisineStyleCN: food.cuisineStyleCN,
+        // Store date for sorting within clusters
+        date: destination?.date
+      }
+    })
+  }, [foods, destinations])
+
+  // Convert foods to station format for DestinationCard
+  const convertFoodToStation = (food: Food) => {
+    // Get the destination for this food
+    const destination = destinations.find(dest => dest.id === food.destinationId)
+    // Use Chinese cuisine style when available and locale is Chinese
+    const cuisineDisplay = locale === 'zh' && food.cuisineStyleCN ? food.cuisineStyleCN : food.cuisineStyle
+
+    return {
       id: food.id,
       name: food.name,
       nameCN: food.nameCN,
-      lat: food.lat,
-      lng: food.lng,
-      images: [food.imageUrl],
-      restaurantName: food.restaurantName,
-      cuisineStyle: food.cuisineStyle
-    }))
-  }, [foods])
-
-  // Convert foods to station format for DestinationCard
-  const convertFoodToStation = (food: Food) => ({
-    id: food.id,
-    name: food.name,
-    nameCN: food.nameCN,
-    journeyName: food.cuisineStyle,
-    journeyNameCN: food.cuisineStyle,
-    date: food.restaurantName,
-    images: [food.imageUrl]
-  })
+      // Display destination name as the route
+      journeyName: destination?.name ?? '',
+      journeyNameCN: destination?.nameCN ?? '',
+      // Display cuisine style as the date
+      date: cuisineDisplay,
+      images: [food.imageUrl]
+    }
+  }
 
   // Pagination
   const totalPages = Math.ceil(searchFilteredFoods.length / itemsPerPage)

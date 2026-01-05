@@ -9,11 +9,11 @@ interface Place {
   id: string
   name: string
   nameCN?: string
-  date: string
+  date?: string
   journeyId?: string | null
-  journeyName: string
+  journeyName?: string
   journeyNameCN?: string
-  state: string
+  state?: string
   lat: number
   lng: number
   images: string[]
@@ -21,6 +21,7 @@ interface Place {
   restaurantName?: string
   restaurantAddress?: string
   cuisineStyle?: string
+  cuisineStyleCN?: string
 }
 
 interface MapMarkerDrawerProps {
@@ -125,11 +126,11 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
   }
 
   const place = places[currentIndex]
-  // For foods, display restaurant name; for destinations, display place name
+  // For foods, display food name (with locale support); for destinations, display place name
   const displayName = place.restaurantName
-    ? place.journeyName
+    ? (locale === 'zh' && place.journeyNameCN ? place.journeyNameCN : place.journeyName)
     : (locale === 'zh' && place.nameCN ? place.nameCN : place.name)
-  const displayState = tr.states[place.state] || place.state
+  const displayState = place.state ? (tr.states[place.state] || place.state) : ''
   const isMultiVisit = places.length > 1
   const isFirst = currentIndex === 0
   const isLast = currentIndex === places.length - 1
@@ -200,7 +201,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
           </Box>
         </Box>
 
-        {/* Second Row: State and Date (or just Address for foods) */}
+        {/* Second Row: State and Date (or Destination and Cuisine for foods) */}
         <Box
           sx={{
             width: '100%',
@@ -209,17 +210,28 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
           }}
         >
           {place.restaurantName ? (
-            // For foods: only show address
-            <Box
-              sx={{
-                fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
-                color: '#373737',
-                whiteSpace: 'pre-line'
-              }}
-            >
-              {place.date}
-            </Box>
+            // For foods: show destination name and cuisine style
+            <>
+              <Box
+                sx={{
+                  fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+                  fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+                  color: '#373737',
+                  marginBottom: '4px'
+                }}
+              >
+                {locale === 'zh' && place.nameCN ? place.nameCN : place.name}
+              </Box>
+              <Box
+                sx={{
+                  fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
+                  fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+                  color: '#373737'
+                }}
+              >
+                {locale === 'zh' && place.cuisineStyleCN ? place.cuisineStyleCN : place.cuisineStyle}
+              </Box>
+            </>
           ) : (
             // For destinations: show state and date
             <>
