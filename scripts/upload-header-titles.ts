@@ -98,6 +98,24 @@ const imagesToUpload = [
     path: 'public/images/maps/maps_page_title_xs_zh.png',
     publicId: 'joeyhoujournal/headers/maps_page_title_xs_zh',
   },
+
+  // Foods page titles
+  {
+    path: 'public/images/foods/foods_details_title_en.png',
+    publicId: 'joeyhoujournal/headers/foods_details_title_en',
+  },
+  {
+    path: 'public/images/foods/foods_details_title_zh.png',
+    publicId: 'joeyhoujournal/headers/foods_details_title_zh',
+  },
+  {
+    path: 'public/images/foods/foods_details_title_xs_en.png',
+    publicId: 'joeyhoujournal/headers/foods_details_title_xs_en',
+  },
+  {
+    path: 'public/images/foods/foods_details_title_xs_zh.png',
+    publicId: 'joeyhoujournal/headers/foods_details_title_xs_zh',
+  },
 ]
 
 async function uploadHeaderTitles() {
