@@ -571,12 +571,12 @@ export default function MapsPage() {
       {/* Maps Page Title - Full Width */}
       <div className="w-full">
         <img
-          src={`/images/maps/maps_page_title_${locale}.png`}
+          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/maps_page_title_${locale}.jpg`}
           alt="Maps"
           className="w-full h-auto object-cover xs:hidden"
         />
         <img
-          src={`/images/maps/maps_page_title_xs_${locale}.png`}
+          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/maps_page_title_xs_${locale}.jpg`}
           alt="Maps"
           className="hidden xs:block w-full h-auto object-cover"
         />

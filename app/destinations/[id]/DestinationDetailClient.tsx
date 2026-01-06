@@ -348,12 +348,12 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
       {/* Header Banner */}
       <Box sx={{ width: '100%' }}>
         <img
-          src={`/images/destinations/destination_details_title_${locale}.png`}
+          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/destination_details_title_${locale}.jpg`}
           alt={station.name}
           className="w-full h-auto object-cover xs:hidden"
         />
         <img
-          src={`/images/destinations/destination_details_title_xs_${locale}.png`}
+          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/destination_details_title_xs_${locale}.jpg`}
           alt={station.name}
           className="hidden xs:block w-full h-auto object-cover"
         />

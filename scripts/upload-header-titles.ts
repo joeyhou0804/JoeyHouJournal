@@ -99,6 +99,24 @@ const imagesToUpload = [
     publicId: 'joeyhoujournal/headers/maps_page_title_xs_zh',
   },
 
+  // Homepage titles
+  {
+    path: 'public/images/journey/journeys_title_en.png',
+    publicId: 'joeyhoujournal/headers/journeys_title_en',
+  },
+  {
+    path: 'public/images/journey/journeys_title_zh.png',
+    publicId: 'joeyhoujournal/headers/journeys_title_zh',
+  },
+  {
+    path: 'public/images/homepage/destinations_title_en.png',
+    publicId: 'joeyhoujournal/headers/destinations_title_en',
+  },
+  {
+    path: 'public/images/homepage/destinations_title_zh.png',
+    publicId: 'joeyhoujournal/headers/destinations_title_zh',
+  },
+
   // Foods page titles
   {
     path: 'public/images/foods/foods_details_title_en.png',
@@ -115,6 +133,22 @@ const imagesToUpload = [
   {
     path: 'public/images/foods/foods_details_title_xs_zh.png',
     publicId: 'joeyhoujournal/headers/foods_details_title_xs_zh',
+  },
+  {
+    path: 'public/images/foods/foods_page_title_en.png',
+    publicId: 'joeyhoujournal/headers/foods_page_title_en',
+  },
+  {
+    path: 'public/images/foods/foods_page_title_zh.png',
+    publicId: 'joeyhoujournal/headers/foods_page_title_zh',
+  },
+  {
+    path: 'public/images/foods/foods_page_title_xs_en.png',
+    publicId: 'joeyhoujournal/headers/foods_page_title_xs_en',
+  },
+  {
+    path: 'public/images/foods/foods_page_title_xs_zh.png',
+    publicId: 'joeyhoujournal/headers/foods_page_title_xs_zh',
   },
 ]
 

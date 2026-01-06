@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import dynamic from 'next/dynamic'
@@ -239,20 +238,14 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
       />
 
       <Box sx={{ width: '100%' }}>
-        <Image
+        <img
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/journey_details_title_${locale}.jpg`}
           alt={tr.journeyDetails}
-          width={1200}
-          height={400}
-          priority
           className="w-full h-auto object-cover xs:hidden"
         />
-        <Image
+        <img
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/journey_details_title_xs_${locale}.jpg`}
           alt={tr.journeyDetails}
-          width={800}
-          height={300}
-          priority
           className="hidden xs:block w-full h-auto object-cover"
         />
       </Box>

@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import Image from 'next/image'
 import { useState, useEffect, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import { UtensilsCrossed, MapPin, Store } from 'lucide-react'
@@ -208,20 +207,14 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
 
       {/* Header Banner */}
       <Box sx={{ width: '100%' }}>
-        <Image
+        <img
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/foods_details_title_${locale}.jpg`}
           alt={locale === 'zh' ? '美食详情' : 'Food Details'}
-          width={1200}
-          height={400}
-          priority
           className="w-full h-auto object-cover xs:hidden"
         />
-        <Image
+        <img
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/foods_details_title_xs_${locale}.jpg`}
           alt={locale === 'zh' ? '美食详情' : 'Food Details'}
-          width={800}
-          height={300}
-          priority
           className="hidden xs:block w-full h-auto object-cover"
         />
       </Box>
