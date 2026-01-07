@@ -36,6 +36,21 @@ export default function StationsPage() {
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
+
+  // Preload title images
+  useEffect(() => {
+    const preloadImages = [
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/destination_page_title_${locale}.jpg`,
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/destination_page_title_xs_${locale}.jpg`
+    ]
+    preloadImages.forEach(src => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = src
+      document.head.appendChild(link)
+    })
+  }, [locale])
   const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const [xsDisplayCount, setXsDisplayCount] = useState(12)
   const [destinations, setDestinations] = useState<any[]>([])

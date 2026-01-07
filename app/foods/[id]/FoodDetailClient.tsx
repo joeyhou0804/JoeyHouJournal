@@ -41,6 +41,21 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
+
+  // Preload title images
+  useEffect(() => {
+    const preloadImages = [
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/foods_details_title_${locale}.jpg`,
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/foods_details_title_xs_${locale}.jpg`
+    ]
+    preloadImages.forEach(src => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = src
+      document.head.appendChild(link)
+    })
+  }, [locale])
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [viewHintsVariant, setViewHintsVariant] = useState<'default' | 'relatedJourney'>('default')
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)

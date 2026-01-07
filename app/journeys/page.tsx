@@ -53,6 +53,21 @@ export default function JourneysPage() {
   const [journeysData, setJourneysData] = useState<any[]>([])
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [homeLocations, setHomeLocations] = useState<any[]>([])
+
+  // Preload title images
+  useEffect(() => {
+    const preloadImages = [
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/journeys_page_title_${locale}.jpg`,
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/journey_page_title_xs_${locale}.jpg`
+    ]
+    preloadImages.forEach(src => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = src
+      document.head.appendChild(link)
+    })
+  }, [locale])
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [isHintButtonHovered, setIsHintButtonHovered] = useState(false)

@@ -39,6 +39,21 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   const { locale, tr } = useTranslation()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
+
+  // Preload title images
+  useEffect(() => {
+    const preloadImages = [
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/destination_details_title_${locale}.jpg`,
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/destination_details_title_xs_${locale}.jpg`
+    ]
+    preloadImages.forEach(src => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = src
+      document.head.appendChild(link)
+    })
+  }, [locale])
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
