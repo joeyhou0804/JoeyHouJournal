@@ -690,12 +690,12 @@ export default function JourneysPage() {
       {/* Journeys Page Title - Full Width */}
       <div className="w-full">
         <img
-          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/journeys_page_title_${locale}.jpg`}
+          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/journeys_page_title_${locale}.jpg`}
           alt="Journeys"
           className="w-full h-auto object-cover xs:hidden"
         />
         <img
-          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/journey_page_title_xs_${locale}.jpg`}
+          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/journey_page_title_xs_${locale}.jpg`}
           alt="Journeys"
           className="hidden xs:block w-full h-auto object-cover"
         />

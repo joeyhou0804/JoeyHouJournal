@@ -208,12 +208,12 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
       {/* Header Banner */}
       <Box sx={{ width: '100%' }}>
         <img
-          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/foods_details_title_${locale}.jpg`}
+          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/foods_details_title_${locale}.jpg`}
           alt={locale === 'zh' ? '美食详情' : 'Food Details'}
           className="w-full h-auto object-cover xs:hidden"
         />
         <img
-          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/foods_details_title_xs_${locale}.jpg`}
+          src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/foods_details_title_xs_${locale}.jpg`}
           alt={locale === 'zh' ? '美食详情' : 'Food Details'}
           className="hidden xs:block w-full h-auto object-cover"
         />

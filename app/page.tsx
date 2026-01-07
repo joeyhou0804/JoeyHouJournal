@@ -442,7 +442,7 @@ export default function Home() {
             </Container>
             <Box
               component="img"
-              src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/journeys_title_${locale}.png`}
+              src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1200,f_auto,q_auto/joeyhoujournal/headers/journeys_title_${locale}.png`}
               alt="Featured Journeys"
               className="h-auto w-full md:max-w-4xl md:w-auto relative"
               sx={{ transform: { xs: 'translate(0, -8rem)', md: locale === 'zh' ? 'translate(-5rem, -6rem)' : 'translate(-5rem, -4rem)' }, zIndex: 20 }}
@@ -934,7 +934,7 @@ export default function Home() {
           <Container className="relative mb-12">
             <Box
               component="img"
-              src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto/joeyhoujournal/headers/destinations_title_${locale}.png`}
+              src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1200,f_auto,q_auto/joeyhoujournal/headers/destinations_title_${locale}.png`}
               alt="Recent Destinations"
               className="h-auto w-full md:max-w-4xl md:w-auto relative"
               sx={{ transform: { xs: 'translate(0, 4rem)', md: 'translate(-5rem, -4rem)' }, zIndex: 30 }}
