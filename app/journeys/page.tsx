@@ -167,6 +167,17 @@ export default function JourneysPage() {
         setJourneysData(journeys)
         setAllDestinations(destinations)
         setHomeLocations(homeLocationsData)
+
+        // Preload first image from each destination for map popups
+        destinations.forEach((dest: any) => {
+          if (dest.images && dest.images.length > 0) {
+            const link = document.createElement('link')
+            link.rel = 'preload'
+            link.as = 'image'
+            link.href = dest.images[0]
+            document.head.appendChild(link)
+          }
+        })
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {

@@ -70,6 +70,17 @@ export default function FoodsPage() {
         const destinationsData = await destinationsResponse.json()
         setFoods(foodsData)
         setDestinations(destinationsData)
+
+        // Preload first image from each food for map popups
+        foodsData.forEach((food: any) => {
+          if (food.images && food.images.length > 0) {
+            const link = document.createElement('link')
+            link.rel = 'preload'
+            link.as = 'image'
+            link.href = food.images[0]
+            document.head.appendChild(link)
+          }
+        })
       } catch (error) {
         console.error('Failed to fetch data:', error)
       } finally {

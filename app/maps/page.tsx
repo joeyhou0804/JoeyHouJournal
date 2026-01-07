@@ -193,6 +193,17 @@ export default function MapsPage() {
         setOvernightStatesCount(visitedStatesData.overnightCount)
         setOvernightTerritoriesCount(visitedStatesData.overnightTerritoryCount)
         setOvernightStates(visitedStatesData.overnightStates)
+
+        // Preload first image from each destination for map popups
+        destinationsData.forEach((dest: any) => {
+          if (dest.images && dest.images.length > 0) {
+            const link = document.createElement('link')
+            link.rel = 'preload'
+            link.as = 'image'
+            link.href = dest.images[0]
+            document.head.appendChild(link)
+          }
+        })
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
