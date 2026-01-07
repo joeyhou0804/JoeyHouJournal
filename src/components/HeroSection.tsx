@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Section from './Section'
 import Container from './Container'
@@ -27,6 +27,8 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
   const { locale } = useTranslation()
   const [isMobile, setIsMobile] = useState(false)
   const [isVideoLoaded, setIsVideoLoaded] = useState(false)
+  const [isImage1Visible, setIsImage1Visible] = useState(false)
+  const homepageImage1Ref = useRef<HTMLImageElement>(null)
 
   // Detect mobile screen size
   useEffect(() => {
@@ -39,13 +41,63 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Mobile-optimized video URL (you'll create this smaller version)
+  // Intersection Observer for homepage image 1 animation
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsImage1Visible(true)
+          }
+        })
+      },
+      {
+        threshold: 0,
+        rootMargin: '-70% 0px 0px 0px' // Trigger when image reaches 30% from bottom (70% from top)
+      }
+    )
+
+    const currentRef = homepageImage1Ref.current
+    if (currentRef) {
+      observer.observe(currentRef)
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef)
+      }
+    }
+  }, [])
+
+  // Mobile-optimized video URL
   const videoUrl = isMobile
-    ? 'https://ydafzxmh0skb2hzr.public.blob.vercel-storage.com/homepage/homepage_title_video_mobile.mp4'
-    : 'https://ydafzxmh0skb2hzr.public.blob.vercel-storage.com/homepage/homepage_title_video.mp4'
+    ? 'https://ydafzxmh0skb2hzr.public.blob.vercel-storage.com/homepage_title_video_mobile.webm'
+    : 'https://ydafzxmh0skb2hzr.public.blob.vercel-storage.com/homepage_title_video.webm'
 
   return (
     <>
+      <style jsx>{`
+        @keyframes bounceInFromLeft {
+          0% {
+            opacity: 0;
+            transform: translateX(-100%);
+          }
+          60% {
+            opacity: 1;
+            transform: translateX(5%);
+          }
+          80% {
+            transform: translateX(-2%);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        .animate-bounce-left {
+          animation: bounceInFromLeft 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+      `}</style>
       {/* Video Section Container */}
       <Container className="relative overflow-visible">
         {/* Video Background Section */}
@@ -74,7 +126,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
               }
             }}
           >
-            <source src={videoUrl} type="video/mp4" />
+            <source src={videoUrl} type="video/webm" />
           </Box>
 
           {/* Logo - Full width with padding on xs, Top Left on md+ */}
@@ -141,15 +193,24 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             {/* Image 1 — 60% */}
             <Container className="col-span-12 md:col-span-7 relative z-0">
               <Box
-                component="img"
-                src="/images/homepage/homepage_image_1.png"
-                alt="Homepage Image 1"
-                className="w-full h-auto"
+                ref={homepageImage1Ref}
+                className={isImage1Visible ? 'animate-bounce-left' : ''}
                 sx={{
-                  transform: { xs: 'scale(1.2) translateY(10%)', md: 'scale(1.4) translateX(20%)' },
-                  transformOrigin: { xs: 'right bottom', md: 'right bottom' }
+                  opacity: isImage1Visible ? 1 : 0,
+                  transform: isImage1Visible ? 'translateX(0)' : 'translateX(-100%)'
                 }}
-              />
+              >
+                <Box
+                  component="img"
+                  src="/images/homepage/homepage_image_1.png"
+                  alt="Homepage Image 1"
+                  className="w-full h-auto"
+                  sx={{
+                    transform: { xs: 'scale(1.2) translateY(10%)', md: 'scale(1.4) translateX(20%)' },
+                    transformOrigin: { xs: 'right bottom', md: 'right bottom' }
+                  }}
+                />
+              </Box>
             </Container>
 
             {/* Slogan — 40% (overlap) */}
