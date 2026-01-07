@@ -29,12 +29,6 @@ export default function Home() {
   const headDecoRef = useRef<HTMLDivElement | null>(null)
   const recentRef = useRef<HTMLElement | null>(null)
 
-  // Refs for homepage decorative images animations
-  const homepageImage2Ref = useRef<HTMLDivElement | null>(null)
-
-  // State for animation visibility
-  const [isImage2Visible, setIsImage2Visible] = useState(false)
-
   // Fetch data from API
   const [journeysData, setJourneysData] = useState<any[]>([])
   const [destinationsData, setDestinationsData] = useState<any[]>([])
@@ -115,34 +109,6 @@ export default function Home() {
       }
     }
     fetchData()
-  }, [])
-
-  // Intersection Observer for homepage image 2 animation
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setIsImage2Visible(true)
-          }
-        })
-      },
-      {
-        threshold: 0,
-        rootMargin: '-70% 0px 0px 0px' // Trigger when image reaches 30% from bottom (70% from top)
-      }
-    )
-
-    const currentRef = homepageImage2Ref.current
-    if (currentRef) {
-      observer.observe(currentRef)
-    }
-
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef)
-      }
-    }
   }, [])
 
   // Get latest 8 journeys sorted by date
@@ -430,23 +396,6 @@ export default function Home() {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(0); }
         }
-        @keyframes bounceInFromLeft {
-          0% {
-            opacity: 0;
-            transform: translateX(-100%);
-          }
-          60% {
-            opacity: 1;
-            transform: translateX(5%);
-          }
-          80% {
-            transform: translateX(-2%);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
         @keyframes moveArrow {
           0% { transform: translate(24rem, -5.2rem); }
           50% { transform: translate(24.5rem, -5.3rem); }
@@ -470,9 +419,6 @@ export default function Home() {
         .animate-slide-in {
           animation: slide-in 0.3s ease-in-out forwards;
         }
-        .animate-bounce-left {
-          animation: bounceInFromLeft 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
-        }
       `}</style>
 
       <HeroSection homepageHeadDecoRef={homepageHeadDecoRef} section1Ref={section1Ref} />
@@ -483,12 +429,10 @@ export default function Home() {
       <Container className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full" sx={{ transform: 'translateY(calc(99.5%))' }}>
         {/* Homepage Image 2 - Right edge, overlapping section above (hidden on xs) */}
         <Container
-          innerRef={homepageImage2Ref}
-          className={`hidden md:block absolute top-0 right-0 ${isImage2Visible ? 'animate-bounce-left' : ''}`}
+          className="hidden md:block absolute top-0 right-0"
           sx={{
             transform: 'translate(0, -700px)',
-            zIndex: 30,
-            opacity: isImage2Visible ? 1 : 0
+            zIndex: 30
           }}
         >
           <Box
