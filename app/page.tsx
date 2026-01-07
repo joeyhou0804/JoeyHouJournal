@@ -35,6 +35,22 @@ export default function Home() {
   const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  // Preload background images
+  useEffect(() => {
+    const preloadImages = [
+      '/images/backgrounds/homepage_background.webp',
+      '/images/backgrounds/homepage_background_2.webp',
+      '/images/backgrounds/destination_background.webp'
+    ]
+    preloadImages.forEach(src => {
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = src
+      document.head.appendChild(link)
+    })
+  }, [])
+
   useEffect(() => {
     async function fetchData() {
       try {

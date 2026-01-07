@@ -52,11 +52,15 @@ export default function MapsPage() {
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
-  // Preload title images
+  // Preload title images and backgrounds
   useEffect(() => {
     const preloadImages = [
       `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/maps_page_title_${locale}.jpg`,
-      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/maps_page_title_xs_${locale}.jpg`
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/maps_page_title_xs_${locale}.jpg`,
+      '/images/backgrounds/homepage_background_2.webp',
+      '/images/backgrounds/homepage_background.webp',
+      '/images/backgrounds/map_background.png',
+      '/images/destinations/destination_page_map_background.webp'
     ]
     preloadImages.forEach(src => {
       const link = document.createElement('link')

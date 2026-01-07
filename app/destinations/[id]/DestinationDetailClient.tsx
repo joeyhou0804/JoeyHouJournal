@@ -40,11 +40,14 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
 
-  // Preload title images
+  // Preload title images and backgrounds
   useEffect(() => {
     const preloadImages = [
       `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/destination_details_title_${locale}.jpg`,
-      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/destination_details_title_xs_${locale}.jpg`
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/destination_details_title_xs_${locale}.jpg`,
+      '/images/backgrounds/homepage_background.webp',
+      '/images/backgrounds/map_background.png',
+      '/images/backgrounds/pattern-food-orange-2x.png'
     ]
     preloadImages.forEach(src => {
       const link = document.createElement('link')

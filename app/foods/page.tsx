@@ -32,11 +32,13 @@ export default function FoodsPage() {
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
 
-  // Preload title images
+  // Preload title images and backgrounds
   useEffect(() => {
     const preloadImages = [
       `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/foods_page_title_${locale}.jpg`,
-      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/foods_page_title_xs_${locale}.jpg`
+      `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/foods_page_title_xs_${locale}.jpg`,
+      '/images/backgrounds/homepage_background_2.webp',
+      '/images/backgrounds/pattern-food-orange-2x.png'
     ]
     preloadImages.forEach(src => {
       const link = document.createElement('link')
