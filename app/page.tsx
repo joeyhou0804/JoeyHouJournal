@@ -35,12 +35,25 @@ export default function Home() {
   const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  // Preload background images
+  // Preload background images and homepage decorative images
   useEffect(() => {
     const preloadImages = [
       '/images/backgrounds/homepage_background.webp',
       '/images/backgrounds/homepage_background_2.webp',
-      '/images/backgrounds/destination_background.webp'
+      '/images/backgrounds/destination_background.webp',
+      // Homepage decorative images
+      '/images/homepage/homepage_image_2.png',
+      '/images/homepage/homepage_image_3.png',
+      '/images/homepage/homepage_image_4.png',
+      `/images/homepage/homepage_destination_text_${locale}.png`,
+      `/images/homepage/homepage_destination_text_xs_${locale}.png`,
+      // Journey carousel images
+      'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_1',
+      'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_2',
+      'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_3',
+      'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_4',
+      'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_5',
+      'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_1200/joeyhoujournal/journey/homepage_journey_image_6'
     ]
     preloadImages.forEach(src => {
       const link = document.createElement('link')
@@ -49,7 +62,7 @@ export default function Home() {
       link.href = src
       document.head.appendChild(link)
     })
-  }, [])
+  }, [locale])
 
   useEffect(() => {
     async function fetchData() {
