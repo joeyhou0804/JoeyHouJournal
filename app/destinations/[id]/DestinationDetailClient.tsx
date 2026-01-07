@@ -167,6 +167,17 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
         const response = await fetch('/api/destinations')
         const data = await response.json()
         setAllDestinations(data)
+
+        // Preload first image from each destination for map popups and list cards
+        data.forEach((dest: any) => {
+          if (dest.images && dest.images.length > 0) {
+            const link = document.createElement('link')
+            link.rel = 'preload'
+            link.as = 'image'
+            link.href = dest.images[0]
+            document.head.appendChild(link)
+          }
+        })
       } catch (error) {
         console.error('Error fetching destinations:', error)
       } finally {
@@ -186,6 +197,17 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
         // Filter foods for this destination
         const destinationFoods = allFoods.filter((food: any) => food.destinationId === station.id)
         setFoods(destinationFoods)
+
+        // Preload food images for list cards
+        destinationFoods.forEach((food: any) => {
+          if (food.imageUrl) {
+            const link = document.createElement('link')
+            link.rel = 'preload'
+            link.as = 'image'
+            link.href = food.imageUrl
+            document.head.appendChild(link)
+          }
+        })
       } catch (error) {
         console.error('Error fetching foods:', error)
       }

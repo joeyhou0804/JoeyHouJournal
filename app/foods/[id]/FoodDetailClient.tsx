@@ -72,6 +72,17 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
         const response = await fetch('/api/destinations')
         const data = await response.json()
         setAllDestinations(data)
+
+        // Preload first image from each destination for map popups
+        data.forEach((dest: any) => {
+          if (dest.images && dest.images.length > 0) {
+            const link = document.createElement('link')
+            link.rel = 'preload'
+            link.as = 'image'
+            link.href = dest.images[0]
+            document.head.appendChild(link)
+          }
+        })
       } catch (error) {
         console.error('Error fetching destinations:', error)
       } finally {

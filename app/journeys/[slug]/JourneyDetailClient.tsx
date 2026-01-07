@@ -91,6 +91,17 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
         const response = await fetch('/api/destinations')
         const data = await response.json()
         setAllDestinations(data)
+
+        // Preload first image from each destination for map popups and list cards
+        data.forEach((dest: any) => {
+          if (dest.images && dest.images.length > 0) {
+            const link = document.createElement('link')
+            link.rel = 'preload'
+            link.as = 'image'
+            link.href = dest.images[0]
+            document.head.appendChild(link)
+          }
+        })
       } catch (error) {
         console.error('Error fetching destinations:', error)
       } finally {
