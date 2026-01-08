@@ -90,8 +90,11 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
               src={`/images/logos/logo_${locale}.png`}
               alt="Logo"
               sx={{
-                height: '300px',
-                width: 'auto'
+                height: '250px',
+                width: 'auto',
+                '@media (min-width: 768px)': {
+                  height: '300px'
+                }
               }}
             />
           </Container>
