@@ -39,8 +39,8 @@ export default function Footer({ currentPage }: FooterProps = {}) {
               height: '200px',
               width: 'auto',
               '@media (max-width: 639px)': {
-                height: '250px',
-                width: 'auto'
+                height: 'auto',
+                width: '320px'
               }
             }}
           />

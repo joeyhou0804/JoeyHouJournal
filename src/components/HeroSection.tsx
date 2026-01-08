@@ -77,23 +77,18 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             <source src={videoUrl} type="video/webm" />
           </Box>
 
-          {/* Logo - Centered on mobile, Top Left on md+ */}
-          <Container
-            className="absolute top-8 left-0 right-0 px-4 md:top-4 md:left-4 md:right-auto md:px-0 z-10"
-            sx={{
-              display: 'flex',
-              justifyContent: { xs: 'center', md: 'flex-start' }
-            }}
-          >
+          {/* Logo - Full width with padding on xs, Top Left on md+ */}
+          <Container className="absolute top-8 left-0 right-0 px-4 md:top-4 md:left-4 md:right-auto md:px-0 z-10">
             <Box
               component="img"
               src={`/images/logos/logo_${locale}.png`}
               alt="Logo"
               sx={{
-                height: '250px',
-                width: 'auto',
+                height: 'auto',
+                width: '100%',
                 '@media (min-width: 768px)': {
-                  height: '300px'
+                  height: '300px',
+                  width: 'auto'
                 }
               }}
             />
