@@ -35,7 +35,14 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             component="img"
             src={`/images/logos/logo_${locale}.png`}
             alt="Logo"
-            className="h-auto w-full xs:h-auto xs:w-auto xs:max-w-80"
+            sx={{
+              height: '100px',
+              width: 'auto',
+              '@media (max-width: 639px)': {
+                height: '80px',
+                width: 'auto'
+              }
+            }}
           />
         </Link>
         <div className="flex-1 flex flex-col items-center justify-center xs:w-full">

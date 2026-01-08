@@ -83,7 +83,22 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
               component="img"
               src={`/images/logos/logo_${locale}.png`}
               alt="Logo"
-              className="h-auto w-full md:h-20 md:w-auto lg:h-24 lg:w-auto xl:h-28 xl:w-auto"
+              sx={{
+                height: 'auto',
+                width: '100%',
+                '@media (min-width: 768px)': {
+                  height: '120px',
+                  width: 'auto'
+                },
+                '@media (min-width: 1024px)': {
+                  height: '140px',
+                  width: 'auto'
+                },
+                '@media (min-width: 1280px)': {
+                  height: '160px',
+                  width: 'auto'
+                }
+              }}
             />
           </Container>
         </Section>
