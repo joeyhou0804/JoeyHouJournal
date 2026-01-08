@@ -121,6 +121,12 @@ export const zh: Translations = {
     notFound: '未找到',
   },
 
+  // Error Page
+  errorPage: {
+    title: '哎呀...',
+    notFound: '找不到该页面。',
+  },
+
   // Email Subscription
   emailSubscription: {
     title: '邮件订阅',

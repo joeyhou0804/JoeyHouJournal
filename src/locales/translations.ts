@@ -145,6 +145,12 @@ export const translations = {
       notStayedOvernight: "Haven't stayed overnight here yet...",
       trainTripsDescription: 'Here is a map with all my US train trips:',
     },
+
+    // Error Page
+    errorPage: {
+      title: 'Oh no...',
+      notFound: 'This page could not be found.',
+    },
   },
   zh: {
     // Section Headings
@@ -289,6 +295,12 @@ export const translations = {
       overnightDescriptionLine2: '{territoryCount}个美国领地，还有华盛顿哥伦比亚特区过了夜。',
       notStayedOvernight: '还没有在这里过夜过...',
       trainTripsDescription: '我所有的美国火车旅行路线都在下面这张地图上：',
+    },
+
+    // Error Page
+    errorPage: {
+      title: '哎呀...',
+      notFound: '找不到该页面。',
     },
   },
 } as const

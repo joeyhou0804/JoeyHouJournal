@@ -119,6 +119,12 @@ export const en = {
     notFound: 'Not Found',
   },
 
+  // Error Page
+  errorPage: {
+    title: 'Oh no...',
+    notFound: 'This page could not be found.',
+  },
+
   // Email Subscription
   emailSubscription: {
     title: 'Email Subscription',
