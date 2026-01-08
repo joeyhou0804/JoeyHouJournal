@@ -83,7 +83,7 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
               component="img"
               src={`/images/logos/logo_${locale}.png`}
               alt="Logo"
-              className="w-full h-auto md:w-80 lg:w-96 xl:w-[28rem]"
+              className="h-auto w-full md:h-20 md:w-auto lg:h-24 lg:w-auto xl:h-28 xl:w-auto"
             />
           </Container>
         </Section>
