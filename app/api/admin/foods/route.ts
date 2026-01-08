@@ -21,6 +21,19 @@ const VALID_CUISINE_STYLES = [
   'Desserts'
 ]
 
+// Mapping of English cuisine styles to Chinese
+const CUISINE_STYLE_CN_MAP: Record<string, string> = {
+  'East Asian': '东亚菜',
+  'American': '美国菜',
+  'European': '欧洲菜',
+  'Southeast Asian': '东南亚菜',
+  'South Asian': '南亚菜',
+  'Latin American': '拉美菜',
+  'Other': '其他',
+  'Drinks': '饮品',
+  'Desserts': '甜品'
+}
+
 // Helper to convert DB format to API format
 function dbToApi(food: any) {
   return {
@@ -31,6 +44,7 @@ function dbToApi(food: any) {
     restaurantName: food.restaurant_name,
     restaurantAddress: food.restaurant_address,
     cuisineStyle: food.cuisine_style,
+    cuisineStyleCN: food.cuisine_style_cn,
     imageUrl: food.image_url,
     lat: food.coordinates?.lat || 0,
     lng: food.coordinates?.lng || 0,
@@ -48,6 +62,9 @@ function apiToDb(food: any) {
     }
   }
 
+  // Automatically set Chinese cuisine style based on English cuisine style
+  const cuisineStyleCN = CUISINE_STYLE_CN_MAP[food.cuisineStyle] || null
+
   return {
     id: food.id,
     destination_id: food.destinationId,
@@ -56,6 +73,7 @@ function apiToDb(food: any) {
     restaurant_name: food.restaurantName,
     restaurant_address: food.restaurantAddress || null,
     cuisine_style: food.cuisineStyle,
+    cuisine_style_cn: cuisineStyleCN,
     image_url: food.imageUrl,
     coordinates: coordinates
   }
