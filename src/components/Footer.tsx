@@ -39,7 +39,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
               height: '200px',
               width: 'auto',
               '@media (max-width: 639px)': {
-                height: '80px',
+                height: '250px',
                 width: 'auto'
               }
             }}
