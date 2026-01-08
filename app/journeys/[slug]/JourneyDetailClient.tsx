@@ -227,38 +227,50 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   // Show loading state while data is being fetched
   if (isLoading) {
     return (
-      <Box sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '2rem',
-        backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
-        backgroundRepeat: 'repeat',
-        backgroundSize: '200px auto',
-        animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
-      }}>
-        {/* Spinner */}
-        <Box
-          sx={{
-            width: '60px',
-            height: '60px',
-            border: '6px solid rgba(240, 96, 1, 0.2)',
-            borderTop: '6px solid #F06001',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite'
-          }}
-        />
-        {/* Loading text */}
+      <>
+        <style jsx>{`
+          @keyframes moveRight {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 0%; }
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}</style>
         <Box sx={{
-          fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-          fontSize: '32px',
-          color: '#373737'
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '2rem',
+          backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px auto',
+          animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
         }}>
-          {tr.loading}
+          {/* Spinner */}
+          <Box
+            sx={{
+              width: '60px',
+              height: '60px',
+              border: '6px solid rgba(240, 96, 1, 0.2)',
+              borderTop: '6px solid #F06001',
+              borderRadius: '50%',
+              animation: 'spin 1s linear infinite'
+            }}
+          />
+          {/* Loading text */}
+          <Box sx={{
+            fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
+            fontSize: '32px',
+            color: '#373737'
+          }}>
+            {tr.loading}
+          </Box>
         </Box>
-      </Box>
+      </>
     )
   }
 

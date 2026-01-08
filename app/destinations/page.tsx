@@ -525,6 +525,18 @@ export default function StationsPage() {
 
   if (isLoading) {
     return (
+      <>
+      <style jsx>{`
+        @keyframes moveRight {
+          0% { background-position: 0% 0%; }
+          100% { background-position: 100% 0%; }
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+
       <Box
         sx={{
           minHeight: '100vh',
@@ -555,6 +567,7 @@ export default function StationsPage() {
           {tr.loadingDestinations}
         </Box>
       </Box>
+    </>
     )
   }
 

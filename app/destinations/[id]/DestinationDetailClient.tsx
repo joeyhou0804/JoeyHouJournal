@@ -352,6 +352,18 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   // Show loading state while data is being fetched
   if (isLoadingDestinations) {
     return (
+      <>
+      <style jsx>{`
+        @keyframes moveRight {
+          0% { background-position: 0% 0%; }
+          100% { background-position: 100% 0%; }
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+
       <Box sx={{
         minHeight: '100vh',
         display: 'flex',
@@ -384,6 +396,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
           {tr.loading}
         </Box>
       </Box>
+    </>
     )
   }
 
@@ -908,7 +921,8 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                     {currentImageIndex + 1} / {station.images.length}
                   </Box>
                 </>
-              )}
+    )
+  }
             </Box>
 
             {/* Station Info Below Image */}
