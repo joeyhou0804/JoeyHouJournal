@@ -87,15 +87,15 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
                 height: 'auto',
                 width: '100%',
                 '@media (min-width: 768px)': {
-                  height: '120px',
+                  height: '260px',
                   width: 'auto'
                 },
                 '@media (min-width: 1024px)': {
-                  height: '140px',
+                  height: '260px',
                   width: 'auto'
                 },
                 '@media (min-width: 1280px)': {
-                  height: '160px',
+                  height: '260px',
                   width: 'auto'
                 }
               }}

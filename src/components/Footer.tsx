@@ -36,7 +36,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             src={`/images/logos/logo_${locale}.png`}
             alt="Logo"
             sx={{
-              height: '100px',
+              height: '260px',
               width: 'auto',
               '@media (max-width: 639px)': {
                 height: '80px',
