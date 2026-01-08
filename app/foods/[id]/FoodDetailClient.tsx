@@ -48,8 +48,19 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
       `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/foods_details_title_${locale}.jpg`,
       `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/foods_details_title_xs_${locale}.jpg`,
       '/images/backgrounds/homepage_background.webp',
-      '/images/backgrounds/pattern-food-orange-2x.png'
+      '/images/backgrounds/pattern-food-orange-2x.png',
+      '/images/backgrounds/homepage_background_2.webp',
+      '/images/destinations/destination_location_title.webp',
+      '/images/destinations/destination_page_map_box_background.webp',
+      '/images/destinations/destination_page_list_background.webp',
+      '/images/destinations/destination_page_list_background_shade.webp'
     ]
+
+    // Add food image if available
+    if (food?.imageUrl) {
+      preloadImages.push(food.imageUrl)
+    }
+
     preloadImages.forEach(src => {
       const link = document.createElement('link')
       link.rel = 'preload'
@@ -57,7 +68,7 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
       link.href = src
       document.head.appendChild(link)
     })
-  }, [locale])
+  }, [locale, food])
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
   const [viewHintsVariant, setViewHintsVariant] = useState<'default' | 'relatedJourney'>('default')
   const [isLightboxOpen, setIsLightboxOpen] = useState(false)
@@ -185,6 +196,44 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
         }, 50)
       }, 50)
     }, 150)
+  }
+
+  // Show loading state while data is being fetched
+  if (isLoadingDestinations) {
+    return (
+      <Box sx={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '2rem',
+        backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
+        backgroundRepeat: 'repeat',
+        backgroundSize: '200px auto',
+        animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
+      }}>
+        {/* Spinner */}
+        <Box
+          sx={{
+            width: '60px',
+            height: '60px',
+            border: '6px solid rgba(240, 96, 1, 0.2)',
+            borderTop: '6px solid #F06001',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }}
+        />
+        {/* Loading text */}
+        <Box sx={{
+          fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
+          fontSize: '32px',
+          color: '#373737'
+        }}>
+          {tr.loading}
+        </Box>
+      </Box>
+    )
   }
 
   if (!food) {
