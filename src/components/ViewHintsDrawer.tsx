@@ -23,8 +23,8 @@ export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }
     <BaseDrawer
       isOpen={isOpen}
       onClose={onClose}
-      titleEn="View Hints"
-      titleZh="查看提示"
+      titleEn="Map View Hints"
+      titleZh="地图查看提示"
       showOkButton={false}
       width={{ xs: '90%', sm: '600px' }}
     >
