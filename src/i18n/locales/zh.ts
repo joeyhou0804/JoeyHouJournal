@@ -5,7 +5,7 @@ export const zh: Translations = {
   nav: {
     home: '主页',
     journeys: '旅程故事',
-    destinations: '足迹地图',
+    destinations: '出行足迹',
     menu: '菜单',
     close: '关闭',
     language: '语言',
@@ -45,7 +45,7 @@ export const zh: Translations = {
 
   // Destinations Page
   destinations: {
-    pageTitle: '足迹地图',
+    pageTitle: '出行足迹',
     mapView: '地图视图',
     listView: '地点列表',
     clickCards: '点击下面的卡片查看详情！',

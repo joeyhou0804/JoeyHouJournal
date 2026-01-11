@@ -193,7 +193,7 @@ export const translations = {
     loadingMap: '加载地图中...',
     loading: '加载中...',
     loadingJourneys: '旅程故事加载中...',
-    loadingDestinations: '足迹地图加载中...',
+    loadingDestinations: '出行足迹加载中...',
 
     // Pagination
     pageOfPages: (current: number, total: number) => `第 ${current} 页，共 ${total} 页`,
