@@ -46,7 +46,7 @@ export const zh: Translations = {
   // Destinations Page
   destinations: {
     pageTitle: '出行足迹',
-    mapView: '足迹地图',
+    mapView: '地图视图',
     listView: '地点列表',
     clickCards: '点击下面的卡片查看详情！',
     mapHint1Title: '查看地图',

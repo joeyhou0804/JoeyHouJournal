@@ -680,7 +680,7 @@ export default function StationsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
             <MixedText
-              text={tr.mapView}
+              text={tr.destinationsMapView}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize={{ xs: '40px', sm: '64px' }}
