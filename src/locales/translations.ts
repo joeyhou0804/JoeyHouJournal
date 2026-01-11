@@ -4,7 +4,7 @@
 export const translations = {
   en: {
     // Section Headings
-    mapView: 'Map View',
+    mapView: 'Destinations Map',
     listOfPlaces: 'List of Places',
     listOfJourneys: 'List of Journeys',
 
@@ -154,7 +154,7 @@ export const translations = {
   },
   zh: {
     // Section Headings
-    mapView: '地图视图',
+    mapView: '足迹地图',
     listOfPlaces: '足迹列表',
     listOfJourneys: '旅程列表',
 

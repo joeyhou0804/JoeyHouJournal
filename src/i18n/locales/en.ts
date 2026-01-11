@@ -44,7 +44,7 @@ export const en = {
   // Destinations Page
   destinations: {
     pageTitle: 'Destinations',
-    mapView: 'Map View',
+    mapView: 'Destinations Map',
     listView: 'List of Places',
     clickCards: 'Click the cards below to view the details!',
     mapHint1Title: 'Check out the map',
