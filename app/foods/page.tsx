@@ -95,10 +95,25 @@ export default function FoodsPage() {
   const searchFilteredFoods = useMemo(() => {
     if (!searchQuery.trim()) return foods
 
-    const fuse = new Fuse(foods, {
+    // Enrich foods with destination data for searching
+    const destinationMap = new Map(destinations.map(dest => [dest.id, dest]))
+    const enrichedFoods = foods.map(food => {
+      const destination = destinationMap.get(food.destinationId)
+      return {
+        ...food,
+        destinationName: destination?.name ?? '',
+        destinationNameCN: destination?.nameCN ?? '',
+        destinationState: destination?.state ?? ''
+      }
+    })
+
+    const fuse = new Fuse(enrichedFoods, {
       keys: [
         { name: 'name', weight: 3 },
         { name: 'nameCN', weight: 3 },
+        { name: 'destinationName', weight: 2.5 },
+        { name: 'destinationNameCN', weight: 2.5 },
+        { name: 'destinationState', weight: 2 },
         { name: 'restaurantName', weight: 2 },
         { name: 'cuisineStyle', weight: 1 }
       ],
@@ -112,7 +127,7 @@ export default function FoodsPage() {
 
     const results = fuse.search(searchQuery)
     return results.map(result => result.item)
-  }, [foods, searchQuery])
+  }, [foods, destinations, searchQuery])
 
   // Convert foods to map places format using destination coordinates
   const foodsForMap = useMemo(() => {
