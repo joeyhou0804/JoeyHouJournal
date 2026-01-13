@@ -7,7 +7,6 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import DestinationCard from 'src/components/DestinationCard'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
-import SortDrawer from 'src/components/SortDrawer'
 import FilterByHomeDrawer from 'src/components/FilterByHomeDrawer'
 import DestinationGroupSizeFilterDrawer from 'src/components/DestinationGroupSizeFilterDrawer'
 import OtherFiltersDrawer from 'src/components/OtherFiltersDrawer'
@@ -53,7 +52,6 @@ export default function StationsPage() {
       document.head.appendChild(link)
     })
   }, [locale])
-  const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const [xsDisplayCount, setXsDisplayCount] = useState(12)
   const [destinations, setDestinations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -61,7 +59,6 @@ export default function StationsPage() {
   const [isFilterByHomeHovered, setIsFilterByHomeHovered] = useState(false)
   const [isFilterByGroupSizeHovered, setIsFilterByGroupSizeHovered] = useState(false)
   const [isOtherFiltersHovered, setIsOtherFiltersHovered] = useState(false)
-  const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const [isFilterByHomeDrawerOpen, setIsFilterByHomeDrawerOpen] = useState(false)
   const [isGroupSizeFilterDrawerOpen, setIsGroupSizeFilterDrawerOpen] = useState(false)
   const [isOtherFiltersDrawerOpen, setIsOtherFiltersDrawerOpen] = useState(false)
@@ -412,9 +409,9 @@ export default function StationsPage() {
     return [...searchFilteredDestinations].sort((a, b) => {
       const dateA = new Date(a.date).getTime()
       const dateB = new Date(b.date).getTime()
-      return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
+      return dateB - dateA // Always sort by latest first
     })
-  }, [searchFilteredDestinations, sortOrder])
+  }, [searchFilteredDestinations])
 
   const totalPages = Math.ceil(sortedDestinations.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -426,12 +423,6 @@ export default function StationsPage() {
     if (listSectionRef.current) {
       listSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-  }
-
-  const handleSortChange = (order: 'latest' | 'earliest') => {
-    setSortOrder(order)
-    setCurrentPage(1) // Reset to first page when sorting changes
-    setXsDisplayCount(itemsPerPage) // Reset xs display count when sorting changes
   }
 
   const handleMapHomeFilterChange = (filterId: string) => {
@@ -581,11 +572,6 @@ export default function StationsPage() {
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
-      />
-      <SortDrawer
-        isOpen={isSortDrawerOpen}
-        onClose={() => setIsSortDrawerOpen(false)}
-        onSort={handleSortChange}
       />
       {/* Map Filter Drawers */}
       <FilterByHomeDrawer
@@ -1239,42 +1225,6 @@ export default function StationsPage() {
             </div>
           </div>
 
-          {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
-            <button
-              onClick={() => sortedDestinations.length > 0 && handleSortChange('latest')}
-              disabled={sortedDestinations.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
-                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/latest_first_button_${locale}.png`}
-                alt={tr.latestFirst}
-                className="h-16 w-auto"
-              />
-            </button>
-            <button
-              onClick={() => sortedDestinations.length > 0 && handleSortChange('earliest')}
-              disabled={sortedDestinations.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
-                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/earliest_first_button_${locale}.png`}
-                alt={tr.earliestFirst}
-                className="h-16 w-auto"
-              />
-            </button>
-          </div>
-
           {/* Search Bar - Mobile */}
           <div className="hidden xs:flex justify-center items-center mb-4">
             <div
@@ -1398,24 +1348,6 @@ export default function StationsPage() {
                 </div>
               </div>
             </div>
-
-            {/* Sort Button */}
-            <button
-              onClick={() => sortedDestinations.length > 0 && setIsSortDrawerOpen(true)}
-              disabled={sortedDestinations.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedDestinations.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedDestinations.length === 0 ? 0.5 : 1,
-                filter: sortedDestinations.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/sort_button_${locale}.png`}
-                alt={locale === 'zh' ? '排序' : 'Sort'}
-                className="h-16 w-auto"
-              />
-            </button>
           </div>
 
           {/* Empty State - When no results */}

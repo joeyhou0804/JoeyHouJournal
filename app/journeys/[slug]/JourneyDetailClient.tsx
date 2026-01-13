@@ -8,7 +8,6 @@ import Fuse from 'fuse.js'
 import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
-import SortDrawer from 'src/components/SortDrawer'
 import MixedText from 'src/components/MixedText'
 import DestinationCard from 'src/components/DestinationCard'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
@@ -80,12 +79,10 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
   }, [locale])
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const [xsDisplayCount, setXsDisplayCount] = useState(12)
   const [allDestinations, setAllDestinations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
-  const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const listSectionRef = useRef<HTMLDivElement>(null)
 
@@ -170,9 +167,9 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
     return [...searchFilteredPlaces].sort((a, b) => {
       const dateA = new Date(a.date).getTime()
       const dateB = new Date(b.date).getTime()
-      return sortOrder === 'latest' ? dateB - dateA : dateA - dateB
+      return dateB - dateA // Always sort by latest first
     })
-  }, [searchFilteredPlaces, sortOrder])
+  }, [searchFilteredPlaces])
 
   const totalPages = Math.ceil(sortedPlaces.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
@@ -184,12 +181,6 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
     if (listSectionRef.current) {
       listSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-  }
-
-  const handleSortChange = (order: 'latest' | 'earliest') => {
-    setSortOrder(order)
-    setCurrentPage(1)
-    setXsDisplayCount(itemsPerPage) // Reset xs display count when sorting changes
   }
 
   const handleShowMore = () => {
@@ -304,11 +295,6 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
-      />
-      <SortDrawer
-        isOpen={isSortDrawerOpen}
-        onClose={() => setIsSortDrawerOpen(false)}
-        onSort={handleSortChange}
       />
       <NavigationMenu
         isMenuOpen={isMenuOpen}
@@ -465,7 +451,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
           </div>
 
           {/* Search Bar - Desktop */}
-          <div className="flex justify-center items-center mb-8 xs:hidden">
+          <div className="flex justify-center items-center mb-48 xs:hidden">
             <div
               className="w-full max-w-2xl flex justify-center items-center"
               style={{
@@ -498,44 +484,8 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             </div>
           </div>
 
-          {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
-            <button
-              onClick={() => sortedPlaces.length > 0 && handleSortChange('latest')}
-              disabled={sortedPlaces.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedPlaces.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedPlaces.length === 0 ? 0.5 : 1,
-                filter: sortedPlaces.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/latest_first_button_${locale}.png`}
-                alt={tr.latestFirst}
-                className="h-16 w-auto"
-              />
-            </button>
-            <button
-              onClick={() => sortedPlaces.length > 0 && handleSortChange('earliest')}
-              disabled={sortedPlaces.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedPlaces.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedPlaces.length === 0 ? 0.5 : 1,
-                filter: sortedPlaces.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/earliest_first_button_${locale}.png`}
-                alt={tr.earliestFirst}
-                className="h-16 w-auto"
-              />
-            </button>
-          </div>
-
           {/* Search Bar - Mobile */}
-          <div className="hidden xs:flex justify-center items-center mb-4">
+          <div className="hidden xs:flex justify-center items-center mb-12">
             <div
               className="w-full max-w-2xl flex justify-center items-center"
               style={{
@@ -565,26 +515,6 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 }}
               />
             </div>
-          </div>
-
-          {/* Sort Button - Mobile */}
-          <div className="hidden xs:flex justify-center items-center mb-12">
-            <button
-              onClick={() => sortedPlaces.length > 0 && setIsSortDrawerOpen(true)}
-              disabled={sortedPlaces.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedPlaces.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedPlaces.length === 0 ? 0.5 : 1,
-                filter: sortedPlaces.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/sort_button_${locale}.png`}
-                alt={locale === 'zh' ? '排序' : 'Sort'}
-                className="h-16 w-auto"
-              />
-            </button>
           </div>
 
           {/* Empty State - When no results */}

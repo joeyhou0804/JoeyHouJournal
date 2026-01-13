@@ -11,7 +11,6 @@ import JourneyCard from 'src/components/JourneyCard'
 import dynamic from 'next/dynamic'
 import MapViewHint from 'src/components/MapViewHint'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
-import SortDrawer from 'src/components/SortDrawer'
 import TransportationFilterDrawer from 'src/components/TransportationFilterDrawer'
 import DayTripFilterDrawer from 'src/components/DayTripFilterDrawer'
 import GroupSizeFilterDrawer from 'src/components/GroupSizeFilterDrawer'
@@ -46,7 +45,6 @@ export default function JourneysPage() {
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
-  const [sortOrder, setSortOrder] = useState<'latest' | 'earliest'>('latest')
   const [currentJourneyIndex, setCurrentJourneyIndex] = useState(0)
   const [currentDayTripIndex, setCurrentDayTripIndex] = useState(0)
   const [xsDisplayCount, setXsDisplayCount] = useState(5)
@@ -81,7 +79,6 @@ export default function JourneysPage() {
   const [isTripLengthFilterHovered, setIsTripLengthFilterHovered] = useState(false)
   const [isListGroupSizeFilterHovered, setIsListGroupSizeFilterHovered] = useState(false)
   const [isCombinedOtherFilterHovered, setIsCombinedOtherFilterHovered] = useState(false)
-  const [isSortDrawerOpen, setIsSortDrawerOpen] = useState(false)
   const [isTransportationFilterDrawerOpen, setIsTransportationFilterDrawerOpen] = useState(false)
   const [isDayTripFilterDrawerOpen, setIsDayTripFilterDrawerOpen] = useState(false)
   const [isGroupSizeFilterDrawerOpen, setIsGroupSizeFilterDrawerOpen] = useState(false)
@@ -512,10 +509,10 @@ export default function JourneysPage() {
   }, [filteredTrips, searchQuery, journeysData, allDestinations])
 
   const sortedTrips = [...searchFilteredTrips].sort((a, b) => {
-    // Sort by index/order - latest means start of list, earliest means end
+    // Sort by index/order - always show latest first
     const indexA = trips.indexOf(a)
     const indexB = trips.indexOf(b)
-    return sortOrder === 'latest' ? indexA - indexB : indexB - indexA
+    return indexA - indexB
   })
 
   const totalPages = Math.ceil(sortedTrips.length / itemsPerPage)
@@ -528,12 +525,6 @@ export default function JourneysPage() {
     if (listSectionRef.current) {
       listSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
-  }
-
-  const handleSortChange = (order: 'latest' | 'earliest') => {
-    setSortOrder(order)
-    setCurrentPage(1) // Reset to first page when sorting changes
-    setXsDisplayCount(itemsPerPage) // Reset xs display count when sorting changes
   }
 
   const handleTransportationFilterChange = (filterId: string) => {
@@ -669,11 +660,6 @@ export default function JourneysPage() {
       <ViewHintsDrawer
         isOpen={isViewHintsDrawerOpen}
         onClose={() => setIsViewHintsDrawerOpen(false)}
-      />
-      <SortDrawer
-        isOpen={isSortDrawerOpen}
-        onClose={() => setIsSortDrawerOpen(false)}
-        onSort={handleSortChange}
       />
       <TransportationFilterDrawer
         isOpen={isTransportationFilterDrawerOpen}
@@ -1840,42 +1826,6 @@ export default function JourneysPage() {
             </div>
           </div>
 
-          {/* Sort Buttons - Desktop */}
-          <div className="flex justify-center items-center gap-4 mb-48 xs:hidden">
-            <button
-              onClick={() => sortedTrips.length > 0 && handleSortChange('latest')}
-              disabled={sortedTrips.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedTrips.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedTrips.length === 0 ? 0.5 : 1,
-                filter: sortedTrips.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/latest_first_button_${locale}.png`}
-                alt={tr.latestFirst}
-                className="h-16 w-auto"
-              />
-            </button>
-            <button
-              onClick={() => sortedTrips.length > 0 && handleSortChange('earliest')}
-              disabled={sortedTrips.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedTrips.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedTrips.length === 0 ? 0.5 : 1,
-                filter: sortedTrips.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/earliest_first_button_${locale}.png`}
-                alt={tr.earliestFirst}
-                className="h-16 w-auto"
-              />
-            </button>
-          </div>
-
           {/* Search Bar - Mobile */}
           <div className="hidden xs:flex justify-center items-center mb-4">
             <div
@@ -1987,24 +1937,6 @@ export default function JourneysPage() {
                 </button>
               </div>
             </div>
-
-            {/* Sort Button */}
-            <button
-              onClick={() => sortedTrips.length > 0 && setIsSortDrawerOpen(true)}
-              disabled={sortedTrips.length === 0}
-              className="hover:scale-105 transition-transform duration-200"
-              style={{
-                cursor: sortedTrips.length === 0 ? 'not-allowed' : 'pointer',
-                opacity: sortedTrips.length === 0 ? 0.5 : 1,
-                filter: sortedTrips.length === 0 ? 'grayscale(100%)' : 'none'
-              }}
-            >
-              <img
-                src={`/images/buttons/sort_button_${locale}.png`}
-                alt={locale === 'zh' ? '排序' : 'Sort'}
-                className="h-16 w-auto"
-              />
-            </button>
           </div>
 
           {/* Empty State - When no results */}
