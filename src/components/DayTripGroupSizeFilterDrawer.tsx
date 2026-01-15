@@ -10,7 +10,7 @@ interface DayTripGroupSizeFilterDrawerProps {
 }
 
 const filterOptions: FilterOption[] = [
-  { id: 'all_day_trip_group_sizes', iconPath: '/images/icons/filter/all_group_sizes_dark.png', labelEn: 'All group sizes', labelZh: '人数任意' },
+  { id: 'all_day_trip_group_sizes', iconPath: '/images/icons/filter/all_group_sizes.png', labelEn: 'All group sizes', labelZh: '人数任意' },
   { id: 'day_trip_by_myself', iconPath: '/images/icons/filter/visit_by_myself.png', labelEn: 'By myself', labelZh: '自己旅行' },
   { id: 'day_trip_with_others', iconPath: '/images/icons/filter/visit_with_others.png', labelEn: 'With others', labelZh: '和别人旅行' }
 ]

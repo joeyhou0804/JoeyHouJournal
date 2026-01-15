@@ -122,7 +122,7 @@ export default function MapsPage() {
   }
 
   const groupSizeFilterIconMap: { [key: string]: string } = {
-    'all_group_sizes': '/images/icons/filter/all_group_sizes_dark.png',
+    'all_group_sizes': '/images/icons/filter/all_group_sizes.png',
     'visit_by_myself': '/images/icons/filter/visit_by_myself.png',
     'visit_with_others': '/images/icons/filter/visit_with_others.png'
   }
@@ -150,7 +150,7 @@ export default function MapsPage() {
 
   // Icon maps for Day Trips filters
   const dayTripGroupSizeFilterIconMap: { [key: string]: string } = {
-    'all_day_trip_group_sizes': '/images/icons/filter/all_group_sizes_dark.png',
+    'all_day_trip_group_sizes': '/images/icons/filter/all_group_sizes.png',
     'day_trip_by_myself': '/images/icons/filter/visit_by_myself.png',
     'day_trip_with_others': '/images/icons/filter/visit_with_others.png'
   }

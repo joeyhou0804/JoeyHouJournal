@@ -1055,7 +1055,7 @@ export default function StationsPage() {
           </div>
 
           {/* Filter Buttons - Desktop Only */}
-          <div className="flex flex-col items-center mb-16 xs:hidden">
+          <div className="flex flex-col items-center mb-48 xs:hidden">
             {/* List Filters Label */}
             <MixedText
               text={locale === 'zh' ? '列表筛选条件' : 'List Filters'}

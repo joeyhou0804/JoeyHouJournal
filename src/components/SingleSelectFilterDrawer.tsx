@@ -124,6 +124,10 @@ export default function SingleSelectFilterDrawer({
                 cursor: 'pointer',
                 transition: 'transform 0.2s ease-in-out',
                 transform: isSelected ? 'scale(1.15)' : 'scale(1)',
+                aspectRatio: '1',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 '&:hover': {
                   opacity: 0.85
                 }
@@ -134,10 +138,13 @@ export default function SingleSelectFilterDrawer({
                 src={filter.iconPath}
                 alt={locale === 'zh' ? filter.labelZh : filter.labelEn}
                 sx={{
-                  width: '100%',
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                  width: 'auto',
                   height: 'auto',
                   display: 'block',
-                  borderRadius: '0.5rem'
+                  borderRadius: '0.5rem',
+                  objectFit: 'contain'
                 }}
               />
               {/* Selected indicator */}

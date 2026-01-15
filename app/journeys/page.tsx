@@ -112,7 +112,7 @@ export default function JourneysPage() {
   }
 
   const dayTripGroupSizeFilterIconMap: { [key: string]: string } = {
-    'all_day_trip_group_sizes': '/images/icons/filter/all_group_sizes_dark.png',
+    'all_day_trip_group_sizes': '/images/icons/filter/all_group_sizes.png',
     'day_trip_by_myself': '/images/icons/filter/visit_by_myself.png',
     'day_trip_with_others': '/images/icons/filter/visit_with_others.png'
   }
@@ -1662,7 +1662,7 @@ export default function JourneysPage() {
           </div>
 
           {/* Filter Buttons - Desktop Only - List Section */}
-          <div className="flex flex-col items-center mb-16 xs:hidden">
+          <div className="flex flex-col items-center mb-48 xs:hidden">
             {/* List Filters Label */}
             <MixedText
               text={locale === 'zh' ? '列表筛选条件' : 'List Filters'}
