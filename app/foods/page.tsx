@@ -7,6 +7,7 @@ import Footer from 'src/components/Footer'
 import NavigationMenu from 'src/components/NavigationMenu'
 import MixedText from 'src/components/MixedText'
 import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
+import CuisineStyleFilterDrawer from 'src/components/CuisineStyleFilterDrawer'
 import DestinationCard from 'src/components/DestinationCard'
 import { useTranslation } from 'src/hooks/useTranslation'
 import type { Food } from '@/src/data/foods'
@@ -55,9 +56,45 @@ export default function FoodsPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [xsDisplayCount, setXsDisplayCount] = useState(12)
   const [isViewHintsDrawerOpen, setIsViewHintsDrawerOpen] = useState(false)
+  const [isCuisineFilterDrawerOpen, setIsCuisineFilterDrawerOpen] = useState(false)
+  const [selectedCuisineFilter, setSelectedCuisineFilter] = useState<string>('all_foods')
+  const [isCuisineFilterHovered, setIsCuisineFilterHovered] = useState(false)
   const listSectionRef = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = 12
+
+  // Mapping of filter IDs to cuisine styles
+  const cuisineFilterMap: { [key: string]: string } = {
+    'east_asian': 'East Asian',
+    'american': 'American',
+    'european': 'European',
+    'southeast_asian': 'Southeast Asian',
+    'south_asian': 'South Asian',
+    'latin_american': 'Latin American',
+    'other': 'Other',
+    'drinks': 'Drinks',
+    'desserts': 'Desserts'
+  }
+
+  // Mapping of filter IDs to icon paths
+  const cuisineFilterIconMap: { [key: string]: string } = {
+    'all_foods': '/images/icons/filter/all_foods.png',
+    'east_asian': '/images/icons/filter/east_asian.png',
+    'american': '/images/icons/filter/american.png',
+    'european': '/images/icons/filter/european.png',
+    'southeast_asian': '/images/icons/filter/southeast_asian.png',
+    'south_asian': '/images/icons/filter/south_asian.png',
+    'latin_american': '/images/icons/filter/latin_american.png',
+    'other': '/images/icons/filter/other.png',
+    'drinks': '/images/icons/filter/drinks.png',
+    'desserts': '/images/icons/filter/desserts.png'
+  }
+
+  const handleCuisineFilterChange = (filterId: string) => {
+    setSelectedCuisineFilter(filterId)
+    setCurrentPage(1)
+    setXsDisplayCount(itemsPerPage)
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -91,13 +128,23 @@ export default function FoodsPage() {
     fetchData()
   }, [])
 
-  // Search functionality with fuzzy matching
+  // Filter by cuisine style
+  const cuisineFilteredFoods = useMemo(() => {
+    if (selectedCuisineFilter === 'all_foods') {
+      return foods
+    }
+    const cuisineStyle = cuisineFilterMap[selectedCuisineFilter]
+    if (!cuisineStyle) return foods
+    return foods.filter(food => food.cuisineStyle === cuisineStyle)
+  }, [foods, selectedCuisineFilter])
+
+  // Search functionality with fuzzy matching (applied after cuisine filter)
   const searchFilteredFoods = useMemo(() => {
-    if (!searchQuery.trim()) return foods
+    if (!searchQuery.trim()) return cuisineFilteredFoods
 
     // Enrich foods with destination data for searching
     const destinationMap = new Map(destinations.map(dest => [dest.id, dest]))
-    const enrichedFoods = foods.map(food => {
+    const enrichedFoods = cuisineFilteredFoods.map(food => {
       const destination = destinationMap.get(food.destinationId)
       return {
         ...food,
@@ -127,7 +174,7 @@ export default function FoodsPage() {
 
     const results = fuse.search(searchQuery)
     return results.map(result => result.item)
-  }, [foods, destinations, searchQuery])
+  }, [cuisineFilteredFoods, destinations, searchQuery])
 
   // Convert foods to map places format using destination coordinates
   const foodsForMap = useMemo(() => {
@@ -283,6 +330,13 @@ export default function FoodsPage() {
         onClose={() => setIsViewHintsDrawerOpen(false)}
       />
 
+      <CuisineStyleFilterDrawer
+        isOpen={isCuisineFilterDrawerOpen}
+        onClose={() => setIsCuisineFilterDrawerOpen(false)}
+        onFilterChange={handleCuisineFilterChange}
+        selectedFilter={selectedCuisineFilter}
+      />
+
       <NavigationMenu
         isMenuOpen={isMenuOpen}
         isMenuButtonVisible={isMenuButtonVisible}
@@ -416,7 +470,7 @@ export default function FoodsPage() {
           </div>
 
           {/* Search Bar - Desktop */}
-          <div className="flex justify-center items-center mb-48 xs:hidden">
+          <div className="flex justify-center items-center mb-8 xs:hidden">
             <div
               className="w-full max-w-2xl flex justify-center items-center"
               style={{
@@ -452,8 +506,80 @@ export default function FoodsPage() {
             </div>
           </div>
 
+          {/* Filter Button - Desktop */}
+          <div className="flex flex-col items-center mb-48 xs:hidden">
+            <MixedText
+              text={locale === 'zh' ? '列表筛选条件' : 'List Filter'}
+              chineseFont="MarioFontTitleChinese, sans-serif"
+              englishFont="MarioFontTitle, sans-serif"
+              fontSize="24px"
+              color="#373737"
+              component="p"
+              sx={{
+                textShadow: '2px 2px 0px #F6F6F6',
+                margin: 0,
+                marginBottom: '0.5rem'
+              }}
+            />
+            <div
+              className="flex justify-center items-center"
+              style={{
+                backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                height: '140px',
+                width: '100%',
+                maxWidth: '900px'
+              }}
+            >
+              <div style={{ position: 'relative' }}>
+                <button
+                  onClick={() => setIsCuisineFilterDrawerOpen(true)}
+                  onMouseEnter={() => setIsCuisineFilterHovered(true)}
+                  onMouseLeave={() => setIsCuisineFilterHovered(false)}
+                  className="hover:scale-105 transition-transform duration-200"
+                >
+                  <img
+                    src={cuisineFilterIconMap[selectedCuisineFilter] || cuisineFilterIconMap['all_foods']}
+                    alt={locale === 'zh' ? '用食物类别筛选' : 'Filter by Cuisine Style'}
+                    className="h-24 w-auto"
+                    style={{
+                      filter: selectedCuisineFilter !== 'all_foods' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    }}
+                  />
+                </button>
+                {isCuisineFilterHovered && (
+                  <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '100%',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      marginTop: '0.5rem',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    <MixedText
+                      text={locale === 'zh' ? '用食物类别筛选' : 'Filter by Cuisine Style'}
+                      chineseFont="MarioFontTitleChinese, sans-serif"
+                      englishFont="MarioFontTitle, sans-serif"
+                      fontSize="24px"
+                      color="#373737"
+                      component="p"
+                      sx={{
+                        textShadow: '2px 2px 0px #F6F6F6',
+                        margin: 0
+                      }}
+                    />
+                  </Box>
+                )}
+              </div>
+            </div>
+          </div>
+
           {/* Search Bar - Mobile */}
-          <div className="hidden xs:flex justify-center items-center mb-12">
+          <div className="hidden xs:flex justify-center items-center mb-4">
             <div
               className="w-full max-w-2xl flex justify-center items-center"
               style={{
@@ -486,6 +612,52 @@ export default function FoodsPage() {
                   outline: 'none'
                 }}
               />
+            </div>
+          </div>
+
+          {/* Filter Button - Mobile */}
+          <div className="hidden xs:flex flex-col items-center gap-2 mb-12">
+            <div className="flex flex-col items-center w-full">
+              <MixedText
+                text={locale === 'zh' ? '列表筛选条件' : 'List Filter'}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize="24px"
+                color="#373737"
+                component="p"
+                sx={{
+                  textShadow: '2px 2px 0px #F6F6F6',
+                  margin: 0
+                }}
+              />
+              <div
+                className="flex justify-center items-center"
+                style={{
+                  backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: 'contain',
+                  backgroundPosition: 'center',
+                  height: '100px',
+                  width: '100%',
+                  maxWidth: '400px'
+                }}
+              >
+                <div style={{ position: 'relative' }}>
+                  <button
+                    onClick={() => setIsCuisineFilterDrawerOpen(true)}
+                    className="hover:scale-105 transition-transform duration-200"
+                  >
+                    <img
+                      src={cuisineFilterIconMap[selectedCuisineFilter] || cuisineFilterIconMap['all_foods']}
+                      alt={locale === 'zh' ? '用食物类别筛选' : 'Filter by Cuisine Style'}
+                      className="h-16 w-auto"
+                      style={{
+                        filter: selectedCuisineFilter !== 'all_foods' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      }}
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 

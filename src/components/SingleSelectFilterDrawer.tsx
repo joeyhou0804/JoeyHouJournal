@@ -23,6 +23,9 @@ interface SingleSelectFilterDrawerProps {
   onFilterChange?: (filterId: string) => void
   showSelectedBanner?: boolean
   bannerImagePath?: string
+  gridColumnsMobile?: number
+  gridColumnsDesktop?: number
+  drawerWidth?: { xs: string; sm: string }
 }
 
 export default function SingleSelectFilterDrawer({
@@ -35,7 +38,10 @@ export default function SingleSelectFilterDrawer({
   selectedFilter: selectedFilterProp,
   onFilterChange,
   showSelectedBanner = true,
-  bannerImagePath = '/images/destinations/hints/map_view_hint_title.webp'
+  bannerImagePath = '/images/destinations/hints/map_view_hint_title.webp',
+  gridColumnsMobile = 3,
+  gridColumnsDesktop = 4,
+  drawerWidth = { xs: '90%', sm: '600px' }
 }: SingleSelectFilterDrawerProps) {
   const { locale } = useLanguage()
   const selectedFilter = selectedFilterProp || defaultSelected || filterOptions[0]?.id
@@ -53,7 +59,7 @@ export default function SingleSelectFilterDrawer({
       titleEn={titleEn}
       titleZh={titleZh}
       buttonType="all_set"
-      width={{ xs: '90%', sm: '600px' }}
+      width={drawerWidth}
     >
       {/* Selected filter display banner */}
       {showSelectedBanner && (
@@ -98,7 +104,7 @@ export default function SingleSelectFilterDrawer({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: { xs: 'repeat(3, 1fr)', sm: 'repeat(4, 1fr)' },
+          gridTemplateColumns: { xs: `repeat(${gridColumnsMobile}, 1fr)`, sm: `repeat(${gridColumnsDesktop}, 1fr)` },
           gap: { xs: '0.5rem', sm: '0.75rem' },
           marginBottom: '2rem'
         }}
