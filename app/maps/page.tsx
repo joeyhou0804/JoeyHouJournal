@@ -60,7 +60,29 @@ export default function MapsPage() {
       '/images/backgrounds/homepage_background_2.webp',
       '/images/backgrounds/homepage_background.webp',
       '/images/backgrounds/map_background.png',
-      '/images/destinations/destination_page_map_background.webp'
+      '/images/destinations/destination_page_map_background.webp',
+      // Home location filter icons
+      '/images/icons/filter/around_home_destination.png',
+      '/images/icons/filter/new_york_icon.png',
+      '/images/icons/filter/berkeley_icon.png',
+      '/images/icons/filter/palo_alto_icon.png',
+      '/images/icons/filter/san_francisco_icon.png',
+      // Group size filter icons
+      '/images/icons/filter/all_group_sizes.png',
+      '/images/icons/filter/visit_by_myself.png',
+      '/images/icons/filter/visit_with_others.png',
+      // Other filter icons
+      '/images/icons/filter/all_destination_icon.png',
+      '/images/icons/filter/stay_overnight.png',
+      '/images/icons/filter/visit_on_train.png',
+      '/images/icons/filter/photo_stops_on_trains.png',
+      '/images/icons/filter/visit_more_than_once.png',
+      // Transportation filter icons
+      '/images/icons/filter/all_transport_icon.png',
+      '/images/icons/filter/train_only_icon.png',
+      '/images/icons/filter/other_transport_icon.png',
+      // Day trip location filter icons
+      '/images/icons/filter/around_new_york_icon.png'
     ]
     preloadImages.forEach(src => {
       const link = document.createElement('link')

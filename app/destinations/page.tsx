@@ -42,7 +42,23 @@ export default function StationsPage() {
       `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/destination_page_title_${locale}.jpg`,
       `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/destination_page_title_xs_${locale}.jpg`,
       '/images/backgrounds/homepage_background_2.webp',
-      '/images/destinations/destination_page_map_background.webp'
+      '/images/destinations/destination_page_map_background.webp',
+      // Home location filter icons
+      '/images/icons/filter/all_home_locations.png',
+      '/images/icons/filter/new_york_icon.png',
+      '/images/icons/filter/berkeley_icon.png',
+      '/images/icons/filter/palo_alto_icon.png',
+      '/images/icons/filter/san_francisco_icon.png',
+      // Group size filter icons
+      '/images/icons/filter/all_group_sizes.png',
+      '/images/icons/filter/visit_by_myself.png',
+      '/images/icons/filter/visit_with_others.png',
+      // Other filter icons
+      '/images/icons/filter/all_destination_icon.png',
+      '/images/icons/filter/stay_overnight.png',
+      '/images/icons/filter/visit_on_train.png',
+      '/images/icons/filter/photo_stops_on_trains.png',
+      '/images/icons/filter/visit_more_than_once.png'
     ]
     preloadImages.forEach(src => {
       const link = document.createElement('link')

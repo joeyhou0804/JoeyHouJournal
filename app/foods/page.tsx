@@ -39,7 +39,18 @@ export default function FoodsPage() {
       `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/foods_page_title_${locale}.jpg`,
       `https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/foods_page_title_xs_${locale}.jpg`,
       '/images/backgrounds/homepage_background_2.webp',
-      '/images/backgrounds/pattern-food-orange-2x.png'
+      '/images/backgrounds/pattern-food-orange-2x.png',
+      // Cuisine filter icons
+      '/images/icons/filter/all_foods.png',
+      '/images/icons/filter/east_asian.png',
+      '/images/icons/filter/american.png',
+      '/images/icons/filter/european.png',
+      '/images/icons/filter/southeast_asian.png',
+      '/images/icons/filter/south_asian.png',
+      '/images/icons/filter/latin_american.png',
+      '/images/icons/filter/other.png',
+      '/images/icons/filter/drinks.png',
+      '/images/icons/filter/desserts.png'
     ]
     preloadImages.forEach(src => {
       const link = document.createElement('link')
