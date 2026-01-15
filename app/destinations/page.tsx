@@ -92,7 +92,7 @@ export default function StationsPage() {
 
   // Mapping of filter IDs to icon paths
   const homeFilterIconMap: { [key: string]: string } = {
-    'all_destinations': '/images/icons/filter/around_home_destination.png',
+    'all_destinations': '/images/icons/filter/all_home_locations.png',
     'new_york': '/images/icons/filter/new_york_icon.png',
     'berkeley': '/images/icons/filter/berkeley_icon.png',
     'palo_alto': '/images/icons/filter/palo_alto_icon.png',
