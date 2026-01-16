@@ -132,7 +132,6 @@ export default function SingleSelectFilterDrawer({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                overflow: 'hidden',
                 minWidth: 0,
                 '&:hover': {
                   opacity: 0.85
