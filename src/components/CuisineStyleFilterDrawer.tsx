@@ -37,6 +37,7 @@ export default function CuisineStyleFilterDrawer({ isOpen, onClose, onFilterChan
       gridColumnsMobile={4}
       gridColumnsDesktop={5}
       drawerWidth={{ xs: '95%', sm: '700px' }}
+      gapMobile="0.5rem"
     />
   )
 }

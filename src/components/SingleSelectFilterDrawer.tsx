@@ -26,6 +26,7 @@ interface SingleSelectFilterDrawerProps {
   gridColumnsMobile?: number
   gridColumnsDesktop?: number
   drawerWidth?: { xs: string; sm: string }
+  gapMobile?: string
 }
 
 export default function SingleSelectFilterDrawer({
@@ -41,7 +42,8 @@ export default function SingleSelectFilterDrawer({
   bannerImagePath = '/images/destinations/hints/map_view_hint_title.webp',
   gridColumnsMobile = 3,
   gridColumnsDesktop = 4,
-  drawerWidth = { xs: '90%', sm: '600px' }
+  drawerWidth = { xs: '90%', sm: '600px' },
+  gapMobile = '1rem'
 }: SingleSelectFilterDrawerProps) {
   const { locale } = useLanguage()
   const selectedFilter = selectedFilterProp || defaultSelected || filterOptions[0]?.id
@@ -105,7 +107,7 @@ export default function SingleSelectFilterDrawer({
         sx={{
           display: 'grid',
           gridTemplateColumns: { xs: `repeat(${gridColumnsMobile}, 1fr)`, sm: `repeat(${gridColumnsDesktop}, 1fr)` },
-          gap: { xs: '1rem', sm: '0.75rem' },
+          gap: { xs: gapMobile, sm: '0.75rem' },
           marginBottom: '2rem',
           padding: { xs: '0 0.5rem', sm: '0' },
           overflow: 'hidden',
@@ -124,15 +126,14 @@ export default function SingleSelectFilterDrawer({
                 position: 'relative',
                 border: 'none',
                 background: 'transparent',
-                padding: 0,
+                padding: '5%',
                 cursor: 'pointer',
-                transition: 'transform 0.2s ease-in-out',
-                transform: isSelected ? 'scale(1.1)' : 'scale(1)',
                 aspectRatio: '1',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 minWidth: 0,
+                boxSizing: 'border-box',
                 '&:hover': {
                   opacity: 0.85
                 }
@@ -143,13 +144,13 @@ export default function SingleSelectFilterDrawer({
                 src={filter.iconPath}
                 alt={locale === 'zh' ? filter.labelZh : filter.labelEn}
                 sx={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  width: 'auto',
-                  height: 'auto',
+                  width: '100%',
+                  height: '100%',
                   display: 'block',
                   borderRadius: '0.5rem',
-                  objectFit: 'contain'
+                  objectFit: 'contain',
+                  transition: 'transform 0.2s ease-in-out',
+                  transform: isSelected ? 'scale(1.1)' : 'scale(1)'
                 }}
               />
               {/* Selected indicator */}
