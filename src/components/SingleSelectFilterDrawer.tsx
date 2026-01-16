@@ -107,7 +107,10 @@ export default function SingleSelectFilterDrawer({
           gridTemplateColumns: { xs: `repeat(${gridColumnsMobile}, 1fr)`, sm: `repeat(${gridColumnsDesktop}, 1fr)` },
           gap: { xs: '1rem', sm: '0.75rem' },
           marginBottom: '2rem',
-          padding: { xs: '0 0.5rem', sm: '0' }
+          padding: { xs: '0 0.5rem', sm: '0' },
+          overflow: 'hidden',
+          width: '100%',
+          boxSizing: 'border-box'
         }}
       >
         {filterOptions.map((filter) => {
@@ -124,11 +127,13 @@ export default function SingleSelectFilterDrawer({
                 padding: 0,
                 cursor: 'pointer',
                 transition: 'transform 0.2s ease-in-out',
-                transform: isSelected ? 'scale(1.15)' : 'scale(1)',
+                transform: isSelected ? 'scale(1.1)' : 'scale(1)',
                 aspectRatio: '1',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                overflow: 'hidden',
+                minWidth: 0,
                 '&:hover': {
                   opacity: 0.85
                 }

@@ -144,7 +144,10 @@ export default function FilterDrawerBase({
             backgroundImage: 'url(/images/homepage/email_subscription_background.png)',
             backgroundRepeat: 'repeat',
             backgroundSize: '200px auto',
-            position: 'relative'
+            position: 'relative',
+            overflowX: 'hidden',
+            width: '100%',
+            boxSizing: 'border-box'
           }}
         >
           {/* Close Button */}
