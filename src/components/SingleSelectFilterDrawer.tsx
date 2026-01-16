@@ -107,7 +107,7 @@ export default function SingleSelectFilterDrawer({
           gridTemplateColumns: { xs: `repeat(${gridColumnsMobile}, 1fr)`, sm: `repeat(${gridColumnsDesktop}, 1fr)` },
           gap: { xs: '1rem', sm: '0.75rem' },
           marginBottom: '2rem',
-          padding: { xs: '0', sm: '0' }
+          padding: { xs: '0 0.5rem', sm: '0' }
         }}
       >
         {filterOptions.map((filter) => {
