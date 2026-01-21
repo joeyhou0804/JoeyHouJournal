@@ -122,14 +122,15 @@ export default function StatesChoroplethMap({ visitedStates, destinations = [], 
       scrollWheelZoom: true,
       dragging: true,
       touchZoom: true
-    }).setView([39.8283, -98.5795], 4) // Center of continental US
+    }).setView([39.8283, -98.5795], isMobile ? 3 : 4) // Center of continental US
 
     mapRef.current = map
 
     // Add tile layer with light gray theme
+    // Allow more zoom out on mobile (minZoom 3) vs desktop (minZoom 4)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      minZoom: 4,
+      minZoom: isMobile ? 3 : 4,
       maxZoom: 10,
     }).addTo(map)
 

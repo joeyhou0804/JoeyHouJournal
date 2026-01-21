@@ -140,7 +140,9 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
 
     // Determine initial zoom level based on screen size and view type (or use provided initialZoom)
     const isSmallScreen = typeof window !== 'undefined' && window.innerWidth < 640
-    const calculatedZoom = (isDetailView && isSmallScreen) ? 6 : 5
+    const calculatedZoom = isDetailView
+      ? (isSmallScreen ? 6 : 5)
+      : (isMobile ? 3 : 5)
     const mapZoom = initialZoom !== undefined ? initialZoom : calculatedZoom
 
     // Initialize map
@@ -152,9 +154,10 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
     mapRef.current = map
 
     // Add tile layer with light gray theme
+    // Allow more zoom out on mobile (minZoom 3) vs desktop (minZoom 4)
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-      minZoom: 4,
+      minZoom: isMobile ? 3 : 4,
       maxZoom: maxZoom,
     }).addTo(map)
 
