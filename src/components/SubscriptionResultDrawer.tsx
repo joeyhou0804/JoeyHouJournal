@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import BaseDrawer from './BaseDrawer'
 import { useLanguage } from 'src/contexts/LanguageContext'
 import { useFontFamily } from 'src/hooks/useFontFamily'
+import { vw, rvw } from 'src/utils/scaling'
 
 interface SubscriptionResultDrawerProps {
   isOpen: boolean
@@ -33,17 +34,17 @@ export default function SubscriptionResultDrawer({
       onClose={onClose}
       titleEn={title}
       titleZh={title}
-      width={{ xs: '90%', sm: '500px' }}
+      width={{ xs: '90%', md: vw(500) }}
       showOkButton={true}
     >
       {/* Message */}
       <Box
         sx={{
           fontFamily: bodyFont,
-          fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+          fontSize: rvw(locale === 'zh' ? 18 : 16, locale === 'zh' ? 20 : 18),
           color: '#373737',
           textAlign: 'center',
-          marginBottom: '2.5rem',
+          marginBottom: rvw(40, 40),
           lineHeight: 1.6
         }}
       >

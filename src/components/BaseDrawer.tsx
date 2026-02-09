@@ -17,7 +17,7 @@ interface FilterDrawerBaseProps {
   children: ReactNode
   showOkButton?: boolean
   buttonType?: 'ok' | 'all_set'
-  width?: { xs: string, sm?: string, md?: string }
+  width?: { xs: string, md?: string }
   onOk?: () => void
 }
 

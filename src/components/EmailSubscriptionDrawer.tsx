@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import BaseDrawer from './BaseDrawer'
 import { useLanguage } from 'src/contexts/LanguageContext'
 import { useFontFamily } from 'src/hooks/useFontFamily'
+import { vw, rvw } from 'src/utils/scaling'
 import SubscriptionResultDrawer from './SubscriptionResultDrawer'
 
 interface EmailSubscriptionDrawerProps {
@@ -124,97 +125,105 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
         onClose={handleUserCloseFormDrawer}
         titleEn={t.emailSubscription?.title || 'Email Subscription'}
         titleZh={t.emailSubscription?.title || '邮件订阅'}
-        width={{ xs: '90%', sm: '500px' }}
+        width={{ xs: '90%', md: vw(500) }}
         showOkButton={false}
       >
         {/* Description */}
         <Box
           sx={{
             fontFamily: bodyFont,
-            fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+            fontSize: rvw(locale === 'zh' ? 18 : 16, locale === 'zh' ? 20 : 18),
             color: '#373737',
             textAlign: 'center',
-            marginBottom: { xs: '1.25rem', sm: '2rem' }
+            marginBottom: rvw(20, 32)
           }}
         >
           {t.emailSubscription?.description || 'Subscribe to get updates about my travels!'}
         </Box>
 
         {/* Name Field */}
-        <Box sx={{ marginBottom: { xs: '1rem', sm: '1.5rem' } }}>
+        <Box sx={{ marginBottom: rvw(16, 24) }}>
           <Box
             component="label"
             sx={{
               fontFamily: titleFont,
-              fontSize: locale === 'zh' ? '20px' : '18px',
+              fontSize: rvw(locale === 'zh' ? 20 : 18, locale === 'zh' ? 20 : 18),
               color: '#373737',
               display: 'block',
-              marginBottom: '0.5rem'
+              marginBottom: rvw(8, 8)
             }}
           >
             {t.emailSubscription?.nameLabel || 'Name'}
           </Box>
-          <input
+          <Box
+            component="input"
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
             placeholder={t.emailSubscription?.namePlaceholder || 'Enter your name'}
-            style={{
+            sx={{
               width: '100%',
-              padding: '0.75rem',
-              fontSize: '16px',
+              padding: rvw(12, 12),
+              fontSize: rvw(16, 16),
               fontFamily: bodyFont,
-              borderRadius: '0.5rem',
-              border: '2px solid #373737',
+              borderRadius: rvw(8, 8),
+              borderWidth: rvw(2, 2),
+              borderStyle: 'solid',
+              borderColor: '#373737',
               backgroundColor: '#F6F6F6',
               color: '#373737',
-              outline: 'none'
+              outline: 'none',
+              boxSizing: 'border-box'
             }}
           />
         </Box>
 
         {/* Email Field */}
-        <Box sx={{ marginBottom: { xs: '1rem', sm: '1.5rem' } }}>
+        <Box sx={{ marginBottom: rvw(16, 24) }}>
           <Box
             component="label"
             sx={{
               fontFamily: titleFont,
-              fontSize: locale === 'zh' ? '20px' : '18px',
+              fontSize: rvw(locale === 'zh' ? 20 : 18, locale === 'zh' ? 20 : 18),
               color: '#373737',
               display: 'block',
-              marginBottom: '0.5rem'
+              marginBottom: rvw(8, 8)
             }}
           >
             {t.emailSubscription?.emailLabel || 'Email'}
           </Box>
-          <input
+          <Box
+            component="input"
             type="email"
             value={email}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value)
               // Clear error when user starts typing
               if (emailError) setEmailError('')
             }}
             placeholder={t.emailSubscription?.emailPlaceholder || 'Enter your email'}
-            style={{
+            sx={{
               width: '100%',
-              padding: '0.75rem',
-              fontSize: '16px',
+              padding: rvw(12, 12),
+              fontSize: rvw(16, 16),
               fontFamily: bodyFont,
-              borderRadius: '0.5rem',
-              border: emailError ? '2px solid #d32f2f' : '2px solid #373737',
+              borderRadius: rvw(8, 8),
+              borderWidth: rvw(2, 2),
+              borderStyle: 'solid',
+              borderColor: emailError ? '#d32f2f' : '#373737',
               backgroundColor: '#F6F6F6',
               color: '#373737',
-              outline: 'none'
+              outline: 'none',
+              boxSizing: 'border-box'
             }}
           />
           {emailError && (
             <Box
               sx={{
                 fontFamily: bodyFont,
-                fontSize: '14px',
+                fontSize: rvw(14, 14),
                 color: '#d32f2f',
-                marginTop: '0.5rem'
+                marginTop: rvw(8, 8)
               }}
             >
               {emailError}
@@ -223,15 +232,15 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
         </Box>
 
         {/* Language Toggle */}
-        <Box sx={{ marginBottom: { xs: '1.25rem', sm: '2rem' } }}>
+        <Box sx={{ marginBottom: rvw(20, 32) }}>
           <Box
             component="label"
             sx={{
               fontFamily: titleFont,
-              fontSize: locale === 'zh' ? '20px' : '18px',
+              fontSize: rvw(locale === 'zh' ? 20 : 18, locale === 'zh' ? 20 : 18),
               color: '#373737',
               display: 'block',
-              marginBottom: '0.75rem',
+              marginBottom: rvw(12, 12),
               textAlign: 'center'
             }}
           >
@@ -242,15 +251,17 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
               onClick={() => setSubscriptionLocale(subscriptionLocale === 'en' ? 'zh' : 'en')}
               sx={{
                 position: 'relative',
-                width: '200px',
-                height: '50px',
+                width: rvw(200, 200),
+                height: rvw(50, 50),
                 backgroundColor: '#373737',
-                borderRadius: '25px',
-                border: '2px solid #373737',
+                borderRadius: rvw(25, 25),
+                borderWidth: rvw(2, 2),
+                borderStyle: 'solid',
+                borderColor: '#373737',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                padding: '4px',
+                padding: rvw(4, 4),
                 transition: 'all 0.3s'
               }}
             >
@@ -258,13 +269,15 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
               <Box
                 sx={{
                   position: 'absolute',
-                  width: '96px',
-                  height: '42px',
+                  width: rvw(96, 96),
+                  height: rvw(42, 42),
                   backgroundColor: '#F6F6F6',
-                  borderRadius: '21px',
+                  borderRadius: rvw(21, 21),
                   transition: 'transform 0.3s ease',
-                  transform: subscriptionLocale === 'en' ? 'translateX(-2px)' : 'translateX(94px)',
-                  left: '4px'
+                  transform: subscriptionLocale === 'en'
+                    ? { xs: `translateX(${vw(-2, 'mobile')})`, md: `translateX(${vw(-2)})` }
+                    : { xs: `translateX(${vw(94, 'mobile')})`, md: `translateX(${vw(94)})` },
+                  left: rvw(4, 4)
                 }}
               />
 
@@ -273,7 +286,7 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
                 sx={{
                   flex: 1,
                   fontFamily: 'MarioFontTitle, sans-serif',
-                  fontSize: '16px',
+                  fontSize: rvw(16, 16),
                   fontWeight: 'bold',
                   color: subscriptionLocale === 'en' ? '#373737' : '#F6F6F6',
                   textAlign: 'center',
@@ -290,7 +303,7 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
                 sx={{
                   flex: 1,
                   fontFamily: 'MarioFontTitleChinese, sans-serif',
-                  fontSize: '18px',
+                  fontSize: rvw(18, 18),
                   fontWeight: 'bold',
                   color: subscriptionLocale === 'zh' ? '#373737' : '#F6F6F6',
                   textAlign: 'center',
@@ -308,11 +321,13 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
         {/* Divider */}
         <Box
           sx={{
-            width: 'calc(100% - 1rem)',
-            height: '4px',
+            width: '90%',
+            height: rvw(4, 4),
             backgroundColor: '#373737',
-            borderRadius: '2px',
-            margin: '0 auto 2rem auto'
+            borderRadius: rvw(2, 2),
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            marginBottom: rvw(32, 32)
           }}
         />
 
@@ -336,7 +351,7 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
               alt="Subscribe"
               sx={{
                 height: 'auto',
-                width: { xs: '15rem', sm: '16rem' },
+                width: rvw(240, 256),
                 opacity: isSubmitting ? 0.6 : 1
               }}
             />
@@ -345,9 +360,9 @@ export default function EmailSubscriptionDrawer({ isOpen, onClose }: EmailSubscr
             <Box
               sx={{
                 fontFamily: bodyFont,
-                fontSize: '14px',
+                fontSize: rvw(14, 14),
                 color: '#373737',
-                marginTop: '0.5rem'
+                marginTop: rvw(8, 8)
               }}
             >
               {locale === 'en' ? 'Submitting...' : '提交中...'}

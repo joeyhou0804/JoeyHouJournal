@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import Box from '@mui/material/Box'
 import { useTranslation } from 'src/hooks/useTranslation'
-import { vw } from 'src/utils/scaling'
+import { vw, rvw } from 'src/utils/scaling'
 import EmailSubscriptionDrawer from './EmailSubscriptionDrawer'
 
 interface NavigationMenuProps {
@@ -48,22 +48,24 @@ export default function NavigationMenu({
 
           {/* Drawer */}
           <Box
-            className={`fixed right-0 transform transition-transform duration-150 ease-out rounded-l-2xl border-4 ${
+            className={`fixed right-0 transform transition-transform duration-150 ease-out ${
               isDrawerAnimating ? 'translate-x-full' : 'translate-x-0'
             }`}
-            style={{
-              top: vw(32, 'mobile'),
-              width: vw(256, 'mobile'),
-            }}
             sx={{
+              top: rvw(32, 32),
+              width: rvw(256, 256),
               backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
               backgroundRepeat: 'repeat',
-              backgroundSize: vw(200, 'mobile'),
+              backgroundSize: rvw(200, 200),
+              borderWidth: rvw(4, 4),
+              borderStyle: 'solid',
               borderColor: '#373737',
+              borderTopLeftRadius: rvw(16, 16),
+              borderBottomLeftRadius: rvw(16, 16),
               zIndex: 9999,
               height: 'auto',
-              paddingTop: vw(48, 'mobile'),
-              paddingBottom: vw(48, 'mobile'),
+              paddingTop: rvw(48, 48),
+              paddingBottom: rvw(48, 48),
             }}
           >
             {/* Close Button */}
@@ -71,18 +73,18 @@ export default function NavigationMenu({
               component="button"
               onClick={closeMenu}
               className="absolute hover:scale-105 transition-transform duration-200"
-              style={{
-                top: vw(-24, 'mobile'),
-                left: vw(-24, 'mobile'),
+              sx={{
+                top: rvw(-24, -24),
+                left: rvw(-24, -24),
               }}
             >
               <Box
                 component="img"
                 src="/images/icons/menu_close.webp"
                 alt="Close Menu"
-                style={{
-                  width: vw(48, 'mobile'),
-                  height: vw(48, 'mobile'),
+                sx={{
+                  width: rvw(48, 48),
+                  height: rvw(48, 48),
                 }}
               />
             </Box>
@@ -90,10 +92,10 @@ export default function NavigationMenu({
             {/* Navigation Buttons */}
             <Box
               className="flex flex-col items-center"
-              style={{
-                gap: vw(8, 'mobile'),
-                paddingLeft: vw(16, 'mobile'),
-                paddingRight: vw(16, 'mobile'),
+              sx={{
+                gap: rvw(8, 8),
+                paddingLeft: rvw(16, 16),
+                paddingRight: rvw(16, 16),
               }}
             >
               <Link href="/" className="group hover:scale-105 transition-transform duration-200" onClick={closeMenu}>
@@ -101,8 +103,8 @@ export default function NavigationMenu({
                   component="img"
                   src={`/images/logos/logo_${locale}.png`}
                   alt="Home"
-                  style={{
-                    height: vw(128, 'mobile'),
+                  sx={{
+                    height: rvw(128, 128),
                     width: 'auto',
                   }}
                 />
@@ -114,7 +116,7 @@ export default function NavigationMenu({
                     component="img"
                     src={`/images/buttons/menu_long/journeys_button_long_hover_${locale}.png`}
                     alt="Journeys"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                 </Box>
               ) : (
@@ -124,14 +126,14 @@ export default function NavigationMenu({
                     src={`/images/buttons/menu_long/journeys_button_long_${locale}.png`}
                     alt="Journeys"
                     className="group-hover:hidden"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                   <Box
                     component="img"
                     src={`/images/buttons/menu_long/journeys_button_long_hover_${locale}.png`}
                     alt="Journeys"
                     className="hidden group-hover:block"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                 </Link>
               )}
@@ -142,7 +144,7 @@ export default function NavigationMenu({
                     component="img"
                     src={`/images/buttons/menu_long/destinations_button_long_hover_${locale}.png`}
                     alt="Destinations"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                 </Box>
               ) : (
@@ -152,14 +154,14 @@ export default function NavigationMenu({
                     src={`/images/buttons/menu_long/destinations_button_long_${locale}.png`}
                     alt="Destinations"
                     className="group-hover:hidden"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                   <Box
                     component="img"
                     src={`/images/buttons/menu_long/destinations_button_long_hover_${locale}.png`}
                     alt="Destinations"
                     className="hidden group-hover:block"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                 </Link>
               )}
@@ -170,7 +172,7 @@ export default function NavigationMenu({
                     component="img"
                     src={`/images/buttons/menu_long/foods_button_long_hover_${locale}.png`}
                     alt="Foods"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                 </Box>
               ) : (
@@ -180,14 +182,14 @@ export default function NavigationMenu({
                     src={`/images/buttons/menu_long/foods_button_long_${locale}.png`}
                     alt="Foods"
                     className="group-hover:hidden"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                   <Box
                     component="img"
                     src={`/images/buttons/menu_long/foods_button_long_hover_${locale}.png`}
                     alt="Foods"
                     className="hidden group-hover:block"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                 </Link>
               )}
@@ -198,7 +200,7 @@ export default function NavigationMenu({
                     component="img"
                     src={`/images/buttons/menu_long/maps_button_long_hover_${locale}.png`}
                     alt="Maps"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                 </Box>
               ) : (
@@ -208,14 +210,14 @@ export default function NavigationMenu({
                     src={`/images/buttons/menu_long/maps_button_long_${locale}.png`}
                     alt="Maps"
                     className="group-hover:hidden"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                   <Box
                     component="img"
                     src={`/images/buttons/menu_long/maps_button_long_hover_${locale}.png`}
                     alt="Maps"
                     className="hidden group-hover:block"
-                    style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                    sx={{ width: rvw(240, 240), height: 'auto' }}
                   />
                 </Link>
               )}
@@ -230,14 +232,14 @@ export default function NavigationMenu({
                   src={`/images/buttons/menu_long/email_subscription_button_long_${locale}.png`}
                   alt="Email Subscription"
                   className="group-hover:hidden"
-                  style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                  sx={{ width: rvw(240, 240), height: 'auto' }}
                 />
                 <Box
                   component="img"
                   src={`/images/buttons/menu_long/email_subscription_button_long_hover_${locale}.png`}
                   alt="Email Subscription"
                   className="hidden group-hover:block"
-                  style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                  sx={{ width: rvw(240, 240), height: 'auto' }}
                 />
               </Box>
 
@@ -251,14 +253,14 @@ export default function NavigationMenu({
                   src={`/images/buttons/menu_long/language_button_long_${locale}.png`}
                   alt="Language Toggle"
                   className="group-hover:hidden"
-                  style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                  sx={{ width: rvw(240, 240), height: 'auto' }}
                 />
                 <Box
                   component="img"
                   src={`/images/buttons/menu_long/language_button_long_hover_${locale}.png`}
                   alt="Language Toggle"
                   className="hidden group-hover:block"
-                  style={{ width: vw(240, 'mobile'), height: 'auto' }}
+                  sx={{ width: rvw(240, 240), height: 'auto' }}
                 />
               </Box>
             </Box>
