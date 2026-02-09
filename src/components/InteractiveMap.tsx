@@ -1008,15 +1008,15 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         } else {
           // Desktop: show popup
           const popupContent = `
-          <div style="width: 280px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 8px; position: relative;">
-            <div style="border: 2px solid #F6F6F6; border-radius: 6px; padding: 6px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
-              <div style="position: relative; width: 100%; height: 90px;">
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: -24px; z-index: 3; width: 180px;">
+          <div style="width: ${dvw(320)}; padding: ${dvw(8)}; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: ${dvw(200)} auto; background-repeat: repeat; border-radius: ${dvw(12)}; position: relative;">
+            <div style="border: ${dvw(2)} solid #F6F6F6; border-radius: ${dvw(8)}; padding: ${dvw(8)}; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: ${dvw(200)} auto; background-repeat: repeat;">
+              <div style="position: relative; width: 100%; height: ${dvw(90)};">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: ${dvw(-24)}; z-index: 3; width: ${dvw(200)};">
                   <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
-                  <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(homeTitle, '16px')}</h3>
+                  <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(homeTitle, dvw(20))}</h3>
                 </div>
-                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: 6px; z-index: 2; width: 180px; text-align: center;">
-                  <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 14px; color: #F6F6F6; margin: 0;">${locationName}</p>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); margin-top: ${dvw(6)}; z-index: 2; width: ${dvw(200)}; text-align: center;">
+                  <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: ${dvw(16)}; color: #F6F6F6; margin: 0;">${locationName}</p>
                 </div>
               </div>
             </div>
@@ -1024,8 +1024,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         `
 
           marker.bindPopup(popupContent, {
-            maxWidth: 320,
-            minWidth: 320,
+            maxWidth: 9999,
+            minWidth: 0,
             className: 'custom-popup',
             closeButton: false
           })

@@ -16,6 +16,7 @@ import DayTripFilterDrawer from 'src/components/DayTripFilterDrawer'
 import DayTripGroupSizeFilterDrawer from 'src/components/DayTripGroupSizeFilterDrawer'
 import MixedText from 'src/components/MixedText'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { vw, rvw, rShadow } from 'src/utils/scaling'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { formatDuration } from 'src/utils/formatDuration'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
@@ -545,26 +546,28 @@ export default function MapsPage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '2rem',
+          gap: rvw(32, 32),
           backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '200px auto',
+          backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
           animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
         }}
       >
         {/* Spinner */}
         <Box
           sx={{
-            width: '60px',
-            height: '60px',
-            border: '6px solid rgba(240, 96, 1, 0.2)',
-            borderTop: '6px solid #F06001',
+            width: rvw(60, 60),
+            height: rvw(60, 60),
+            borderWidth: rvw(6, 6),
+            borderStyle: 'solid' as const,
+            borderColor: 'rgba(240, 96, 1, 0.2)',
+            borderTopColor: '#F06001',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }}
         />
         {/* Loading text */}
-        <Box sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: '32px', color: '#373737', margin: 0 }}>
+        <Box sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: rvw(32, 32), color: '#373737', margin: 0 }}>
           {locale === 'zh' ? '正在加载地图...' : 'Loading Maps...'}
         </Box>
       </Box>
@@ -634,57 +637,61 @@ export default function MapsPage() {
       />
 
       {/* Maps Page Title - Full Width */}
-      <div className="w-full">
-        <img
+      <Box sx={{ width: '100%' }}>
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/maps_page_title_${locale}.jpg`}
           alt="Maps"
-          className="w-full h-auto object-cover xs:hidden"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'none', md: 'block' } }}
         />
-        <img
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/maps_page_title_xs_${locale}.jpg`}
           alt="Maps"
-          className="hidden xs:block w-full h-auto object-cover"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'block', md: 'none' } }}
         />
-      </div>
+      </Box>
 
       {/* Map View Section - All Destinations */}
       <Box
         component="section"
-        className="w-full py-24 xs:py-12"
+        className="w-full"
         sx={{
+          paddingTop: rvw(48, 96),
+          paddingBottom: rvw(48, 96),
           backgroundImage: 'url(/images/backgrounds/map_background.png)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '300px auto',
+          backgroundSize: { xs: `${vw(300, 'mobile')} auto`, md: `${vw(300)} auto` },
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: rvw(32, 64), marginTop: rvw(16, 32) }}>
             <MixedText
               text={locale === 'zh' ? '足迹地图' : 'All Destinations'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '40px', sm: '64px' }}
+              fontSize={rvw(40, 64)}
               color="#F6F6F6"
               component="h2"
               sx={{
-                textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                textShadow: rShadow(2, 3, '#373737'),
                 margin: 0,
-                marginBottom: '16px'
+                marginBottom: rvw(16, 16)
               }}
             />
             <MixedText
               text={locale === 'zh' ? '一张地图，看遍我的全部美国足迹！' : 'View all my US destinations in one map!'}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
-              fontSize={{ xs: '16px', sm: '28px' }}
+              fontSize={rvw(16, 28)}
               color="#F6F6F6"
               component="p"
               sx={{ margin: 0, textAlign: 'center' }}
             />
-          </div>
+          </Box>
 
           {/* View Hints Button - Mobile Only */}
-          <div className="hidden xs:flex flex-col items-center mb-12">
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', marginBottom: vw(48, 'mobile') }}>
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -692,13 +699,13 @@ export default function MapsPage() {
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-16 w-auto"
+                style={{ height: vw(64, 'mobile'), width: 'auto' }}
               />
             </button>
-          </div>
+          </Box>
 
           {/* View Hints Button - Desktop Only */}
-          <div className="flex justify-center mb-12 xs:hidden">
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', marginBottom: vw(48) }}>
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -706,20 +713,20 @@ export default function MapsPage() {
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-20 w-auto"
+                style={{ height: vw(80), width: 'auto' }}
               />
             </button>
-          </div>
+          </Box>
 
           {/* Map - Desktop and Mobile */}
-          <Box className="xs:mx-[-0.5rem]">
+          <Box sx={{ marginLeft: { xs: vw(-8, 'mobile'), md: 0 }, marginRight: { xs: vw(-8, 'mobile'), md: 0 } }}>
             <Box
               sx={{
                 backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                 backgroundRepeat: 'repeat',
-                backgroundSize: '200px auto',
-                padding: { xs: '0.5rem', sm: '1rem' },
-                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                padding: rvw(8, 16),
+                borderRadius: rvw(12, 24)
               }}
             >
               <InteractiveMap places={filteredDestinations} showHomeMarker={false} />
@@ -727,29 +734,30 @@ export default function MapsPage() {
           </Box>
 
           {/* Filter Buttons - Mobile Only - Below Map */}
-          <div className="hidden xs:flex flex-col items-center mt-12 w-full">
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', marginTop: vw(48, 'mobile'), width: '100%' }}>
             <MixedText
               text={locale === 'zh' ? '足迹筛选条件' : 'Destination Filters'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="24px"
+              fontSize={vw(24, 'mobile')}
               color="#F6F6F6"
               component="p"
               sx={{
-                textShadow: '2px 2px 0px #373737',
+                textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
                 margin: 0
               }}
             />
             <div
-              className="flex justify-center items-center gap-4"
+              className="flex justify-center items-center"
               style={{
                 backgroundImage: 'url(/images/backgrounds/filter_desktop_background_yellow.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                height: '100px',
+                height: vw(100, 'mobile'),
                 width: '100%',
-                maxWidth: '400px'
+                maxWidth: vw(400, 'mobile'),
+                gap: vw(16, 'mobile')
               }}
             >
               <button
@@ -759,9 +767,10 @@ export default function MapsPage() {
                 <img
                   src={homeFilterIconMap[selectedHomeFilter] || homeFilterIconMap['all_destinations']}
                   alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home Location'}
-                  className="h-16 w-auto"
                   style={{
-                    filter: selectedHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    height: vw(64, 'mobile'),
+                    width: 'auto',
+                    filter: selectedHomeFilter !== 'all_destinations' ? `brightness(1.2) drop-shadow(0 0 ${vw(8, 'mobile')} #FFD701)` : 'none'
                   }}
                 />
               </button>
@@ -773,9 +782,10 @@ export default function MapsPage() {
                 <img
                   src={groupSizeFilterIconMap[selectedGroupSizeFilter] || groupSizeFilterIconMap['all_group_sizes']}
                   alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                  className="h-16 w-auto"
                   style={{
-                    filter: selectedGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    height: vw(64, 'mobile'),
+                    width: 'auto',
+                    filter: selectedGroupSizeFilter !== 'all_group_sizes' ? `brightness(1.2) drop-shadow(0 0 ${vw(8, 'mobile')} #FFD701)` : 'none'
                   }}
                 />
               </button>
@@ -787,40 +797,42 @@ export default function MapsPage() {
                 <img
                   src={otherFilterIconMap[selectedOtherFilter] || otherFilterIconMap['all_destinations']}
                   alt={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
-                  className="h-16 w-auto"
                   style={{
-                    filter: selectedOtherFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    height: vw(64, 'mobile'),
+                    width: 'auto',
+                    filter: selectedOtherFilter !== 'all_destinations' ? `brightness(1.2) drop-shadow(0 0 ${vw(8, 'mobile')} #FFD701)` : 'none'
                   }}
                 />
               </button>
             </div>
-          </div>
+          </Box>
 
           {/* Filter Buttons - Desktop Only - Below Map */}
-          <div className="flex flex-col items-center mt-16 xs:hidden">
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'column', alignItems: 'center', marginTop: vw(64) }}>
             <MixedText
               text={locale === 'zh' ? '足迹筛选条件' : 'Destination Filters'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="24px"
+              fontSize={vw(24)}
               color="#F6F6F6"
               component="p"
               sx={{
-                textShadow: '2px 2px 0px #373737',
+                textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                 margin: 0,
-                marginBottom: '0.5rem'
+                marginBottom: vw(8)
               }}
             />
             <div
-              className="flex justify-center items-center gap-8"
+              className="flex justify-center items-center"
               style={{
                 backgroundImage: 'url(/images/backgrounds/filter_desktop_background_yellow.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                height: '140px',
+                height: vw(140),
                 width: '100%',
-                maxWidth: '900px'
+                maxWidth: vw(900),
+                gap: vw(32)
               }}
             >
               <div style={{ position: 'relative' }}>
@@ -833,9 +845,10 @@ export default function MapsPage() {
                   <img
                     src={homeFilterIconMap[selectedHomeFilter] || homeFilterIconMap['all_destinations']}
                     alt={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home Location'}
-                    className="h-24 w-auto"
                     style={{
-                      filter: selectedHomeFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      height: vw(96),
+                      width: 'auto',
+                      filter: selectedHomeFilter !== 'all_destinations' ? `brightness(1.2) drop-shadow(0 0 ${vw(8)} #FFD701)` : 'none'
                     }}
                   />
                 </button>
@@ -846,7 +859,7 @@ export default function MapsPage() {
                       top: '100%',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
+                      marginTop: vw(8),
                       whiteSpace: 'nowrap'
                     }}
                   >
@@ -854,11 +867,11 @@ export default function MapsPage() {
                       text={locale === 'zh' ? '用家的位置筛选' : 'Filter by Home Location'}
                       chineseFont="MarioFontTitleChinese, sans-serif"
                       englishFont="MarioFontTitle, sans-serif"
-                      fontSize="24px"
+                      fontSize={vw(24)}
                       color="#F6F6F6"
                       component="p"
                       sx={{
-                        textShadow: '2px 2px 0px #373737',
+                        textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                         margin: 0
                       }}
                     />
@@ -876,9 +889,10 @@ export default function MapsPage() {
                   <img
                     src={groupSizeFilterIconMap[selectedGroupSizeFilter] || groupSizeFilterIconMap['all_group_sizes']}
                     alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                    className="h-24 w-auto"
                     style={{
-                      filter: selectedGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      height: vw(96),
+                      width: 'auto',
+                      filter: selectedGroupSizeFilter !== 'all_group_sizes' ? `brightness(1.2) drop-shadow(0 0 ${vw(8)} #FFD701)` : 'none'
                     }}
                   />
                 </button>
@@ -889,7 +903,7 @@ export default function MapsPage() {
                       top: '100%',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
+                      marginTop: vw(8),
                       whiteSpace: 'nowrap'
                     }}
                   >
@@ -897,11 +911,11 @@ export default function MapsPage() {
                       text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
                       chineseFont="MarioFontTitleChinese, sans-serif"
                       englishFont="MarioFontTitle, sans-serif"
-                      fontSize="24px"
+                      fontSize={vw(24)}
                       color="#F6F6F6"
                       component="p"
                       sx={{
-                        textShadow: '2px 2px 0px #373737',
+                        textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                         margin: 0
                       }}
                     />
@@ -919,9 +933,10 @@ export default function MapsPage() {
                   <img
                     src={otherFilterIconMap[selectedOtherFilter] || otherFilterIconMap['all_destinations']}
                     alt={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
-                    className="h-24 w-auto"
                     style={{
-                      filter: selectedOtherFilter !== 'all_destinations' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      height: vw(96),
+                      width: 'auto',
+                      filter: selectedOtherFilter !== 'all_destinations' ? `brightness(1.2) drop-shadow(0 0 ${vw(8)} #FFD701)` : 'none'
                     }}
                   />
                 </button>
@@ -932,7 +947,7 @@ export default function MapsPage() {
                       top: '100%',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
+                      marginTop: vw(8),
                       whiteSpace: 'nowrap'
                     }}
                   >
@@ -940,11 +955,11 @@ export default function MapsPage() {
                       text={locale === 'zh' ? '其他筛选方式' : 'Other Filters'}
                       chineseFont="MarioFontTitleChinese, sans-serif"
                       englishFont="MarioFontTitle, sans-serif"
-                      fontSize="24px"
+                      fontSize={vw(24)}
                       color="#F6F6F6"
                       component="p"
                       sx={{
-                        textShadow: '2px 2px 0px #373737',
+                        textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                         margin: 0
                       }}
                     />
@@ -952,69 +967,71 @@ export default function MapsPage() {
                 )}
               </div>
             </div>
-          </div>
-        </div>
+          </Box>
+        </Box>
       </Box>
 
       {/* Fun Facts Section */}
       <Box
         component="section"
-        className="w-full py-24 xs:py-12"
+        className="w-full"
         sx={{
+          paddingTop: rvw(48, 96),
+          paddingBottom: rvw(48, 96),
           backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '200px auto',
+          backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
           {/* Fun Facts Title and Description */}
-          <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: rvw(32, 64), marginTop: rvw(16, 32) }}>
             <MixedText
               text={tr.funFacts.title}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '40px', sm: '64px' }}
+              fontSize={rvw(40, 64)}
               color="#373737"
               component="h2"
               sx={{
-                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                textShadow: rShadow(2, 3, '#F6F6F6'),
                 margin: 0,
-                marginBottom: '16px'
+                marginBottom: rvw(16, 16)
               }}
             />
-            <Box sx={{ textAlign: 'center', lineHeight: { xs: '40px', sm: '64px' } }}>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+            <Box sx={{ textAlign: 'center', lineHeight: rvw(40, 64) }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 28), color: '#373737' }}>
                 {tr.funFacts.descriptionLine1.split('{count}')[0]}
               </Box>
-              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' } }}>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: rvw(40, 64), color: '#F06001', textShadow: rShadow(2, 3, '#373737') }}>
                 {visitedStatesCount}
               </Box>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 28), color: '#373737' }}>
                 {tr.funFacts.descriptionLine1.split('{count}')[1]}
               </Box>
             </Box>
-            <Box sx={{ textAlign: 'center', lineHeight: { xs: '40px', sm: '64px' } }}>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+            <Box sx={{ textAlign: 'center', lineHeight: rvw(40, 64) }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 28), color: '#373737' }}>
                 {tr.funFacts.descriptionLine2.split('{territoryCount}')[0]}
               </Box>
-              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#F06001', textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' } }}>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: rvw(40, 64), color: '#F06001', textShadow: rShadow(2, 3, '#373737') }}>
                 {visitedTerritoriesCount}
               </Box>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 28), color: '#373737' }}>
                 {tr.funFacts.descriptionLine2.split('{territoryCount}')[1]}
               </Box>
             </Box>
-          </div>
+          </Box>
 
           {/* Map - Desktop and Mobile */}
-          <Box className="xs:mx-[-0.5rem]">
+          <Box sx={{ marginLeft: { xs: vw(-8, 'mobile'), md: 0 }, marginRight: { xs: vw(-8, 'mobile'), md: 0 } }}>
             <Box
               sx={{
                 backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                 backgroundRepeat: 'repeat',
-                backgroundSize: '200px auto',
-                padding: { xs: '0.5rem', sm: '1rem' },
-                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                padding: rvw(8, 16),
+                borderRadius: rvw(12, 24)
               }}
             >
               <StatesChoroplethMap visitedStates={visitedStates} destinations={allDestinations} />
@@ -1022,40 +1039,40 @@ export default function MapsPage() {
           </Box>
 
           {/* Overnight States Map */}
-          <div className="flex flex-col justify-center items-center mt-16 mb-16 xs:mt-12 xs:mb-8">
-            <Box sx={{ textAlign: 'center', lineHeight: { xs: '40px', sm: '64px' } }}>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: rvw(48, 64), marginBottom: rvw(32, 64) }}>
+            <Box sx={{ textAlign: 'center', lineHeight: rvw(40, 64) }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 28), color: '#373737' }}>
                 {tr.funFacts.overnightDescriptionLine1.split('{count}')[0]}
               </Box>
-              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#FFD701', textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' } }}>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: rvw(40, 64), color: '#FFD701', textShadow: rShadow(2, 3, '#373737') }}>
                 {overnightStatesCount}
               </Box>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 28), color: '#373737' }}>
                 {tr.funFacts.overnightDescriptionLine1.split('{count}')[1]}
               </Box>
             </Box>
-            <Box sx={{ textAlign: 'center', lineHeight: { xs: '40px', sm: '64px' } }}>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+            <Box sx={{ textAlign: 'center', lineHeight: rvw(40, 64) }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 28), color: '#373737' }}>
                 {tr.funFacts.overnightDescriptionLine2.split('{territoryCount}')[0]}
               </Box>
-              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '40px', sm: '64px' }, color: '#FFD701', textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' } }}>
+              <Box component="span" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: rvw(40, 64), color: '#FFD701', textShadow: rShadow(2, 3, '#373737') }}>
                 {overnightTerritoriesCount}
               </Box>
-              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '28px' }, color: '#373737' }}>
+              <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 28), color: '#373737' }}>
                 {tr.funFacts.overnightDescriptionLine2.split('{territoryCount}')[1]}
               </Box>
             </Box>
-          </div>
+          </Box>
 
           {/* Overnight States Map */}
-          <Box className="xs:mx-[-0.5rem]">
+          <Box sx={{ marginLeft: { xs: vw(-8, 'mobile'), md: 0 }, marginRight: { xs: vw(-8, 'mobile'), md: 0 } }}>
             <Box
               sx={{
                 backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                 backgroundRepeat: 'repeat',
-                backgroundSize: '200px auto',
-                padding: { xs: '0.5rem', sm: '1rem' },
-                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                padding: rvw(8, 16),
+                borderRadius: rvw(12, 24)
               }}
             >
               <StatesChoroplethMap
@@ -1071,27 +1088,27 @@ export default function MapsPage() {
           </Box>
 
           {/* Train Trips Map */}
-          <div className="flex flex-col justify-center items-center mt-16 mb-16 xs:mt-12 xs:mb-8">
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: rvw(48, 64), marginBottom: rvw(32, 64) }}>
             <MixedText
               text={tr.funFacts.trainTripsDescription}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
-              fontSize={{ xs: '16px', sm: '28px' }}
+              fontSize={rvw(16, 28)}
               color="#373737"
               component="p"
               sx={{ margin: 0, textAlign: 'center' }}
             />
-          </div>
+          </Box>
 
           {/* Train Routes Map */}
-          <Box className="xs:mx-[-0.5rem]">
+          <Box sx={{ marginLeft: { xs: vw(-8, 'mobile'), md: 0 }, marginRight: { xs: vw(-8, 'mobile'), md: 0 } }}>
             <Box
               sx={{
                 backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                 backgroundRepeat: 'repeat',
-                backgroundSize: '200px auto',
-                padding: { xs: '0.5rem', sm: '1rem' },
-                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                padding: rvw(8, 16),
+                borderRadius: rvw(12, 24)
               }}
             >
               <InteractiveMap
@@ -1105,78 +1122,80 @@ export default function MapsPage() {
               />
             </Box>
           </Box>
-        </div>
+        </Box>
       </Box>
 
       {/* Long Trips Map Section */}
       <Box
         component="section"
-        className="w-full py-24 xs:py-12"
+        className="w-full"
         sx={{
+          paddingTop: rvw(48, 96),
+          paddingBottom: rvw(48, 96),
           backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '300px auto',
+          backgroundSize: { xs: `${vw(300, 'mobile')} auto`, md: `${vw(300)} auto` },
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
           {/* Desktop: Long Trips Title and Description */}
-          <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:hidden">
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(64), marginTop: vw(32) }}>
             <MixedText
               text={locale === 'zh' ? '长途旅行' : 'Long Trips'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="64px"
+              fontSize={vw(64)}
               color="#F6F6F6"
               component="h2"
               sx={{
-                textShadow: '3px 3px 0px #373737',
+                textShadow: `${vw(3)} ${vw(3)} 0px #373737`,
                 margin: 0,
-                marginBottom: '16px'
+                marginBottom: vw(16)
               }}
             />
             <MixedText
               text={locale === 'zh' ? '使用地图两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
-              fontSize="28px"
+              fontSize={vw(28)}
               color="#F6F6F6"
               component="p"
               sx={{ margin: 0, textAlign: 'center' }}
             />
-          </div>
+          </Box>
 
           {/* Mobile: Long Trips Title and Description */}
-          <div className="hidden xs:flex flex-col justify-center items-center mb-8 mt-4">
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(32, 'mobile'), marginTop: vw(16, 'mobile') }}>
             <MixedText
               text={locale === 'zh' ? '长途旅行' : 'Long Trips'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="40px"
+              fontSize={vw(40, 'mobile')}
               color="#F6F6F6"
               component="h3"
               sx={{
-                textShadow: '2px 2px 0px #373737',
+                textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
                 margin: 0,
-                marginBottom: '8px'
+                marginBottom: vw(8, 'mobile')
               }}
             />
             <MixedText
               text={locale === 'zh' ? '使用屏幕两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
-              fontSize="16px"
+              fontSize={vw(16, 'mobile')}
               color="#F6F6F6"
               component="p"
               sx={{
                 margin: 0,
                 textAlign: 'center',
-                paddingX: '1rem'
+                paddingX: vw(16, 'mobile')
               }}
             />
-          </div>
+          </Box>
 
           {/* Mobile: View Hints Button */}
-          <div className="hidden xs:flex flex-col items-center mb-12">
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', marginBottom: vw(48, 'mobile') }}>
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -1184,13 +1203,13 @@ export default function MapsPage() {
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-16 w-auto"
+                style={{ height: vw(64, 'mobile'), width: 'auto' }}
               />
             </button>
-          </div>
+          </Box>
 
           {/* View Hints Button - Desktop Only */}
-          <div className="flex justify-center mb-48 mt-16 xs:hidden">
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', marginBottom: vw(192), marginTop: vw(64) }}>
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -1198,14 +1217,14 @@ export default function MapsPage() {
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-20 w-auto"
+                style={{ height: vw(80), width: 'auto' }}
               />
             </button>
-          </div>
+          </Box>
 
           {/* Journey Info Card - Above map on xs screens */}
           {currentJourney && (
-            <div className="block sm:hidden mt-12">
+            <Box sx={{ display: { xs: 'block', md: 'none' }, marginTop: vw(48, 'mobile') }}>
               <MapViewHint
                 imageOnRight={true}
                 cardNumber={2}
@@ -1219,18 +1238,18 @@ export default function MapsPage() {
                   images: []
                 }}
               />
-            </div>
+            </Box>
           )}
 
           {currentJourney && (
-            <Box style={{ position: 'relative' }} className="xs:mx-[-0.5rem] xs:-mt-6">
+            <Box sx={{ position: 'relative', marginLeft: { xs: vw(-8, 'mobile'), md: 0 }, marginRight: { xs: vw(-8, 'mobile'), md: 0 }, marginTop: { xs: vw(-24, 'mobile'), md: 0 } }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: { xs: '0.5rem', sm: '1rem' },
-                  borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                  backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                  padding: rvw(8, 16),
+                  borderRadius: rvw(12, 24)
                 }}
               >
                 <InteractiveMap
@@ -1244,10 +1263,10 @@ export default function MapsPage() {
               {/* Journey Info Card - Top Right Corner on desktop only */}
               <Box
                 sx={{
-                  display: { xs: 'none', sm: 'block' },
+                  display: { xs: 'none', md: 'block' },
                   position: 'absolute',
-                  top: '-100px',
-                  right: '-600px',
+                  top: vw(-100),
+                  right: vw(-600),
                   zIndex: 1000
                 }}
               >
@@ -1267,71 +1286,96 @@ export default function MapsPage() {
               </Box>
 
               {/* Previous Button */}
-              <button
+              <Box
+                component="button"
                 onClick={handlePrevJourney}
                 disabled={currentJourneyIndex === 0}
-                className={`group absolute left-4 xs:left-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                sx={{
+                  position: 'absolute',
+                  left: { xs: vw(-8, 'mobile'), md: vw(16) },
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 1001,
+                }}
+                className={`group transition-transform duration-200 ${
                   currentJourneyIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
-                <img
+                <Box
+                  component="img"
                   src="/images/buttons/tab_prev.webp"
                   alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === 0 ? '' : 'group-hover:hidden'}`}
+                  sx={{ height: rvw(96, 96), width: 'auto' }}
+                  className={currentJourneyIndex === 0 ? '' : 'group-hover:hidden'}
                 />
-                <img
+                <Box
+                  component="img"
                   src="/images/buttons/tab_prev_hover.webp"
                   alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
+                  sx={{ height: rvw(96, 96), width: 'auto' }}
+                  className={currentJourneyIndex === 0 ? 'hidden' : 'hidden group-hover:block'}
                 />
-              </button>
+              </Box>
 
               {/* Next Button */}
-              <button
+              <Box
+                component="button"
                 onClick={handleNextJourney}
                 disabled={currentJourneyIndex === regularJourneys.length - 1}
-                className={`group absolute right-4 xs:right-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                sx={{
+                  position: 'absolute',
+                  right: { xs: vw(-8, 'mobile'), md: vw(16) },
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 1001,
+                }}
+                className={`group transition-transform duration-200 ${
                   currentJourneyIndex === regularJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
-                <img
+                <Box
+                  component="img"
                   src="/images/buttons/tab_next.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === regularJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
+                  sx={{ height: rvw(96, 96), width: 'auto' }}
+                  className={currentJourneyIndex === regularJourneys.length - 1 ? '' : 'group-hover:hidden'}
                 />
-                <img
+                <Box
+                  component="img"
                   src="/images/buttons/tab_next_hover.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentJourneyIndex === regularJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                  sx={{ height: rvw(96, 96), width: 'auto' }}
+                  className={currentJourneyIndex === regularJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}
                 />
-              </button>
+              </Box>
             </Box>
           )}
 
           {/* Filter Buttons - Mobile Only - Below Map */}
-          <div className="hidden xs:flex flex-col items-center mt-12 w-full">
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', marginTop: vw(48, 'mobile'), width: '100%' }}>
             <MixedText
               text={locale === 'zh' ? '长途旅行筛选条件' : 'Long Trips Filters'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="24px"
+              fontSize={vw(24, 'mobile')}
               color="#F6F6F6"
               component="p"
               sx={{
-                textShadow: '2px 2px 0px #373737',
+                textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
                 margin: 0
               }}
             />
             <div
-              className="flex justify-center items-center gap-4"
+              className="flex justify-center items-center"
               style={{
                 backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                height: '100px',
+                height: vw(100, 'mobile'),
                 width: '100%',
-                maxWidth: '400px'
+                maxWidth: vw(400, 'mobile'),
+                gap: vw(16, 'mobile')
               }}
             >
               <button
@@ -1341,9 +1385,10 @@ export default function MapsPage() {
                 <img
                   src={transportationFilterIconMap[selectedTransportationFilter] || transportationFilterIconMap['all_transportation']}
                   alt={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
-                  className="h-16 w-auto"
                   style={{
-                    filter: selectedTransportationFilter !== 'all_transportation' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    height: vw(64, 'mobile'),
+                    width: 'auto',
+                    filter: selectedTransportationFilter !== 'all_transportation' ? `brightness(1.2) drop-shadow(0 0 ${vw(8, 'mobile')} #FFD701)` : 'none'
                   }}
                 />
               </button>
@@ -1355,40 +1400,42 @@ export default function MapsPage() {
                 <img
                   src={longTripGroupSizeFilterIconMap[selectedLongTripGroupSizeFilter] || longTripGroupSizeFilterIconMap['all_group_sizes']}
                   alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                  className="h-16 w-auto"
                   style={{
-                    filter: selectedLongTripGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                    height: vw(64, 'mobile'),
+                    width: 'auto',
+                    filter: selectedLongTripGroupSizeFilter !== 'all_group_sizes' ? `brightness(1.2) drop-shadow(0 0 ${vw(8, 'mobile')} #FFD701)` : 'none'
                   }}
                 />
               </button>
             </div>
-          </div>
+          </Box>
 
           {/* Filter Buttons - Desktop Only */}
-          <div className="flex flex-col items-center mt-16 xs:hidden">
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'column', alignItems: 'center', marginTop: vw(64) }}>
             <MixedText
               text={locale === 'zh' ? '长途旅行筛选条件' : 'Long Trips Filters'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="24px"
+              fontSize={vw(24)}
               color="#F6F6F6"
               component="p"
               sx={{
-                textShadow: '2px 2px 0px #373737',
+                textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                 margin: 0,
-                marginBottom: '0.5rem'
+                marginBottom: vw(8)
               }}
             />
             <div
-              className="flex justify-center items-center gap-8"
+              className="flex justify-center items-center"
               style={{
                 backgroundImage: 'url(/images/backgrounds/filter_desktop_background.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                height: '140px',
+                height: vw(140),
                 width: '100%',
-                maxWidth: '900px'
+                maxWidth: vw(900),
+                gap: vw(32)
               }}
             >
               <div style={{ position: 'relative' }}>
@@ -1401,9 +1448,10 @@ export default function MapsPage() {
                   <img
                     src={transportationFilterIconMap[selectedTransportationFilter] || transportationFilterIconMap['all_transportation']}
                     alt={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
-                    className="h-24 w-auto"
                     style={{
-                      filter: selectedTransportationFilter !== 'all_transportation' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      height: vw(96),
+                      width: 'auto',
+                      filter: selectedTransportationFilter !== 'all_transportation' ? `brightness(1.2) drop-shadow(0 0 ${vw(8)} #FFD701)` : 'none'
                     }}
                   />
                 </button>
@@ -1414,7 +1462,7 @@ export default function MapsPage() {
                       top: '100%',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
+                      marginTop: vw(8),
                       whiteSpace: 'nowrap'
                     }}
                   >
@@ -1422,11 +1470,11 @@ export default function MapsPage() {
                       text={locale === 'zh' ? '以交通方式筛选' : 'Filter by Transportation'}
                       chineseFont="MarioFontTitleChinese, sans-serif"
                       englishFont="MarioFontTitle, sans-serif"
-                      fontSize="24px"
+                      fontSize={vw(24)}
                       color="#F6F6F6"
                       component="p"
                       sx={{
-                        textShadow: '2px 2px 0px #373737',
+                        textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                         margin: 0
                       }}
                     />
@@ -1444,9 +1492,10 @@ export default function MapsPage() {
                   <img
                     src={longTripGroupSizeFilterIconMap[selectedLongTripGroupSizeFilter] || longTripGroupSizeFilterIconMap['all_group_sizes']}
                     alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                    className="h-24 w-auto"
                     style={{
-                      filter: selectedLongTripGroupSizeFilter !== 'all_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      height: vw(96),
+                      width: 'auto',
+                      filter: selectedLongTripGroupSizeFilter !== 'all_group_sizes' ? `brightness(1.2) drop-shadow(0 0 ${vw(8)} #FFD701)` : 'none'
                     }}
                   />
                 </button>
@@ -1457,7 +1506,7 @@ export default function MapsPage() {
                       top: '100%',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
+                      marginTop: vw(8),
                       whiteSpace: 'nowrap'
                     }}
                   >
@@ -1465,11 +1514,11 @@ export default function MapsPage() {
                       text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
                       chineseFont="MarioFontTitleChinese, sans-serif"
                       englishFont="MarioFontTitle, sans-serif"
-                      fontSize="24px"
+                      fontSize={vw(24)}
                       color="#F6F6F6"
                       component="p"
                       sx={{
-                        textShadow: '2px 2px 0px #373737',
+                        textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                         margin: 0
                       }}
                     />
@@ -1477,50 +1526,60 @@ export default function MapsPage() {
                 )}
               </div>
             </div>
-          </div>
-        </div>
+          </Box>
+        </Box>
       </Box>
 
       {/* Day Trips & Weekend Trips Section - Desktop Only */}
       {allDayTripJourneys.length > 0 && currentDayTrip && (
         <Box
           component="section"
-          className="w-full py-24 xs:hidden"
+          className="w-full"
           sx={{
+            display: { xs: 'none', md: 'block' },
+            paddingTop: vw(96),
+            paddingBottom: vw(96),
             backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
             backgroundRepeat: 'repeat',
             backgroundSize: '100vw auto',
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: vw(32), paddingRight: vw(32) }}>
             {/* Desktop: Day Trips Title and Description */}
-            <div className="flex flex-col justify-center items-center mb-16 mt-8">
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(64), marginTop: vw(32) }}>
               <MixedText
                 text={locale === 'zh' ? '一日游 & 周末旅行' : 'Day Trips & Weekend Trips'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize="64px"
+                fontSize={vw(64)}
                 color="#F6F6F6"
                 component="h2"
                 sx={{
-                  textShadow: '3px 3px 0px #373737',
+                  textShadow: `${vw(3)} ${vw(3)} 0px #373737`,
                   margin: 0,
-                  marginBottom: '16px'
+                  marginBottom: vw(16)
                 }}
               />
               <MixedText
                 text={locale === 'zh' ? '使用地图两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
                 chineseFont="MarioFontChinese, sans-serif"
                 englishFont="MarioFont, sans-serif"
-                fontSize="28px"
+                fontSize={vw(28)}
                 color="#F6F6F6"
                 component="p"
                 sx={{ margin: 0, textAlign: 'center' }}
               />
-            </div>
+            </Box>
 
             {/* View Hints Button - Desktop Only */}
-            <div className="flex justify-center mb-48 mt-16">
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: vw(192),
+                marginTop: vw(64)
+              }}
+            >
               <button
                 onClick={() => setIsViewHintsDrawerOpen(true)}
                 className="hover:scale-105 transition-transform duration-200"
@@ -1528,7 +1587,7 @@ export default function MapsPage() {
                 <img
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-20 w-auto"
+                  style={{ height: vw(80), width: 'auto' }}
                 />
               </button>
             </div>
@@ -1538,9 +1597,9 @@ export default function MapsPage() {
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: '1rem',
-                  borderRadius: '1.5rem'
+                  backgroundSize: `${vw(200)} auto`,
+                  padding: vw(16),
+                  borderRadius: vw(24)
                 }}
               >
                 <InteractiveMap
@@ -1555,8 +1614,8 @@ export default function MapsPage() {
               <Box
                 sx={{
                   position: 'absolute',
-                  top: '-100px',
-                  left: '-600px',
+                  top: vw(-100),
+                  left: vw(-600),
                   zIndex: 1000
                 }}
               >
@@ -1579,19 +1638,28 @@ export default function MapsPage() {
               <button
                 onClick={handlePrevDayTrip}
                 disabled={currentDayTripIndex === 0}
-                className={`group absolute left-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                style={{
+                  position: 'absolute',
+                  left: vw(16),
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 1001,
+                }}
+                className={`group transition-transform duration-200 ${
                   currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
                 <img
                   src="/images/buttons/tab_prev.webp"
                   alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}`}
+                  style={{ height: vw(96), width: 'auto' }}
+                  className={currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}
                 />
                 <img
                   src="/images/buttons/tab_prev_hover.webp"
                   alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
+                  style={{ height: vw(96), width: 'auto' }}
+                  className={currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}
                 />
               </button>
 
@@ -1599,48 +1667,58 @@ export default function MapsPage() {
               <button
                 onClick={handleNextDayTrip}
                 disabled={currentDayTripIndex === dayTripJourneys.length - 1}
-                className={`group absolute right-4 top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                style={{
+                  position: 'absolute',
+                  right: vw(16),
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 1001,
+                }}
+                className={`group transition-transform duration-200 ${
                   currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
                 <img
                   src="/images/buttons/tab_next.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
+                  style={{ height: vw(96), width: 'auto' }}
+                  className={currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}
                 />
                 <img
                   src="/images/buttons/tab_next_hover.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                  style={{ height: vw(96), width: 'auto' }}
+                  className={currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}
                 />
               </button>
             </Box>
 
             {/* Filter Buttons - Desktop Only - Day Trips */}
-            <div className="flex flex-col items-center mt-16">
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: vw(64) }}>
               <MixedText
                 text={locale === 'zh' ? '一日游&周末旅行筛选条件' : 'Day Trips & Weekend Trips Filters'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize="24px"
+                fontSize={vw(24)}
                 color="#F6F6F6"
                 component="p"
                 sx={{
-                  textShadow: '2px 2px 0px #373737',
+                  textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                   margin: 0,
-                  marginBottom: '0.5rem'
+                  marginBottom: vw(8)
                 }}
               />
               <div
-                className="flex justify-center items-center gap-8"
+                className="flex justify-center items-center"
                 style={{
                   backgroundImage: 'url(/images/backgrounds/filter_desktop_background_yellow.png)',
                   backgroundRepeat: 'no-repeat',
                   backgroundSize: 'contain',
                   backgroundPosition: 'center',
-                  height: '140px',
+                  height: vw(140),
                   width: '100%',
-                  maxWidth: '900px'
+                  maxWidth: vw(900),
+                  gap: vw(32)
                 }}
               >
                 <div style={{ position: 'relative' }}>
@@ -1653,9 +1731,10 @@ export default function MapsPage() {
                     <img
                       src={dayTripGroupSizeFilterIconMap[selectedDayTripGroupSizeFilter] || dayTripGroupSizeFilterIconMap['all_day_trip_group_sizes']}
                       alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                      className="h-24 w-auto"
                       style={{
-                        filter: selectedDayTripGroupSizeFilter !== 'all_day_trip_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                        height: vw(96),
+                        width: 'auto',
+                        filter: selectedDayTripGroupSizeFilter !== 'all_day_trip_group_sizes' ? `brightness(1.2) drop-shadow(0 0 ${vw(8)} #FFD701)` : 'none'
                       }}
                     />
                   </button>
@@ -1666,7 +1745,7 @@ export default function MapsPage() {
                         top: '100%',
                         left: '50%',
                         transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
+                        marginTop: vw(8),
                         whiteSpace: 'nowrap'
                       }}
                     >
@@ -1674,11 +1753,11 @@ export default function MapsPage() {
                         text={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
                         chineseFont="MarioFontTitleChinese, sans-serif"
                         englishFont="MarioFontTitle, sans-serif"
-                        fontSize="24px"
+                        fontSize={vw(24)}
                         color="#F6F6F6"
                         component="p"
                         sx={{
-                          textShadow: '2px 2px 0px #373737',
+                          textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                           margin: 0
                         }}
                       />
@@ -1696,9 +1775,10 @@ export default function MapsPage() {
                     <img
                       src={dayTripLocationFilterIconMap[selectedDayTripFilter] || dayTripLocationFilterIconMap['all_day_trips']}
                       alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
-                      className="h-24 w-auto"
                       style={{
-                        filter: selectedDayTripFilter !== 'all_day_trips' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                        height: vw(96),
+                        width: 'auto',
+                        filter: selectedDayTripFilter !== 'all_day_trips' ? `brightness(1.2) drop-shadow(0 0 ${vw(8)} #FFD701)` : 'none'
                       }}
                     />
                   </button>
@@ -1709,7 +1789,7 @@ export default function MapsPage() {
                         top: '100%',
                         left: '50%',
                         transform: 'translateX(-50%)',
-                        marginTop: '0.5rem',
+                        marginTop: vw(8),
                         whiteSpace: 'nowrap'
                       }}
                     >
@@ -1717,11 +1797,11 @@ export default function MapsPage() {
                         text={locale === 'zh' ? '其他筛选' : 'Other Filters'}
                         chineseFont="MarioFontTitleChinese, sans-serif"
                         englishFont="MarioFontTitle, sans-serif"
-                        fontSize="24px"
+                        fontSize={vw(24)}
                         color="#F6F6F6"
                         component="p"
                         sx={{
-                          textShadow: '2px 2px 0px #373737',
+                          textShadow: `${vw(2)} ${vw(2)} 0px #373737`,
                           margin: 0
                         }}
                       />
@@ -1729,8 +1809,8 @@ export default function MapsPage() {
                   )}
                 </div>
               </div>
-            </div>
-          </div>
+            </Box>
+          </Box>
         </Box>
       )}
 
@@ -1738,26 +1818,29 @@ export default function MapsPage() {
       {allDayTripJourneys.length > 0 && currentDayTrip && (
         <Box
           component="section"
-          className="hidden xs:block w-full py-12"
+          className="w-full"
           sx={{
+            display: { xs: 'block', md: 'none' },
+            paddingTop: vw(48, 'mobile'),
+            paddingBottom: vw(48, 'mobile'),
             backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
             backgroundRepeat: 'repeat',
             backgroundSize: '100vw auto',
           }}
         >
-          <div className="max-w-7xl mx-auto px-4">
+          <Box sx={{ marginLeft: 'auto', marginRight: 'auto', paddingLeft: vw(16, 'mobile'), paddingRight: vw(16, 'mobile') }}>
             {/* Mobile: Map View Title */}
-            <div className="flex flex-col justify-center items-center mb-8 mt-4 text-center">
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(32, 'mobile'), marginTop: vw(16, 'mobile'), textAlign: 'center' }}>
               <div style={{ lineHeight: '0.8' }}>
                 <MixedText
                   text={locale === 'zh' ? '一日游&周末旅行' : 'Day Trips'}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
-                  fontSize="40px"
+                  fontSize={vw(40, 'mobile')}
                   color="#F6F6F6"
                   component="h3"
                   sx={{
-                    textShadow: '2px 2px 0px #373737',
+                    textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
                     margin: 0,
                     lineHeight: 0.8
                   }}
@@ -1768,11 +1851,11 @@ export default function MapsPage() {
                       text="&"
                       chineseFont="MarioFontTitleChinese, sans-serif"
                       englishFont="MarioFontTitle, sans-serif"
-                      fontSize="40px"
+                      fontSize={vw(40, 'mobile')}
                       color="#F6F6F6"
                       component="h3"
                       sx={{
-                        textShadow: '2px 2px 0px #373737',
+                        textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
                         margin: 0,
                         lineHeight: 0.8
                       }}
@@ -1781,11 +1864,11 @@ export default function MapsPage() {
                       text="Weekend Trips"
                       chineseFont="MarioFontTitleChinese, sans-serif"
                       englishFont="MarioFontTitle, sans-serif"
-                      fontSize="40px"
+                      fontSize={vw(40, 'mobile')}
                       color="#F6F6F6"
                       component="h3"
                       sx={{
-                        textShadow: '2px 2px 0px #373737',
+                        textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
                         margin: 0,
                         lineHeight: 0.8
                       }}
@@ -1797,20 +1880,20 @@ export default function MapsPage() {
                 text={locale === 'zh' ? '使用屏幕两侧的按钮，来看我的更多旅行吧！' : 'Use left and right buttons on the side to view more trips!'}
                 chineseFont="MarioFontChinese, sans-serif"
                 englishFont="MarioFont, sans-serif"
-                fontSize="16px"
+                fontSize={vw(16, 'mobile')}
                 color="#F6F6F6"
                 component="p"
                 sx={{
                   margin: 0,
-                  marginTop: '32px',
+                  marginTop: vw(32, 'mobile'),
                   textAlign: 'center',
-                  paddingX: '1rem'
+                  paddingX: vw(16, 'mobile')
                 }}
               />
-            </div>
+            </Box>
 
             {/* Mobile: View Hints Button */}
-            <div className="flex flex-col items-center mb-12">
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: vw(48, 'mobile') }}>
               <button
                 onClick={() => setIsViewHintsDrawerOpen(true)}
                 className="hover:scale-105 transition-transform duration-200"
@@ -1818,13 +1901,13 @@ export default function MapsPage() {
                 <img
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-16 w-auto"
+                  style={{ height: vw(64, 'mobile'), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
 
             {/* Day Trip Info Card - Above map */}
-            <div className="mt-20">
+            <div style={{ marginTop: vw(80, 'mobile') }}>
               <MapViewHint
                 imageOnRight={true}
                 cardNumber={3}
@@ -1840,14 +1923,14 @@ export default function MapsPage() {
               />
             </div>
 
-            <Box style={{ position: 'relative' }} className="mx-[-0.5rem] -mt-6">
+            <Box sx={{ position: 'relative', marginLeft: vw(-8, 'mobile'), marginRight: vw(-8, 'mobile'), marginTop: vw(-24, 'mobile') }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: '0.5rem',
-                  borderRadius: '0.75rem'
+                  backgroundSize: `${vw(200, 'mobile')} auto`,
+                  padding: vw(8, 'mobile'),
+                  borderRadius: vw(12, 'mobile')
                 }}
               >
                 <InteractiveMap
@@ -1862,19 +1945,28 @@ export default function MapsPage() {
               <button
                 onClick={handlePrevDayTrip}
                 disabled={currentDayTripIndex === 0}
-                className={`group absolute left-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                style={{
+                  position: 'absolute',
+                  left: vw(-8, 'mobile'),
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 1001,
+                }}
+                className={`group transition-transform duration-200 ${
                   currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
                 <img
                   src="/images/buttons/tab_prev.webp"
                   alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}`}
+                  style={{ height: vw(96, 'mobile'), width: 'auto' }}
+                  className={currentDayTripIndex === 0 ? '' : 'group-hover:hidden'}
                 />
                 <img
                   src="/images/buttons/tab_prev_hover.webp"
                   alt={tr.previousJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}`}
+                  style={{ height: vw(96, 'mobile'), width: 'auto' }}
+                  className={currentDayTripIndex === 0 ? 'hidden' : 'hidden group-hover:block'}
                 />
               </button>
 
@@ -1882,47 +1974,57 @@ export default function MapsPage() {
               <button
                 onClick={handleNextDayTrip}
                 disabled={currentDayTripIndex === dayTripJourneys.length - 1}
-                className={`group absolute right-[-0.5rem] top-[50%] translate-y-[-50%] z-[1001] transition-transform duration-200 ${
+                style={{
+                  position: 'absolute',
+                  right: vw(-8, 'mobile'),
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  zIndex: 1001,
+                }}
+                className={`group transition-transform duration-200 ${
                   currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
                 }`}
               >
                 <img
                   src="/images/buttons/tab_next.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}`}
+                  style={{ height: vw(96, 'mobile'), width: 'auto' }}
+                  className={currentDayTripIndex === dayTripJourneys.length - 1 ? '' : 'group-hover:hidden'}
                 />
                 <img
                   src="/images/buttons/tab_next_hover.webp"
                   alt={tr.nextJourney}
-                  className={`h-24 w-auto ${currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                  style={{ height: vw(96, 'mobile'), width: 'auto' }}
+                  className={currentDayTripIndex === dayTripJourneys.length - 1 ? 'hidden' : 'hidden group-hover:block'}
                 />
               </button>
             </Box>
 
             {/* Filter Buttons - Mobile Only - Below Map */}
-            <div className="flex flex-col items-center mt-12 w-full">
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: vw(48, 'mobile'), width: '100%' }}>
               <MixedText
                 text={locale === 'zh' ? '一日游&周末旅行筛选条件' : 'Day Trips & Weekend Trips Filters'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize="24px"
+                fontSize={vw(24, 'mobile')}
                 color="#F6F6F6"
                 component="p"
                 sx={{
-                  textShadow: '2px 2px 0px #373737',
+                  textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
                   margin: 0
                 }}
               />
               <div
-                className="flex justify-center items-center gap-4"
+                className="flex justify-center items-center"
                 style={{
                   backgroundImage: 'url(/images/backgrounds/filter_desktop_background_yellow.png)',
                   backgroundRepeat: 'no-repeat',
                   backgroundSize: 'contain',
                   backgroundPosition: 'center',
-                  height: '100px',
+                  height: vw(100, 'mobile'),
                   width: '100%',
-                  maxWidth: '400px'
+                  maxWidth: vw(400, 'mobile'),
+                  gap: vw(16, 'mobile')
                 }}
               >
                 <button
@@ -1932,9 +2034,10 @@ export default function MapsPage() {
                   <img
                     src={dayTripGroupSizeFilterIconMap[selectedDayTripGroupSizeFilter] || dayTripGroupSizeFilterIconMap['all_day_trip_group_sizes']}
                     alt={locale === 'zh' ? '用人数筛选' : 'Filter by Group Size'}
-                    className="h-16 w-auto"
                     style={{
-                      filter: selectedDayTripGroupSizeFilter !== 'all_day_trip_group_sizes' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      height: vw(64, 'mobile'),
+                      width: 'auto',
+                      filter: selectedDayTripGroupSizeFilter !== 'all_day_trip_group_sizes' ? `brightness(1.2) drop-shadow(0 0 ${vw(8, 'mobile')} #FFD701)` : 'none'
                     }}
                   />
                 </button>
@@ -1946,15 +2049,16 @@ export default function MapsPage() {
                   <img
                     src={dayTripLocationFilterIconMap[selectedDayTripFilter] || dayTripLocationFilterIconMap['all_day_trips']}
                     alt={locale === 'zh' ? '其他筛选' : 'Other Filters'}
-                    className="h-16 w-auto"
                     style={{
-                      filter: selectedDayTripFilter !== 'all_day_trips' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      height: vw(64, 'mobile'),
+                      width: 'auto',
+                      filter: selectedDayTripFilter !== 'all_day_trips' ? `brightness(1.2) drop-shadow(0 0 ${vw(8, 'mobile')} #FFD701)` : 'none'
                     }}
                   />
                 </button>
               </div>
-            </div>
-          </div>
+            </Box>
+          </Box>
         </Box>
       )}
 
