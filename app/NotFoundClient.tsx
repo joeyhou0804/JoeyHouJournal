@@ -3,6 +3,7 @@
 import Box from '@mui/material/Box'
 import { useTranslation } from 'src/hooks/useTranslation'
 import MixedText from 'src/components/MixedText'
+import { vw, rvw } from 'src/utils/scaling'
 
 export default function NotFoundClient() {
   const { locale, tr } = useTranslation()
@@ -23,7 +24,7 @@ export default function NotFoundClient() {
         justifyContent: 'center',
         backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
         backgroundRepeat: 'repeat',
-        backgroundSize: '200px auto',
+        backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
         animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
       }}>
         {/* Error Page Image */}
@@ -32,19 +33,19 @@ export default function NotFoundClient() {
           src="/images/error/error_page_image.png"
           alt="Error"
           sx={{
-            maxWidth: { xs: '400px', sm: '550px', md: '650px' },
+            maxWidth: rvw(300, 650),
             width: '100%',
             height: 'auto',
-            marginBottom: '2rem'
+            marginBottom: rvw(24, 32)
           }}
         />
 
         {/* "Oh no..." / "哎呀..." */}
         <Box sx={{
           fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-          fontSize: { xs: '48px', sm: '64px' },
+          fontSize: rvw(48, 64),
           color: '#373737',
-          marginBottom: '0.5rem'
+          marginBottom: rvw(4, 8)
         }}>
           {tr.errorPage.title}
         </Box>
@@ -54,7 +55,7 @@ export default function NotFoundClient() {
           text={tr.errorPage.notFound}
           chineseFont="MarioFontChinese, sans-serif"
           englishFont="MarioFont, sans-serif"
-          fontSize={{ xs: '24px', sm: '32px' }}
+          fontSize={rvw(24, 32)}
           color="#373737"
           component="p"
           sx={{ margin: 0, textAlign: 'center', px: 2 }}

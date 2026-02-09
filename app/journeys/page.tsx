@@ -975,9 +975,9 @@ export default function JourneysPage() {
 
           {/* Filter Buttons - Mobile Only - Below Map */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', marginTop: vw(48, 'mobile'), width: '100%' }}>
-            {/* Map Filters Label */}
+            {/* Long Trips Filters Label */}
             <MixedText
-              text={locale === 'zh' ? '地图筛选条件' : 'Map Filters'}
+              text={locale === 'zh' ? '长途旅行筛选条件' : 'Long Trips Filters'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize={vw(24, 'mobile')}
@@ -1037,9 +1037,9 @@ export default function JourneysPage() {
 
           {/* Filter Buttons - Desktop Only - Long Trips */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'column', alignItems: 'center', marginTop: vw(64) }}>
-            {/* Map Filters Label */}
+            {/* Long Trips Filters Label */}
             <MixedText
-              text={locale === 'zh' ? '地图筛选条件' : 'Map Filters'}
+              text={locale === 'zh' ? '长途旅行筛选条件' : 'Long Trips Filters'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
               fontSize={vw(24)}
@@ -1328,9 +1328,9 @@ export default function JourneysPage() {
 
             {/* Filter Buttons - Desktop Only - Day Trips */}
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: vw(64) }}>
-              {/* Map Filters Label */}
+              {/* Day Trips & Weekend Trips Filters Label */}
               <MixedText
-                text={locale === 'zh' ? '地图筛选条件' : 'Map Filters'}
+                text={locale === 'zh' ? '一日游&周末旅行筛选条件' : 'Day Trips & Weekend Trips Filters'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
                 fontSize={vw(24)}
@@ -1642,19 +1642,37 @@ export default function JourneysPage() {
 
             {/* Filter Buttons - Mobile Only - Below Map */}
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: vw(48, 'mobile'), width: '100%' }}>
-              {/* Map Filters Label */}
-              <MixedText
-                text={locale === 'zh' ? '地图筛选条件' : 'Map Filters'}
-                chineseFont="MarioFontTitleChinese, sans-serif"
-                englishFont="MarioFontTitle, sans-serif"
-                fontSize={vw(24, 'mobile')}
-                color="#F6F6F6"
-                component="p"
-                sx={{
-                  textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
-                  margin: 0
-                }}
-              />
+              {/* Day Trips & Weekend Trips Filters Label */}
+              <div style={{ lineHeight: '0.8', textAlign: 'center' }}>
+                <MixedText
+                  text={locale === 'zh' ? '一日游&周末旅行筛选条件' : 'Day Trips &'}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize={vw(24, 'mobile')}
+                  color="#F6F6F6"
+                  component="p"
+                  sx={{
+                    textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                    margin: 0,
+                    lineHeight: 0.8
+                  }}
+                />
+                {locale === 'en' && (
+                  <MixedText
+                    text="Weekend Trips Filters"
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize={vw(24, 'mobile')}
+                    color="#F6F6F6"
+                    component="p"
+                    sx={{
+                      textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                      margin: 0,
+                      lineHeight: 0.8
+                    }}
+                  />
+                )}
+              </div>
               <div
                 className="flex justify-center items-center"
                 style={{

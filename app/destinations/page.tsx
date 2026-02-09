@@ -689,19 +689,53 @@ export default function StationsPage() {
         }}
       >
         <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: rvw(16, 32), marginBottom: rvw(32, 64) }}>
+          {/* Desktop title */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center', marginTop: vw(32), marginBottom: vw(64) }}>
             <MixedText
               text={tr.destinationsMapView}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={rvw(40, 64)}
+              fontSize={vw(64)}
               color="#F6F6F6"
               component="h2"
               sx={{
-                textShadow: rShadow(2, 3, '#373737'),
+                textShadow: `${vw(3)} ${vw(3)} 0px #373737`,
                 margin: 0
               }}
             />
+          </Box>
+          {/* Mobile title */}
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: vw(16, 'mobile'), marginBottom: vw(32, 'mobile'), textAlign: 'center' }}>
+            <div style={{ lineHeight: '0.8' }}>
+              <MixedText
+                text={locale === 'zh' ? tr.destinationsMapView : 'Destinations'}
+                chineseFont="MarioFontTitleChinese, sans-serif"
+                englishFont="MarioFontTitle, sans-serif"
+                fontSize={vw(40, 'mobile')}
+                color="#F6F6F6"
+                component="h2"
+                sx={{
+                  textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                  margin: 0,
+                  lineHeight: 0.8
+                }}
+              />
+              {locale === 'en' && (
+                <MixedText
+                  text="Map"
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize={vw(40, 'mobile')}
+                  color="#F6F6F6"
+                  component="h2"
+                  sx={{
+                    textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                    margin: 0,
+                    lineHeight: 0.8
+                  }}
+                />
+              )}
+            </div>
           </Box>
 
           {/* View Hints Button - Mobile Only */}

@@ -4,7 +4,7 @@ import Box from '@mui/material/Box'
 import BaseDrawer from './BaseDrawer'
 import { useLanguage } from 'src/contexts/LanguageContext'
 import { useFontFamily } from 'src/hooks/useFontFamily'
-import { vw } from 'src/utils/scaling'
+import { vw, rvw } from 'src/utils/scaling'
 
 interface SortDrawerProps {
   isOpen: boolean
@@ -35,10 +35,10 @@ export default function SortDrawer({ isOpen, onClose, onSort }: SortDrawerProps)
       <Box
         sx={{
           fontFamily: bodyFont,
-          fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+          fontSize: rvw(locale === 'zh' ? 18 : 16, locale === 'zh' ? 20 : 18),
           color: '#373737',
           textAlign: 'center',
-          marginBottom: '1.5rem'
+          marginBottom: rvw(20, 24)
         }}
       >
         {locale === 'zh' ? '选择排序方式' : 'Select the sorting method'}
@@ -48,15 +48,15 @@ export default function SortDrawer({ isOpen, onClose, onSort }: SortDrawerProps)
       <Box
         sx={{
           width: 'calc(100% - 1rem)',
-          height: '4px',
+          height: rvw(4, 4),
           backgroundColor: '#373737',
-          borderRadius: '2px',
-          margin: '0 auto 2rem auto'
+          borderRadius: rvw(2, 2),
+          margin: { xs: `0 auto ${vw(24, 'mobile')} auto`, md: `0 auto ${vw(32)} auto` }
         }}
       />
 
       {/* Sort Buttons */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: rvw(20, 24) }}>
         {/* Latest First Button */}
         <Box
           component="button"
@@ -75,7 +75,7 @@ export default function SortDrawer({ isOpen, onClose, onSort }: SortDrawerProps)
             alt={locale === 'zh' ? '最新优先' : 'Latest First'}
             sx={{
               height: 'auto',
-              width: { xs: '15rem', sm: '16rem' }
+              width: rvw(200, 256)
             }}
           />
         </Box>
@@ -98,7 +98,7 @@ export default function SortDrawer({ isOpen, onClose, onSort }: SortDrawerProps)
             alt={locale === 'zh' ? '最早优先' : 'Earliest First'}
             sx={{
               height: 'auto',
-              width: { xs: '15rem', sm: '16rem' }
+              width: rvw(200, 256)
             }}
           />
         </Box>

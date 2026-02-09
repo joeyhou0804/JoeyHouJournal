@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
 import BaseDrawer from './BaseDrawer'
 import { useLanguage } from 'src/contexts/LanguageContext'
-import { vw } from 'src/utils/scaling'
+import { vw, rvw } from 'src/utils/scaling'
 
 export interface FilterOption {
   id: string
@@ -161,7 +161,7 @@ export default function CombinedOtherFilterDrawer({
       width={{ xs: '90%', md: vw(600) }}
     >
       {/* Selected filter display banner */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: rvw(20, 24) }}>
         <Box sx={{ position: 'relative', width: '100%' }}>
           <Box
             component="img"
@@ -183,7 +183,7 @@ export default function CombinedOtherFilterDrawer({
               component="h3"
               sx={{
                 fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-                fontSize: { xs: '20px', sm: '24px' },
+                fontSize: rvw(20, 24),
                 color: '#FFD701',
                 margin: 0,
                 whiteSpace: 'nowrap'
@@ -201,9 +201,9 @@ export default function CombinedOtherFilterDrawer({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: { xs: 'repeat(3, 1fr)', sm: 'repeat(4, 1fr)' },
-          gap: { xs: '0.5rem', sm: '0.75rem' },
-          marginBottom: '2rem',
+          gridTemplateColumns: { xs: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)' },
+          gap: rvw(8, 12),
+          marginBottom: rvw(24, 32),
           position: 'relative'
         }}
       >
@@ -239,7 +239,7 @@ export default function CombinedOtherFilterDrawer({
                   width: '100%',
                   height: 'auto',
                   display: 'block',
-                  borderRadius: '0.5rem'
+                  borderRadius: rvw(8, 8)
                 }}
               />
               {/* Selected indicator */}
@@ -250,10 +250,10 @@ export default function CombinedOtherFilterDrawer({
                   alt="Selected"
                   sx={{
                     position: 'absolute',
-                    top: { xs: '4px', sm: '6px' },
-                    left: { xs: '4px', sm: '6px' },
-                    width: { xs: '24px', sm: '32px' },
-                    height: { xs: '24px', sm: '32px' },
+                    top: rvw(4, 6),
+                    left: rvw(4, 6),
+                    width: rvw(24, 32),
+                    height: rvw(24, 32),
                     animation: 'fadeIn 0.2s ease-in-out'
                   }}
                 />
@@ -294,10 +294,13 @@ export default function CombinedOtherFilterDrawer({
               sx={{
                 backgroundColor: '#373737',
                 color: '#F6F6F6',
-                padding: '0.5rem 0.75rem',
-                borderRadius: '0.5rem',
+                paddingTop: rvw(6, 8),
+                paddingBottom: rvw(6, 8),
+                paddingLeft: rvw(10, 12),
+                paddingRight: rvw(10, 12),
+                borderRadius: rvw(8, 8),
                 fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                fontSize: '14px',
+                fontSize: rvw(14, 14),
                 textAlign: 'center',
                 whiteSpace: 'pre-line',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',

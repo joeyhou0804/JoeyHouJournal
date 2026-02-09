@@ -2002,18 +2002,36 @@ export default function MapsPage() {
 
             {/* Filter Buttons - Mobile Only - Below Map */}
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: vw(48, 'mobile'), width: '100%' }}>
-              <MixedText
-                text={locale === 'zh' ? '一日游&周末旅行筛选条件' : 'Day Trips & Weekend Trips Filters'}
-                chineseFont="MarioFontTitleChinese, sans-serif"
-                englishFont="MarioFontTitle, sans-serif"
-                fontSize={vw(24, 'mobile')}
-                color="#F6F6F6"
-                component="p"
-                sx={{
-                  textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
-                  margin: 0
-                }}
-              />
+              <div style={{ lineHeight: '0.8', textAlign: 'center' }}>
+                <MixedText
+                  text={locale === 'zh' ? '一日游&周末旅行筛选条件' : 'Day Trips &'}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize={vw(24, 'mobile')}
+                  color="#F6F6F6"
+                  component="p"
+                  sx={{
+                    textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                    margin: 0,
+                    lineHeight: 0.8
+                  }}
+                />
+                {locale === 'en' && (
+                  <MixedText
+                    text="Weekend Trips Filters"
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize={vw(24, 'mobile')}
+                    color="#F6F6F6"
+                    component="p"
+                    sx={{
+                      textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                      margin: 0,
+                      lineHeight: 0.8
+                    }}
+                  />
+                )}
+              </div>
               <div
                 className="flex justify-center items-center"
                 style={{

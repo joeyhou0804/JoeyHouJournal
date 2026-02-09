@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { rvw } from 'src/utils/scaling'
 
 interface ImageLightboxProps {
   isOpen: boolean
@@ -23,6 +24,18 @@ export default function ImageLightbox({
   onNext,
   alt = 'Image'
 }: ImageLightboxProps) {
+  const [isXsScreen, setIsXsScreen] = useState(false)
+
+  // Detect xs screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsXsScreen(window.innerWidth < 768)
+    }
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
+
   // Handle ESC key to close
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -62,6 +75,14 @@ export default function ImageLightbox({
     }
   }, [isOpen, currentIndex, images.length, onPrevious, onNext])
 
+  // Helper for Lucide icon sizes
+  const iconSize = (px: number) => {
+    if (typeof window === 'undefined') return px
+    return isXsScreen
+      ? Math.round(px * window.innerWidth / 390)
+      : Math.round(px * window.innerWidth / 1512)
+  }
+
   if (!isOpen) return null
 
   return (
@@ -77,7 +98,7 @@ export default function ImageLightbox({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: { xs: '1rem', sm: '2rem' }
+        padding: rvw(16, 32)
       }}
       onClick={onClose}
     >
@@ -87,13 +108,13 @@ export default function ImageLightbox({
         onClick={onClose}
         sx={{
           position: 'absolute',
-          top: { xs: '1rem', sm: '2rem' },
-          right: { xs: '1rem', sm: '2rem' },
+          top: rvw(16, 32),
+          right: rvw(16, 32),
           background: 'rgba(255, 255, 255, 0.1)',
           border: 'none',
           borderRadius: '50%',
-          width: { xs: '40px', sm: '48px' },
-          height: { xs: '40px', sm: '48px' },
+          width: rvw(40, 48),
+          height: rvw(40, 48),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -106,7 +127,7 @@ export default function ImageLightbox({
           }
         }}
       >
-        <X size={24} color="#ffffff" />
+        <X size={iconSize(24)} color="#ffffff" />
       </Box>
 
       {/* Image Counter */}
@@ -114,15 +135,18 @@ export default function ImageLightbox({
         <Box
           sx={{
             position: 'absolute',
-            top: { xs: '1rem', sm: '2rem' },
+            top: rvw(16, 32),
             left: '50%',
             transform: 'translateX(-50%)',
             backgroundColor: 'rgba(0, 0, 0, 0.7)',
             color: '#ffffff',
-            padding: '0.5rem 1rem',
-            borderRadius: '1rem',
+            paddingLeft: rvw(12, 16),
+            paddingRight: rvw(12, 16),
+            paddingTop: rvw(6, 8),
+            paddingBottom: rvw(6, 8),
+            borderRadius: rvw(16, 16),
             fontFamily: 'MarioFont, sans-serif',
-            fontSize: { xs: '14px', sm: '16px' },
+            fontSize: rvw(14, 16),
             zIndex: 10000
           }}
         >
@@ -150,7 +174,7 @@ export default function ImageLightbox({
             maxWidth: '100%',
             maxHeight: '90vh',
             objectFit: 'contain',
-            borderRadius: { xs: '0.5rem', sm: '1rem' }
+            borderRadius: rvw(8, 16)
           }}
         />
       </Box>
@@ -168,14 +192,14 @@ export default function ImageLightbox({
             disabled={currentIndex === 0}
             sx={{
               position: 'absolute',
-              left: { xs: '0.5rem', sm: '2rem' },
+              left: rvw(8, 32),
               top: '50%',
               transform: 'translateY(-50%)',
               background: 'rgba(255, 255, 255, 0.1)',
               border: 'none',
               borderRadius: '50%',
-              width: { xs: '48px', sm: '64px' },
-              height: { xs: '48px', sm: '64px' },
+              width: rvw(48, 64),
+              height: rvw(48, 64),
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -188,7 +212,7 @@ export default function ImageLightbox({
               }
             }}
           >
-            <ChevronLeft size={32} color="#ffffff" />
+            <ChevronLeft size={iconSize(32)} color="#ffffff" />
           </Box>
 
           {/* Next Button */}
@@ -201,14 +225,14 @@ export default function ImageLightbox({
             disabled={currentIndex === images.length - 1}
             sx={{
               position: 'absolute',
-              right: { xs: '0.5rem', sm: '2rem' },
+              right: rvw(8, 32),
               top: '50%',
               transform: 'translateY(-50%)',
               background: 'rgba(255, 255, 255, 0.1)',
               border: 'none',
               borderRadius: '50%',
-              width: { xs: '48px', sm: '64px' },
-              height: { xs: '48px', sm: '64px' },
+              width: rvw(48, 64),
+              height: rvw(48, 64),
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -221,7 +245,7 @@ export default function ImageLightbox({
               }
             }}
           >
-            <ChevronRight size={32} color="#ffffff" />
+            <ChevronRight size={iconSize(32)} color="#ffffff" />
           </Box>
         </>
       )}

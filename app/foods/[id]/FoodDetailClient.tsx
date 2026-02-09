@@ -652,20 +652,53 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
           }}
         >
           <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(8, 32), paddingRight: rvw(8, 32) }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: rvw(32, 64), marginTop: rvw(16, 32) }}>
+            {/* Desktop title */}
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center', marginBottom: vw(64), marginTop: vw(32) }}>
               <MixedText
                 text={locale === 'zh' ? '餐厅位置' : 'Restaurant Location'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize={rvw(40, 64)}
+                fontSize={vw(64)}
                 color="#F6F6F6"
                 component="h2"
                 sx={{
-                  textShadow: rShadow(2, 3, '#373737'),
-                  margin: 0,
-                  textAlign: 'center'
+                  textShadow: `${vw(3)} ${vw(3)} 0px #373737`,
+                  margin: 0
                 }}
               />
+            </Box>
+            {/* Mobile title */}
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(32, 'mobile'), marginTop: vw(16, 'mobile'), textAlign: 'center' }}>
+              <div style={{ lineHeight: '0.8' }}>
+                <MixedText
+                  text={locale === 'zh' ? '餐厅位置' : 'Restaurant'}
+                  chineseFont="MarioFontTitleChinese, sans-serif"
+                  englishFont="MarioFontTitle, sans-serif"
+                  fontSize={vw(40, 'mobile')}
+                  color="#F6F6F6"
+                  component="h2"
+                  sx={{
+                    textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                    margin: 0,
+                    lineHeight: 0.8
+                  }}
+                />
+                {locale === 'en' && (
+                  <MixedText
+                    text="Location"
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize={vw(40, 'mobile')}
+                    color="#F6F6F6"
+                    component="h2"
+                    sx={{
+                      textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                      margin: 0,
+                      lineHeight: 0.8
+                    }}
+                  />
+                )}
+              </div>
             </Box>
 
             {/* View Hints Button - Desktop Only */}
