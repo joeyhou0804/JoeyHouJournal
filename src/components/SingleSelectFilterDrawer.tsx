@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Box from '@mui/material/Box'
 import BaseDrawer from './BaseDrawer'
 import { useLanguage } from 'src/contexts/LanguageContext'
+import { vw, rvw } from 'src/utils/scaling'
 
 export interface FilterOption {
   id: string
@@ -25,7 +26,7 @@ interface SingleSelectFilterDrawerProps {
   bannerImagePath?: string
   gridColumnsMobile?: number
   gridColumnsDesktop?: number
-  drawerWidth?: { xs: string; sm: string }
+  drawerWidth?: { xs: string; md?: string; sm?: string }
   gapMobile?: string
 }
 
@@ -42,8 +43,8 @@ export default function SingleSelectFilterDrawer({
   bannerImagePath = '/images/destinations/hints/map_view_hint_title.webp',
   gridColumnsMobile = 3,
   gridColumnsDesktop = 4,
-  drawerWidth = { xs: '90%', sm: '600px' },
-  gapMobile = '1rem'
+  drawerWidth = { xs: '90%', md: vw(600) },
+  gapMobile = vw(16, 'mobile')
 }: SingleSelectFilterDrawerProps) {
   const { locale } = useLanguage()
   const selectedFilter = selectedFilterProp || defaultSelected || filterOptions[0]?.id
@@ -65,7 +66,7 @@ export default function SingleSelectFilterDrawer({
     >
       {/* Selected filter display banner */}
       {showSelectedBanner && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: rvw(24, 24) }}>
           <Box sx={{ position: 'relative', width: '100%' }}>
             <Box
               component="img"
@@ -87,7 +88,7 @@ export default function SingleSelectFilterDrawer({
                 component="h3"
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-                  fontSize: { xs: '20px', sm: '24px' },
+                  fontSize: rvw(20, 24),
                   color: '#FFD701',
                   margin: 0,
                   whiteSpace: 'nowrap'
@@ -106,10 +107,10 @@ export default function SingleSelectFilterDrawer({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: { xs: `repeat(${gridColumnsMobile}, 1fr)`, sm: `repeat(${gridColumnsDesktop}, 1fr)` },
-          gap: { xs: gapMobile, sm: '0.75rem' },
-          marginBottom: '2rem',
-          padding: { xs: '0 0.5rem', sm: '0' },
+          gridTemplateColumns: { xs: `repeat(${gridColumnsMobile}, 1fr)`, md: `repeat(${gridColumnsDesktop}, 1fr)` },
+          gap: { xs: gapMobile, md: vw(12) },
+          marginBottom: rvw(32, 32),
+          padding: { xs: `0 ${vw(8, 'mobile')}`, md: '0' },
           overflow: 'hidden',
           width: '100%',
           boxSizing: 'border-box'
@@ -147,7 +148,7 @@ export default function SingleSelectFilterDrawer({
                   width: '100%',
                   height: '100%',
                   display: 'block',
-                  borderRadius: '0.5rem',
+                  borderRadius: rvw(8, 8),
                   objectFit: 'contain',
                   transition: 'transform 0.2s ease-in-out',
                   transform: isSelected ? 'scale(1.1)' : 'scale(1)'
@@ -161,10 +162,10 @@ export default function SingleSelectFilterDrawer({
                   alt="Selected"
                   sx={{
                     position: 'absolute',
-                    top: { xs: '4px', sm: '6px' },
-                    left: { xs: '4px', sm: '6px' },
-                    width: { xs: '24px', sm: '32px' },
-                    height: { xs: '24px', sm: '32px' },
+                    top: rvw(4, 6),
+                    left: rvw(4, 6),
+                    width: rvw(24, 32),
+                    height: rvw(24, 32),
                     animation: 'fadeIn 0.2s ease-in-out'
                   }}
                 />

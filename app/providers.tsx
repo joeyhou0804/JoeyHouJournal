@@ -1,7 +1,21 @@
 'use client'
 
 import { useEffect } from 'react'
+import { ThemeProvider, createTheme } from '@mui/material/styles'
 import { LanguageProvider } from 'src/contexts/LanguageContext'
+
+// Custom MUI theme: align md breakpoint with Tailwind's md (768px)
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+    },
+  },
+})
 
 export function Providers({ children }: { children: React.ReactNode }) {
   // Preload menu and footer button images that appear on every page
@@ -73,5 +87,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     })
   }, [])
 
-  return <LanguageProvider>{children}</LanguageProvider>
+  return (
+    <ThemeProvider theme={theme}>
+      <LanguageProvider>{children}</LanguageProvider>
+    </ThemeProvider>
+  )
 }

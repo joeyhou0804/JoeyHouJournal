@@ -5,6 +5,9 @@ import Box from '@mui/material/Box'
 import MixedText from './MixedText'
 import { useLanguage } from 'src/contexts/LanguageContext'
 import { X } from 'lucide-react'
+import { vw, rvw } from 'src/utils/scaling'
+
+const mvw = (px: number) => vw(px, 'mobile')
 
 interface FilterDrawerBaseProps {
   isOpen: boolean
@@ -14,7 +17,7 @@ interface FilterDrawerBaseProps {
   children: ReactNode
   showOkButton?: boolean
   buttonType?: 'ok' | 'all_set'
-  width?: { xs: string, sm?: string }
+  width?: { xs: string, sm?: string, md?: string }
   onOk?: () => void
 }
 
@@ -96,9 +99,9 @@ export default function FilterDrawerBase({
           zIndex: 10001,
           backgroundImage: 'url(/images/homepage/email_subscription_background.png)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '200px auto',
-          padding: '0.5rem',
-          borderRadius: '1rem',
+          backgroundSize: rvw(200, 200),
+          padding: rvw(8, 8),
+          borderRadius: rvw(16, 16),
           animation: isExiting
             ? 'drawerExit 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards'
             : 'drawerEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
@@ -138,12 +141,17 @@ export default function FilterDrawerBase({
       >
         <Box
           sx={{
-            border: '4px solid #373737',
-            borderRadius: '0.75rem',
-            padding: '2rem 1rem',
+            borderWidth: rvw(4, 4),
+            borderStyle: 'solid',
+            borderColor: '#373737',
+            borderRadius: rvw(12, 12),
+            paddingTop: rvw(32, 32),
+            paddingBottom: rvw(32, 32),
+            paddingLeft: rvw(16, 16),
+            paddingRight: rvw(16, 16),
             backgroundImage: 'url(/images/homepage/email_subscription_background.png)',
             backgroundRepeat: 'repeat',
-            backgroundSize: '200px auto',
+            backgroundSize: rvw(200, 200),
             position: 'relative',
             overflowX: 'hidden',
             width: '100%',
@@ -157,11 +165,11 @@ export default function FilterDrawerBase({
             className="hover:opacity-70 transition-opacity duration-200"
             sx={{
               position: 'absolute',
-              top: '1rem',
-              right: '1rem',
+              top: rvw(16, 16),
+              right: rvw(16, 16),
               border: 'none',
               background: 'transparent',
-              padding: '0.25rem',
+              padding: rvw(4, 4),
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -169,7 +177,7 @@ export default function FilterDrawerBase({
               zIndex: 2
             }}
           >
-            <X size={28} color="#373737" strokeWidth={2.5} />
+            <X size={typeof window !== 'undefined' ? Math.round(28 * window.innerWidth / (window.innerWidth >= 768 ? 1512 : 390)) : 28} color="#373737" strokeWidth={2.5} />
           </Box>
 
           {/* Title */}
@@ -177,10 +185,10 @@ export default function FilterDrawerBase({
             text={locale === 'zh' ? titleZh : titleEn}
             chineseFont="MarioFontTitleChinese, sans-serif"
             englishFont="MarioFontTitle, sans-serif"
-            fontSize={{ xs: locale === 'zh' ? '32px' : '28px', sm: locale === 'zh' ? '36px' : '32px' }}
+            fontSize={rvw(locale === 'zh' ? 32 : 28, locale === 'zh' ? 36 : 32)}
             color="#373737"
             component="h2"
-            sx={{ textAlign: 'center', marginBottom: '1.5rem' }}
+            sx={{ textAlign: 'center', marginBottom: rvw(24, 24) }}
           />
 
           {/* Content */}
@@ -192,11 +200,13 @@ export default function FilterDrawerBase({
               {/* Divider */}
               <Box
                 sx={{
-                  width: 'calc(100% - 1rem)',
-                  height: '4px',
+                  width: '90%',
+                  height: rvw(4, 4),
                   backgroundColor: '#373737',
-                  borderRadius: '2px',
-                  margin: '0 auto 2rem auto'
+                  borderRadius: rvw(2, 2),
+                  marginLeft: 'auto',
+                  marginRight: 'auto',
+                  marginBottom: rvw(32, 32)
                 }}
               />
 
@@ -218,7 +228,7 @@ export default function FilterDrawerBase({
                     alt={locale === 'zh' ? (buttonType === 'all_set' ? '设置完成' : '确定') : (buttonType === 'all_set' ? 'All Set' : 'OK')}
                     sx={{
                       height: 'auto',
-                      width: { xs: '15rem', sm: '16rem' }
+                      width: rvw(240, 256)
                     }}
                   />
                 </Box>

@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import Box from '@mui/material/Box'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { isLocalTrip } from 'src/utils/journeyHelpers'
+import { rvw } from 'src/utils/scaling'
 import MapMarkerDrawer from './MapMarkerDrawer'
 
 // Fix for default marker icon in Next.js
@@ -66,6 +68,9 @@ interface InteractiveMapProps {
   allowViewDetailsForCurrent?: boolean // Allow View Details button for current destination (for food detail pages)
   maxZoom?: number // Maximum zoom level (default: 10 for city-level view, use 18 for street-level view)
 }
+
+// Desktop proportional scaling helper for raw HTML strings
+const dvw = (px: number) => `calc(100vw * ${px} / 1512)`
 
 export default function InteractiveMap({ places, isDetailView = false, routeCoordinates, routeSegments, journeyDate, showHomeMarker, currentDestinationId, drawSegmentsIndependently = false, initialCenter, initialZoom, allowViewDetailsForCurrent = false, maxZoom = 10 }: InteractiveMapProps) {
   const { locale, tr } = useTranslation()
@@ -139,7 +144,7 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
       : [39.8283, -98.5795] // Geographic center of USA
 
     // Determine initial zoom level based on screen size and view type (or use provided initialZoom)
-    const isSmallScreen = typeof window !== 'undefined' && window.innerWidth < 640
+    const isSmallScreen = typeof window !== 'undefined' && window.innerWidth < 768 // md breakpoint
     const calculatedZoom = isDetailView
       ? (isSmallScreen ? 6 : 5)
       : (isMobile ? 3 : 5)
@@ -720,40 +725,40 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           const displayState = tr.states[place.state] || place.state
 
           return `
-            <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
-              <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; position: relative;">
-                <div style="position: relative; width: 100%; height: 146px;">
-                  <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
+            <div style="width: ${dvw(460)}; padding: ${dvw(8)}; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: ${dvw(200)} auto; background-repeat: repeat; border-radius: ${dvw(12)}; position: relative;">
+              <div style="border: ${dvw(2)} solid #F6F6F6; border-radius: ${dvw(8)}; padding: ${dvw(8)}; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: ${dvw(200)} auto; background-repeat: repeat; position: relative;">
+                <div style="position: relative; width: 100%; height: ${dvw(146)};">
+                  <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: ${dvw(400)}; height: auto; z-index: 1;" />
                   ${place.images && place.images.length > 0 ? `
                     <img
                       src="${place.images[0]}"
                       alt="${displayName}"
-                      style="position: absolute; top: 8px; left: 8px; width: 130px; height: 130px; object-fit: cover; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
+                      style="position: absolute; top: ${dvw(8)}; left: ${dvw(8)}; width: ${dvw(130)}; height: ${dvw(130)}; object-fit: cover; border-radius: ${dvw(6)}; z-index: 2; box-shadow: 0 ${dvw(4)} ${dvw(6)} rgba(0,0,0,0.3);"
                     />
                   ` : ''}
-                  <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
+                  <div style="position: absolute; top: 50%; left: ${dvw(165)}; transform: translate(0, -50%); margin-top: ${dvw(-40)}; z-index: 3; width: ${dvw(250)};">
                     <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
-                    <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(displayName, '20px')}</h3>
+                    <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(displayName, dvw(20))}</h3>
                   </div>
-                  <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
+                  <div style="position: absolute; top: 50%; left: ${dvw(165)}; transform: translateY(-50%); margin-top: ${dvw(8)}; z-index: 2; width: ${dvw(250)}; text-align: center;">
                     ${place.restaurantName ? `
-                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin: 0 0 2px 0;">${locale === 'zh' && place.nameCN ? place.nameCN : place.name}</p>
-                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 14px; color: #373737; margin: 0;">${locale === 'zh' && place.cuisineStyleCN ? place.cuisineStyleCN : (place.cuisineStyle || '')}</p>
+                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: ${dvw(15)}; color: #373737; margin: 0 0 ${dvw(2)} 0;">${locale === 'zh' && place.nameCN ? place.nameCN : place.name}</p>
+                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: ${dvw(14)}; color: #373737; margin: 0;">${locale === 'zh' && place.cuisineStyleCN ? place.cuisineStyleCN : (place.cuisineStyle || '')}</p>
                     ` : `
-                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
-                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: ${dvw(16)}; color: #373737; margin-bottom: ${dvw(2)}; margin-top: 0;">${displayState}</p>
+                      <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: ${dvw(15)}; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
                     `}
                   </div>
                 </div>
                 ${!isDetailView && (place.restaurantName || (allowViewDetailsForCurrent || place.id !== currentDestinationId)) ? `
-                <div style="text-align: center; margin-top: 4px;">
+                <div style="text-align: center; margin-top: ${dvw(4)};">
                   <a
                     href="${place.restaurantName ? `/foods/${place.id}` : `/destinations/${place.id}`}"
                     style="display: inline-block; transition: transform 0.2s;"
                     onmouseover="this.style.transform='scale(1.05)'"
                     onmouseout="this.style.transform='scale(1)'"
                   >
-                    <img src="/images/buttons/view_details_button_${locale}.png" alt="${tr.viewDetails}" style="height: 45px; width: auto; display: block;" />
+                    <img src="/images/buttons/view_details_button_${locale}.png" alt="${tr.viewDetails}" style="height: ${dvw(45)}; width: auto; display: block;" />
                   </a>
                 </div>
                 ` : ''}
@@ -764,8 +769,8 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   ${isFirst ? 'disabled' : ''}
                   style="position: absolute; left: 0px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: ${isFirst ? 'default' : 'pointer'}; padding: 0; z-index: 10; opacity: ${isFirst ? '0.4' : '1'};"
                 >
-                  <img src="/images/buttons/tab_prev.webp" alt="${tr.previous}" style="height: 60px; width: auto; display: block;" class="default-img" />
-                  <img src="/images/buttons/tab_prev_hover.webp" alt="${tr.previous}" style="height: 60px; width: auto; display: none;" class="hover-img" />
+                  <img src="/images/buttons/tab_prev.webp" alt="${tr.previous}" style="height: ${dvw(60)}; width: auto; display: block;" class="default-img" />
+                  <img src="/images/buttons/tab_prev_hover.webp" alt="${tr.previous}" style="height: ${dvw(60)}; width: auto; display: none;" class="hover-img" />
                 </button>
                 <button
                   data-carousel-id="${carouselId}"
@@ -774,17 +779,18 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
                   ${isLast ? 'disabled' : ''}
                   style="position: absolute; right: 0px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: ${isLast ? 'default' : 'pointer'}; padding: 0; z-index: 10; opacity: ${isLast ? '0.4' : '1'};"
                 >
-                  <img src="/images/buttons/tab_next.webp" alt="${tr.next}" style="height: 60px; width: auto; display: block;" class="default-img" />
-                  <img src="/images/buttons/tab_next_hover.webp" alt="${tr.next}" style="height: 60px; width: auto; display: none;" class="hover-img" />
+                  <img src="/images/buttons/tab_next.webp" alt="${tr.next}" style="height: ${dvw(60)}; width: auto; display: block;" class="default-img" />
+                  <img src="/images/buttons/tab_next_hover.webp" alt="${tr.next}" style="height: ${dvw(60)}; width: auto; display: none;" class="hover-img" />
                 </button>
               </div>
             </div>
           `
         }
 
+        const popupWidth = Math.round(520 * window.innerWidth / 1512)
         const popup = L.popup({
-          maxWidth: 520,
-          minWidth: 520,
+          maxWidth: popupWidth,
+          minWidth: popupWidth,
           className: 'custom-popup',
           closeButton: false
         })
@@ -871,40 +877,40 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
         const displayState = tr.states[place.state] || place.state
 
         const popupContent = `
-          <div style="width: 460px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat; border-radius: 12px; position: relative;">
-            <div style="border: 2px solid #F6F6F6; border-radius: 8px; padding: 8px; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: 200px auto; background-repeat: repeat;">
-              <div style="position: relative; width: 100%; height: 146px;">
-                <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 400px; height: auto; z-index: 1;" />
+          <div style="width: ${dvw(460)}; padding: ${dvw(8)}; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: ${dvw(200)} auto; background-repeat: repeat; border-radius: ${dvw(12)}; position: relative;">
+            <div style="border: ${dvw(2)} solid #F6F6F6; border-radius: ${dvw(8)}; padding: ${dvw(8)}; background-image: url('/images/destinations/destination_page_map_box_background.webp'); background-size: ${dvw(200)} auto; background-repeat: repeat;">
+              <div style="position: relative; width: 100%; height: ${dvw(146)};">
+                <img src="/images/destinations/destination_popup_card.webp" alt="Card" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: ${dvw(400)}; height: auto; z-index: 1;" />
                 ${place.images && place.images.length > 0 ? `
                   <img
                     src="${place.images[0]}"
                     alt="${displayName}"
-                    style="position: absolute; top: 8px; left: 8px; width: 130px; height: 130px; object-fit: cover; border-radius: 6px; z-index: 2; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"
+                    style="position: absolute; top: ${dvw(8)}; left: ${dvw(8)}; width: ${dvw(130)}; height: ${dvw(130)}; object-fit: cover; border-radius: ${dvw(6)}; z-index: 2; box-shadow: 0 ${dvw(4)} ${dvw(6)} rgba(0,0,0,0.3);"
                   />
                 ` : ''}
-                <div style="position: absolute; top: 50%; left: 165px; transform: translate(0, -50%); margin-top: -40px; z-index: 3; width: 250px;">
+                <div style="position: absolute; top: 50%; left: ${dvw(165)}; transform: translate(0, -50%); margin-top: ${dvw(-40)}; z-index: 3; width: ${dvw(250)};">
                   <img src="/images/destinations/destination_location_title.webp" alt="Location" style="width: 100%; height: auto; display: block;" />
-                  <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(displayName, '20px')}</h3>
+                  <h3 style="font-weight: normal; color: #373737; margin: 0; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); white-space: nowrap; text-align: center; width: 100%;">${getMixedFontHTML(displayName, dvw(20))}</h3>
                 </div>
-                <div style="position: absolute; top: 50%; left: 165px; transform: translateY(-50%); margin-top: 8px; z-index: 2; width: 250px; text-align: center;">
+                <div style="position: absolute; top: 50%; left: ${dvw(165)}; transform: translateY(-50%); margin-top: ${dvw(8)}; z-index: 2; width: ${dvw(250)}; text-align: center;">
                   ${place.restaurantName ? `
-                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin: 0 0 2px 0;">${locale === 'zh' && place.nameCN ? place.nameCN : place.name}</p>
-                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 14px; color: #373737; margin: 0;">${locale === 'zh' && place.cuisineStyleCN ? place.cuisineStyleCN : (place.cuisineStyle || '')}</p>
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: ${dvw(15)}; color: #373737; margin: 0 0 ${dvw(2)} 0;">${locale === 'zh' && place.nameCN ? place.nameCN : place.name}</p>
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: ${dvw(14)}; color: #373737; margin: 0;">${locale === 'zh' && place.cuisineStyleCN ? place.cuisineStyleCN : (place.cuisineStyle || '')}</p>
                   ` : `
-                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 16px; color: #373737; margin-bottom: 2px; margin-top: 0;">${displayState}</p>
-                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: 15px; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: ${dvw(16)}; color: #373737; margin-bottom: ${dvw(2)}; margin-top: 0;">${displayState}</p>
+                    <p style="font-family: '${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}', sans-serif; font-size: ${dvw(15)}; color: #373737; margin-bottom: 0; margin-top: 0;">${place.date}</p>
                   `}
                 </div>
               </div>
               ${!isDetailView && (place.restaurantName || (allowViewDetailsForCurrent || place.id !== currentDestinationId)) ? `
-              <div style="text-align: center; margin-top: 4px;">
+              <div style="text-align: center; margin-top: ${dvw(4)};">
                 <a
                   href="${place.restaurantName ? `/foods/${place.id}` : `/destinations/${place.id}`}"
                   style="display: inline-block; transition: transform 0.2s;"
                   onmouseover="this.style.transform='scale(1.05)'"
                   onmouseout="this.style.transform='scale(1)'"
                 >
-                  <img src="/images/buttons/view_details_button_${locale}.png" alt="${tr.viewDetails}" style="height: 45px; width: auto; display: block;" />
+                  <img src="/images/buttons/view_details_button_${locale}.png" alt="${tr.viewDetails}" style="height: ${dvw(45)}; width: auto; display: block;" />
                 </a>
               </div>
               ` : ''}
@@ -912,9 +918,10 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
           </div>
         `
 
+        const singlePopupWidth = Math.round(520 * window.innerWidth / 1512)
         marker.bindPopup(popupContent, {
-          maxWidth: 520,
-          minWidth: 520,
+          maxWidth: singlePopupWidth,
+          minWidth: singlePopupWidth,
           className: 'custom-popup',
           closeButton: false
         })
@@ -1036,9 +1043,16 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
 
   return (
     <>
-      <div
+      <Box
         ref={mapContainerRef}
-        className="w-full rounded-lg overflow-hidden shadow-lg border-4 border-gray-800 h-[600px] xs:h-auto xs:aspect-[2/3]"
+        className="w-full overflow-hidden shadow-lg border-gray-800"
+        sx={{
+          height: { xs: 'auto', md: rvw(600, 600).md },
+          aspectRatio: { xs: '2/3', md: 'unset' },
+          borderRadius: rvw(8, 8),
+          borderWidth: rvw(4, 4),
+          borderStyle: 'solid',
+        }}
       />
       <MapMarkerDrawer
         isOpen={drawerOpen}

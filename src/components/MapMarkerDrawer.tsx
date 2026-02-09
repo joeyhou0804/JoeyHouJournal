@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import Box from '@mui/material/Box'
 import BaseDrawer from './BaseDrawer'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { vw } from 'src/utils/scaling'
+
+const mvw = (px: number) => vw(px, 'mobile')
 
 interface Place {
   id: string
@@ -105,16 +108,16 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
         onClose={onClose}
         titleEn={titleEn}
         titleZh={titleZh}
-        width={{ xs: '90%', sm: '500px' }}
+        width={{ xs: '90%' }}
         showOkButton={showOkButton}
         onOk={onOk}
       >
         {/* Subtitle */}
         {subtitle && (
-          <Box sx={{ textAlign: 'center', marginTop: '-0.5rem', paddingBottom: '1rem' }}>
+          <Box sx={{ textAlign: 'center', marginTop: mvw(-8), paddingBottom: mvw(16) }}>
             <span style={{
               fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-              fontSize: '16px',
+              fontSize: mvw(16),
               color: '#373737'
             }}>
               {subtitle}
@@ -141,15 +144,15 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
       onClose={onClose}
       titleEn={titleEn}
       titleZh={titleZh}
-      width={{ xs: '90%', sm: '500px' }}
+      width={{ xs: '90%' }}
       showOkButton={false}
     >
       {/* Subtitle */}
       {subtitle && (
-        <Box sx={{ textAlign: 'center', marginBottom: '1rem', marginTop: '-0.5rem' }}>
+        <Box sx={{ textAlign: 'center', marginBottom: mvw(16), marginTop: mvw(-8) }}>
           <span style={{
             fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-            fontSize: '16px',
+            fontSize: mvw(16),
             color: '#373737'
           }}>
             {subtitle}
@@ -158,7 +161,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
       )}
 
       {/* Content */}
-      <Box sx={{ position: 'relative', width: '100%', paddingTop: '0.25rem' }}>
+      <Box sx={{ position: 'relative', width: '100%', paddingTop: mvw(4) }}>
         {/* First Row: Location Title */}
         <Box
           sx={{
@@ -166,13 +169,13 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
             width: '100%',
             display: 'flex',
             justifyContent: 'center',
-            marginBottom: '0.75rem'
+            marginBottom: mvw(12)
           }}
         >
           <Box
             sx={{
               position: 'relative',
-              width: { xs: '95%', sm: '300px' }
+              width: '95%'
             }}
           >
             <Box
@@ -193,10 +196,10 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
                 fontWeight: 'normal',
                 color: '#373737',
                 margin: 0,
-                fontSize: { xs: '26px', sm: '20px' }
+                fontSize: mvw(26)
               }}
             >
-              {getMixedFontHTML(displayName, '20px')}
+              {getMixedFontHTML(displayName, mvw(26))}
             </Box>
           </Box>
         </Box>
@@ -206,7 +209,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
           sx={{
             width: '100%',
             textAlign: 'center',
-            marginBottom: '1.5rem'
+            marginBottom: mvw(24)
           }}
         >
           {place.restaurantName ? (
@@ -215,9 +218,9 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
               <Box
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                  fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+                  fontSize: mvw(locale === 'zh' ? 18 : 16),
                   color: '#373737',
-                  marginBottom: '4px'
+                  marginBottom: mvw(4)
                 }}
               >
                 {locale === 'zh' && place.nameCN ? place.nameCN : place.name}
@@ -225,7 +228,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
               <Box
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                  fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+                  fontSize: mvw(locale === 'zh' ? 18 : 16),
                   color: '#373737'
                 }}
               >
@@ -238,9 +241,9 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
               <Box
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                  fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+                  fontSize: mvw(locale === 'zh' ? 18 : 16),
                   color: '#373737',
-                  marginBottom: '4px'
+                  marginBottom: mvw(4)
                 }}
               >
                 {displayState}
@@ -248,7 +251,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
               <Box
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                  fontSize: { xs: locale === 'zh' ? '18px' : '16px', sm: locale === 'zh' ? '20px' : '18px' },
+                  fontSize: mvw(locale === 'zh' ? 18 : 16),
                   color: '#373737'
                 }}
               >
@@ -265,7 +268,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
               width: '100%',
               display: 'flex',
               justifyContent: 'center',
-              marginBottom: '1.5rem'
+              marginBottom: mvw(24)
             }}
           >
             <Box
@@ -273,11 +276,11 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
               src={place.images[0]}
               alt={displayName}
               sx={{
-                width: { xs: '200px', sm: '250px' },
-                height: { xs: '200px', sm: '250px' },
+                width: mvw(200),
+                height: mvw(200),
                 objectFit: 'cover',
-                borderRadius: '8px',
-                boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
+                borderRadius: mvw(8),
+                boxShadow: `0 ${mvw(4)} ${mvw(8)} rgba(0,0,0,0.2)`
               }}
             />
           </Box>
@@ -289,11 +292,11 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
         ) && (
           <Box
             sx={{
-              width: 'calc(100% - 1rem)',
-              height: '4px',
+              width: `calc(100% - ${mvw(16)})`,
+              height: mvw(4),
               backgroundColor: '#373737',
-              borderRadius: '2px',
-              margin: '0 auto 1.5rem auto'
+              borderRadius: mvw(2),
+              margin: `0 auto ${mvw(24)} auto`
             }}
           />
         )}
@@ -302,7 +305,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
         {!isDetailView && place.id !== 'home' && (
           place.restaurantName || (allowViewDetailsForCurrent || place.id !== currentDestinationId)
         ) && (
-          <Box sx={{ textAlign: 'center', marginTop: '0rem', marginBottom: '1rem' }}>
+          <Box sx={{ textAlign: 'center', marginBottom: mvw(16) }}>
             <a
               href={place.restaurantName ? `/foods/${place.id}` : `/destinations/${place.id}`}
               style={{ display: 'inline-block', transition: 'transform 0.2s' }}
@@ -314,7 +317,7 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
                 src={`/images/buttons/view_details_button_${locale}.png`}
                 alt={tr.viewDetails}
                 sx={{
-                  height: { xs: '40px', sm: '45px' },
+                  height: mvw(40),
                   width: 'auto',
                   display: 'block',
                   objectFit: 'contain'
@@ -356,14 +359,14 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
                 src="/images/buttons/arrow_prev.webp"
                 alt={tr.previous}
                 className="default-img"
-                sx={{ height: '50px', width: 'auto', display: 'block' }}
+                sx={{ height: mvw(50), width: 'auto', display: 'block' }}
               />
               <Box
                 component="img"
                 src="/images/buttons/arrow_prev_hover.webp"
                 alt={tr.previous}
                 className="hover-img"
-                sx={{ height: '50px', width: 'auto', display: 'none' }}
+                sx={{ height: mvw(50), width: 'auto', display: 'none' }}
               />
             </Box>
 
@@ -396,14 +399,14 @@ export default function MapMarkerDrawer({ isOpen, onClose, places, isDetailView 
                 src="/images/buttons/arrow_next.webp"
                 alt={tr.next}
                 className="default-img"
-                sx={{ height: '50px', width: 'auto', display: 'block' }}
+                sx={{ height: mvw(50), width: 'auto', display: 'block' }}
               />
               <Box
                 component="img"
                 src="/images/buttons/arrow_next_hover.webp"
                 alt={tr.next}
                 className="hover-img"
-                sx={{ height: '50px', width: 'auto', display: 'none' }}
+                sx={{ height: mvw(50), width: 'auto', display: 'none' }}
               />
             </Box>
           </>
