@@ -3,6 +3,7 @@
 import Box from '@mui/material/Box'
 import BaseDrawer from './BaseDrawer'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { vw, rvw } from 'src/utils/scaling'
 
 interface ViewHintsDrawerProps {
   isOpen: boolean
@@ -26,13 +27,13 @@ export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }
       titleEn="Map View Hints"
       titleZh="地图查看提示"
       showOkButton={false}
-      width={{ xs: '90%', sm: '600px' }}
+      width={{ xs: '90%', md: vw(600) }}
     >
       {/* First Map View Hint */}
-      <Box sx={{ marginBottom: { xs: '2rem', sm: '2.5rem' } }}>
+      <Box sx={{ marginBottom: rvw(32, 40) }}>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           {/* Title Row */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: { xs: '1rem', sm: '1.5rem' } }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: rvw(16, 24) }}>
             <Box sx={{ position: 'relative', width: '100%' }}>
               <Box
                 component="img"
@@ -54,7 +55,7 @@ export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }
                   component="h3"
                   sx={{
                     fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-                    fontSize: { xs: '20px', sm: '24px' },
+                    fontSize: rvw(20, 24),
                     color: '#FFD701',
                     margin: 0,
                     whiteSpace: 'nowrap'
@@ -66,14 +67,16 @@ export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }
             </Box>
           </Box>
           {/* Image and Text Row */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: '1rem', sm: '1.5rem' } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: rvw(16, 24) }}>
             <Box
               sx={{
-                width: { xs: '80px', sm: '100px' },
-                height: { xs: '80px', sm: '100px' },
-                borderRadius: { xs: '20px', sm: '24px' },
+                width: rvw(80, 100),
+                height: rvw(80, 100),
+                borderRadius: rvw(20, 24),
                 overflow: 'hidden',
-                border: '4px solid #373737',
+                borderWidth: rvw(4, 4),
+                borderStyle: 'solid',
+                borderColor: '#373737',
                 flexShrink: 0
               }}
             >
@@ -88,7 +91,7 @@ export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }
               component="p"
               sx={{
                 fontFamily: 'MarioFont, sans-serif',
-                fontSize: { xs: '14px', sm: '18px' },
+                fontSize: rvw(14, 18),
                 color: '#373737',
                 margin: 0,
                 lineHeight: '1.4',
@@ -105,7 +108,7 @@ export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }
       <Box>
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
           {/* Title Row */}
-          <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: { xs: '1rem', sm: '1.5rem' } }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: rvw(16, 24) }}>
             <Box sx={{ position: 'relative', width: '100%' }}>
               <Box
                 component="img"
@@ -127,7 +130,7 @@ export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }
                   component="h3"
                   sx={{
                     fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-                    fontSize: { xs: '20px', sm: '24px' },
+                    fontSize: rvw(20, 24),
                     color: '#FFD701',
                     margin: 0,
                     whiteSpace: 'nowrap'
@@ -139,14 +142,16 @@ export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }
             </Box>
           </Box>
           {/* Image and Text Row */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: '1rem', sm: '1.5rem' } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: rvw(16, 24) }}>
             <Box
               sx={{
-                width: { xs: '80px', sm: '100px' },
-                height: { xs: '80px', sm: '100px' },
-                borderRadius: { xs: '20px', sm: '24px' },
+                width: rvw(80, 100),
+                height: rvw(80, 100),
+                borderRadius: rvw(20, 24),
                 overflow: 'hidden',
-                border: '4px solid #373737',
+                borderWidth: rvw(4, 4),
+                borderStyle: 'solid',
+                borderColor: '#373737',
                 flexShrink: 0
               }}
             >
@@ -161,7 +166,7 @@ export default function ViewHintsDrawer({ isOpen, onClose, variant = 'default' }
               component="p"
               sx={{
                 fontFamily: 'MarioFont, sans-serif',
-                fontSize: { xs: '14px', sm: '18px' },
+                fontSize: rvw(14, 18),
                 color: '#373737',
                 margin: 0,
                 lineHeight: '1.4',

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
 import BaseDrawer from './BaseDrawer'
 import { useLanguage } from 'src/contexts/LanguageContext'
+import { vw } from 'src/utils/scaling'
 
 export interface FilterOption {
   id: string
@@ -157,7 +158,7 @@ export default function CombinedOtherFilterDrawer({
       titleEn={titleEn}
       titleZh={titleZh}
       buttonType="all_set"
-      width={{ xs: '90%', sm: '600px' }}
+      width={{ xs: '90%', md: vw(600) }}
     >
       {/* Selected filter display banner */}
       <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '1.5rem' }}>

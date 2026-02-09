@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import BaseDrawer from './BaseDrawer'
 import { useLanguage } from 'src/contexts/LanguageContext'
 import { useFontFamily } from 'src/hooks/useFontFamily'
+import { vw } from 'src/utils/scaling'
 
 interface SortDrawerProps {
   isOpen: boolean
@@ -27,7 +28,7 @@ export default function SortDrawer({ isOpen, onClose, onSort }: SortDrawerProps)
       onClose={onClose}
       titleEn="Sort"
       titleZh="排序"
-      width={{ xs: '90%', sm: '500px' }}
+      width={{ xs: '90%', md: vw(500) }}
       showOkButton={false}
     >
       {/* Description */}

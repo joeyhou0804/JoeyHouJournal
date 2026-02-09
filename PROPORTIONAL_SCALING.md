@@ -251,9 +251,19 @@ The following types of values throughout the codebase need to be converted:
    - [x] `src/components/MapMarkerDrawer.tsx` — mobile marker drawer (mvw)
    - [x] `src/components/SingleSelectFilterDrawer.tsx` — filter drawer (rvw + vw)
    - [x] `src/components/DestinationCard.tsx` — destination cards (rvw, sm→md)
-   - [ ] `app/page.tsx` (homepage)
-   - [ ] `src/components/InfiniteCarousel.tsx`
-   - [ ] `app/journeys/` pages
+   - [x] `app/page.tsx` (homepage — Featured Trips, Recent Places, loading state)
+   - [x] `src/components/HeroSection.tsx` — video hero, logo, slogan, carousel text
+   - [x] `src/components/InfiniteCarousel.tsx` — dual-row carousel image sizes/gaps
+   - [x] `src/components/NavigationMenu.tsx` — menu button + mobile drawer
+   - [x] `src/components/Footer.tsx` — footer layout, buttons, copyright
+   - [x] `app/journeys/page.tsx` — journeys list page (map sections, filters, list, search, pagination)
+   - [x] `src/components/JourneyCard.tsx` — journey cards (sm→md, rvw)
+   - [x] `src/components/MapViewHint.tsx` — map view hint cards (sm→md, rvw)
+   - [x] `src/components/EmailSubscriptionDrawer.tsx` — email subscription form (rvw)
+   - [x] `src/components/SubscriptionResultDrawer.tsx` — subscription result (rvw)
+   - [x] `src/components/CombinedOtherFilterDrawer.tsx` — width fix (sm→md)
+   - [x] `src/components/SortDrawer.tsx` — width fix (sm→md)
+   - [x] `src/components/ViewHintsDrawer.tsx` — width fix (sm→md)
    - [ ] `app/destinations/[id]/page.tsx` (detail page)
 4. Test at various viewport widths to verify proportional scaling
 5. Admin pages can be skipped (only you use them)
