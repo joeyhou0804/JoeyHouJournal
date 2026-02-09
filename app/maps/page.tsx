@@ -1295,10 +1295,16 @@ export default function MapsPage() {
                   left: { xs: vw(-8, 'mobile'), md: vw(16) },
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 200ms',
                   zIndex: 1001,
+                  ...(currentJourneyIndex !== 0 && {
+                    '&:hover': {
+                      transform: 'translateY(-50%) scale(1.05)',
+                    },
+                  }),
                 }}
-                className={`group transition-transform duration-200 ${
-                  currentJourneyIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentJourneyIndex === 0 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
               >
                 <Box
@@ -1327,10 +1333,16 @@ export default function MapsPage() {
                   right: { xs: vw(-8, 'mobile'), md: vw(16) },
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 200ms',
                   zIndex: 1001,
+                  ...(currentJourneyIndex !== regularJourneys.length - 1 && {
+                    '&:hover': {
+                      transform: 'translateY(-50%) scale(1.05)',
+                    },
+                  }),
                 }}
-                className={`group transition-transform duration-200 ${
-                  currentJourneyIndex === regularJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentJourneyIndex === regularJourneys.length - 1 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
               >
                 <Box
@@ -1643,11 +1655,14 @@ export default function MapsPage() {
                   left: vw(16),
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 200ms',
                   zIndex: 1001,
                 }}
-                className={`group transition-transform duration-200 ${
-                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
+                onMouseEnter={(e) => { if (currentDayTripIndex !== 0) e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(-50%)'; }}
               >
                 <img
                   src="/images/buttons/tab_prev.webp"
@@ -1672,11 +1687,14 @@ export default function MapsPage() {
                   right: vw(16),
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 200ms',
                   zIndex: 1001,
                 }}
-                className={`group transition-transform duration-200 ${
-                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
+                onMouseEnter={(e) => { if (currentDayTripIndex !== dayTripJourneys.length - 1) e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(-50%)'; }}
               >
                 <img
                   src="/images/buttons/tab_next.webp"
@@ -1950,11 +1968,14 @@ export default function MapsPage() {
                   left: vw(-8, 'mobile'),
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 200ms',
                   zIndex: 1001,
                 }}
-                className={`group transition-transform duration-200 ${
-                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
+                onMouseEnter={(e) => { if (currentDayTripIndex !== 0) e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(-50%)'; }}
               >
                 <img
                   src="/images/buttons/tab_prev.webp"
@@ -1979,11 +2000,14 @@ export default function MapsPage() {
                   right: vw(-8, 'mobile'),
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 200ms',
                   zIndex: 1001,
                 }}
-                className={`group transition-transform duration-200 ${
-                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
+                onMouseEnter={(e) => { if (currentDayTripIndex !== dayTripJourneys.length - 1) e.currentTarget.style.transform = 'translateY(-50%) scale(1.05)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(-50%)'; }}
               >
                 <img
                   src="/images/buttons/tab_next.webp"
