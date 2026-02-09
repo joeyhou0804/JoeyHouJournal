@@ -14,6 +14,7 @@ import MixedText from 'src/components/MixedText'
 import ImageLightbox from 'src/components/ImageLightbox'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { formatDuration } from 'src/utils/formatDuration'
+import { vw, rvw } from 'src/utils/scaling'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
 
 export default function Home() {
@@ -350,19 +351,21 @@ export default function Home() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '2rem',
+          gap: rvw(32, 32),
           backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '200px auto',
+          backgroundSize: { xs: vw(200, 'mobile'), md: vw(200) },
           animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
         }}>
           {/* Spinner */}
           <Box
             sx={{
-              width: '60px',
-              height: '60px',
-              border: '6px solid rgba(240, 96, 1, 0.2)',
-              borderTop: '6px solid #F06001',
+              width: rvw(60, 60),
+              height: rvw(60, 60),
+              borderWidth: rvw(6, 6),
+              borderStyle: 'solid',
+              borderColor: 'rgba(240, 96, 1, 0.2)',
+              borderTopColor: '#F06001',
               borderRadius: '50%',
               animation: 'spin 1s linear infinite'
             }}
@@ -370,7 +373,7 @@ export default function Home() {
           {/* Loading text */}
           <Box sx={{
             fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-            fontSize: '32px',
+            fontSize: rvw(32, 32),
             color: '#373737'
           }}>
             {tr.loading}
@@ -386,7 +389,7 @@ export default function Home() {
       sx={{
         backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
         backgroundRepeat: 'repeat',
-        backgroundSize: '200px auto',
+        backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
         animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
       }}
     >
@@ -409,24 +412,24 @@ export default function Home() {
           100% { transform: translateX(0); }
         }
         @keyframes moveArrow {
-          0% { transform: translate(24rem, -5.2rem); }
-          50% { transform: translate(24.5rem, -5.3rem); }
-          100% { transform: translate(24rem, -5.2rem); }
+          0% { transform: translate(calc(100vw * 384 / 1512), calc(100vw * -83.2 / 1512)); }
+          50% { transform: translate(calc(100vw * 392 / 1512), calc(100vw * -84.8 / 1512)); }
+          100% { transform: translate(calc(100vw * 384 / 1512), calc(100vw * -83.2 / 1512)); }
         }
         @keyframes moveJourneysArrow {
-          0% { transform: translate(24rem, -14.2rem); }
-          50% { transform: translate(24.5rem, -14.3rem); }
-          100% { transform: translate(24rem, -14.2rem); }
+          0% { transform: translate(calc(100vw * 384 / 1512), calc(100vw * -227.2 / 1512)); }
+          50% { transform: translate(calc(100vw * 392 / 1512), calc(100vw * -228.8 / 1512)); }
+          100% { transform: translate(calc(100vw * 384 / 1512), calc(100vw * -227.2 / 1512)); }
         }
         @keyframes moveJourneysArrowXs {
-          0% { transform: translate(14rem, -10.4rem); }
-          50% { transform: translate(14.5rem, -10.5rem); }
-          100% { transform: translate(14rem, -10.4rem); }
+          0% { transform: translate(calc(100vw * 224 / 390), calc(100vw * -166.4 / 390)); }
+          50% { transform: translate(calc(100vw * 232 / 390), calc(100vw * -168 / 390)); }
+          100% { transform: translate(calc(100vw * 224 / 390), calc(100vw * -166.4 / 390)); }
         }
         @keyframes moveDestinationsArrowXs {
-          0% { transform: translate(14rem, 5.6rem); }
-          50% { transform: translate(14.5rem, 5.5rem); }
-          100% { transform: translate(14rem, 5.6rem); }
+          0% { transform: translate(calc(100vw * 224 / 390), calc(100vw * 89.6 / 390)); }
+          50% { transform: translate(calc(100vw * 232 / 390), calc(100vw * 88 / 390)); }
+          100% { transform: translate(calc(100vw * 224 / 390), calc(100vw * 89.6 / 390)); }
         }
         .animate-slide-in {
           animation: slide-in 0.3s ease-in-out forwards;
@@ -438,12 +441,12 @@ export default function Home() {
       {/* Section 1 Footer Container */}
       <Container className="relative overflow-visible">
       {/* Decorative transition (foot mask; background not flipped) */}
-      <Container className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full" sx={{ transform: 'translateY(calc(99.5%))' }}>
+      <Container className="absolute bottom-0 left-0 right-0 z-20 translate-y-full" sx={{ height: rvw(200, 200), transform: 'translateY(calc(99.5%))' }}>
         {/* Homepage Image 2 - Right edge, overlapping section above (hidden on xs) */}
         <Container
           className="hidden md:block absolute top-0 right-0"
           sx={{
-            transform: 'translate(0, -700px)',
+            transform: `translate(0, ${vw(-700)})`,
             zIndex: 30
           }}
         >
@@ -451,8 +454,9 @@ export default function Home() {
             component="img"
             src="/images/homepage/homepage_image_2.png"
             alt="Homepage Image 2"
-            className="w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
             sx={{
+              width: vw(768),
+              height: 'auto',
               transform: 'scale(1.75) translateX(10%) translateY(5%)',
               transformOrigin: 'top right'
             }}
@@ -489,12 +493,12 @@ export default function Home() {
       </Container>
 
       {/* Featured Trips */}
-      <Section component="section" className="pt-32 pb-16 px-4 relative">
-        <Container className="max-w-7xl mx-auto">
-          <Container className="relative mb-12">
+      <Section component="section" className="relative" sx={{ paddingTop: rvw(128, 128), paddingBottom: rvw(64, 64), paddingLeft: rvw(16, 16), paddingRight: rvw(16, 16) }}>
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto' }}>
+          <Box sx={{ position: 'relative', marginBottom: rvw(48, 48) }}>
             <Container
               className="absolute right-0"
-              sx={{ transform: { xs: 'translate(-25rem, 2rem)', md: 'translate(-44rem, 2rem)' }, zIndex: 5 }}
+              sx={{ transform: { xs: `translate(${vw(-400, 'mobile')}, ${vw(32, 'mobile')})`, md: `translate(${vw(-704)}, ${vw(32)})` }, zIndex: 5 }}
             >
               {journeyImages.map((image, index) => (
                 <Box
@@ -502,9 +506,10 @@ export default function Home() {
                   component="img"
                   src={image}
                   alt={`Featured Journey ${index + 1}`}
-                  className={`h-auto max-w-xl md:max-w-5xl absolute top-0 left-0 transition-opacity duration-1000 ${
+                  className={`h-auto absolute top-0 left-0 transition-opacity duration-1000 ${
                     index === currentIndex ? 'opacity-100' : 'opacity-0'
                   }`}
+                  sx={{ maxWidth: { xs: vw(576, 'mobile'), md: vw(1024) } }}
                 />
               ))}
             </Container>
@@ -512,44 +517,46 @@ export default function Home() {
               component="img"
               src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1200,f_auto,q_auto/joeyhoujournal/headers/journeys_title_${locale}.png`}
               alt="Featured Journeys"
-              className="h-auto w-full md:max-w-4xl md:w-auto relative"
-              sx={{ transform: { xs: 'translate(0, -8rem)', md: locale === 'zh' ? 'translate(-5rem, -6rem)' : 'translate(-5rem, -4rem)' }, zIndex: 20 }}
+              className="h-auto relative"
+              sx={{ width: { xs: '100%', md: 'auto' }, maxWidth: { xs: 'none', md: vw(896) }, transform: { xs: `translate(0, ${vw(-128, 'mobile')})`, md: locale === 'zh' ? `translate(${vw(-80)}, ${vw(-96)})` : `translate(${vw(-80)}, ${vw(-64)})` }, zIndex: 20 }}
             />
             <Box
               component="img"
               src={`/images/journey/journeys_subtitle_${locale}.png`}
               alt="Explore my most memorable train adventures"
-              className="h-auto w-full md:max-w-4xl md:w-auto relative"
-              sx={{ transform: { xs: 'translate(0, -12rem)', md: 'translate(2rem, -16rem)' }, zIndex: 20 }}
+              className="h-auto relative"
+              sx={{ width: { xs: '100%', md: 'auto' }, maxWidth: { xs: 'none', md: vw(896) }, transform: { xs: `translate(0, ${vw(-192, 'mobile')})`, md: `translate(${vw(32)}, ${vw(-256)})` }, zIndex: 20 }}
             />
             <Box
               component={Link}
               href="/journeys"
               className="absolute"
-              sx={{ transform: { xs: 'translate(0, -12rem)', md: 'translate(2rem, -17rem)' }, zIndex: 20 }}
+              sx={{ transform: { xs: `translate(0, ${vw(-192, 'mobile')})`, md: `translate(${vw(32)}, ${vw(-272)})` }, zIndex: 20 }}
             >
               <Box
                 component="img"
                 src={`/images/buttons/button_explore_${locale}.png`}
                 alt="Explore Journeys"
-                className="h-auto w-72 md:w-[28rem] hover:scale-105 transition-transform duration-200"
+                className="h-auto hover:scale-105 transition-transform duration-200"
+                sx={{ width: { xs: vw(288, 'mobile'), md: vw(448) } }}
               />
             </Box>
             <Box
               component="img"
               src="/images/buttons/button_explore_arrow.webp"
               alt="Arrow"
-              className="absolute h-auto w-6 md:w-8"
+              className="absolute h-auto"
               sx={{
+                width: { xs: vw(24, 'mobile'), md: vw(32) },
                 zIndex: 20,
                 animation: { xs: 'moveJourneysArrowXs 0.5s ease-in-out infinite', md: 'moveJourneysArrow 0.5s ease-in-out infinite' }
               }}
             />
-          </Container>
+          </Box>
 
           {/* Journey Carousel */}
           {/* Train image - XS only, positioned between journey images and carousel */}
-          <Container className="block md:hidden w-full relative mt-32 -mb-16" sx={{ zIndex: 5 }}>
+          <Container className="block md:hidden w-full relative" sx={{ zIndex: 5, marginTop: vw(128, 'mobile'), marginBottom: vw(-64, 'mobile') }}>
             <Box
               component="img"
               src="/images/homepage/homepage_image_3.png"
@@ -564,7 +571,7 @@ export default function Home() {
 
           {/* XS Layout - JourneyCard Style */}
           {featuredTrips.length > 0 && (
-          <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw] mt-8" sx={{ minHeight: '500px', zIndex: 10, padding: 0, transform: 'translateY(15%)' }}>
+          <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw]" sx={{ marginTop: vw(32, 'mobile'), minHeight: vw(500, 'mobile'), zIndex: 10, padding: 0, transform: 'translateY(15%)' }}>
             <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column-reverse', overflow: 'visible' }}>
               {/* Journey Image - Rounded Square (now rendered first but appears on top) */}
               <Box
@@ -576,11 +583,11 @@ export default function Home() {
                   position: 'relative',
                   width: '75%',
                   aspectRatio: '1',
-                  borderRadius: '20px',
+                  borderRadius: vw(20, 'mobile'),
                   overflow: 'hidden',
                   zIndex: 10,
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  marginTop: '-3rem',
+                  boxShadow: `0 ${vw(4, 'mobile')} ${vw(6, 'mobile')} rgba(0, 0, 0, 0.1)`,
+                  marginTop: vw(-48, 'mobile'),
                   marginLeft: 'auto',
                   marginRight: 'auto',
                   cursor: 'pointer',
@@ -620,7 +627,7 @@ export default function Home() {
                   text={locale === 'zh' && featuredTrips[currentSlide]?.nameCN ? featuredTrips[currentSlide]?.nameCN : featuredTrips[currentSlide]?.name || ''}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
-                  fontSize="28px"
+                  fontSize={vw(28, 'mobile')}
                   color="#373737"
                   component="h3"
                   sx={{
@@ -638,20 +645,20 @@ export default function Home() {
 
               {/* Route Info */}
               <Box sx={{ position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', textAlign: 'center', zIndex: 15 }}>
-                <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', color: '#F6F6F6', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
+                <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: vw(16, 'mobile'), color: '#F6F6F6', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
                   {featuredTrips[currentSlide]?.route || ''}
                 </Box>
               </Box>
 
               {/* View Details Button */}
               <Link href={`/journeys/${featuredTrips[currentSlide]?.slug || ''}`}>
-                <Box sx={{ position: 'absolute', top: '19%', left: '50%', transform: { xs: 'translate(-50%, -50%) scale(1.3)', sm: 'translate(-50%, -50%)' }, zIndex: 15 }}>
+                <Box sx={{ position: 'absolute', top: '19%', left: '50%', transform: 'translate(-50%, -50%) scale(1.3)', zIndex: 15 }}>
                   <Box
                     component="img"
                     src={`/images/buttons/view_details_button_${locale}.png`}
                     alt="View Details"
-                    className="h-12 w-auto hover:scale-105 transition-transform duration-200"
-                    sx={{ objectFit: 'contain', display: 'block' }}
+                    className="w-auto hover:scale-105 transition-transform duration-200"
+                    sx={{ height: vw(48, 'mobile'), objectFit: 'contain', display: 'block' }}
                   />
                 </Box>
               </Link>
@@ -669,14 +676,16 @@ export default function Home() {
                 component="img"
                 src="/images/buttons/tab_prev.webp"
                 alt="Previous"
-                className={`h-24 w-auto ${currentSlide === 0 ? '' : 'group-hover:hidden'}`}
+                className={`w-auto ${currentSlide === 0 ? '' : 'group-hover:hidden'}`}
+                sx={{ height: vw(96, 'mobile') }}
               />
               {currentSlide !== 0 && (
                 <Box
                   component="img"
                   src="/images/buttons/tab_prev_hover.webp"
                   alt="Previous"
-                  className="h-24 w-auto hidden group-hover:block"
+                  className="w-auto hidden group-hover:block"
+                  sx={{ height: vw(96, 'mobile') }}
                 />
               )}
             </Box>
@@ -691,41 +700,44 @@ export default function Home() {
                 component="img"
                 src="/images/buttons/tab_next.webp"
                 alt="Next"
-                className={`h-24 w-auto ${currentSlide === featuredTrips.length - 1 ? '' : 'group-hover:hidden'}`}
+                className={`w-auto ${currentSlide === featuredTrips.length - 1 ? '' : 'group-hover:hidden'}`}
+                sx={{ height: vw(96, 'mobile') }}
               />
               {currentSlide !== featuredTrips.length - 1 && (
                 <Box
                   component="img"
                   src="/images/buttons/tab_next_hover.webp"
                   alt="Next"
-                  className="h-24 w-auto hidden group-hover:block"
+                  className="w-auto hidden group-hover:block"
+                  sx={{ height: vw(96, 'mobile') }}
                 />
               )}
             </Box>
 
             {/* Slide Indicators */}
-            <Container className="absolute bottom-8 left-1/2 -translate-x-1/2" sx={{ zIndex: 25 }}>
-              <Container className="flex justify-center space-x-2">
+            <Box className="absolute left-1/2 -translate-x-1/2" sx={{ zIndex: 25, bottom: vw(32, 'mobile') }}>
+              <Box className="flex justify-center" sx={{ gap: vw(8, 'mobile') }}>
                 {featuredTrips.map((_, index) => (
                   <Box
                     key={index}
                     component="button"
                     onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                    className={`rounded-full transition-colors duration-200 ${
                       index === currentSlide ? 'bg-white' : 'bg-white/50'
                     }`}
+                    sx={{ width: vw(12, 'mobile'), height: vw(12, 'mobile') }}
                   />
                 ))}
-              </Container>
-            </Container>
+              </Box>
+            </Box>
           </Container>
           )}
 
           {/* MD+ Layout - Original Carousel */}
           {featuredTrips.length > 0 && (
           <Container
-            className="hidden md:block relative w-screen left-1/2 -ml-[50vw] mt-96"
-            sx={{ aspectRatio: '1920/800' }}
+            className="hidden md:block relative w-screen left-1/2 -ml-[50vw]"
+            sx={{ marginTop: vw(384), aspectRatio: '1920/800' }}
           >
             {/* Background with mask */}
             <Container
@@ -746,13 +758,14 @@ export default function Home() {
             />
 
             {/* Train image overlay - top left, above mask (only md+) */}
-            <Container className="hidden md:block absolute -top-80 left-0" sx={{ zIndex: 35 }}>
+            <Container className="hidden md:block absolute left-0" sx={{ top: vw(-320), zIndex: 35 }}>
               <Box
                 component="img"
                 src="/images/homepage/homepage_image_3.png"
                 alt="Train Journey"
-                className="h-[32rem] w-auto object-cover"
+                className="w-auto object-cover"
                 sx={{
+                  height: vw(512),
                   transform: 'scale(1.2) translateX(-5%) translateY(-20%)',
                   transformOrigin: 'bottom left'
                 }}
@@ -762,10 +775,12 @@ export default function Home() {
             {/* Masked journey image - left edge */}
             <Container className="absolute left-0 top-1/2 -translate-y-1/2" sx={{ zIndex: 30 }}>
               <Container
-                className={`w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out ${
+                className={`transition-transform duration-300 ease-in-out ${
                   isTransitioning ? '-translate-x-full' : 'translate-x-0'
                 }`}
                 sx={{
+                  width: vw(768),
+                  height: vw(768),
                   backgroundImage: `url(${featuredTrips[currentSlide]?.image || ''})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
@@ -782,8 +797,10 @@ export default function Home() {
               {/* Incoming image */}
               {isTransitioning && (
                 <Container
-                  className="absolute top-0 left-0 w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
+                  className="absolute top-0 left-0 transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
                   sx={{
+                    width: vw(768),
+                    height: vw(768),
                     backgroundImage: `url(${featuredTrips[currentSlide]?.image || ''})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
@@ -802,24 +819,25 @@ export default function Home() {
 
             {/* Journey Card Overlay */}
             <Box
-              className="absolute left-[250px] top-1/2 -translate-y-1/3"
+              className="absolute top-1/2 -translate-y-1/3"
               sx={{
+                left: vw(250),
                 zIndex: 25,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '24px'
+                gap: vw(24)
               }}
             >
               {/* Card Background with Title */}
-              <Box sx={{ position: 'relative', width: '1100px' }}>
+              <Box sx={{ position: 'relative', width: vw(1100) }}>
                 {/* Popup Card Background */}
                 <Box
                   component="img"
                   src="/images/destinations/destination_popup_card.webp"
                   alt="Card"
                   sx={{
-                    width: '1100px',
+                    width: vw(1100),
                     height: 'auto',
                     display: 'block'
                   }}
@@ -837,7 +855,7 @@ export default function Home() {
                     text={locale === 'zh' && featuredTrips[currentSlide]?.nameCN ? featuredTrips[currentSlide]?.nameCN : featuredTrips[currentSlide]?.name || ''}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
-                    fontSize="40px"
+                    fontSize={vw(40)}
                     color="#373737"
                     component="h3"
                     sx={{
@@ -859,16 +877,16 @@ export default function Home() {
                     text={featuredTrips[currentSlide].route}
                     chineseFont="MarioFontChinese, sans-serif"
                     englishFont="MarioFont, sans-serif"
-                    fontSize="28px"
+                    fontSize={vw(28)}
                     color="#373737"
                     component="p"
-                    sx={{ marginBottom: '4px', marginTop: 0 }}
+                    sx={{ marginBottom: vw(4), marginTop: 0 }}
                   />
                   <MixedText
                     text={featuredTrips[currentSlide].duration}
                     chineseFont="MarioFontChinese, sans-serif"
                     englishFont="MarioFont, sans-serif"
-                    fontSize="26px"
+                    fontSize={vw(26)}
                     color="#373737"
                     component="p"
                     sx={{ marginBottom: 0, marginTop: 0 }}
@@ -880,13 +898,14 @@ export default function Home() {
               <Box
                 component="a"
                 href={`/journeys/${featuredTrips[currentSlide].slug}`}
-                className="inline-block ml-[400px] hover:scale-105 transition-transform duration-200"
+                className="inline-block hover:scale-105 transition-transform duration-200"
+                sx={{ marginLeft: vw(400) }}
               >
                 <Box
                   component="img"
                   src={`/images/buttons/view_details_button_${locale}.png`}
                   alt="View Details"
-                  sx={{ height: '70px', width: 'auto', display: 'block', objectFit: 'contain' }}
+                  sx={{ height: vw(70), width: 'auto', display: 'block', objectFit: 'contain' }}
                 />
               </Box>
             </Box>
@@ -896,47 +915,48 @@ export default function Home() {
               component="button"
               onClick={prevSlide}
               disabled={currentSlide === 0}
-              className={`group absolute left-8 top-1/2 -translate-y-1/2 p-6 transition-transform duration-200 ${currentSlide === 0 ? 'opacity-40' : 'hover:scale-110'}`}
-              sx={{ zIndex: 30 }}
+              className={`group absolute top-1/2 -translate-y-1/2 transition-transform duration-200 ${currentSlide === 0 ? 'opacity-40' : 'hover:scale-110'}`}
+              sx={{ zIndex: 30, left: vw(32), padding: vw(24) }}
             >
-              <Box component="img" src="/images/buttons/arrow_prev.webp" alt="Previous" className={`w-16 h-16 ${currentSlide === 0 ? '' : 'group-hover:hidden'}`} />
-              <Box component="img" src="/images/buttons/arrow_prev_hover.webp" alt="Previous" className={`w-16 h-16 ${currentSlide === 0 ? 'hidden' : 'hidden group-hover:block'}`} />
+              <Box component="img" src="/images/buttons/arrow_prev.webp" alt="Previous" className={`${currentSlide === 0 ? '' : 'group-hover:hidden'}`} sx={{ width: vw(64), height: vw(64) }} />
+              <Box component="img" src="/images/buttons/arrow_prev_hover.webp" alt="Previous" className={`${currentSlide === 0 ? 'hidden' : 'hidden group-hover:block'}`} sx={{ width: vw(64), height: vw(64) }} />
             </Box>
             <Box
               component="button"
               onClick={nextSlide}
               disabled={currentSlide === featuredTrips.length - 1}
-              className={`group absolute right-8 top-1/2 -translate-y-1/2 p-6 transition-transform duration-200 ${currentSlide === featuredTrips.length - 1 ? 'opacity-40' : 'hover:scale-110'}`}
-              sx={{ zIndex: 30 }}
+              className={`group absolute top-1/2 -translate-y-1/2 transition-transform duration-200 ${currentSlide === featuredTrips.length - 1 ? 'opacity-40' : 'hover:scale-110'}`}
+              sx={{ zIndex: 30, right: vw(32), padding: vw(24) }}
             >
-              <Box component="img" src="/images/buttons/arrow_next.webp" alt="Next" className={`w-16 h-16 ${currentSlide === featuredTrips.length - 1 ? '' : 'group-hover:hidden'}`} />
-              <Box component="img" src="/images/buttons/arrow_next_hover.webp" alt="Next" className={`w-16 h-16 ${currentSlide === featuredTrips.length - 1 ? 'hidden' : 'hidden group-hover:block'}`} />
+              <Box component="img" src="/images/buttons/arrow_next.webp" alt="Next" className={`${currentSlide === featuredTrips.length - 1 ? '' : 'group-hover:hidden'}`} sx={{ width: vw(64), height: vw(64) }} />
+              <Box component="img" src="/images/buttons/arrow_next_hover.webp" alt="Next" className={`${currentSlide === featuredTrips.length - 1 ? 'hidden' : 'hidden group-hover:block'}`} sx={{ width: vw(64), height: vw(64) }} />
             </Box>
 
             {/* Slide Indicators */}
-            <Container className="absolute bottom-8 left-1/2 -translate-x-1/2" sx={{ zIndex: 25 }}>
-              <Container className="flex justify-center space-x-2">
+            <Box className="absolute left-1/2 -translate-x-1/2" sx={{ zIndex: 25, bottom: vw(32) }}>
+              <Box className="flex justify-center" sx={{ gap: vw(8) }}>
                 {featuredTrips.map((_, index) => (
                   <Box
                     key={index}
                     component="button"
                     onClick={() => setCurrentSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                    className={`rounded-full transition-colors duration-200 ${
                       index === currentSlide ? 'bg-white' : 'bg-white/50'
                     }`}
+                    sx={{ width: vw(12), height: vw(12) }}
                   />
                 ))}
-              </Container>
-            </Container>
+              </Box>
+            </Box>
           </Container>
           )}
-        </Container>
+        </Box>
       </Section>
 
       {/* Featured Trips Footer Container */}
-      <Container className="relative overflow-visible mt-32">
+      <Container className="relative overflow-visible" sx={{ marginTop: rvw(128, 128) }}>
       {/* Decorative transition (head mask; background not flipped) */}
-      <Container className="absolute bottom-0 left-0 right-0 z-20 h-[200px] translate-y-full" sx={{ transform: 'translateY(calc(0.5%))' }}>
+      <Container className="absolute bottom-0 left-0 right-0 z-20 translate-y-full" sx={{ height: rvw(200, 200), transform: 'translateY(calc(0.5%))' }}>
         <Container
           className="absolute inset-0"
           sx={{
@@ -971,9 +991,13 @@ export default function Home() {
       <Section
         component="section"
         innerRef={recentRef}
-        className="py-16 px-4 relative"
+        className="relative"
         sx={{
-          marginTop: { xs: '0rem', md: '-2rem' },
+          paddingTop: rvw(64, 64),
+          paddingBottom: rvw(64, 64),
+          paddingLeft: rvw(16, 16),
+          paddingRight: rvw(16, 16),
+          marginTop: { xs: 0, md: vw(-32) },
           backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
           backgroundRepeat: 'repeat-y',
           backgroundSize: '100% auto',
@@ -984,48 +1008,51 @@ export default function Home() {
         {/* Homepage Image 4 - Top right corner, overlapping decorative section */}
         <Container
           className="absolute top-0 right-0"
-          sx={{ transform: { xs: 'translate(0, -6rem)', md: 'translate(0, -18rem)' }, zIndex: 30 }}
+          sx={{ transform: { xs: `translate(0, ${vw(-96, 'mobile')})`, md: `translate(0, ${vw(-288)})` }, zIndex: 30 }}
         >
           <Box
             component="img"
             src="/images/homepage/homepage_image_4.png"
             alt="Homepage Image 4"
-            className="w-full h-auto md:w-96 lg:w-[32rem] xl:w-[40rem]"
+            className="h-auto"
             sx={{
+              width: { xs: '100%', md: vw(640) },
               transform: { md: 'scale(1.5) translateY(50%)' },
               transformOrigin: { md: 'top right' }
             }}
           />
         </Container>
 
-        <Container className="max-w-7xl mx-auto">
-          <Container className="relative mb-12">
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto' }}>
+          <Box sx={{ position: 'relative', marginBottom: rvw(48, 48) }}>
             <Box
               component="img"
               src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1200,f_auto,q_auto/joeyhoujournal/headers/destinations_title_${locale}.png`}
               alt="Recent Destinations"
-              className="h-auto w-full md:max-w-4xl md:w-auto relative"
-              sx={{ transform: { xs: 'translate(0, 4rem)', md: 'translate(-5rem, -4rem)' }, zIndex: 30 }}
+              className="h-auto relative"
+              sx={{ width: { xs: '100%', md: 'auto' }, maxWidth: { xs: 'none', md: vw(896) }, transform: { xs: `translate(0, ${vw(64, 'mobile')})`, md: `translate(${vw(-80)}, ${vw(-64)})` }, zIndex: 30 }}
             />
             <Box
               component={Link}
               href="/destinations"
               className="absolute"
-              sx={{ transform: { xs: 'translate(0, 4rem)', md: 'translate(2rem, -8rem)' }, zIndex: 30 }}
+              sx={{ transform: { xs: `translate(0, ${vw(64, 'mobile')})`, md: `translate(${vw(32)}, ${vw(-128)})` }, zIndex: 30 }}
             >
               <Box
                 component="img"
                 src={`/images/buttons/button_explore_${locale}.png`}
                 alt="Explore Places"
-                className="h-auto w-72 md:w-[28rem] hover:scale-105 transition-transform duration-200"
+                className="h-auto hover:scale-105 transition-transform duration-200"
+                sx={{ width: { xs: vw(288, 'mobile'), md: vw(448) } }}
               />
             </Box>
             <Box
               component="img"
               src="/images/buttons/button_explore_arrow.webp"
               alt="Arrow"
-              className="absolute h-auto w-6 md:w-8"
+              className="absolute h-auto"
               sx={{
+                width: { xs: vw(24, 'mobile'), md: vw(32) },
                 zIndex: 30,
                 animation: { xs: 'moveDestinationsArrowXs 0.5s ease-in-out infinite', md: 'moveArrow 0.5s ease-in-out infinite' }
               }}
@@ -1035,8 +1062,8 @@ export default function Home() {
               component="img"
               src={`/images/homepage/homepage_destination_text_${locale}.png`}
               alt="Discover the places that shaped my rail journey across America"
-              className="hidden md:block h-auto max-w-4xl relative"
-              sx={{ transform: 'translate(2rem, 2rem)', zIndex: 20 }}
+              className="hidden md:block h-auto relative"
+              sx={{ maxWidth: vw(896), transform: `translate(${vw(32)}, ${vw(32)})`, zIndex: 20 }}
             />
             {/* Mobile version - xs version for both locales */}
             <Box
@@ -1044,13 +1071,13 @@ export default function Home() {
               src={`/images/homepage/homepage_destination_text_xs_${locale}.png`}
               alt="Discover the places that shaped my rail journey across America"
               className="block md:hidden h-auto w-full relative"
-              sx={{ transform: 'translate(0, 12rem)', zIndex: 20 }}
+              sx={{ transform: `translate(0, ${vw(192, 'mobile')})`, zIndex: 20 }}
             />
-          </Container>
+          </Box>
 
           {/* Destination Carousel */}
           {/* XS Layout - Card Style */}
-          <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw] mt-72" sx={{ minHeight: '500px', zIndex: 10, padding: 0 }}>
+          <Container className="block md:hidden relative w-screen left-1/2 -ml-[50vw]" sx={{ marginTop: vw(288, 'mobile'), minHeight: vw(500, 'mobile'), zIndex: 10, padding: 0 }}>
             <Box sx={{ position: 'relative', width: '100vw', margin: '0', padding: '0', display: 'flex', flexDirection: 'column-reverse', overflow: 'visible' }}>
               {/* Destination Image - Rounded Square (now rendered first but appears on top) */}
               <Box
@@ -1062,11 +1089,11 @@ export default function Home() {
                   position: 'relative',
                   width: '75%',
                   aspectRatio: '1',
-                  borderRadius: '20px',
+                  borderRadius: vw(20, 'mobile'),
                   overflow: 'hidden',
                   zIndex: 10,
-                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                  marginTop: '-3rem',
+                  boxShadow: `0 ${vw(4, 'mobile')} ${vw(6, 'mobile')} rgba(0, 0, 0, 0.1)`,
+                  marginTop: vw(-48, 'mobile'),
                   marginLeft: 'auto',
                   marginRight: 'auto',
                   cursor: 'pointer',
@@ -1106,7 +1133,7 @@ export default function Home() {
                   text={locale === 'zh' && recentPlaces[currentDestSlide].nameCN ? recentPlaces[currentDestSlide].nameCN : recentPlaces[currentDestSlide].name}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
-                  fontSize="28px"
+                  fontSize={vw(28, 'mobile')}
                   color="#FFD701"
                   component="h3"
                   sx={{
@@ -1124,20 +1151,20 @@ export default function Home() {
 
               {/* Date */}
               <Box sx={{ position: 'absolute', top: '10%', left: '50%', transform: 'translate(-50%, -50%)', width: '80%', textAlign: 'center', zIndex: 15 }}>
-                <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: '16px', color: '#373737', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
+                <Box component="p" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: vw(16, 'mobile'), color: '#373737', marginBottom: 0, marginTop: 0, lineHeight: '1.4' }}>
                   {recentPlaces[currentDestSlide].date}
                 </Box>
               </Box>
 
               {/* View Details Button */}
               <Link href={`/destinations/${recentPlaces[currentDestSlide].id}`}>
-                <Box sx={{ position: 'absolute', top: '19%', left: '50%', transform: { xs: 'translate(-50%, -50%) scale(1.3)', sm: 'translate(-50%, -50%)' }, zIndex: 15 }}>
+                <Box sx={{ position: 'absolute', top: '19%', left: '50%', transform: 'translate(-50%, -50%) scale(1.3)', zIndex: 15 }}>
                   <Box
                     component="img"
                     src={`/images/buttons/view_details_button_${locale}.png`}
                     alt="View Details"
-                    className="h-12 w-auto hover:scale-105 transition-transform duration-200"
-                    sx={{ objectFit: 'contain', display: 'block' }}
+                    className="w-auto hover:scale-105 transition-transform duration-200"
+                    sx={{ height: vw(48, 'mobile'), objectFit: 'contain', display: 'block' }}
                   />
                 </Box>
               </Link>
@@ -1155,14 +1182,16 @@ export default function Home() {
                 component="img"
                 src="/images/buttons/tab_prev.webp"
                 alt="Previous"
-                className={`h-24 w-auto ${currentDestSlide === 0 ? '' : 'group-hover:hidden'}`}
+                className={`w-auto ${currentDestSlide === 0 ? '' : 'group-hover:hidden'}`}
+                sx={{ height: vw(96, 'mobile') }}
               />
               {currentDestSlide !== 0 && (
                 <Box
                   component="img"
                   src="/images/buttons/tab_prev_hover.webp"
                   alt="Previous"
-                  className="h-24 w-auto hidden group-hover:block"
+                  className="w-auto hidden group-hover:block"
+                  sx={{ height: vw(96, 'mobile') }}
                 />
               )}
             </Box>
@@ -1177,39 +1206,42 @@ export default function Home() {
                 component="img"
                 src="/images/buttons/tab_next.webp"
                 alt="Next"
-                className={`h-24 w-auto ${currentDestSlide === recentPlaces.length - 1 ? '' : 'group-hover:hidden'}`}
+                className={`w-auto ${currentDestSlide === recentPlaces.length - 1 ? '' : 'group-hover:hidden'}`}
+                sx={{ height: vw(96, 'mobile') }}
               />
               {currentDestSlide !== recentPlaces.length - 1 && (
                 <Box
                   component="img"
                   src="/images/buttons/tab_next_hover.webp"
                   alt="Next"
-                  className="h-24 w-auto hidden group-hover:block"
+                  className="w-auto hidden group-hover:block"
+                  sx={{ height: vw(96, 'mobile') }}
                 />
               )}
             </Box>
 
             {/* Slide Indicators */}
-            <Container className="absolute bottom-8 left-1/2 -translate-x-1/2" sx={{ zIndex: 25 }}>
-              <Container className="flex justify-center space-x-2">
+            <Box className="absolute left-1/2 -translate-x-1/2" sx={{ zIndex: 25, bottom: vw(32, 'mobile') }}>
+              <Box className="flex justify-center" sx={{ gap: vw(8, 'mobile') }}>
                 {recentPlaces.map((_, index) => (
                   <Box
                     key={index}
                     component="button"
                     onClick={() => setCurrentDestSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                    className={`rounded-full transition-colors duration-200 ${
                       index === currentDestSlide ? 'bg-white' : 'bg-white/50'
                     }`}
+                    sx={{ width: vw(12, 'mobile'), height: vw(12, 'mobile') }}
                   />
                 ))}
-              </Container>
-            </Container>
+              </Box>
+            </Box>
           </Container>
 
           {/* MD+ Layout - Original Carousel */}
           <Container
-            className="hidden md:block relative w-screen left-1/2 -ml-[50vw] mt-24"
-            sx={{ aspectRatio: '1920/800' }}
+            className="hidden md:block relative w-screen left-1/2 -ml-[50vw]"
+            sx={{ marginTop: vw(96), aspectRatio: '1920/800' }}
           >
             {/* Background */}
             <Container
@@ -1226,10 +1258,12 @@ export default function Home() {
             {/* Masked destination image - left edge */}
             <Container className="absolute left-0 top-1/2 -translate-y-1/2" sx={{ zIndex: 25 }}>
               <Container
-                className={`w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out ${
+                className={`transition-transform duration-300 ease-in-out ${
                   isDestTransitioning ? '-translate-x-full' : 'translate-x-0'
                 }`}
                 sx={{
+                  width: vw(768),
+                  height: vw(768),
                   backgroundImage: `url(${recentPlaces[currentDestSlide].image})`,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
@@ -1246,8 +1280,10 @@ export default function Home() {
               {/* Incoming image */}
               {isDestTransitioning && (
                 <Container
-                  className="absolute top-0 left-0 w-[48rem] h-[48rem] transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
+                  className="absolute top-0 left-0 transition-transform duration-300 ease-in-out -translate-x-full animate-slide-in"
                   sx={{
+                    width: vw(768),
+                    height: vw(768),
                     backgroundImage: `url(${recentPlaces[currentDestSlide].image})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
@@ -1266,24 +1302,25 @@ export default function Home() {
 
             {/* Destination Card - Center right */}
             <Box
-              className="absolute left-[250px] top-1/2 -translate-y-1/3"
+              className="absolute top-1/2 -translate-y-1/3"
               sx={{
+                left: vw(250),
                 zIndex: 20,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '24px'
+                gap: vw(24)
               }}
             >
               {/* Card Background with Title */}
-              <Box sx={{ position: 'relative', width: '1100px' }}>
+              <Box sx={{ position: 'relative', width: vw(1100) }}>
                 {/* Popup Card Background */}
                 <Box
                   component="img"
                   src="/images/destinations/destination_popup_card.webp"
                   alt="Card"
                   sx={{
-                    width: '1100px',
+                    width: vw(1100),
                     height: 'auto',
                     display: 'block'
                   }}
@@ -1301,7 +1338,7 @@ export default function Home() {
                     text={locale === 'zh' && recentPlaces[currentDestSlide].nameCN ? recentPlaces[currentDestSlide].nameCN : recentPlaces[currentDestSlide].name}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
-                    fontSize="40px"
+                    fontSize={vw(40)}
                     color="#FFD701"
                     component="h3"
                     sx={{
@@ -1319,10 +1356,10 @@ export default function Home() {
 
                 {/* Route and Date */}
                 <Box sx={{ position: 'absolute', top: '60%', left: '70%', transform: 'translate(-50%, -50%)', width: '50%', textAlign: 'center' }}>
-                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: '28px', color: '#373737', marginBottom: '4px', marginTop: 0 }}>
+                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: vw(28), color: '#373737', marginBottom: vw(4), marginTop: 0 }}>
                     {locale === 'zh' && recentPlaces[currentDestSlide].journeyNameCN ? recentPlaces[currentDestSlide].journeyNameCN : recentPlaces[currentDestSlide].journeyName}
                   </Box>
-                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: '26px', color: '#373737', marginBottom: 0, marginTop: 0 }}>
+                  <Box component="p" sx={{ fontFamily: `${locale === 'zh' ? 'MarioFontChinese' : 'MarioFont'}, sans-serif`, fontSize: vw(26), color: '#373737', marginBottom: 0, marginTop: 0 }}>
                     {recentPlaces[currentDestSlide].date}
                   </Box>
                 </Box>
@@ -1332,13 +1369,14 @@ export default function Home() {
               <Box
                 component="a"
                 href={`/destinations/${recentPlaces[currentDestSlide].id}`}
-                className="inline-block ml-[400px] hover:scale-105 transition-transform duration-200"
+                className="inline-block hover:scale-105 transition-transform duration-200"
+                sx={{ marginLeft: vw(400) }}
               >
                 <Box
                   component="img"
                   src={`/images/buttons/view_details_button_${locale}.png`}
                   alt="View Details"
-                  sx={{ height: '70px', width: 'auto', display: 'block', objectFit: 'contain' }}
+                  sx={{ height: vw(70), width: 'auto', display: 'block', objectFit: 'contain' }}
                 />
               </Box>
             </Box>
@@ -1348,40 +1386,41 @@ export default function Home() {
               component="button"
               onClick={prevDestSlide}
               disabled={currentDestSlide === 0}
-              className={`group absolute left-8 top-1/2 -translate-y-1/2 p-6 transition-transform duration-200 ${currentDestSlide === 0 ? 'opacity-40' : 'hover:scale-110'}`}
-              sx={{ zIndex: 30 }}
+              className={`group absolute top-1/2 -translate-y-1/2 transition-transform duration-200 ${currentDestSlide === 0 ? 'opacity-40' : 'hover:scale-110'}`}
+              sx={{ zIndex: 30, left: vw(32), padding: vw(24) }}
             >
-              <Box component="img" src="/images/buttons/arrow_prev.webp" alt="Previous" className={`w-16 h-16 ${currentDestSlide === 0 ? '' : 'group-hover:hidden'}`} />
-              <Box component="img" src="/images/buttons/arrow_prev_hover.webp" alt="Previous" className={`w-16 h-16 ${currentDestSlide === 0 ? 'hidden' : 'hidden group-hover:block'}`} />
+              <Box component="img" src="/images/buttons/arrow_prev.webp" alt="Previous" className={`${currentDestSlide === 0 ? '' : 'group-hover:hidden'}`} sx={{ width: vw(64), height: vw(64) }} />
+              <Box component="img" src="/images/buttons/arrow_prev_hover.webp" alt="Previous" className={`${currentDestSlide === 0 ? 'hidden' : 'hidden group-hover:block'}`} sx={{ width: vw(64), height: vw(64) }} />
             </Box>
             <Box
               component="button"
               onClick={nextDestSlide}
               disabled={currentDestSlide === recentPlaces.length - 1}
-              className={`group absolute right-8 top-1/2 -translate-y-1/2 p-6 transition-transform duration-200 ${currentDestSlide === recentPlaces.length - 1 ? 'opacity-40' : 'hover:scale-110'}`}
-              sx={{ zIndex: 30 }}
+              className={`group absolute top-1/2 -translate-y-1/2 transition-transform duration-200 ${currentDestSlide === recentPlaces.length - 1 ? 'opacity-40' : 'hover:scale-110'}`}
+              sx={{ zIndex: 30, right: vw(32), padding: vw(24) }}
             >
-              <Box component="img" src="/images/buttons/arrow_next.webp" alt="Next" className={`w-16 h-16 ${currentDestSlide === recentPlaces.length - 1 ? '' : 'group-hover:hidden'}`} />
-              <Box component="img" src="/images/buttons/arrow_next_hover.webp" alt="Next" className={`w-16 h-16 ${currentDestSlide === recentPlaces.length - 1 ? 'hidden' : 'hidden group-hover:block'}`} />
+              <Box component="img" src="/images/buttons/arrow_next.webp" alt="Next" className={`${currentDestSlide === recentPlaces.length - 1 ? '' : 'group-hover:hidden'}`} sx={{ width: vw(64), height: vw(64) }} />
+              <Box component="img" src="/images/buttons/arrow_next_hover.webp" alt="Next" className={`${currentDestSlide === recentPlaces.length - 1 ? 'hidden' : 'hidden group-hover:block'}`} sx={{ width: vw(64), height: vw(64) }} />
             </Box>
 
             {/* Slide Indicators */}
-            <Container className="absolute bottom-8 left-1/2 -translate-x-1/2" sx={{ zIndex: 25 }}>
-              <Container className="flex justify-center space-x-2">
+            <Box className="absolute left-1/2 -translate-x-1/2" sx={{ zIndex: 25, bottom: vw(32) }}>
+              <Box className="flex justify-center" sx={{ gap: vw(8) }}>
                 {recentPlaces.map((_, index) => (
                   <Box
                     key={index}
                     component="button"
                     onClick={() => setCurrentDestSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-colors duration-200 ${
+                    className={`rounded-full transition-colors duration-200 ${
                       index === currentDestSlide ? 'bg-white' : 'bg-white/50'
                     }`}
+                    sx={{ width: vw(12), height: vw(12) }}
                   />
                 ))}
-              </Container>
-            </Container>
+              </Box>
+            </Box>
           </Container>
-        </Container>
+        </Box>
       </Section>
 
       {/* Journey Image Lightbox */}

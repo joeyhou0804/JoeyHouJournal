@@ -6,6 +6,7 @@ import Section from './Section'
 import Container from './Container'
 import InfiniteCarousel from './InfiniteCarousel'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { vw, rvw } from 'src/utils/scaling'
 
 const carouselImages = [
   'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/joeyhoujournal/carousel/title_carousel_1',
@@ -78,18 +79,24 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
           </Box>
 
           {/* Logo - Full width with padding on xs, Top Left on md+ */}
-          <Container className="absolute top-8 left-0 right-0 px-4 md:top-4 md:left-4 md:right-auto md:px-0 z-10">
+          <Container
+            className="absolute"
+            sx={{
+              top: rvw(32, 16),
+              left: { xs: 0, md: vw(16) },
+              right: { xs: 0, md: 'auto' },
+              paddingLeft: { xs: vw(16, 'mobile'), md: 0 },
+              paddingRight: { xs: vw(16, 'mobile'), md: 0 },
+              zIndex: 10
+            }}
+          >
             <Box
               component="img"
               src={`/images/logos/logo_${locale}.png`}
               alt="Logo"
               sx={{
-                height: 'auto',
-                width: '100%',
-                '@media (min-width: 768px)': {
-                  height: '300px',
-                  width: 'auto'
-                }
+                height: { xs: 'auto', md: vw(300) },
+                width: { xs: '100%', md: 'auto' }
               }}
             />
           </Container>
@@ -133,9 +140,10 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
       <Section
         component="section"
         innerRef={section1Ref}
-        className="relative pt-64 overflow-visible"
+        className="relative overflow-visible"
         sx={{
-          paddingBottom: '8rem',
+          paddingTop: rvw(256, 256),
+          paddingBottom: rvw(128, 128),
           backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
           backgroundSize: '100% auto',
           backgroundPositionX: 'center',
@@ -143,8 +151,14 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
         }}
       >
         {/* Image 1 + Slogan Row */}
-        <Container className="relative z-5 -mt-96 md:-mt-64">
-          <Container className="grid grid-cols-12 items-center gap-8">
+        <Container
+          className="relative z-5"
+          sx={{ marginTop: rvw(-384, -256) }}
+        >
+          <Container
+            className="grid grid-cols-12 items-center"
+            sx={{ gap: rvw(32, 32) }}
+          >
             {/* Image 1 — 60% */}
             <Container className="col-span-12 md:col-span-7 relative z-0">
               <Box
@@ -160,13 +174,19 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
             </Container>
 
             {/* Slogan — 40% (overlap) */}
-            <Container className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30 -mt-24 md:-mt-20">
+            <Container
+              className="col-span-12 md:col-span-5 flex justify-center md:justify-end relative z-30"
+              sx={{
+                marginTop: rvw(-96, -80),
+                maxWidth: rvw(640, 640)
+              }}
+            >
               <Box
                 component="img"
                 src={`/images/homepage/homepage_slogan_${locale}.png`}
                 alt="Homepage Slogan"
-                className="w-full max-w-[40rem] h-auto drop-shadow-md"
-                sx={{ transform: { xs: 'translateX(0)', md: 'translateX(-12rem)' } }}
+                className="w-full h-auto drop-shadow-md"
+                sx={{ transform: { xs: 'translateX(0)', md: `translateX(${vw(-192)})` } }}
               />
             </Container>
 
@@ -176,7 +196,10 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
         </Container>
 
         {/* Carousel - pulled upward, sits *under* image1 */}
-        <Container className="relative z-10 -mt-24 md:-mt-32 lg:-mt-40">
+        <Container
+          className="relative z-10"
+          sx={{ marginTop: rvw(-96, -160) }}
+        >
           <InfiniteCarousel
             images={carouselImages}
             speedPxPerSec={60}
@@ -185,16 +208,28 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
         </Container>
 
         {/* Carousel Text and Image Container */}
-        <Container className="relative z-30 mt-8">
+        <Container
+          className="relative z-30"
+          sx={{ marginTop: rvw(32, 32) }}
+        >
           {/* Carousel Text - Left Side */}
-          <Container className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Container
+            sx={{
+              maxWidth: { xs: 'none', md: vw(1280) },
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              paddingLeft: rvw(16, 32),
+              paddingRight: rvw(16, 32)
+            }}
+          >
             <Container className="flex justify-start">
               {/* Desktop version */}
               <Box
                 component="img"
                 src={`/images/homepage/homepage_carousel_text_${locale}.png`}
                 alt="Carousel Text"
-                className="hidden md:block w-96 h-auto md:w-[32rem] lg:w-[40rem] xl:w-[48rem]"
+                className="hidden md:block h-auto"
+                sx={{ width: vw(768) }}
               />
               {/* Mobile version - xs version available for both locales */}
               <Box
@@ -207,7 +242,13 @@ export default function HeroSection({ homepageHeadDecoRef, section1Ref }: HeroSe
           </Container>
 
           {/* Homepage Image 2 - Only visible on xs screens, positioned below carousel text */}
-          <Container className="block md:hidden relative mt-8 -mb-32">
+          <Container
+            className="block md:hidden relative"
+            sx={{
+              marginTop: vw(32, 'mobile'),
+              marginBottom: vw(-128, 'mobile')
+            }}
+          >
             <Box
               component="img"
               src="/images/homepage/homepage_image_2.png"

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { vw } from 'src/utils/scaling'
 
 interface InfiniteCarouselProps {
   images: string[]
@@ -67,7 +68,7 @@ function CarouselRow({
   // Track screen size
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640)
+      setIsMobile(window.innerWidth < 768)
     }
     checkMobile()
     window.addEventListener('resize', checkMobile)
@@ -131,16 +132,16 @@ function CarouselRow({
           style={
             isMobile
               ? {
-                  marginLeft: i === 0 ? '15px' : '-35px',
-                  width: '300px',
+                  marginLeft: i === 0 ? vw(15, 'mobile') : vw(-35, 'mobile'),
+                  width: vw(300, 'mobile'),
                   height: 'auto',
-                  minWidth: '300px'
+                  minWidth: vw(300, 'mobile')
                 }
               : {
-                  marginLeft: i === 0 ? '0' : '-50px',
-                  width: '400px',
+                  marginLeft: i === 0 ? '0' : vw(-50),
+                  width: vw(400),
                   height: 'auto',
-                  minWidth: '400px'
+                  minWidth: vw(400)
                 }
           }
         >
@@ -168,41 +169,27 @@ function CarouselRow({
           to   { transform: translateX(0); }
         }
         .carousel-image-container {
-          width: 300px !important;
+          width: calc(100vw * 300 / 390) !important;
+          min-width: calc(100vw * 300 / 390) !important;
           height: auto !important;
-          min-width: 300px !important;
         }
         .carousel-image-container:first-child {
-          margin-left: 20px !important;
+          margin-left: calc(100vw * 20 / 390) !important;
         }
         .carousel-image-container:not(:first-child) {
-          margin-left: -30px !important;
+          margin-left: calc(100vw * -30 / 390) !important;
         }
-        @media (min-width: 640px) {
+        @media (min-width: 768px) {
           .carousel-image-container {
-            width: 400px !important;
+            width: calc(100vw * 400 / 1512) !important;
+            min-width: calc(100vw * 400 / 1512) !important;
             height: auto !important;
-            min-width: 400px !important;
           }
           .carousel-image-container:first-child {
             margin-left: 0 !important;
           }
           .carousel-image-container:not(:first-child) {
-            margin-left: -50px !important;
-          }
-        }
-        @media (min-width: 768px) {
-          .carousel-image-container {
-            width: 550px !important;
-            height: auto !important;
-            min-width: 550px !important;
-          }
-        }
-        @media (min-width: 1024px) {
-          .carousel-image-container {
-            width: 600px !important;
-            height: auto !important;
-            min-width: 600px !important;
+            margin-left: calc(100vw * -50 / 1512) !important;
           }
         }
       `}</style>
@@ -217,12 +204,12 @@ function CarouselRow({
           style={{
             ...animationStyle,
             willChange: 'transform',
-            marginLeft: '-50px' // Offset the gap between cycles
+            marginLeft: isMobile ? vw(-50, 'mobile') : vw(-50)
           }}
         >
           <Cycle refCb={(el) => (firstCycleRef.current = el)} />
           {Array.from({ length: repeats - 1 }).map((_, idx) => (
-            <Cycle key={`dup-${idx}`} ariaHidden style={{ marginLeft: '-50px' }} />
+            <Cycle key={`dup-${idx}`} ariaHidden style={{ marginLeft: isMobile ? vw(-50, 'mobile') : vw(-50) }} />
           ))}
         </div>
       </div>
