@@ -17,14 +17,26 @@ import { useRouter } from 'next/navigation'
 import { formatDuration } from 'src/utils/formatDuration'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
+import { vw, rvw, rShadow } from 'src/utils/scaling'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
-      <p className="text-gray-600">Loading map...</p>
-    </div>
+    <Box
+      sx={{
+        width: '100%',
+        height: { xs: 'auto', md: vw(600) },
+        aspectRatio: { xs: '2/3', md: 'unset' },
+        borderRadius: rvw(8, 8),
+        backgroundColor: '#e5e7eb',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <p style={{ color: '#4b5563' }}>Loading map...</p>
+    </Box>
   )
 })
 
@@ -41,6 +53,17 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
   const [isMenuButtonVisible, setIsMenuButtonVisible] = useState(true)
   const [isDrawerAnimating, setIsDrawerAnimating] = useState(false)
   const [isMenuButtonAnimating, setIsMenuButtonAnimating] = useState(false)
+  const [isXsScreen, setIsXsScreen] = useState(false)
+
+  // Detect xs screen size
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsXsScreen(window.innerWidth < 768)
+    }
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
 
   // Preload title images and backgrounds
   useEffect(() => {
@@ -198,6 +221,14 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
     }, 150)
   }
 
+  // Helper for Lucide icon sizes
+  const iconSize = (px: number) => {
+    if (typeof window === 'undefined') return px
+    return isXsScreen
+      ? Math.round(px * window.innerWidth / 390)
+      : Math.round(px * window.innerWidth / 1512)
+  }
+
   // Show loading state while data is being fetched
   if (isLoadingDestinations) {
     return (
@@ -219,19 +250,21 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '2rem',
+        gap: rvw(24, 32),
         backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
         backgroundRepeat: 'repeat',
-        backgroundSize: '200px auto',
+        backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
         animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
       }}>
         {/* Spinner */}
         <Box
           sx={{
-            width: '60px',
-            height: '60px',
-            border: '6px solid rgba(240, 96, 1, 0.2)',
-            borderTop: '6px solid #F06001',
+            width: rvw(48, 60),
+            height: rvw(48, 60),
+            borderWidth: rvw(4, 6),
+            borderStyle: 'solid',
+            borderColor: 'rgba(240, 96, 1, 0.2)',
+            borderTopColor: '#F06001',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }}
@@ -239,7 +272,7 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
         {/* Loading text */}
         <Box sx={{
           fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-          fontSize: '32px',
+          fontSize: rvw(24, 32),
           color: '#373737'
         }}>
           {tr.loading}
@@ -268,7 +301,7 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
       sx={{
         backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
         backgroundRepeat: 'repeat-y, repeat',
-        backgroundSize: '100% auto, 400px auto',
+        backgroundSize: { xs: `100% auto, ${vw(400, 'mobile')} auto`, md: `100% auto, ${vw(400)} auto` },
       }}
     >
       <NavigationMenu
@@ -297,15 +330,17 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
 
       {/* Header Banner */}
       <Box sx={{ width: '100%' }}>
-        <img
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/foods_details_title_${locale}.jpg`}
           alt={locale === 'zh' ? '美食详情' : 'Food Details'}
-          className="w-full h-auto object-cover xs:hidden"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'none', md: 'block' } }}
         />
-        <img
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/foods_details_title_xs_${locale}.jpg`}
           alt={locale === 'zh' ? '美食详情' : 'Food Details'}
-          className="hidden xs:block w-full h-auto object-cover"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'block', md: 'none' } }}
         />
       </Box>
 
@@ -313,32 +348,35 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
       {journey && (
         <Box
           component="section"
-          className="w-full py-24 xs:hidden"
           sx={{
+            width: '100%',
+            paddingTop: vw(96),
+            paddingBottom: vw(96),
+            display: { xs: 'none', md: 'block' },
             backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
             backgroundRepeat: 'repeat',
             backgroundSize: '100vw auto',
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Box sx={{ maxWidth: vw(1280), marginLeft: 'auto', marginRight: 'auto', paddingLeft: vw(32), paddingRight: vw(32) }}>
             {/* Title */}
-            <div className="flex flex-col justify-center items-center mb-16 mt-8">
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(64), marginTop: vw(32) }}>
               <MixedText
                 text={locale === 'zh' ? '相关旅程' : 'Related Journey'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize="64px"
+                fontSize={vw(64)}
                 color="#F6F6F6"
                 component="h2"
                 sx={{
-                  textShadow: '3px 3px 0px #373737',
+                  textShadow: `${vw(3)} ${vw(3)} 0px #373737`,
                   margin: 0
                 }}
               />
-            </div>
+            </Box>
 
             {/* View Hints Button - Desktop Only */}
-            <div className="flex justify-center mb-48 mt-16">
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: vw(192), marginTop: vw(64) }}>
               <button
                 onClick={() => {
                   setViewHintsVariant('relatedJourney')
@@ -346,22 +384,23 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                 }}
                 className="hover:scale-105 transition-transform duration-200"
               >
-                <img
+                <Box
+                  component="img"
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-20 w-auto"
+                  sx={{ height: vw(80), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
 
             <Box style={{ position: 'relative' }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: '1rem',
-                  borderRadius: '1.5rem'
+                  backgroundSize: `${vw(200)} auto`,
+                  padding: vw(16),
+                  borderRadius: vw(24)
                 }}
               >
                 <InteractiveMap
@@ -378,8 +417,8 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
               <Box
                 sx={{
                   position: 'absolute',
-                  top: '-100px',
-                  left: '-600px',
+                  top: vw(-100),
+                  left: vw(-600),
                   zIndex: 1000
                 }}
               >
@@ -398,7 +437,7 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                 />
               </Box>
             </Box>
-          </div>
+          </Box>
         </Box>
       )}
 
@@ -406,32 +445,35 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
       {journey && (
         <Box
           component="section"
-          className="hidden xs:block w-full py-12"
           sx={{
+            display: { xs: 'block', md: 'none' },
+            width: '100%',
+            paddingTop: vw(48, 'mobile'),
+            paddingBottom: vw(48, 'mobile'),
             backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
             backgroundRepeat: 'repeat',
             backgroundSize: '100vw auto',
           }}
         >
-          <div className="max-w-7xl mx-auto px-4">
+          <Box sx={{ maxWidth: 'none', marginLeft: 'auto', marginRight: 'auto', paddingLeft: vw(16, 'mobile'), paddingRight: vw(16, 'mobile') }}>
             {/* Mobile: Title */}
-            <div className="flex flex-col justify-center items-center mb-8 mt-4 text-center">
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(32, 'mobile'), marginTop: vw(16, 'mobile'), textAlign: 'center' }}>
               <MixedText
                 text={locale === 'zh' ? '相关旅程' : 'Related Journey'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize="40px"
+                fontSize={vw(40, 'mobile')}
                 color="#F6F6F6"
                 component="h2"
                 sx={{
-                  textShadow: '2px 2px 0px #373737',
+                  textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
                   margin: 0
                 }}
               />
-            </div>
+            </Box>
 
             {/* Mobile: View Hints Button */}
-            <div className="flex flex-col items-center mb-12">
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: vw(48, 'mobile') }}>
               <button
                 onClick={() => {
                   setViewHintsVariant('relatedJourney')
@@ -439,16 +481,17 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                 }}
                 className="hover:scale-105 transition-transform duration-200"
               >
-                <img
+                <Box
+                  component="img"
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-16 w-auto"
+                  sx={{ height: vw(64, 'mobile'), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
 
             {/* Journey Info Card - Above map */}
-            <div className="mt-20">
+            <Box sx={{ marginTop: vw(80, 'mobile') }}>
               <MapViewHint
                 imageOnRight={true}
                 cardNumber={3}
@@ -462,16 +505,16 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                   images: []
                 }}
               />
-            </div>
+            </Box>
 
-            <Box style={{ position: 'relative' }} className="mx-[-0.5rem] -mt-6">
+            <Box sx={{ position: 'relative', marginLeft: vw(-8, 'mobile'), marginRight: vw(-8, 'mobile'), marginTop: vw(-24, 'mobile') }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: '0.5rem',
-                  borderRadius: '0.75rem'
+                  backgroundSize: `${vw(200, 'mobile')} auto`,
+                  padding: vw(8, 'mobile'),
+                  borderRadius: vw(12, 'mobile')
                 }}
               >
                 <InteractiveMap
@@ -484,16 +527,16 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                 />
               </Box>
             </Box>
-          </div>
+          </Box>
         </Box>
       )}
 
       {/* Content */}
-      <div className="pt-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Box sx={{ paddingTop: rvw(32, 32) }}>
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
           {/* Food Title */}
-          <Box sx={{ width: '100%', maxWidth: '800px', margin: '6rem auto 2rem' }}>
-            <Box sx={{ position: 'relative', width: '100%', marginBottom: '2rem' }}>
+          <Box sx={{ width: '100%', maxWidth: { xs: 'none', md: vw(800) }, margin: { xs: `${vw(48, 'mobile')} auto ${vw(16, 'mobile')}`, md: `${vw(96)} auto ${vw(32)}` } }}>
+            <Box sx={{ position: 'relative', width: '100%', marginBottom: rvw(16, 32) }}>
               <Box
                 component="img"
                 src="/images/destinations/destination_location_title.webp"
@@ -518,13 +561,13 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                     text={food.nameCN}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
-                    fontSize={{ xs: '28px', sm: '48px' }}
+                    fontSize={rvw(28, 48)}
                     color="#373737"
                     component="h1"
                     sx={{ margin: 0 }}
                   />
                 ) : (
-                  <Box component="h1" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '28px', sm: '48px' }, color: '#373737', margin: 0 }}>
+                  <Box component="h1" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: rvw(28, 48), color: '#373737', margin: 0 }}>
                     {food.name}
                   </Box>
                 )}
@@ -533,16 +576,16 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
           </Box>
 
           {/* Food Image */}
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-36 xs:mb-12">
-            <Box sx={{ maxWidth: { xs: '100%', sm: '800px' }, margin: '0 auto', px: { xs: 0, sm: 0 } }}>
+          <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: { xs: 0, md: vw(24) }, paddingRight: { xs: 0, md: vw(24) }, marginBottom: rvw(48, 144) }}>
+            <Box sx={{ maxWidth: { xs: '100%', md: vw(800) }, margin: '0 auto', px: 0 }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: { xs: '0.5rem', sm: '1rem' },
-                  borderRadius: { xs: '0.75rem', sm: '1.5rem' },
-                  mx: { xs: '-0.5rem', sm: 0 }
+                  backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                  padding: rvw(8, 16),
+                  borderRadius: rvw(12, 24),
+                  mx: { xs: vw(-8, 'mobile'), md: 0 }
                 }}
               >
                 <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', overflow: 'hidden' }}>
@@ -555,7 +598,7 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                      borderRadius: { xs: '0.5rem', sm: '1rem' },
+                      borderRadius: rvw(8, 16),
                       cursor: 'pointer',
                       transition: 'transform 0.2s',
                       '&:hover': {
@@ -566,98 +609,103 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                 </Box>
 
                 {/* Food Info Below Image */}
-                <Box sx={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '1rem' }}>
+                <Box sx={{ padding: rvw(16, 32), display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap: rvw(8, 16) }}>
                   {/* Restaurant Name */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Store style={{ color: '#F6F6F6' }} size={24} />
-                    <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: rvw(8, 8) }}>
+                    <Store style={{ color: '#F6F6F6' }} size={iconSize(24)} />
+                    <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: rvw(16, 20), color: '#F6F6F6' }}>
                       {food.restaurantName}
                     </Box>
                   </Box>
                   {/* Restaurant Address */}
                   {food.restaurantAddress && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <MapPin style={{ color: '#F6F6F6' }} size={24} />
-                      <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: rvw(8, 8) }}>
+                      <MapPin style={{ color: '#F6F6F6' }} size={iconSize(24)} />
+                      <Box component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: rvw(16, 20), color: '#F6F6F6' }}>
                         {food.restaurantAddress}
                       </Box>
                     </Box>
                   )}
                   {/* Cuisine Style */}
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <UtensilsCrossed style={{ color: '#F6F6F6' }} size={24} />
-                    <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: rvw(8, 8) }}>
+                    <UtensilsCrossed style={{ color: '#F6F6F6' }} size={iconSize(24)} />
+                    <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 20), color: '#F6F6F6' }}>
                       {locale === 'zh' && food.cuisineStyleCN ? food.cuisineStyleCN : food.cuisineStyle}
                     </Box>
                   </Box>
                 </Box>
               </Box>
             </Box>
-          </div>
-        </div>
+          </Box>
+        </Box>
 
         {/* Map View Section */}
         <Box
           component="section"
-          className="w-full py-24 xs:py-12"
           sx={{
+            width: '100%',
+            paddingTop: rvw(48, 96),
+            paddingBottom: rvw(48, 96),
             backgroundImage: 'url(/images/backgrounds/pattern-food-orange-2x.png)',
             backgroundRepeat: 'repeat',
-            backgroundSize: '300px auto',
+            backgroundSize: { xs: `${vw(300, 'mobile')} auto`, md: `${vw(300)} auto` },
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 xs:px-2 sm:px-6 lg:px-8">
-            <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+          <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(8, 32), paddingRight: rvw(8, 32) }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: rvw(32, 64), marginTop: rvw(16, 32) }}>
               <MixedText
                 text={locale === 'zh' ? '餐厅位置' : 'Restaurant Location'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize={{ xs: '40px', sm: '64px' }}
+                fontSize={rvw(40, 64)}
                 color="#F6F6F6"
                 component="h2"
                 sx={{
-                  textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
-                  margin: 0
+                  textShadow: rShadow(2, 3, '#373737'),
+                  margin: 0,
+                  textAlign: 'center'
                 }}
               />
-            </div>
+            </Box>
 
             {/* View Hints Button - Desktop Only */}
-            <div className="flex justify-center my-16 xs:hidden">
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', marginTop: vw(64), marginBottom: vw(64) }}>
               <button
                 onClick={() => setIsViewHintsDrawerOpen(true)}
                 className="hover:scale-105 transition-transform duration-200"
               >
-                <img
+                <Box
+                  component="img"
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-20 w-auto"
+                  sx={{ height: vw(80), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
 
             {/* View Hints Button - Mobile Only */}
-            <div className="hidden xs:flex justify-center mb-12">
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'center', marginBottom: vw(48, 'mobile') }}>
               <button
                 onClick={() => setIsViewHintsDrawerOpen(true)}
                 className="hover:scale-105 transition-transform duration-200"
               >
-                <img
+                <Box
+                  component="img"
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-16 w-auto"
+                  sx={{ height: vw(64, 'mobile'), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
 
-            <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
+            <Box sx={{ maxWidth: { xs: 'none', md: vw(800) }, margin: '0 auto' }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: { xs: '0.5rem', sm: '1rem' },
-                  borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                  backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                  padding: rvw(8, 16),
+                  borderRadius: rvw(12, 24)
                 }}
               >
                 <InteractiveMap
@@ -670,11 +718,11 @@ export default function FoodDetailClient({ food, destination, journey }: FoodDet
                 />
               </Box>
             </Box>
-          </div>
+          </Box>
         </Box>
 
         <Footer currentPage="foods" />
-      </div>
+      </Box>
     </Box>
   )
 }
