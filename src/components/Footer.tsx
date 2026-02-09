@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Box from '@mui/material/Box'
 import { useTranslation } from 'src/hooks/useTranslation'
 import EmailSubscriptionDrawer from './EmailSubscriptionDrawer'
+import { vw, rvw } from 'src/utils/scaling'
 
 interface FooterProps {
   currentPage?: 'home' | 'trips' | 'destinations' | 'foods' | 'maps'
@@ -22,34 +23,36 @@ export default function Footer({ currentPage }: FooterProps = {}) {
       />
     <Box
       component="footer"
-      className="text-white py-8 px-4 border-t border-gray-400"
+      className="text-white"
       sx={{
+        paddingTop: rvw(32, 32),
+        paddingBottom: rvw(32, 32),
+        paddingLeft: rvw(16, 16),
+        paddingRight: rvw(16, 16),
+        borderTopWidth: rvw(1, 1),
+        borderTopStyle: 'solid',
+        borderTopColor: '#9ca3af',
         backgroundImage: 'url(/images/backgrounds/footer_background.webp)',
         backgroundRepeat: 'repeat',
-        backgroundSize: '200px'
+        backgroundSize: { xs: vw(200, 'mobile'), md: vw(200) }
       }}
     >
-      <div className="flex items-center gap-[8%] xs:flex-col xs:gap-4">
-        <Link href="/" className="hover:scale-105 transition-transform duration-200 flex-shrink-0 basis-[25%] xs:basis-auto xs:w-full xs:flex xs:justify-center">
+      {/* Desktop layout */}
+      <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: '8%' }}>
+        <Link href="/" className="hover:scale-105 transition-transform duration-200 flex-shrink-0" style={{ flexBasis: '25%' }}>
           <Box
             component="img"
             src={`/images/logos/logo_${locale}.png`}
             alt="Logo"
             sx={{
-              height: '200px',
-              width: 'auto',
-              '@media (max-width: 639px)': {
-                height: 'auto',
-                width: '320px'
-              }
+              height: vw(200),
+              width: 'auto'
             }}
           />
         </Link>
-        <div className="flex-1 flex flex-col items-center justify-center xs:w-full">
-          {/* Button Rows - Desktop: 2 rows (long journeys+destinations, then short maps+email+language) */}
-
+        <div className="flex-1 flex flex-col items-center justify-center">
           {/* Desktop First Row: Journeys, Destinations - each spans 2 columns */}
-          <div className="grid grid-cols-4 gap-4 mb-4 xs:hidden">
+          <div className="grid grid-cols-4" style={{ gap: vw(16), marginBottom: vw(16) }}>
             {currentPage === 'trips' ? (
               <Box className="group col-span-2">
                 <Box
@@ -104,7 +107,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
           </div>
 
           {/* Desktop Second Row: Maps, Foods, Email, Language */}
-          <div className="grid grid-cols-4 gap-4 mb-4 xs:hidden">
+          <div className="grid grid-cols-4" style={{ gap: vw(16), marginBottom: vw(16) }}>
             {currentPage === 'maps' ? (
               <Box className="group">
                 <Box
@@ -196,8 +199,29 @@ export default function Footer({ currentPage }: FooterProps = {}) {
             </Box>
           </div>
 
+          {/* Copyright Text - Desktop */}
+          <Box component="p" sx={{ color: '#9ca3af', textAlign: 'center', fontSize: vw(16), margin: 0 }}>
+            Made with ♥ by Joey Hou • 侯江天（小猴同学）• 2025
+          </Box>
+        </div>
+      </Box>
+
+      {/* Mobile layout */}
+      <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', gap: vw(16, 'mobile') }}>
+        <Link href="/" className="hover:scale-105 transition-transform duration-200 flex-shrink-0" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <Box
+            component="img"
+            src={`/images/logos/logo_${locale}.png`}
+            alt="Logo"
+            sx={{
+              height: 'auto',
+              width: vw(320, 'mobile')
+            }}
+          />
+        </Link>
+        <div className="flex flex-col items-center w-full">
           {/* Mobile: Row 1: Journeys (full width) */}
-          <div className="hidden xs:grid xs:grid-cols-1 xs:gap-4 xs:w-full xs:px-4 xs:mb-4">
+          <div className="grid grid-cols-1 w-full" style={{ gap: vw(16, 'mobile'), paddingLeft: vw(16, 'mobile'), paddingRight: vw(16, 'mobile'), marginBottom: vw(16, 'mobile') }}>
             {currentPage === 'trips' ? (
               <Box className="group">
                 <Box
@@ -226,7 +250,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
           </div>
 
           {/* Mobile: Row 2: Destinations (full width) */}
-          <div className="hidden xs:grid xs:grid-cols-1 xs:gap-4 xs:w-full xs:px-4 xs:mb-4">
+          <div className="grid grid-cols-1 w-full" style={{ gap: vw(16, 'mobile'), paddingLeft: vw(16, 'mobile'), paddingRight: vw(16, 'mobile'), marginBottom: vw(16, 'mobile') }}>
             {currentPage === 'destinations' ? (
               <Box className="group">
                 <Box
@@ -255,7 +279,7 @@ export default function Footer({ currentPage }: FooterProps = {}) {
           </div>
 
           {/* Mobile: Rows 3-4: Maps, Foods, Email, Language in 2x2 grid */}
-          <div className="hidden xs:grid xs:grid-cols-2 xs:gap-4 xs:w-full xs:px-4 xs:mb-4">
+          <div className="grid grid-cols-2 w-full" style={{ gap: vw(16, 'mobile'), paddingLeft: vw(16, 'mobile'), paddingRight: vw(16, 'mobile'), marginBottom: vw(16, 'mobile') }}>
             {/* Maps */}
             {currentPage === 'maps' ? (
               <Box className="group">
@@ -350,12 +374,13 @@ export default function Footer({ currentPage }: FooterProps = {}) {
               />
             </Box>
           </div>
-          {/* Copyright Text */}
-          <Box component="p" className="text-gray-400 text-center xs:text-xs">
+
+          {/* Copyright Text - Mobile */}
+          <Box component="p" sx={{ color: '#9ca3af', textAlign: 'center', fontSize: vw(12, 'mobile'), margin: 0 }}>
             Made with ♥ by Joey Hou • 侯江天（小猴同学）• 2025
           </Box>
         </div>
-      </div>
+      </Box>
     </Box>
     </>
   )
