@@ -19,14 +19,26 @@ import DestinationCard from 'src/components/DestinationCard'
 import { formatDuration } from 'src/utils/formatDuration'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
+import { vw, rvw, rShadow } from 'src/utils/scaling'
 
 // Dynamically import the map component to avoid SSR issues
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
   loading: () => (
-    <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
-      <p className="text-gray-600">Loading map...</p>
-    </div>
+    <Box
+      sx={{
+        width: '100%',
+        height: { xs: 'auto', md: vw(600) },
+        aspectRatio: { xs: '2/3', md: 'unset' },
+        borderRadius: rvw(8, 8),
+        backgroundColor: '#e5e7eb',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+    >
+      <p style={{ color: '#4b5563' }}>Loading map...</p>
+    </Box>
   )
 })
 
@@ -83,12 +95,13 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
   const [isLoadingDestinations, setIsLoadingDestinations] = useState(true)
   const [foods, setFoods] = useState<any[]>([])
   const [foodSearchQuery, setFoodSearchQuery] = useState('')
+  const [homeLocations, setHomeLocations] = useState<any[]>([])
   const tabContainerRef = useRef<HTMLDivElement>(null)
 
   // Detect xs screen size
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsXsScreen(window.innerWidth < 640)
+      setIsXsScreen(window.innerWidth < 768)
     }
 
     // Check on mount
@@ -174,13 +187,18 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
     }
   }, [isXsScreen, station])
 
-  // Fetch all destinations for the journey
+  // Fetch all destinations and home locations for the journey
   useEffect(() => {
     async function fetchDestinations() {
       try {
-        const response = await fetch('/api/destinations')
+        const [response, homeLocationsRes] = await Promise.all([
+          fetch('/api/destinations'),
+          fetch('/api/home-locations')
+        ])
         const data = await response.json()
+        const homeLocationsData = await homeLocationsRes.json()
         setAllDestinations(data)
+        setHomeLocations(homeLocationsData)
 
         // Preload first image from each destination for map popups and list cards
         data.forEach((dest: any) => {
@@ -321,8 +339,10 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
 
   const journeyRoute = useMemo(() => {
     if (!journey) return ''
-    return locale === 'zh' && journey.routeCN ? journey.routeCN : journey.route
-  }, [journey, locale])
+    return locale === 'zh'
+      ? calculateRouteDisplayCN(journey, homeLocations)
+      : calculateRouteDisplay(journey, homeLocations)
+  }, [journey, locale, homeLocations])
 
   const openMenu = () => {
     setIsMenuButtonAnimating(true)
@@ -349,6 +369,14 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
     }, 150)
   }
 
+  // Helper for Lucide icon sizes
+  const iconSize = (px: number) => {
+    if (typeof window === 'undefined') return px
+    return isXsScreen
+      ? Math.round(px * window.innerWidth / 390)
+      : Math.round(px * window.innerWidth / 1512)
+  }
+
   // Show loading state while data is being fetched
   if (isLoadingDestinations) {
     return (
@@ -370,19 +398,21 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '2rem',
+        gap: rvw(24, 32),
         backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
         backgroundRepeat: 'repeat',
-        backgroundSize: '200px auto',
+        backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
         animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
       }}>
         {/* Spinner */}
         <Box
           sx={{
-            width: '60px',
-            height: '60px',
-            border: '6px solid rgba(240, 96, 1, 0.2)',
-            borderTop: '6px solid #F06001',
+            width: rvw(48, 60),
+            height: rvw(48, 60),
+            borderWidth: rvw(4, 6),
+            borderStyle: 'solid',
+            borderColor: 'rgba(240, 96, 1, 0.2)',
+            borderTopColor: '#F06001',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }}
@@ -390,7 +420,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
         {/* Loading text */}
         <Box sx={{
           fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-          fontSize: '32px',
+          fontSize: rvw(24, 32),
           color: '#373737'
         }}>
           {tr.loading}
@@ -419,7 +449,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
       sx={{
         backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
         backgroundRepeat: 'repeat-y, repeat',
-        backgroundSize: '100% auto, 400px auto',
+        backgroundSize: { xs: `100% auto, ${vw(400, 'mobile')} auto`, md: `100% auto, ${vw(400)} auto` },
       }}
     >
       <style jsx>{`
@@ -452,15 +482,17 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
 
       {/* Header Banner */}
       <Box sx={{ width: '100%' }}>
-        <img
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/destination_details_title_${locale}.jpg`}
           alt={station.name}
-          className="w-full h-auto object-cover xs:hidden"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'none', md: 'block' } }}
         />
-        <img
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/destination_details_title_xs_${locale}.jpg`}
           alt={station.name}
-          className="hidden xs:block w-full h-auto object-cover"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'block', md: 'none' } }}
         />
       </Box>
 
@@ -468,32 +500,35 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
       {journey && (
         <Box
           component="section"
-          className="w-full py-24 xs:hidden"
           sx={{
+            width: '100%',
+            paddingTop: vw(96),
+            paddingBottom: vw(96),
+            display: { xs: 'none', md: 'block' },
             backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
             backgroundRepeat: 'repeat',
             backgroundSize: '100vw auto',
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Box sx={{ maxWidth: vw(1280), marginLeft: 'auto', marginRight: 'auto', paddingLeft: vw(32), paddingRight: vw(32) }}>
             {/* Title */}
-            <div className="flex flex-col justify-center items-center mb-16 mt-8">
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(64), marginTop: vw(32) }}>
               <MixedText
                 text={locale === 'zh' ? '相关旅程' : 'Related Journey'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize="64px"
+                fontSize={vw(64)}
                 color="#F6F6F6"
                 component="h2"
                 sx={{
-                  textShadow: '3px 3px 0px #373737',
+                  textShadow: `${vw(3)} ${vw(3)} 0px #373737`,
                   margin: 0
                 }}
               />
-            </div>
+            </Box>
 
             {/* View Hints Button - Desktop Only */}
-            <div className="flex justify-center mb-48 mt-16">
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: vw(192), marginTop: vw(64) }}>
               <button
                 onClick={() => {
                   setViewHintsVariant('relatedJourney')
@@ -501,22 +536,23 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 }}
                 className="hover:scale-105 transition-transform duration-200"
               >
-                <img
+                <Box
+                  component="img"
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-20 w-auto"
+                  sx={{ height: vw(80), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
 
             <Box style={{ position: 'relative' }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: '1rem',
-                  borderRadius: '1.5rem'
+                  backgroundSize: `${vw(200)} auto`,
+                  padding: vw(16),
+                  borderRadius: vw(24)
                 }}
               >
                 <InteractiveMap
@@ -532,8 +568,8 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
               <Box
                 sx={{
                   position: 'absolute',
-                  top: '-100px',
-                  left: '-600px',
+                  top: vw(-100),
+                  left: vw(-600),
                   zIndex: 1000
                 }}
               >
@@ -552,7 +588,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 />
               </Box>
             </Box>
-          </div>
+          </Box>
         </Box>
       )}
 
@@ -560,32 +596,35 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
       {journey && (
         <Box
           component="section"
-          className="hidden xs:block w-full py-12"
           sx={{
+            display: { xs: 'block', md: 'none' },
+            width: '100%',
+            paddingTop: vw(48, 'mobile'),
+            paddingBottom: vw(48, 'mobile'),
             backgroundImage: 'url(/images/backgrounds/homepage_background.webp)',
             backgroundRepeat: 'repeat',
             backgroundSize: '100vw auto',
           }}
         >
-          <div className="max-w-7xl mx-auto px-4">
+          <Box sx={{ maxWidth: 'none', marginLeft: 'auto', marginRight: 'auto', paddingLeft: vw(16, 'mobile'), paddingRight: vw(16, 'mobile') }}>
             {/* Mobile: Title */}
-            <div className="flex flex-col justify-center items-center mb-8 mt-4 text-center">
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(32, 'mobile'), marginTop: vw(16, 'mobile'), textAlign: 'center' }}>
               <MixedText
                 text={locale === 'zh' ? '相关旅程' : 'Related Journey'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize="40px"
+                fontSize={vw(40, 'mobile')}
                 color="#F6F6F6"
                 component="h2"
                 sx={{
-                  textShadow: '2px 2px 0px #373737',
+                  textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
                   margin: 0
                 }}
               />
-            </div>
+            </Box>
 
             {/* Mobile: View Hints Button */}
-            <div className="flex flex-col items-center mb-12">
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: vw(48, 'mobile') }}>
               <button
                 onClick={() => {
                   setViewHintsVariant('relatedJourney')
@@ -593,16 +632,17 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 }}
                 className="hover:scale-105 transition-transform duration-200"
               >
-                <img
+                <Box
+                  component="img"
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-16 w-auto"
+                  sx={{ height: vw(64, 'mobile'), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
 
             {/* Journey Info Card - Above map */}
-            <div className="mt-20">
+            <Box sx={{ marginTop: vw(80, 'mobile') }}>
               <MapViewHint
                 imageOnRight={true}
                 cardNumber={3}
@@ -616,16 +656,16 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   images: []
                 }}
               />
-            </div>
+            </Box>
 
-            <Box style={{ position: 'relative' }} className="mx-[-0.5rem] -mt-6">
+            <Box sx={{ position: 'relative', marginLeft: vw(-8, 'mobile'), marginRight: vw(-8, 'mobile'), marginTop: vw(-24, 'mobile') }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: '0.5rem',
-                  borderRadius: '0.75rem'
+                  backgroundSize: `${vw(200, 'mobile')} auto`,
+                  padding: vw(8, 'mobile'),
+                  borderRadius: vw(12, 'mobile')
                 }}
               >
                 <InteractiveMap
@@ -637,16 +677,16 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 />
               </Box>
             </Box>
-          </div>
+          </Box>
         </Box>
       )}
 
       {/* Content */}
-      <div className="pt-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Box sx={{ paddingTop: rvw(32, 32) }}>
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
         {/* Location Title */}
-        <Box sx={{ width: '100%', maxWidth: '800px', margin: '6rem auto 2rem' }}>
-          <Box sx={{ position: 'relative', width: '100%', marginBottom: '2rem' }}>
+        <Box sx={{ width: '100%', maxWidth: { xs: 'none', md: vw(800) }, margin: { xs: `${vw(48, 'mobile')} auto ${vw(16, 'mobile')}`, md: `${vw(96)} auto ${vw(32)}` } }}>
+          <Box sx={{ position: 'relative', width: '100%', marginBottom: rvw(16, 32) }}>
             <Box
               component="img"
               src="/images/destinations/destination_location_title.webp"
@@ -671,13 +711,13 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   text={station.nameCN}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
-                  fontSize={{ xs: '28px', sm: '48px' }}
+                  fontSize={rvw(28, 48)}
                   color="#373737"
                   component="h1"
                   sx={{ margin: 0 }}
                 />
               ) : (
-                <Box component="h1" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: { xs: '28px', sm: '48px' }, color: '#373737', margin: 0 }}>
+                <Box component="h1" sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: rvw(28, 48), color: '#373737', margin: 0 }}>
                   {station.name}
                 </Box>
               )}
@@ -687,18 +727,18 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
 
         {/* About/Description - Full Width */}
         {station.description && (
-          <Box sx={{ textAlign: { xs: 'left', sm: 'center' }, width: '100%', margin: '0 auto 3rem', paddingX: { xs: '1rem', sm: '2rem', md: '2rem', lg: '3rem' } }}>
+          <Box sx={{ textAlign: { xs: 'left', md: 'center' }, width: '100%', margin: { xs: `0 auto ${vw(36, 'mobile')}`, md: `0 auto ${vw(48)}` }, paddingX: rvw(16, 32) }}>
             {isXsScreen ? (
               <Box
                 component="div"
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                  fontSize: '16px',
+                  fontSize: vw(16, 'mobile'),
                   color: '#373737',
                   lineHeight: '1.7',
                   fontWeight: 'bold',
                   '& > *:not(:last-child)': {
-                    marginBottom: locale === 'zh' ? '0' : '1.5rem'
+                    marginBottom: locale === 'zh' ? '0' : vw(24, 'mobile')
                   }
                 }}
               >
@@ -717,7 +757,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 component="div"
                 sx={{
                   fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif',
-                  fontSize: '20px',
+                  fontSize: vw(20),
                   color: '#373737',
                   whiteSpace: 'pre-line',
                   lineHeight: '1.8'
@@ -731,16 +771,16 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
 
         {/* Image Carousel */}
         {station.images && station.images.length > 0 && (
-          <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 mb-36 xs:mb-12">
-          <Box sx={{ maxWidth: { xs: '100%', sm: '800px' }, margin: '0 auto', px: { xs: 0, sm: 0 } }}>
+          <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: { xs: 0, md: vw(24) }, paddingRight: { xs: 0, md: vw(24) }, marginBottom: rvw(48, 144) }}>
+          <Box sx={{ maxWidth: { xs: '100%', md: vw(800) }, margin: '0 auto', px: 0 }}>
             {/* Tab Navigation */}
             <Box
               ref={tabContainerRef}
               sx={{
                 display: 'flex',
-                gap: { xs: '0.5rem', sm: '0' },
-                justifyContent: { xs: 'flex-start', sm: 'center' },
-                overflowX: { xs: 'hidden', sm: 'visible' },
+                gap: { xs: vw(8, 'mobile'), md: '0' },
+                justifyContent: { xs: 'flex-start', md: 'center' },
+                overflowX: { xs: 'hidden', md: 'visible' },
                 overflowY: 'hidden',
                 WebkitOverflowScrolling: 'touch',
                 scrollBehavior: 'smooth',
@@ -749,9 +789,9 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 },
                 msOverflowStyle: 'none',
                 scrollbarWidth: 'none',
-                paddingBottom: { xs: '0.5rem', sm: '0' },
-                paddingLeft: { xs: 'calc(50vw - 24px)', sm: '0' },
-                paddingRight: { xs: 'calc(50vw - 24px)', sm: '0' }
+                paddingBottom: { xs: vw(8, 'mobile'), md: '0' },
+                paddingLeft: { xs: `calc(50vw - ${vw(24, 'mobile')})`, md: '0' },
+                paddingRight: { xs: `calc(50vw - ${vw(24, 'mobile')})`, md: '0' }
               }}
             >
               {station.images.map((image, index) => {
@@ -826,14 +866,16 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                       component="img"
                       src={tabSrc}
                       alt={`Tab ${tabNumber}`}
-                      className={isXsScreen || isSelected ? 'h-12 w-auto' : 'h-12 w-auto group-hover:hidden'}
+                      className={isXsScreen || isSelected ? '' : 'group-hover:hidden'}
+                      sx={{ height: rvw(48, 48), width: 'auto' }}
                     />
                     {!isXsScreen && !isSelected && (
                       <Box
                         component="img"
                         src={hoverSrc}
                         alt={`Tab ${tabNumber}`}
-                        className="h-12 w-auto hidden group-hover:block"
+                        className="hidden group-hover:block"
+                        sx={{ height: vw(48), width: 'auto' }}
                       />
                     )}
                   </Box>
@@ -845,10 +887,10 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
               sx={{
                 backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                 backgroundRepeat: 'repeat',
-                backgroundSize: '200px auto',
-                padding: { xs: '0.5rem', sm: '1rem' },
-                borderRadius: { xs: '0.75rem', sm: '1.5rem' },
-                mx: { xs: '-0.5rem', sm: 0 }
+                backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                padding: rvw(8, 16),
+                borderRadius: rvw(12, 24),
+                mx: { xs: vw(-8, 'mobile'), md: 0 }
               }}
             >
             <Box sx={{ position: 'relative', width: '100%', aspectRatio: '1/1', overflow: 'visible' }}>
@@ -861,7 +903,7 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   width: '100%',
                   height: '100%',
                   objectFit: 'cover',
-                  borderRadius: { xs: '0.5rem', sm: '1rem' },
+                  borderRadius: rvw(8, 16),
                   cursor: 'pointer',
                   transition: 'transform 0.2s',
                   '&:hover': {
@@ -877,20 +919,33 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                     component="button"
                     onClick={prevImage}
                     disabled={currentImageIndex === 0}
-                    className="absolute left-0 xs:left-[-1rem] top-1/2 -translate-y-1/2 group z-10"
+                    sx={{
+                      position: 'absolute',
+                      left: { xs: vw(-16, 'mobile'), md: 0 },
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      zIndex: 10,
+                      padding: 0,
+                      border: 'none',
+                      background: 'none',
+                      cursor: currentImageIndex === 0 ? 'default' : 'pointer'
+                    }}
+                    className="group"
                   >
                     <Box
                       component="img"
                       src="/images/buttons/tab_prev.webp"
                       alt="Previous"
-                      className={currentImageIndex === 0 ? 'h-24 w-auto opacity-40' : 'h-24 w-auto group-hover:hidden'}
+                      className={currentImageIndex === 0 ? '' : 'group-hover:hidden'}
+                      sx={{ height: rvw(72, 96), width: 'auto', opacity: currentImageIndex === 0 ? 0.4 : 1 }}
                     />
                     {currentImageIndex !== 0 && (
                       <Box
                         component="img"
                         src="/images/buttons/tab_prev_hover.webp"
                         alt="Previous"
-                        className="h-24 w-auto hidden group-hover:block"
+                        className="hidden group-hover:block"
+                        sx={{ height: rvw(72, 96), width: 'auto' }}
                       />
                     )}
                   </Box>
@@ -898,26 +953,51 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                     component="button"
                     onClick={nextImage}
                     disabled={currentImageIndex === station.images.length - 1}
-                    className="absolute right-0 xs:right-[-1rem] top-1/2 -translate-y-1/2 group z-10"
+                    sx={{
+                      position: 'absolute',
+                      right: { xs: vw(-16, 'mobile'), md: 0 },
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      zIndex: 10,
+                      padding: 0,
+                      border: 'none',
+                      background: 'none',
+                      cursor: currentImageIndex === station.images.length - 1 ? 'default' : 'pointer'
+                    }}
+                    className="group"
                   >
                     <Box
                       component="img"
                       src="/images/buttons/tab_next.webp"
                       alt="Next"
-                      className={currentImageIndex === station.images.length - 1 ? 'h-24 w-auto opacity-40' : 'h-24 w-auto group-hover:hidden'}
+                      className={currentImageIndex === station.images.length - 1 ? '' : 'group-hover:hidden'}
+                      sx={{ height: rvw(72, 96), width: 'auto', opacity: currentImageIndex === station.images.length - 1 ? 0.4 : 1 }}
                     />
                     {currentImageIndex !== station.images.length - 1 && (
                       <Box
                         component="img"
                         src="/images/buttons/tab_next_hover.webp"
                         alt="Next"
-                        className="h-24 w-auto hidden group-hover:block"
+                        className="hidden group-hover:block"
+                        sx={{ height: rvw(72, 96), width: 'auto' }}
                       />
                     )}
                   </Box>
 
                   {/* Image Counter */}
-                  <Box className="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white px-3 py-1 rounded-full text-sm">
+                  <Box sx={{
+                    position: 'absolute',
+                    bottom: rvw(8, 16),
+                    right: rvw(8, 16),
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    color: 'white',
+                    paddingLeft: rvw(12, 12),
+                    paddingRight: rvw(12, 12),
+                    paddingTop: rvw(4, 4),
+                    paddingBottom: rvw(4, 4),
+                    borderRadius: '9999px',
+                    fontSize: rvw(14, 14)
+                  }}>
                     {currentImageIndex + 1} / {station.images.length}
                   </Box>
                 </>
@@ -926,24 +1006,24 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             </Box>
 
             {/* Station Info Below Image */}
-            <Box sx={{ padding: '2rem', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap: '1rem' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <MapPin style={{ color: '#F6F6F6' }} size={24} />
-                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
+            <Box sx={{ padding: rvw(16, 32), display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'flex-start', gap: rvw(8, 16) }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: rvw(8, 8) }}>
+                <MapPin style={{ color: '#F6F6F6' }} size={iconSize(24)} />
+                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 20), color: '#F6F6F6' }}>
                   {locale === 'zh' && translations.zh.states[station.state]
                     ? translations.zh.states[station.state]
                     : station.state}
                 </Box>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Calendar style={{ color: '#F6F6F6' }} size={24} />
-                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: rvw(8, 8) }}>
+                <Calendar style={{ color: '#F6F6F6' }} size={iconSize(24)} />
+                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 20), color: '#F6F6F6' }}>
                   {station.date}
                 </Box>
               </Box>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Train style={{ color: '#F6F6F6' }} size={24} />
-                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: { xs: '16px', sm: '20px' }, color: '#F6F6F6' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: rvw(8, 8) }}>
+                <Train style={{ color: '#F6F6F6' }} size={iconSize(24)} />
+                <Box component="span" sx={{ fontFamily: locale === 'zh' ? 'MarioFontChinese, sans-serif' : 'MarioFont, sans-serif', fontSize: rvw(16, 20), color: '#F6F6F6' }}>
                   {locale === 'zh'
                     ? (journey?.nameCN || station.journeyNameCN || journey?.name || station.journeyName)
                     : (journey?.name || station.journeyName)}
@@ -952,38 +1032,38 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
             </Box>
             </Box>
           </Box>
-          </div>
+          </Box>
         )}
 
         {/* Related Foods Section */}
         {relatedFoods.length > 0 && (
-          <div className="max-w-7xl mx-auto mb-36 xs:mb-12">
-            <div className="flex flex-col justify-center items-center mb-48 mt-8 xs:mb-12 xs:mt-4 px-4">
+          <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', marginBottom: rvw(48, 144) }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: rvw(48, 192), marginTop: rvw(16, 32), paddingLeft: rvw(16, 16), paddingRight: rvw(16, 16) }}>
               <MixedText
                 text={locale === 'zh' ? '相关美食' : 'Related Foods'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize={{ xs: '40px', sm: '64px' }}
+                fontSize={rvw(40, 64)}
                 color="#373737"
                 component="h2"
                 sx={{
-                  textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                  textShadow: rShadow(2, 3, '#F6F6F6'),
                   margin: 0,
-                  marginBottom: '16px'
+                  marginBottom: rvw(12, 16)
                 }}
               />
               <MixedText
                 text={tr.clickToViewDetails}
                 chineseFont="MarioFontChinese, sans-serif"
                 englishFont="MarioFont, sans-serif"
-                fontSize={{ xs: '16px', sm: '28px' }}
+                fontSize={rvw(16, 28)}
                 color="#373737"
                 component="p"
                 sx={{ margin: 0 }}
               />
-            </div>
+            </Box>
 
-            <div className="grid grid-cols-1 gap-48 xs:gap-12">
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: rvw(48, 192) }}>
               {relatedFoods.map((food: any, index: number) => (
                 <DestinationCard
                   key={food.id}
@@ -992,40 +1072,42 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                   linkPrefix="foods"
                 />
               ))}
-            </div>
-          </div>
+            </Box>
+          </Box>
         )}
 
-        </div>
+        </Box>
 
         {/* Map View Section */}
         <Box
           component="section"
-          className="w-full py-24 xs:py-12"
           sx={{
+            width: '100%',
+            paddingTop: rvw(48, 96),
+            paddingBottom: rvw(48, 96),
             backgroundImage: 'url(/images/backgrounds/map_background.png)',
             backgroundRepeat: 'repeat',
-            backgroundSize: '300px auto',
+            backgroundSize: { xs: `${vw(300, 'mobile')} auto`, md: `${vw(300)} auto` },
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 xs:px-2 sm:px-6 lg:px-8">
-            <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+          <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(8, 32), paddingRight: rvw(8, 32) }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: rvw(32, 64), marginTop: rvw(16, 32) }}>
               <MixedText
                 text={tr.mapView}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize={{ xs: '40px', sm: '64px' }}
+                fontSize={rvw(40, 64)}
                 color="#F6F6F6"
                 component="h2"
                 sx={{
-                  textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                  textShadow: rShadow(2, 3, '#373737'),
                   margin: 0
                 }}
               />
-            </div>
+            </Box>
 
             {/* View Hints Button - Desktop Only */}
-            <div className="flex justify-center my-16 xs:hidden">
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', marginTop: vw(64), marginBottom: vw(64) }}>
               <button
                 onClick={() => {
                   setViewHintsVariant('default')
@@ -1033,16 +1115,17 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 }}
                 className="hover:scale-105 transition-transform duration-200"
               >
-                <img
+                <Box
+                  component="img"
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-20 w-auto"
+                  sx={{ height: vw(80), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
 
             {/* View Hints Button - Mobile Only */}
-            <div className="hidden xs:flex justify-center mb-12">
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'center', marginBottom: vw(48, 'mobile') }}>
               <button
                 onClick={() => {
                   setViewHintsVariant('default')
@@ -1050,78 +1133,85 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                 }}
                 className="hover:scale-105 transition-transform duration-200"
               >
-                <img
+                <Box
+                  component="img"
                   src={`/images/buttons/view_hints_button_${locale}.png`}
                   alt="View Hints"
-                  className="h-16 w-auto"
+                  sx={{ height: vw(64, 'mobile'), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
 
-            <Box sx={{ maxWidth: '800px', margin: '0 auto' }}>
+            <Box sx={{ maxWidth: { xs: 'none', md: vw(800) }, margin: '0 auto' }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: { xs: '0.5rem', sm: '1rem' },
-                  borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                  backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                  padding: rvw(8, 16),
+                  borderRadius: rvw(12, 24)
                 }}
               >
                 <InteractiveMap places={mapPlaces} isDetailView={true} journeyDate={station.date} currentDestinationId={station.id} />
               </Box>
             </Box>
-          </div>
+          </Box>
         </Box>
 
         {/* Related Foods List Section */}
         {foods.length > 0 && (
           <Box
             component="section"
-            className="w-full pt-24 pb-48 xs:py-12"
             sx={{
+              width: '100%',
+              paddingTop: rvw(48, 96),
+              paddingBottom: rvw(48, 192),
               backgroundImage: 'url(/images/backgrounds/pattern-food-orange-2x.png)',
               backgroundRepeat: 'repeat',
-              backgroundSize: '300px auto',
+              backgroundSize: { xs: `${vw(300, 'mobile')} auto`, md: `${vw(300)} auto` },
             }}
           >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+            <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: rvw(32, 64), marginTop: rvw(16, 32) }}>
                 <MixedText
                   text={locale === 'zh' ? '美食列表' : 'List of Foods'}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
-                  fontSize={{ xs: '40px', sm: '64px' }}
+                  fontSize={rvw(40, 64)}
                   color="#F6F6F6"
                   component="h2"
                   sx={{
-                    textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                    textShadow: rShadow(2, 3, '#373737'),
                     margin: 0,
-                    marginBottom: '16px'
+                    marginBottom: rvw(12, 16)
                   }}
                 />
                 <MixedText
                   text={tr.clickToViewDetails}
                   chineseFont="MarioFontChinese, sans-serif"
                   englishFont="MarioFont, sans-serif"
-                  fontSize={{ xs: '16px', sm: '28px' }}
+                  fontSize={rvw(16, 28)}
                   color="#F6F6F6"
                   component="p"
                   sx={{ margin: 0 }}
                 />
-              </div>
+              </Box>
 
               {/* Search Bar - Desktop */}
-              <div className="flex justify-center items-center mb-48 xs:hidden">
-                <div
-                  className="w-full max-w-2xl flex justify-center items-center"
-                  style={{
+              <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center', marginBottom: vw(192) }}>
+                <Box
+                  sx={{
+                    width: '100%',
+                    maxWidth: vw(672),
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     backgroundImage: 'url(/images/backgrounds/search_background.png)',
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'contain',
                     backgroundPosition: 'center',
-                    padding: '1.5rem 1rem',
-                    height: '110px'
+                    padding: `${vw(24)} ${vw(16)}`,
+                    height: vw(110)
                   }}
                 >
                   <input
@@ -1132,29 +1222,33 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                     className="food-search-input"
                     style={{
                       width: '100%',
-                      padding: '0.75rem 0.75rem 0.75rem 6rem',
-                      fontSize: '24px',
+                      padding: `${vw(12)} ${vw(12)} ${vw(12)} ${vw(96)}`,
+                      fontSize: vw(24),
                       fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
-                      borderRadius: '0.5rem',
+                      borderRadius: vw(8),
                       border: 'none',
                       backgroundColor: 'transparent',
                       color: '#F6F6F6',
                       outline: 'none'
                     }}
                   />
-                </div>
-              </div>
+                </Box>
+              </Box>
 
               {/* Search Bar - Mobile */}
-              <div className="hidden xs:flex justify-center items-center mb-12">
-                <div
-                  className="w-full max-w-2xl flex justify-center items-center"
-                  style={{
+              <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'center', alignItems: 'center', marginBottom: vw(48, 'mobile') }}>
+                <Box
+                  sx={{
+                    width: '100%',
+                    maxWidth: vw(672, 'mobile'),
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     backgroundImage: 'url(/images/backgrounds/search_background_short.png)',
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'contain',
                     backgroundPosition: 'center',
-                    padding: '1rem'
+                    padding: vw(16, 'mobile')
                   }}
                 >
                   <input
@@ -1165,33 +1259,33 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                     className="food-search-input"
                     style={{
                       width: '100%',
-                      padding: '0.75rem 0.75rem 0.75rem 3rem',
-                      fontSize: '24px',
+                      padding: `${vw(12, 'mobile')} ${vw(12, 'mobile')} ${vw(12, 'mobile')} ${vw(48, 'mobile')}`,
+                      fontSize: vw(24, 'mobile'),
                       fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
-                      borderRadius: '0.5rem',
+                      borderRadius: vw(8, 'mobile'),
                       border: 'none',
                       backgroundColor: 'transparent',
                       color: '#F6F6F6',
                       outline: 'none'
                     }}
                   />
-                </div>
-              </div>
+                </Box>
+              </Box>
 
               {/* Empty State - When no results */}
               {searchFilteredFoods.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-24">
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: rvw(48, 96), paddingBottom: rvw(48, 96) }}>
                   <MixedText
                     text={locale === 'zh' ? '哎呀...' : 'Oh no...'}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
-                    fontSize={{ xs: '32px', sm: '48px' }}
+                    fontSize={rvw(32, 48)}
                     color="#F6F6F6"
                     component="h2"
                     sx={{
-                      textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                      textShadow: rShadow(2, 3, '#373737'),
                       margin: 0,
-                      marginBottom: '16px',
+                      marginBottom: rvw(12, 16),
                       textAlign: 'center'
                     }}
                   />
@@ -1199,17 +1293,17 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                     text={locale === 'zh' ? '没有符合条件的结果。' : 'There is no matching result.'}
                     chineseFont="MarioFontChinese, sans-serif"
                     englishFont="MarioFont, sans-serif"
-                    fontSize={{ xs: '16px', sm: '24px' }}
+                    fontSize={rvw(16, 24)}
                     color="#F6F6F6"
                     component="p"
                     sx={{ margin: 0, textAlign: 'center' }}
                   />
-                </div>
+                </Box>
               )}
 
               {/* Food Cards */}
               {searchFilteredFoods.length > 0 && (
-                <div className="grid grid-cols-1 gap-48 xs:gap-12">
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: rvw(48, 192) }}>
                   {searchFilteredFoods.map((food: any, index: number) => (
                     <DestinationCard
                       key={food.id}
@@ -1218,14 +1312,14 @@ export default function DestinationDetailClient({ station, journey }: Destinatio
                       linkPrefix="foods"
                     />
                   ))}
-                </div>
+                </Box>
               )}
-            </div>
+            </Box>
           </Box>
         )}
 
         <Footer />
-      </div>
+      </Box>
     </Box>
   )
 }

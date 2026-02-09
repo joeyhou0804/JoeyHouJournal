@@ -1260,14 +1260,16 @@ export default function JourneysPage() {
                 component="button"
                 onClick={handlePrevDayTrip}
                 disabled={currentDayTripIndex === 0}
-                className={`group transition-transform duration-200 ${
-                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
                 sx={{
                   position: 'absolute',
                   left: vw(16),
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 0.2s',
+                  '&:not(:disabled):hover': { transform: 'translateY(-50%) scale(1.05)' },
                   zIndex: 1001,
                   background: 'none',
                   border: 'none',
@@ -1293,14 +1295,16 @@ export default function JourneysPage() {
                 component="button"
                 onClick={handleNextDayTrip}
                 disabled={currentDayTripIndex === dayTripJourneys.length - 1}
-                className={`group transition-transform duration-200 ${
-                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
                 sx={{
                   position: 'absolute',
                   right: vw(16),
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 0.2s',
+                  '&:not(:disabled):hover': { transform: 'translateY(-50%) scale(1.05)' },
                   zIndex: 1001,
                   background: 'none',
                   border: 'none',
@@ -1570,14 +1574,16 @@ export default function JourneysPage() {
                 component="button"
                 onClick={handlePrevDayTrip}
                 disabled={currentDayTripIndex === 0}
-                className={`group transition-transform duration-200 ${
-                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentDayTripIndex === 0 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
                 sx={{
                   position: 'absolute',
                   left: vw(-8, 'mobile'),
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 0.2s',
+                  '&:not(:disabled):hover': { transform: 'translateY(-50%) scale(1.05)' },
                   zIndex: 1001,
                   background: 'none',
                   border: 'none',
@@ -1603,14 +1609,16 @@ export default function JourneysPage() {
                 component="button"
                 onClick={handleNextDayTrip}
                 disabled={currentDayTripIndex === dayTripJourneys.length - 1}
-                className={`group transition-transform duration-200 ${
-                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'hover:scale-105 cursor-pointer'
+                className={`group ${
+                  currentDayTripIndex === dayTripJourneys.length - 1 ? 'opacity-40 cursor-default' : 'cursor-pointer'
                 }`}
                 sx={{
                   position: 'absolute',
                   right: vw(-8, 'mobile'),
                   top: '50%',
                   transform: 'translateY(-50%)',
+                  transition: 'transform 0.2s',
+                  '&:not(:disabled):hover': { transform: 'translateY(-50%) scale(1.05)' },
                   zIndex: 1001,
                   background: 'none',
                   border: 'none',
