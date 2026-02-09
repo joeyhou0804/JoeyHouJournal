@@ -13,15 +13,16 @@ import DestinationCard from 'src/components/DestinationCard'
 import { getRouteCoordinatesFromSegments } from 'src/utils/routeHelpers'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { Search } from 'lucide-react'
+import { vw, rvw, rShadow } from 'src/utils/scaling'
 
 const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   ssr: false,
   loading: () => {
     const { tr } = useTranslation()
     return (
-      <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
+      <Box sx={{ width: '100%', height: { xs: 'auto', md: vw(600) }, aspectRatio: { xs: '2/3', md: 'unset' }, borderRadius: rvw(8, 8), backgroundColor: '#e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <p className="text-gray-600">{tr.loadingMap}</p>
-      </div>
+      </Box>
     )
   }
 })
@@ -235,19 +236,21 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '2rem',
+          gap: rvw(32, 32),
           backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '200px auto',
+          backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
           animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
         }}>
           {/* Spinner */}
           <Box
             sx={{
-              width: '60px',
-              height: '60px',
-              border: '6px solid rgba(240, 96, 1, 0.2)',
-              borderTop: '6px solid #F06001',
+              width: rvw(60, 60),
+              height: rvw(60, 60),
+              borderWidth: rvw(6, 6),
+              borderStyle: 'solid',
+              borderColor: 'rgba(240, 96, 1, 0.2)',
+              borderTopColor: '#F06001',
               borderRadius: '50%',
               animation: 'spin 1s linear infinite'
             }}
@@ -255,7 +258,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
           {/* Loading text */}
           <Box sx={{
             fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-            fontSize: '32px',
+            fontSize: rvw(32, 32),
             color: '#373737'
           }}>
             {tr.loading}
@@ -284,7 +287,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
       sx={{
         backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
         backgroundRepeat: 'repeat-y, repeat',
-        backgroundSize: '100% auto, 400px auto',
+        backgroundSize: { xs: `100% auto, ${vw(400, 'mobile')} auto`, md: `100% auto, ${vw(400)} auto` },
       }}
     >
       <style jsx>{`
@@ -306,31 +309,35 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
       />
 
       <Box sx={{ width: '100%' }}>
-        <img
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/journey_details_title_${locale}.jpg`}
           alt={tr.journeyDetails}
-          className="w-full h-auto object-cover xs:hidden"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'none', md: 'block' } }}
         />
-        <img
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/journey_details_title_xs_${locale}.jpg`}
           alt={tr.journeyDetails}
-          className="hidden xs:block w-full h-auto object-cover"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'block', md: 'none' } }}
         />
       </Box>
 
       <Box
         component="section"
-        className="w-full py-24 xs:py-12"
+        className="w-full"
         sx={{
+          paddingTop: rvw(48, 96),
+          paddingBottom: rvw(48, 96),
           backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '300px auto',
+          backgroundSize: { xs: `${vw(300, 'mobile')} auto`, md: `${vw(300)} auto` },
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
           {/* Journey Title with Background */}
-          <Box sx={{ width: '100%', maxWidth: '800px', margin: '2rem auto 2rem' }}>
-            <Box sx={{ position: 'relative', width: '100%', marginBottom: '2rem' }}>
+          <Box sx={{ width: '100%', maxWidth: { xs: 'none', md: vw(800) }, margin: `${vw(32)} auto ${vw(32)}` }}>
+            <Box sx={{ position: 'relative', width: '100%', marginBottom: rvw(32, 32) }}>
               <Box
                 component="img"
                 src="/images/destinations/destination_location_title.webp"
@@ -354,7 +361,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                   text={locale === 'zh' && journey.nameCN ? journey.nameCN : journey.name}
                   chineseFont="MarioFontTitleChinese, sans-serif"
                   englishFont="MarioFontTitle, sans-serif"
-                  fontSize={{ xs: '28px', sm: '48px' }}
+                  fontSize={rvw(28, 48)}
                   color="#373737"
                   component="h2"
                   sx={{ margin: 0 }}
@@ -363,44 +370,85 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
             </Box>
           </Box>
 
-          {/* Route Display */}
-          <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+          {/* Route Display - Desktop (horizontal with →) */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center', marginBottom: vw(64), marginTop: vw(32) }}>
             <MixedText
               text={locale === 'zh' && journey.routeCN ? journey.routeCN : journey.route}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '28px', sm: '48px' }}
+              fontSize={vw(48)}
               color="#F6F6F6"
               component="p"
               sx={{
-                textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                textShadow: `${vw(3)} ${vw(3)} 0px #373737`,
                 margin: 0
               }}
             />
-          </div>
+          </Box>
+
+          {/* Route Display - Mobile (centered vertically with ↓) */}
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: vw(32, 'mobile'), marginTop: vw(16, 'mobile') }}>
+            {(() => {
+              const routeText = locale === 'zh' && journey.routeCN ? journey.routeCN : journey.route
+              const parts = routeText.split(' → ')
+              return parts.map((part, i) => (
+                <Box key={i}>
+                  <MixedText
+                    text={part.trim()}
+                    chineseFont="MarioFontTitleChinese, sans-serif"
+                    englishFont="MarioFontTitle, sans-serif"
+                    fontSize={vw(28, 'mobile')}
+                    color="#F6F6F6"
+                    component="p"
+                    sx={{
+                      textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                      margin: 0,
+                      textAlign: 'center'
+                    }}
+                  />
+                  {i < parts.length - 1 && (
+                    <MixedText
+                      text="↓"
+                      englishFont="MarioFontTitle, sans-serif"
+                      chineseFont="MarioFontTitle, sans-serif"
+                      fontSize={vw(28, 'mobile')}
+                      color="#F6F6F6"
+                      component="p"
+                      sx={{
+                        textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #373737`,
+                        margin: 0,
+                        textAlign: 'center'
+                      }}
+                    />
+                  )}
+                </Box>
+              ))
+            })()}
+          </Box>
 
           {/* View Hints Button */}
-          <div className="flex justify-center mb-12 xs:mb-12">
+          <Box className="flex justify-center" sx={{ marginBottom: rvw(48, 48) }}>
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
             >
-              <img
+              <Box
+                component="img"
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-20 xs:h-16 w-auto"
+                sx={{ height: rvw(64, 80), width: 'auto' }}
               />
             </button>
-          </div>
+          </Box>
 
-          <Box className="xs:mx-[-0.5rem]">
+          <Box sx={{ marginLeft: { xs: vw(-8, 'mobile'), md: 0 }, marginRight: { xs: vw(-8, 'mobile'), md: 0 } }}>
             <Box
               sx={{
                 backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                 backgroundRepeat: 'repeat',
-                backgroundSize: '200px auto',
-                padding: { xs: '0.5rem', sm: '1rem' },
-                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                padding: rvw(8, 16),
+                borderRadius: rvw(12, 24)
               }}
             >
               <InteractiveMap
@@ -411,56 +459,59 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
               />
             </Box>
           </Box>
-        </div>
+        </Box>
       </Box>
 
       <Box
         component="section"
         ref={listSectionRef}
-        className="w-full py-24 xs:py-12"
+        className="w-full"
         sx={{
+          paddingTop: rvw(48, 96),
+          paddingBottom: rvw(48, 96),
           backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
           backgroundRepeat: 'repeat-y, repeat',
-          backgroundSize: '100% auto, 400px auto',
+          backgroundSize: { xs: `100% auto, ${vw(400, 'mobile')} auto`, md: `100% auto, ${vw(400)} auto` },
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
+          <Box className="flex flex-col justify-center items-center" sx={{ marginBottom: rvw(32, 64), marginTop: rvw(16, 32) }}>
             <MixedText
               text={tr.listOfPlaces}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '40px', sm: '64px' }}
+              fontSize={rvw(40, 64)}
               color="#373737"
               component="h2"
               sx={{
-                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                textShadow: rShadow(2, 3, '#F6F6F6'),
                 margin: 0,
-                marginBottom: '16px'
+                marginBottom: rvw(16, 16)
               }}
             />
             <MixedText
               text={tr.clickToViewDetails}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
-              fontSize={{ xs: '16px', sm: '28px' }}
+              fontSize={rvw(16, 28)}
               color="#373737"
               component="p"
               sx={{ margin: 0 }}
             />
-          </div>
+          </Box>
 
           {/* Search Bar - Desktop */}
-          <div className="flex justify-center items-center mb-48 xs:hidden">
+          <Box className="flex justify-center items-center" sx={{ marginBottom: vw(192), display: { xs: 'none', md: 'flex' } }}>
             <div
-              className="w-full max-w-2xl flex justify-center items-center"
+              className="w-full flex justify-center items-center"
               style={{
+                maxWidth: vw(672),
                 backgroundImage: 'url(/images/backgrounds/search_background.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                padding: '1.5rem 1rem',
-                height: '110px'
+                padding: `${vw(24)} ${vw(16)}`,
+                height: vw(110)
               }}
             >
               <input
@@ -471,10 +522,10 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 className="journey-detail-search-input"
                 style={{
                   width: '100%',
-                  padding: '0.75rem 0.75rem 0.75rem 6rem',
-                  fontSize: '24px',
+                  padding: `${vw(12)} ${vw(12)} ${vw(12)} ${vw(96)}`,
+                  fontSize: vw(24),
                   fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
-                  borderRadius: '0.5rem',
+                  borderRadius: vw(8),
                   border: 'none',
                   backgroundColor: 'transparent',
                   color: '#F6F6F6',
@@ -482,18 +533,19 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 }}
               />
             </div>
-          </div>
+          </Box>
 
           {/* Search Bar - Mobile */}
-          <div className="hidden xs:flex justify-center items-center mb-12">
+          <Box className="flex justify-center items-center" sx={{ marginBottom: vw(48, 'mobile'), display: { xs: 'flex', md: 'none' } }}>
             <div
-              className="w-full max-w-2xl flex justify-center items-center"
+              className="w-full flex justify-center items-center"
               style={{
+                maxWidth: vw(672, 'mobile'),
                 backgroundImage: 'url(/images/backgrounds/search_background_short.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                padding: '1rem'
+                padding: vw(16, 'mobile')
               }}
             >
               <input
@@ -504,10 +556,10 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 className="journey-detail-search-input"
                 style={{
                   width: '100%',
-                  padding: '0.75rem 0.75rem 0.75rem 3rem',
-                  fontSize: '24px',
+                  padding: `${vw(12, 'mobile')} ${vw(12, 'mobile')} ${vw(12, 'mobile')} ${vw(48, 'mobile')}`,
+                  fontSize: vw(24, 'mobile'),
                   fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
-                  borderRadius: '0.5rem',
+                  borderRadius: vw(8, 'mobile'),
                   border: 'none',
                   backgroundColor: 'transparent',
                   color: '#F6F6F6',
@@ -515,22 +567,22 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 }}
               />
             </div>
-          </div>
+          </Box>
 
           {/* Empty State - When no results */}
           {sortedPlaces.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-24">
+            <Box className="flex flex-col items-center justify-center" sx={{ paddingTop: rvw(96, 96), paddingBottom: rvw(96, 96) }}>
               <MixedText
                 text={tr.noResults}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize={{ xs: '32px', sm: '48px' }}
+                fontSize={rvw(32, 48)}
                 color="#373737"
                 component="h2"
                 sx={{
-                  textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                  textShadow: rShadow(2, 3, '#F6F6F6'),
                   margin: 0,
-                  marginBottom: '16px',
+                  marginBottom: rvw(16, 16),
                   textAlign: 'center'
                 }}
               />
@@ -538,35 +590,35 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 text={tr.noMatchingResult}
                 chineseFont="MarioFontChinese, sans-serif"
                 englishFont="MarioFont, sans-serif"
-                fontSize={{ xs: '16px', sm: '24px' }}
+                fontSize={rvw(16, 24)}
                 color="#373737"
                 component="p"
                 sx={{ margin: 0, textAlign: 'center' }}
               />
-            </div>
+            </Box>
           )}
 
           {/* Places Grid - Desktop with pagination */}
           {sortedPlaces.length > 0 && (
-            <div className={`hidden sm:grid grid-cols-1 gap-48 ${totalPages <= 1 ? 'mb-48' : ''}`}>
+            <Box sx={{ display: { xs: 'none', md: 'grid' }, gridTemplateColumns: '1fr', gap: vw(192), marginBottom: totalPages <= 1 ? vw(192) : 0 }}>
               {displayedPlaces.map((place, index) => (
                 <DestinationCard key={place.id} station={place} index={index} />
               ))}
-            </div>
+            </Box>
           )}
 
           {/* Places Grid - XS with show more */}
           {sortedPlaces.length > 0 && (
-            <div className={`grid sm:hidden grid-cols-1 gap-12 ${xsDisplayCount >= sortedPlaces.length ? 'mb-12' : ''}`}>
+            <Box sx={{ display: { xs: 'grid', md: 'none' }, gridTemplateColumns: '1fr', gap: vw(48, 'mobile'), marginBottom: xsDisplayCount >= sortedPlaces.length ? vw(48, 'mobile') : 0 }}>
               {displayedPlacesXs.map((place, index) => (
                 <DestinationCard key={place.id} station={place} index={index} />
               ))}
-            </div>
+            </Box>
           )}
 
           {/* Show More Button - XS only */}
           {xsDisplayCount < sortedPlaces.length && (
-            <div className="mt-12 mb-12 flex sm:hidden justify-center">
+            <Box className="flex justify-center" sx={{ marginTop: vw(48, 'mobile'), marginBottom: vw(48, 'mobile'), display: { xs: 'flex', md: 'none' } }}>
               <button
                 onClick={handleShowMore}
                 className="hover:scale-105 transition-transform duration-200"
@@ -574,45 +626,47 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                 <img
                   src={`/images/buttons/show_more_xs_${locale}.png`}
                   alt="Show more"
-                  className="h-12 w-auto"
+                  style={{ height: vw(48, 'mobile'), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
           )}
 
           {/* Pagination - Desktop only */}
           {totalPages > 1 && (
-            <div className="mt-48 hidden sm:flex justify-center">
+            <Box className="flex justify-center" sx={{ marginTop: vw(192), display: { xs: 'none', md: 'flex' } }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: '0.5rem',
-                  borderRadius: '1rem'
+                  backgroundSize: `${vw(200)} auto`,
+                  padding: vw(8),
+                  borderRadius: vw(16)
                 }}
               >
                 <Box
                   sx={{
-                    border: '2px solid #F6F6F6',
-                    borderRadius: '0.75rem',
-                    padding: '1.5rem',
+                    borderWidth: vw(2),
+                    borderStyle: 'solid',
+                    borderColor: '#F6F6F6',
+                    borderRadius: vw(12),
+                    padding: vw(24),
                     backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                     backgroundRepeat: 'repeat',
-                    backgroundSize: '200px auto'
+                    backgroundSize: `${vw(200)} auto`
                   }}
                 >
                   <MixedText
                     text={tr.pageOfPages(currentPage, totalPages)}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
-                    fontSize="24px"
+                    fontSize={vw(24)}
                     color="#F6F6F6"
                     component="p"
-                    sx={{ textAlign: 'center', marginBottom: '2rem' }}
+                    sx={{ textAlign: 'center', marginBottom: vw(32) }}
                   />
 
-                  <div className="flex justify-center items-center gap-4">
+                  <div className="flex justify-center items-center" style={{ gap: vw(16) }}>
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
@@ -621,16 +675,18 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                       <img
                         src="/images/buttons/arrow_prev.webp"
                         alt={tr.previous}
-                        className={`w-16 h-16 ${currentPage === 1 ? '' : 'group-hover:hidden'}`}
+                        style={{ width: vw(64), height: vw(64) }}
+                        className={`${currentPage === 1 ? '' : 'group-hover:hidden'}`}
                       />
                       <img
                         src="/images/buttons/arrow_prev_hover.webp"
                         alt={tr.previous}
-                        className={`w-16 h-16 ${currentPage === 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                        style={{ width: vw(64), height: vw(64) }}
+                        className={`${currentPage === 1 ? 'hidden' : 'hidden group-hover:block'}`}
                       />
                     </button>
 
-                    <div className="flex gap-2">
+                    <div className="flex" style={{ gap: vw(8) }}>
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
                         const showPage =
                           page === 1 ||
@@ -642,8 +698,7 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                             return (
                               <span
                                 key={page}
-                                style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#F6F6F6' }}
-                                className="px-2"
+                                style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: vw(24), color: '#F6F6F6', paddingLeft: vw(8), paddingRight: vw(8) }}
                               >
                                 ...
                               </span>
@@ -656,8 +711,8 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                           <button
                             key={page}
                             onClick={() => handlePageChange(page)}
-                            style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', width: '3.5rem' }}
-                            className={`py-2 rounded-lg transition-all duration-200 ${
+                            style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: vw(24), width: vw(56), paddingTop: vw(8), paddingBottom: vw(8), borderRadius: vw(8) }}
+                            className={`transition-all duration-200 ${
                               currentPage === page
                                 ? 'bg-[#373737] text-white border-2 border-[#F6F6F6]'
                                 : 'bg-[#F6F6F6] text-[#373737] hover:bg-[#FFD701]'
@@ -677,20 +732,22 @@ export default function JourneyDetailClient({ journey }: JourneyDetailClientProp
                       <img
                         src="/images/buttons/arrow_next.webp"
                         alt={tr.next}
-                        className={`w-16 h-16 ${currentPage === totalPages ? '' : 'group-hover:hidden'}`}
+                        style={{ width: vw(64), height: vw(64) }}
+                        className={`${currentPage === totalPages ? '' : 'group-hover:hidden'}`}
                       />
                       <img
                         src="/images/buttons/arrow_next_hover.webp"
                         alt={tr.next}
-                        className={`w-16 h-16 ${currentPage === totalPages ? 'hidden' : 'hidden group-hover:block'}`}
+                        style={{ width: vw(64), height: vw(64) }}
+                        className={`${currentPage === totalPages ? 'hidden' : 'hidden group-hover:block'}`}
                       />
                     </button>
                   </div>
                 </Box>
               </Box>
-            </div>
+            </Box>
           )}
-        </div>
+        </Box>
       </Box>
 
       <Footer />
