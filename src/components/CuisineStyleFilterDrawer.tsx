@@ -1,6 +1,7 @@
 'use client'
 
 import SingleSelectFilterDrawer, { FilterOption } from './SingleSelectFilterDrawer'
+import { vw } from 'src/utils/scaling'
 
 interface CuisineStyleFilterDrawerProps {
   isOpen: boolean
@@ -36,7 +37,7 @@ export default function CuisineStyleFilterDrawer({ isOpen, onClose, onFilterChan
       showSelectedBanner={true}
       gridColumnsMobile={4}
       gridColumnsDesktop={5}
-      drawerWidth={{ xs: '95%', sm: '700px' }}
+      drawerWidth={{ xs: '95%', md: vw(700) }}
       gapMobile="0.5rem"
     />
   )

@@ -10,6 +10,7 @@ import ViewHintsDrawer from 'src/components/ViewHintsDrawer'
 import CuisineStyleFilterDrawer from 'src/components/CuisineStyleFilterDrawer'
 import DestinationCard from 'src/components/DestinationCard'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { vw, rvw, rShadow } from 'src/utils/scaling'
 import type { Food } from '@/src/data/foods'
 
 // Dynamically import the map component to avoid SSR issues
@@ -301,26 +302,28 @@ export default function FoodsPage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '2rem',
+          gap: rvw(32, 32),
           backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '200px auto',
+          backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
           animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
         }}
       >
         {/* Spinner */}
         <Box
           sx={{
-            width: '60px',
-            height: '60px',
-            border: '6px solid rgba(240, 96, 1, 0.2)',
-            borderTop: '6px solid #F06001',
+            width: rvw(60, 60),
+            height: rvw(60, 60),
+            borderWidth: rvw(6, 6),
+            borderStyle: 'solid',
+            borderColor: 'rgba(240, 96, 1, 0.2)',
+            borderTopColor: '#F06001',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }}
         />
         {/* Loading text */}
-        <Box sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: '32px', color: '#373737', margin: 0 }}>
+        <Box sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: rvw(32, 32), color: '#373737', margin: 0 }}>
           {locale === 'zh' ? '加载中...' : 'Loading...'}
         </Box>
       </Box>
@@ -359,47 +362,51 @@ export default function FoodsPage() {
       />
 
       {/* Foods Page Title - Full Width */}
-      <div className="w-full">
-        <img
+      <Box sx={{ width: '100%' }}>
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_1920,f_auto,q_auto/joeyhoujournal/headers/foods_page_title_${locale}.jpg`}
           alt="Foods"
-          className="w-full h-auto object-cover xs:hidden"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'none', md: 'block' } }}
         />
-        <img
+        <Box
+          component="img"
           src={`https://res.cloudinary.com/joey-hou-homepage/image/upload/w_800,f_auto,q_auto/joeyhoujournal/headers/foods_page_title_xs_${locale}.jpg`}
           alt="Foods"
-          className="hidden xs:block w-full h-auto object-cover"
+          sx={{ width: '100%', height: 'auto', objectFit: 'cover', display: { xs: 'block', md: 'none' } }}
         />
-      </div>
+      </Box>
 
       {/* Map View Section */}
       <Box
         component="section"
-        className="w-full py-24 xs:py-12"
+        className="w-full"
         sx={{
+          paddingTop: rvw(48, 96),
+          paddingBottom: rvw(48, 96),
           backgroundImage: 'url(/images/backgrounds/pattern-food-orange-2x.png)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '300px auto',
+          backgroundSize: { xs: `${vw(300, 'mobile')} auto`, md: `${vw(300)} auto` },
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginBottom: rvw(32, 64), marginTop: rvw(16, 32) }}>
             <MixedText
               text={locale === 'zh' ? '美食地图' : 'Foods Map'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '40px', sm: '64px' }}
+              fontSize={rvw(40, 64)}
               color="#F6F6F6"
               component="h2"
               sx={{
-                textShadow: { xs: '2px 2px 0px #373737', sm: '3px 3px 0px #373737' },
+                textShadow: rShadow(2, 3, '#373737'),
                 margin: 0
               }}
             />
-          </div>
+          </Box>
 
           {/* View Hints Button - Mobile Only */}
-          <div className="hidden xs:flex flex-col items-center mb-12">
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', marginBottom: vw(48, 'mobile') }}>
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -407,13 +414,13 @@ export default function FoodsPage() {
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-16 w-auto"
+                style={{ height: vw(64, 'mobile'), width: 'auto' }}
               />
             </button>
-          </div>
+          </Box>
 
           {/* View Hints Button - Desktop Only */}
-          <div className="flex justify-center mb-12 xs:hidden">
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', marginBottom: vw(48) }}>
             <button
               onClick={() => setIsViewHintsDrawerOpen(true)}
               className="hover:scale-105 transition-transform duration-200"
@@ -421,76 +428,80 @@ export default function FoodsPage() {
               <img
                 src={`/images/buttons/view_hints_button_${locale}.png`}
                 alt="View Hints"
-                className="h-20 w-auto"
+                style={{ height: vw(80), width: 'auto' }}
               />
             </button>
-          </div>
+          </Box>
 
           {/* Map - Desktop and Mobile */}
-          <Box className="xs:mx-[-0.5rem]">
+          <Box sx={{ marginLeft: { xs: vw(-8, 'mobile'), md: 0 }, marginRight: { xs: vw(-8, 'mobile'), md: 0 } }}>
             <Box
               sx={{
                 backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                 backgroundRepeat: 'repeat',
-                backgroundSize: '200px auto',
-                padding: { xs: '0.5rem', sm: '1rem' },
-                borderRadius: { xs: '0.75rem', sm: '1.5rem' }
+                backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
+                padding: rvw(8, 16),
+                borderRadius: rvw(12, 24)
               }}
             >
               <InteractiveMap places={foodsForMap} showHomeMarker={false} />
             </Box>
           </Box>
-        </div>
+        </Box>
       </Box>
 
       {/* List Section */}
       <Box
         component="section"
         ref={listSectionRef}
-        className="w-full pt-24 pb-48 xs:py-12"
+        className="w-full"
         sx={{
+          paddingTop: rvw(48, 96),
+          paddingBottom: rvw(48, 192),
           backgroundImage: 'url(/images/destinations/destination_page_list_background_shade.webp), url(/images/destinations/destination_page_list_background.webp)',
           backgroundRepeat: 'repeat-y, repeat',
-          backgroundSize: '100% auto, 400px auto',
+          backgroundSize: { xs: `100% auto, ${vw(400, 'mobile')} auto`, md: `100% auto, ${vw(400)} auto` },
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-center items-center mb-16 mt-8 xs:mb-8 xs:mt-4">
+        <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginBottom: rvw(32, 64), marginTop: rvw(16, 32) }}>
             <MixedText
               text={locale === 'zh' ? '美食列表' : 'List of Foods'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize={{ xs: '40px', sm: '64px' }}
+              fontSize={rvw(40, 64)}
               color="#373737"
               component="h2"
               sx={{
-                textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                textShadow: rShadow(2, 3, '#F6F6F6'),
                 margin: 0,
-                marginBottom: '16px'
+                marginBottom: rvw(16, 16)
               }}
             />
             <MixedText
               text={tr.clickToViewDetails}
               chineseFont="MarioFontChinese, sans-serif"
               englishFont="MarioFont, sans-serif"
-              fontSize={{ xs: '16px', sm: '28px' }}
+              fontSize={rvw(16, 28)}
               color="#373737"
               component="p"
               sx={{ margin: 0 }}
             />
-          </div>
+          </Box>
 
           {/* Search Bar - Desktop */}
-          <div className="flex justify-center items-center mb-8 xs:hidden">
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', alignItems: 'center', marginBottom: vw(32) }}>
             <div
-              className="w-full max-w-2xl flex justify-center items-center"
+              className="flex justify-center items-center"
               style={{
+                width: '100%',
+                maxWidth: vw(672),
                 backgroundImage: 'url(/images/backgrounds/search_background.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                padding: '1.5rem 1rem',
-                height: '110px'
+                padding: `${vw(24)} ${vw(16)}`,
+                height: vw(110)
               }}
             >
               <input
@@ -504,10 +515,10 @@ export default function FoodsPage() {
                 className="food-search-input"
                 style={{
                   width: '100%',
-                  padding: '0.75rem 0.75rem 0.75rem 6rem',
-                  fontSize: '24px',
+                  padding: `${vw(12)} ${vw(12)} ${vw(12)} ${vw(96)}`,
+                  fontSize: vw(24),
                   fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
-                  borderRadius: '0.5rem',
+                  borderRadius: vw(8),
                   border: 'none',
                   backgroundColor: 'transparent',
                   color: '#F6F6F6',
@@ -515,21 +526,21 @@ export default function FoodsPage() {
                 }}
               />
             </div>
-          </div>
+          </Box>
 
           {/* Filter Button - Desktop */}
-          <div className="flex flex-col items-center mb-48 xs:hidden">
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, flexDirection: 'column', alignItems: 'center', marginBottom: vw(192) }}>
             <MixedText
               text={locale === 'zh' ? '列表筛选条件' : 'List Filter'}
               chineseFont="MarioFontTitleChinese, sans-serif"
               englishFont="MarioFontTitle, sans-serif"
-              fontSize="24px"
+              fontSize={vw(24)}
               color="#373737"
               component="p"
               sx={{
-                textShadow: '2px 2px 0px #F6F6F6',
+                textShadow: `${vw(2)} ${vw(2)} 0px #F6F6F6`,
                 margin: 0,
-                marginBottom: '0.5rem'
+                marginBottom: vw(8)
               }}
             />
             <div
@@ -539,9 +550,9 @@ export default function FoodsPage() {
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                height: '140px',
+                height: vw(140),
                 width: '100%',
-                maxWidth: '900px'
+                maxWidth: vw(900)
               }}
             >
               <div style={{ position: 'relative' }}>
@@ -554,9 +565,10 @@ export default function FoodsPage() {
                   <img
                     src={cuisineFilterIconMap[selectedCuisineFilter] || cuisineFilterIconMap['all_foods']}
                     alt={locale === 'zh' ? '用食物类别筛选' : 'Filter by Cuisine Style'}
-                    className="h-24 w-auto"
                     style={{
-                      filter: selectedCuisineFilter !== 'all_foods' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                      height: vw(96),
+                      width: 'auto',
+                      filter: selectedCuisineFilter !== 'all_foods' ? `brightness(1.2) drop-shadow(0 0 ${vw(8)} #FFD701)` : 'none'
                     }}
                   />
                 </button>
@@ -567,7 +579,7 @@ export default function FoodsPage() {
                       top: '100%',
                       left: '50%',
                       transform: 'translateX(-50%)',
-                      marginTop: '0.5rem',
+                      marginTop: vw(8),
                       whiteSpace: 'nowrap'
                     }}
                   >
@@ -575,11 +587,11 @@ export default function FoodsPage() {
                       text={locale === 'zh' ? '用食物类别筛选' : 'Filter by Cuisine Style'}
                       chineseFont="MarioFontTitleChinese, sans-serif"
                       englishFont="MarioFontTitle, sans-serif"
-                      fontSize="24px"
+                      fontSize={vw(24)}
                       color="#373737"
                       component="p"
                       sx={{
-                        textShadow: '2px 2px 0px #F6F6F6',
+                        textShadow: `${vw(2)} ${vw(2)} 0px #F6F6F6`,
                         margin: 0
                       }}
                     />
@@ -587,18 +599,20 @@ export default function FoodsPage() {
                 )}
               </div>
             </div>
-          </div>
+          </Box>
 
           {/* Search Bar - Mobile */}
-          <div className="hidden xs:flex justify-center items-center mb-4">
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'center', alignItems: 'center', marginBottom: vw(16, 'mobile') }}>
             <div
-              className="w-full max-w-2xl flex justify-center items-center"
+              className="flex justify-center items-center"
               style={{
+                width: '100%',
+                maxWidth: vw(672, 'mobile'),
                 backgroundImage: 'url(/images/backgrounds/search_background_short.png)',
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
-                padding: '1rem'
+                padding: vw(16, 'mobile')
               }}
             >
               <input
@@ -613,10 +627,10 @@ export default function FoodsPage() {
                 className="food-search-input"
                 style={{
                   width: '100%',
-                  padding: '0.75rem 0.75rem 0.75rem 3rem',
-                  fontSize: '24px',
+                  padding: `${vw(12, 'mobile')} ${vw(12, 'mobile')} ${vw(12, 'mobile')} ${vw(48, 'mobile')}`,
+                  fontSize: vw(24, 'mobile'),
                   fontFamily: 'MarioFontTitle, MarioFontTitleChinese, sans-serif',
-                  borderRadius: '0.5rem',
+                  borderRadius: vw(8, 'mobile'),
                   border: 'none',
                   backgroundColor: 'transparent',
                   color: '#F6F6F6',
@@ -624,20 +638,20 @@ export default function FoodsPage() {
                 }}
               />
             </div>
-          </div>
+          </Box>
 
           {/* Filter Button - Mobile */}
-          <div className="hidden xs:flex flex-col items-center gap-2 mb-12">
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', alignItems: 'center', gap: vw(8, 'mobile'), marginBottom: vw(48, 'mobile') }}>
             <div className="flex flex-col items-center w-full">
               <MixedText
                 text={locale === 'zh' ? '列表筛选条件' : 'List Filter'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize="24px"
+                fontSize={vw(24, 'mobile')}
                 color="#373737"
                 component="p"
                 sx={{
-                  textShadow: '2px 2px 0px #F6F6F6',
+                  textShadow: `${vw(2, 'mobile')} ${vw(2, 'mobile')} 0px #F6F6F6`,
                   margin: 0
                 }}
               />
@@ -648,9 +662,9 @@ export default function FoodsPage() {
                   backgroundRepeat: 'no-repeat',
                   backgroundSize: 'contain',
                   backgroundPosition: 'center',
-                  height: '100px',
+                  height: vw(100, 'mobile'),
                   width: '100%',
-                  maxWidth: '400px'
+                  maxWidth: vw(400, 'mobile')
                 }}
               >
                 <div style={{ position: 'relative' }}>
@@ -661,31 +675,32 @@ export default function FoodsPage() {
                     <img
                       src={cuisineFilterIconMap[selectedCuisineFilter] || cuisineFilterIconMap['all_foods']}
                       alt={locale === 'zh' ? '用食物类别筛选' : 'Filter by Cuisine Style'}
-                      className="h-16 w-auto"
                       style={{
-                        filter: selectedCuisineFilter !== 'all_foods' ? 'brightness(1.2) drop-shadow(0 0 8px #FFD701)' : 'none'
+                        height: vw(64, 'mobile'),
+                        width: 'auto',
+                        filter: selectedCuisineFilter !== 'all_foods' ? `brightness(1.2) drop-shadow(0 0 ${vw(8, 'mobile')} #FFD701)` : 'none'
                       }}
                     />
                   </button>
                 </div>
               </div>
             </div>
-          </div>
+          </Box>
 
           {/* Empty State - When no results */}
           {searchFilteredFoods.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-24">
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingTop: rvw(96, 96), paddingBottom: rvw(96, 96) }}>
               <MixedText
                 text={locale === 'zh' ? '哎呀...' : 'Oh no...'}
                 chineseFont="MarioFontTitleChinese, sans-serif"
                 englishFont="MarioFontTitle, sans-serif"
-                fontSize={{ xs: '32px', sm: '48px' }}
+                fontSize={rvw(32, 48)}
                 color="#373737"
                 component="h2"
                 sx={{
-                  textShadow: { xs: '2px 2px 0px #F6F6F6', sm: '3px 3px 0px #F6F6F6' },
+                  textShadow: rShadow(2, 3, '#F6F6F6'),
                   margin: 0,
-                  marginBottom: '16px',
+                  marginBottom: rvw(16, 16),
                   textAlign: 'center'
                 }}
               />
@@ -693,17 +708,17 @@ export default function FoodsPage() {
                 text={locale === 'zh' ? '没有符合条件的结果。' : 'There is no matching result.'}
                 chineseFont="MarioFontChinese, sans-serif"
                 englishFont="MarioFont, sans-serif"
-                fontSize={{ xs: '16px', sm: '24px' }}
+                fontSize={rvw(16, 24)}
                 color="#373737"
                 component="p"
                 sx={{ margin: 0, textAlign: 'center' }}
               />
-            </div>
+            </Box>
           )}
 
           {/* Food Cards - Desktop with pagination */}
           {searchFilteredFoods.length > 0 && (
-            <div className="hidden sm:grid grid-cols-1 gap-48">
+            <Box sx={{ display: { xs: 'none', md: 'grid' }, gridTemplateColumns: '1fr', gap: vw(192) }}>
               {displayedFoods.map((food, index) => (
                 <DestinationCard
                   key={food.id}
@@ -712,12 +727,12 @@ export default function FoodsPage() {
                   linkPrefix="foods"
                 />
               ))}
-            </div>
+            </Box>
           )}
 
           {/* Food Cards - XS with show more */}
           {searchFilteredFoods.length > 0 && (
-            <div className="grid sm:hidden grid-cols-1 gap-12">
+            <Box sx={{ display: { xs: 'grid', md: 'none' }, gridTemplateColumns: '1fr', gap: vw(48, 'mobile') }}>
               {displayedFoodsXs.map((food, index) => (
                 <DestinationCard
                   key={food.id}
@@ -726,12 +741,12 @@ export default function FoodsPage() {
                   linkPrefix="foods"
                 />
               ))}
-            </div>
+            </Box>
           )}
 
           {/* Show More Button - XS only */}
           {xsDisplayCount < searchFilteredFoods.length && (
-            <div className="mt-12 flex sm:hidden justify-center">
+            <Box sx={{ display: { xs: 'flex', md: 'none' }, justifyContent: 'center', marginTop: vw(48, 'mobile') }}>
               <button
                 onClick={handleShowMore}
                 className="hover:scale-105 transition-transform duration-200"
@@ -739,32 +754,34 @@ export default function FoodsPage() {
                 <img
                   src={`/images/buttons/show_more_xs_${locale}.png`}
                   alt="Show more"
-                  className="h-12 w-auto"
+                  style={{ height: vw(48, 'mobile'), width: 'auto' }}
                 />
               </button>
-            </div>
+            </Box>
           )}
 
           {/* Pagination - Desktop only */}
           {totalPages > 1 && (
-            <div className="mt-48 hidden sm:flex justify-center">
+            <Box sx={{ display: { xs: 'none', md: 'flex' }, justifyContent: 'center', marginTop: vw(192) }}>
               <Box
                 sx={{
                   backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                   backgroundRepeat: 'repeat',
-                  backgroundSize: '200px auto',
-                  padding: '0.5rem',
-                  borderRadius: '1rem'
+                  backgroundSize: `${vw(200)} auto`,
+                  padding: vw(8),
+                  borderRadius: vw(16)
                 }}
               >
                 <Box
                   sx={{
-                    border: '2px solid #F6F6F6',
-                    borderRadius: '0.75rem',
-                    padding: '1.5rem',
+                    borderWidth: vw(2),
+                    borderStyle: 'solid',
+                    borderColor: '#F6F6F6',
+                    borderRadius: vw(12),
+                    padding: vw(24),
                     backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                     backgroundRepeat: 'repeat',
-                    backgroundSize: '200px auto'
+                    backgroundSize: `${vw(200)} auto`
                   }}
                 >
                   {/* Page Info */}
@@ -772,14 +789,14 @@ export default function FoodsPage() {
                     text={locale === 'zh' ? `第 ${currentPage} 页，共 ${totalPages} 页` : `Page ${currentPage} of ${totalPages}`}
                     chineseFont="MarioFontTitleChinese, sans-serif"
                     englishFont="MarioFontTitle, sans-serif"
-                    fontSize="24px"
+                    fontSize={vw(24)}
                     color="#F6F6F6"
                     component="p"
-                    sx={{ textAlign: 'center', marginBottom: '2rem' }}
+                    sx={{ textAlign: 'center', marginBottom: vw(32) }}
                   />
 
                   {/* Pagination Controls */}
-                  <div className="flex justify-center items-center gap-4">
+                  <div className="flex justify-center items-center" style={{ gap: vw(16) }}>
                     {/* Previous Button */}
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
@@ -789,17 +806,19 @@ export default function FoodsPage() {
                       <img
                         src="/images/buttons/arrow_prev.webp"
                         alt={locale === 'zh' ? '上一页' : 'Previous'}
-                        className={`w-16 h-16 ${currentPage === 1 ? '' : 'group-hover:hidden'}`}
+                        style={{ width: vw(64), height: vw(64) }}
+                        className={currentPage === 1 ? '' : 'group-hover:hidden'}
                       />
                       <img
                         src="/images/buttons/arrow_prev_hover.webp"
                         alt={locale === 'zh' ? '上一页' : 'Previous'}
-                        className={`w-16 h-16 ${currentPage === 1 ? 'hidden' : 'hidden group-hover:block'}`}
+                        style={{ width: vw(64), height: vw(64) }}
+                        className={currentPage === 1 ? 'hidden' : 'hidden group-hover:block'}
                       />
                     </button>
 
                     {/* Page Numbers */}
-                    <div className="flex gap-2">
+                    <div className="flex" style={{ gap: vw(8) }}>
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
                         // Show first page, last page, current page, and pages around current
                         const showPage =
@@ -813,8 +832,7 @@ export default function FoodsPage() {
                             return (
                               <span
                                 key={page}
-                                style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', color: '#F6F6F6' }}
-                                className="px-2"
+                                style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: vw(24), color: '#F6F6F6', paddingLeft: vw(8), paddingRight: vw(8) }}
                               >
                                 ...
                               </span>
@@ -827,10 +845,18 @@ export default function FoodsPage() {
                           <button
                             key={page}
                             onClick={() => handlePageChange(page)}
-                            style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', width: '3.5rem' }}
-                            className={`py-2 rounded-lg transition-all duration-200 ${
+                            style={{
+                              fontFamily: 'MarioFontTitle, sans-serif',
+                              fontSize: vw(24),
+                              width: vw(56),
+                              paddingTop: vw(8),
+                              paddingBottom: vw(8),
+                              borderRadius: vw(8),
+                              ...(currentPage === page ? { borderWidth: vw(2), borderStyle: 'solid' as const, borderColor: '#F6F6F6' } : {})
+                            }}
+                            className={`transition-all duration-200 ${
                               currentPage === page
-                                ? 'bg-[#373737] text-white border-2 border-[#F6F6F6]'
+                                ? 'bg-[#373737] text-white'
                                 : 'bg-[#F6F6F6] text-[#373737] hover:bg-[#FFD701]'
                             }`}
                           >
@@ -849,20 +875,22 @@ export default function FoodsPage() {
                       <img
                         src="/images/buttons/arrow_next.webp"
                         alt={locale === 'zh' ? '下一页' : 'Next'}
-                        className={`w-16 h-16 ${currentPage === totalPages ? '' : 'group-hover:hidden'}`}
+                        style={{ width: vw(64), height: vw(64) }}
+                        className={currentPage === totalPages ? '' : 'group-hover:hidden'}
                       />
                       <img
                         src="/images/buttons/arrow_next_hover.webp"
                         alt={locale === 'zh' ? '下一页' : 'Next'}
-                        className={`w-16 h-16 ${currentPage === totalPages ? 'hidden' : 'hidden group-hover:block'}`}
+                        style={{ width: vw(64), height: vw(64) }}
+                        className={currentPage === totalPages ? 'hidden' : 'hidden group-hover:block'}
                       />
                     </button>
                   </div>
                 </Box>
               </Box>
-            </div>
+            </Box>
           )}
-        </div>
+        </Box>
       </Box>
 
       <Footer currentPage="foods" />
