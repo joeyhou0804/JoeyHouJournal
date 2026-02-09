@@ -22,9 +22,9 @@ const InteractiveMap = dynamic(() => import('src/components/InteractiveMap'), {
   loading: () => {
     const { tr } = useTranslation()
     return (
-      <div className="w-full h-[600px] rounded-lg bg-gray-200 flex items-center justify-center">
+      <Box className="w-full bg-gray-200 flex items-center justify-center" sx={{ height: { xs: 'auto', md: vw(600) }, aspectRatio: { xs: '2/3', md: 'unset' }, borderRadius: rvw(8, 8) }}>
         <p className="text-gray-600">{tr.loadingMap}</p>
-      </div>
+      </Box>
     )
   }
 })
@@ -552,26 +552,28 @@ export default function StationsPage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '2rem',
+          gap: rvw(32, 32),
           backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '200px auto',
+          backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
           animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
         }}
       >
         {/* Spinner */}
         <Box
           sx={{
-            width: '60px',
-            height: '60px',
-            border: '6px solid rgba(240, 96, 1, 0.2)',
-            borderTop: '6px solid #F06001',
+            width: rvw(60, 60),
+            height: rvw(60, 60),
+            borderWidth: rvw(6, 6),
+            borderStyle: 'solid' as const,
+            borderColor: 'rgba(240, 96, 1, 0.2)',
+            borderTopColor: '#F06001',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite'
           }}
         />
         {/* Loading text */}
-        <Box sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: '32px', color: '#373737', margin: 0 }}>
+        <Box sx={{ fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif', fontSize: rvw(32, 32), color: '#373737', margin: 0 }}>
           {tr.loadingDestinations}
         </Box>
       </Box>
@@ -640,10 +642,10 @@ export default function StationsPage() {
           text={locale === 'zh' ? '没有符合条件的结果。' : 'There is no matching result.'}
           chineseFont="MarioFontChinese, sans-serif"
           englishFont="MarioFont, sans-serif"
-          fontSize={{ xs: '18px', sm: '20px' }}
+          fontSize={rvw(18, 20)}
           color="#373737"
           component="p"
-          sx={{ textAlign: 'center', marginBottom: '2rem' }}
+          sx={{ textAlign: 'center', marginBottom: rvw(32, 32) }}
         />
       </FilterDrawerBase>
       <NavigationMenu
@@ -683,7 +685,7 @@ export default function StationsPage() {
           paddingBottom: rvw(48, 96),
           backgroundImage: 'url(/images/destinations/destination_page_map_background.webp)',
           backgroundRepeat: 'repeat',
-          backgroundSize: '300px auto',
+          backgroundSize: { xs: `${vw(300, 'mobile')} auto`, md: `${vw(300)} auto` },
         }}
       >
         <Box sx={{ maxWidth: { xs: 'none', md: vw(1280) }, marginLeft: 'auto', marginRight: 'auto', paddingLeft: rvw(16, 32), paddingRight: rvw(16, 32) }}>
@@ -736,7 +738,7 @@ export default function StationsPage() {
               sx={{
                 backgroundImage: 'url(/images/destinations/destination_page_map_box_background.webp)',
                 backgroundRepeat: 'repeat',
-                backgroundSize: rvw(200, 200),
+                backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
                 padding: rvw(8, 16),
                 borderRadius: rvw(12, 24)
               }}
