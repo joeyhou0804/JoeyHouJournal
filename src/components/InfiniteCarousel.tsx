@@ -62,17 +62,18 @@ function CarouselRow({
 
   const [viewportW, setViewportW] = useState(0)
   const [cycleW, setCycleW] = useState(0)
-  const [gapPx, setGapPx] = useState(-50) // -50px gap
   const [isMobile, setIsMobile] = useState(false)
+  const [windowW, setWindowW] = useState(1512)
 
   // Track screen size
   useEffect(() => {
-    const checkMobile = () => {
+    const update = () => {
       setIsMobile(window.innerWidth < 768)
+      setWindowW(window.innerWidth)
     }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    update()
+    window.addEventListener('resize', update)
+    return () => window.removeEventListener('resize', update)
   }, [])
 
   useEffect(() => {
@@ -99,8 +100,10 @@ function CarouselRow({
     return Math.max(3, Math.ceil(need))
   }, [cycleW, viewportW])
 
+  const gapPx = -50 * windowW / (isMobile ? 390 : 1512)
   const translatePx = Math.max(1, cycleW + gapPx)
-  const durationSec = Math.max(1, translatePx / speedPxPerSec)
+  const effectiveSpeed = speedPxPerSec * windowW / (isMobile ? 390 : 1512)
+  const durationSec = Math.max(1, translatePx / effectiveSpeed)
 
   const animationStyle = direction === 'rtl'
     ? {
