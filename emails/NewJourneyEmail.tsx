@@ -32,8 +32,8 @@ interface NewJourneyEmailProps {
      React Email preview server's static path; the sender passes the
      absolute production URL. */
   marioImageUrl?: string
-  /* Site logo. Defaults to /static/ for the preview server. */
-  logoUrl?: string
+  /* Map-pin logo mark. Defaults to /static/ for the preview server. */
+  pinUrl?: string
 }
 
 /* v2 "Nintendo editorial" palette — mirrors app/(site)/_shared.tsx */
@@ -61,7 +61,7 @@ export const NewJourneyEmail = ({
   locale = 'en',
   subscriberName,
   marioImageUrl = '/static/homepage_image_1.png',
-  logoUrl,
+  pinUrl = '/static/logo_pin.png',
 }: NewJourneyEmailProps) => {
   const isZh = locale === 'zh'
   const displayName = isZh && journeyNameCN ? journeyNameCN : journeyName
@@ -90,7 +90,8 @@ export const NewJourneyEmail = ({
     ? '您订阅了小猴同学旅行日记的新旅程通知,所以您会收到本邮件。'
     : "You're receiving this email because you subscribed to new journey notifications."
 
-  const logo = logoUrl ?? `/static/logo_${isZh ? 'zh' : 'en'}.png`
+  const logoTop = isZh ? '小猴同学的' : "JOEY HOU'S"
+  const logoBottom = isZh ? '旅行日记' : 'JOURNAL'
 
   const labelPill: React.CSSProperties = {
     display: 'inline-block',
@@ -134,16 +135,56 @@ export const NewJourneyEmail = ({
       <Preview>
         {isZh ? `新旅程:${displayName}` : `New Journey: ${displayName}`}
       </Preview>
-      <Body style={{ backgroundColor: OFFWHITE, fontFamily: bodyFont, margin: 0, padding: 0 }}>
+      <Body
+        style={{
+          backgroundColor: OFFWHITE,
+          // Site's diagonal-stripe texture (StripeBg) as progressive
+          // enhancement — clients without gradient support keep OFFWHITE.
+          backgroundImage:
+            'repeating-linear-gradient(-45deg, rgba(35,35,35,0.05) 0px, rgba(35,35,35,0.05) 5px, transparent 5px, transparent 15px)',
+          fontFamily: bodyFont,
+          margin: 0,
+          padding: 0,
+        }}
+      >
         <Container style={{ margin: '0 auto', maxWidth: '600px', padding: '28px 12px 40px' }}>
-          {/* Logo */}
+          {/* Logo — map pin + wordmark (matches the site's SiteLogo) */}
           <Section style={{ textAlign: 'center', padding: '0 0 20px' }}>
             <Img
-              src={logo}
-              alt={isZh ? '小猴同学旅行日记' : "Joey's Travel Journal"}
-              width="170"
-              style={{ margin: '0 auto', display: 'inline-block' }}
+              src={pinUrl}
+              alt=""
+              width="32"
+              height="42"
+              style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: '10px' }}
             />
+            <div style={{ display: 'inline-block', verticalAlign: 'middle', textAlign: 'left' }}>
+              <Text
+                style={{
+                  fontFamily: displayFont,
+                  fontWeight: 600,
+                  fontSize: '10px',
+                  letterSpacing: isZh ? '2.5px' : '2.4px',
+                  color: GRAY,
+                  margin: '0 0 3px',
+                  lineHeight: 1,
+                }}
+              >
+                {logoTop}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: displayFont,
+                  fontWeight: 700,
+                  fontSize: '22px',
+                  letterSpacing: isZh ? '2px' : '1px',
+                  color: RED,
+                  margin: 0,
+                  lineHeight: 1.1,
+                }}
+              >
+                {logoBottom}
+              </Text>
+            </div>
           </Section>
 
           {/* Main card — white panel, chunky charcoal border, hard offset shadow */}
@@ -230,37 +271,39 @@ export const NewJourneyEmail = ({
               />
             </Section>
 
-            {/* Info panel — inset off-white box with chunky border */}
-            <Section
-              className="pad-x"
-              style={{
-                backgroundColor: OFFWHITE,
-                border: `2.5px solid ${CHARCOAL}`,
-                borderRadius: '18px',
-                margin: '18px 28px 0',
-                padding: '24px 16px 8px',
-                textAlign: 'center',
-              }}
-            >
-              <Section style={{ margin: '0 0 20px', textAlign: 'center' }}>
-                <Text style={labelPill}>{dateLabel}</Text>
-                <Text style={infoValue}>
-                  {startDate} – {endDate}
-                </Text>
-              </Section>
+            {/* Info panel — inset off-white box with chunky border.
+                NB: Section renders a 100%-wide table, so horizontal spacing
+                must come from wrapper padding, not margins on the panel. */}
+            <Section className="pad-x" style={{ padding: '18px 28px 0' }}>
+              <Section
+                style={{
+                  backgroundColor: OFFWHITE,
+                  border: `2.5px solid ${CHARCOAL}`,
+                  borderRadius: '18px',
+                  padding: '24px 16px 8px',
+                  textAlign: 'center',
+                }}
+              >
+                <Section style={{ margin: '0 0 20px', textAlign: 'center' }}>
+                  <Text style={labelPill}>{dateLabel}</Text>
+                  <Text style={infoValue}>
+                    {startDate} – {endDate}
+                  </Text>
+                </Section>
 
-              <Section style={{ margin: '0 0 20px', textAlign: 'center' }}>
-                <Text style={labelPill}>{routeLabel}</Text>
-                <Text style={infoValue}>
-                  {displayStartLocation}
-                  <span style={{ color: RED, fontWeight: 800, padding: '0 8px' }}>→</span>
-                  {displayEndLocation}
-                </Text>
-              </Section>
+                <Section style={{ margin: '0 0 20px', textAlign: 'center' }}>
+                  <Text style={labelPill}>{routeLabel}</Text>
+                  <Text style={infoValue}>
+                    {displayStartLocation}
+                    <span style={{ color: RED, fontWeight: 800, padding: '0 8px' }}>→</span>
+                    {displayEndLocation}
+                  </Text>
+                </Section>
 
-              <Section style={{ margin: '0 0 20px', textAlign: 'center' }}>
-                <Text style={labelPill}>{durationLabel}</Text>
-                <Text style={infoValue}>{displayDuration}</Text>
+                <Section style={{ margin: '0 0 20px', textAlign: 'center' }}>
+                  <Text style={labelPill}>{durationLabel}</Text>
+                  <Text style={infoValue}>{displayDuration}</Text>
+                </Section>
               </Section>
             </Section>
 

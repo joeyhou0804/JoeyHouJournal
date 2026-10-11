@@ -38,7 +38,7 @@ export async function GET(request: Request) {
         locale,
         subscriberName: isZh ? '小猴同学' : 'Joey',
         marioImageUrl: '/images/homepage/homepage_image_1.png',
-        logoUrl: `/images/logos/logo_${locale}.png`,
+        pinUrl: '/images/logos/logo_pin.png',
       })
     )
 

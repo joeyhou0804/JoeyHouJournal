@@ -85,7 +85,7 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
           locale: isZh ? ('zh' as const) : ('en' as const),
           subscriberName: subscriber.name,
           marioImageUrl: 'https://joeyhoujournal.com/images/homepage/homepage_image_1.png',
-          logoUrl: `https://joeyhoujournal.com/images/logos/logo_${isZh ? 'zh' : 'en'}.png`,
+          pinUrl: 'https://joeyhoujournal.com/images/logos/logo_pin.png',
         })
       )
 
