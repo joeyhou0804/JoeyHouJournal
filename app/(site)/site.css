@@ -629,6 +629,21 @@ html {
   transform: scale(0.92);
 }
 
+/* ---- zh display headings in WebKit: ZCOOL KuaiLe ships only at weight
+   400. Blink (Chrome/Edge) synthesizes a faux bold for the font-weight: 700
+   headings, but Safari barely does, so Chinese titles render thin there.
+   Thicken the strokes slightly — paint-order keeps the stroke outside the
+   glyph fill. (@supports -webkit-touch-callout matches WebKit: Safari on
+   every platform, and all iOS browsers.) ---- */
+@supports (-webkit-touch-callout: none) {
+  html[lang='zh'] h1,
+  html[lang='zh'] h2,
+  html[lang='zh'] h3 {
+    -webkit-text-stroke: 0.5px currentColor;
+    paint-order: stroke fill;
+  }
+}
+
 /* ---- reduced motion: honor user preference ---- */
 @media (prefers-reduced-motion: reduce) {
   .v2-hero-line, .v2-float, .v2-reveal, .v2-marquee-track,

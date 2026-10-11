@@ -33,14 +33,16 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     }
   }, [])
 
+  // Keep the document lang attribute in sync — also on first paint, when
+  // the locale comes from localStorage rather than an explicit toggle
+  // (CSS like html[lang='zh'] depends on it).
+  useEffect(() => {
+    document.documentElement.lang = locale
+  }, [locale])
+
   const setLocale = (newLocale: Locale) => {
     setLocaleState(newLocale)
     localStorage.setItem('locale', newLocale)
-
-    // Update document lang attribute
-    if (typeof document !== 'undefined') {
-      document.documentElement.lang = newLocale
-    }
   }
 
   const value: LanguageContextType = {
