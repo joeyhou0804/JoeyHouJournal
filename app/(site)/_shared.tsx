@@ -1875,7 +1875,7 @@ const CHROME = {
     subscribeError: '哎呀，出了点问题，再试一次吧！',
     subscribeOk: '好的',
     subscribeLang: '偏好语言',
-    footerTag: '小猴同学（侯江天）用 ♥ 做的',
+    footerTag: '小猴同学（侯江天）用 ♥ 制作',
   },
 }
 
