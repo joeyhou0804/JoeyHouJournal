@@ -141,7 +141,7 @@ export const NewJourneyEmail = ({
           // Site's diagonal-stripe texture (StripeBg) as progressive
           // enhancement — clients without gradient support keep OFFWHITE.
           backgroundImage:
-            'repeating-linear-gradient(-45deg, rgba(35,35,35,0.05) 0px, rgba(35,35,35,0.05) 5px, transparent 5px, transparent 15px)',
+            'repeating-linear-gradient(-45deg, rgba(35,35,35,0.05) 0px, rgba(35,35,35,0.05) 5px, transparent 5px, transparent 10px)',
           fontFamily: bodyFont,
           margin: 0,
           padding: 0,
