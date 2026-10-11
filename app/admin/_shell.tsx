@@ -24,6 +24,7 @@ const NAV_ITEMS = [
   { label: 'Journeys', fullLabel: 'Journeys', path: '/admin/journeys' },
   { label: 'Home', fullLabel: 'Home Locations', path: '/admin/home-locations' },
   { label: 'Emails', fullLabel: 'Email Subscriptions', path: '/admin/email-subscriptions' },
+  { label: 'Preview', fullLabel: 'Email Preview', path: '/admin/email-preview' },
   { label: 'Instagram', fullLabel: 'Instagram Import', path: '/admin/instagram-import' },
 ]
 

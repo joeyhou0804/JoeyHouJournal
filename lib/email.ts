@@ -1,5 +1,8 @@
 import { Resend } from 'resend'
-import { getAllEmailSubscriptions, EmailSubscription } from './db'
+import { createElement } from 'react'
+import { render } from '@react-email/components'
+import { getAllEmailSubscriptions } from './db'
+import NewJourneyEmail from '../emails/NewJourneyEmail'
 
 interface JourneyEmailData {
   id: string
@@ -63,141 +66,28 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
       const unsubscribeUrl = `${baseUrl}/api/unsubscribe?token=${subscriber.unsubscribe_token}`
       const isZh = subscriber.preferred_locale === 'zh'
 
-      const displayName = isZh && journey.nameCN ? journey.nameCN : journey.name
-      const greeting = isZh ? `你好${subscriber.name}!` : `Hi ${subscriber.name}!`
-      const intro = isZh
-        ? '我的旅行日记添加了一段新的旅程，快来看看吧！'
-        : "I've just added a new journey to my travel journal!"
-      const viewJourneyText = isZh ? '查看完整旅程' : 'View Full Journey'
-      const dateLabel = isZh ? '日期' : 'Date'
-      const routeLabel = isZh ? '路线' : 'Route'
-      const durationLabel = isZh ? '时长' : 'Duration'
-      const unsubscribeText = isZh ? '取消订阅' : 'Unsubscribe'
-      const footer = isZh
-        ? '您订阅了小猴同学旅行日记的新旅程通知，所以您会收到本邮件。'
-        : "You're receiving this email because you subscribed to new journey notifications."
-
-      // Use Chinese versions when available and locale is Chinese
-      const displayDuration = isZh && journey.durationCN ? journey.durationCN : journey.duration
-      const displayStartLocation = isZh && journey.startLocationCN ? journey.startLocationCN : journey.startLocation
-      const displayEndLocation = isZh && journey.endLocationCN ? journey.endLocationCN : journey.endLocation
-
-      // Determine header images (hosted on Cloudinary with optimization)
-      // f_auto = auto format, q_auto = auto quality, w_600 = width for email
-      const headerDesktop = isZh
-        ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/v1765833569/emails/email_header_zh.png'
-        : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/v1765833568/emails/email_header_en.png'
-      const headerMobile = isZh
-        ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/v1765833574/emails/email_header_mobile_zh.png'
-        : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_600/v1765833571/emails/email_header_mobile_en.png'
-
-      // Background images with optimization
-      const emailBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/v1765843937/emails/email_background.png'
-      const cardBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/v1765839079/emails/email_subscription_background.png'
-      const titleBanner = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_400/v1765845581/emails/email_journey_title_background.png'
-      const labelBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_300/v1765839078/emails/filter_desktop_background_long.png'
-      const greetingBackground = 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_200/v1765840876/emails/email_greeting_background.webp'
-
-      // Determine button image with optimization
-      const buttonImage = isZh
-        ? 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_300/v1765833577/emails/view_details_button_zh.png'
-        : 'https://res.cloudinary.com/joey-hou-homepage/image/upload/f_auto,q_auto,w_300/v1765833576/emails/view_details_button_en.png'
-
-      // Build HTML email
-      const emailHtml = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${isZh ? '新旅程' : 'New Journey'}: ${displayName}</title>
-  <style>
-    @media only screen and (max-width: 600px) {
-      .desktop-header { display: none !important; }
-      .mobile-header { display: block !important; }
-    }
-    @media only screen and (min-width: 601px) {
-      .desktop-header { display: block !important; }
-      .mobile-header { display: none !important; }
-    }
-  </style>
-</head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif; background-color: #ffffff;">
-  <div style="max-width: 600px; margin: 0 auto;">
-    <!-- Header and Greeting Section -->
-    <div style="background-image: url(${greetingBackground}); background-repeat: repeat; background-size: 200px; margin: 0; padding: 0; display: block;">
-      <!-- Desktop Header -->
-      <img src="${headerDesktop}" alt="${isZh ? '新旅程' : 'New Journey'}" class="desktop-header" style="width: 100%; max-width: 600px; height: auto; display: block; margin: 0;" />
-      <!-- Mobile Header -->
-      <img src="${headerMobile}" alt="${isZh ? '新旅程' : 'New Journey'}" class="mobile-header" style="width: 100%; max-width: 600px; height: auto; display: none; margin: 0;" />
-      <!-- Greeting Text -->
-      <div style="padding: 0 0 40px;">
-        <h1 style="color: #F6F6F6; font-size: 24px; font-weight: bold; margin: 40px 0 20px; padding: 0 40px; text-align: center;">${greeting}</h1>
-        <p style="color: #F6F6F6; font-size: 16px; line-height: 26px; padding: 0 40px; margin: 0; text-align: center;">${intro}</p>
-      </div>
-    </div>
-
-    <!-- Journey Card Section with Background -->
-    <div style="background-image: url(${emailBackground}); background-repeat: repeat; background-size: 200px; padding: 20px 0 48px;">
-      <!-- Journey Title Banner -->
-      <table cellpadding="0" cellspacing="0" border="0" style="width: 100%; max-width: 600px; margin: 10px auto 10px;">
-        <tr>
-          <td style="background-image: url(${titleBanner}); background-size: 400px auto; background-position: center; background-repeat: no-repeat; padding: 40px 20px; text-align: center;">
-            <h2 style="color: #373737; font-size: 24px; font-weight: bold; margin: 0; text-align: center; padding: 0;">${displayName}</h2>
-          </td>
-        </tr>
-      </table>
-
-      <!-- Journey Card -->
-      <div style="background-image: url(${cardBackground}); background-repeat: repeat; background-size: 200px auto; padding: 8px; border-radius: 1rem; margin: auto 40px;">
-        <div style="border: 4px solid #373737; border-radius: 0.75rem; padding: 2rem 1rem; background-image: url(${cardBackground}); background-repeat: repeat; background-size: 200px auto;">
-        <div style="padding: 0; background-color: transparent; text-align: center;">
-          <!-- Date -->
-          <div style="margin: 0 0 20px;">
-            <div style="background-image: url(${labelBackground}); background-repeat: no-repeat; background-size: 245px auto; background-position: center; padding: 16px 20px; margin: 0 0 12px;">
-              <p style="color: #F6F6F6; font-size: 16px; font-weight: 600; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">${dateLabel}</p>
-            </div>
-            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${journey.startDate} - ${journey.endDate}</p>
-          </div>
-
-          <!-- Route -->
-          <div style="margin: 0 0 20px;">
-            <div style="background-image: url(${labelBackground}); background-repeat: no-repeat; background-size: 245px auto; background-position: center; padding: 16px 20px; margin: 0 0 12px;">
-              <p style="color: #F6F6F6; font-size: 16px; font-weight: 600; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">${routeLabel}</p>
-            </div>
-            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${displayStartLocation}</p>
-            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">↓</p>
-            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${displayEndLocation}</p>
-          </div>
-
-          <!-- Duration -->
-          <div style="margin: 0 0 20px;">
-            <div style="background-image: url(${labelBackground}); background-repeat: no-repeat; background-size: 245px auto; background-position: center; padding: 16px 20px; margin: 0 0 12px;">
-              <p style="color: #F6F6F6; font-size: 16px; font-weight: 600; text-transform: uppercase; margin: 0; letter-spacing: 0.5px;">${durationLabel}</p>
-            </div>
-            <p style="color: #373737; font-size: 20px; font-weight: normal; margin: 0; line-height: 1.6;">${displayDuration}</p>
-          </div>
-        </div>
-
-        <!-- Divider -->
-        <div style="width: calc(100% - 1rem); height: 4px; background-color: #373737; border-radius: 2px; margin: 0 auto 2rem auto;"></div>
-
-        <!-- Button -->
-        <a href="${journeyUrl}" style="display: block; text-decoration: none; margin: 0;">
-          <img src="${buttonImage}" alt="${viewJourneyText}" style="width: 100%; max-width: 300px; height: auto; display: block; margin: 0 auto;" />
-        </a>
-      </div>
-    </div>
-    </div>
-
-    <hr style="border-color: #e6ebf1; margin: 20px 40px;" />
-
-    <p style="color: #8898aa; font-size: 12px; line-height: 16px; padding: 0 40px; margin: 10px 0;">${footer}</p>
-    <a href="${unsubscribeUrl}" style="color: #8898aa; font-size: 12px; text-decoration: underline; padding: 0 40px;">${unsubscribeText}</a>
-  </div>
-</body>
-</html>
-      `
+      // Render the shared React Email template (v2 design language).
+      // Assets must be absolute URLs for email clients.
+      const emailHtml = await render(
+        createElement(NewJourneyEmail, {
+          journeyName: journey.name,
+          journeyNameCN: journey.nameCN,
+          startDate: journey.startDate,
+          endDate: journey.endDate,
+          duration: journey.duration,
+          durationCN: journey.durationCN,
+          startLocation: journey.startLocation,
+          startLocationCN: journey.startLocationCN,
+          endLocation: journey.endLocation,
+          endLocationCN: journey.endLocationCN,
+          journeyUrl,
+          unsubscribeUrl,
+          locale: isZh ? ('zh' as const) : ('en' as const),
+          subscriberName: subscriber.name,
+          marioImageUrl: 'https://joeyhoujournal.com/images/homepage/homepage_image_1.png',
+          logoUrl: `https://joeyhoujournal.com/images/logos/logo_${isZh ? 'zh' : 'en'}.png`,
+        })
+      )
 
       const subject =
         subscriber.preferred_locale === 'zh'

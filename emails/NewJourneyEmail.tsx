@@ -9,7 +9,6 @@ import {
   Preview,
   Section,
   Text,
-  Hr,
 } from '@react-email/components'
 import * as React from 'react'
 
@@ -29,7 +28,22 @@ interface NewJourneyEmailProps {
   unsubscribeUrl: string
   locale: 'en' | 'zh'
   subscriberName: string
+  /* Hero image (Mario driving, first homepage image). Defaults to the
+     React Email preview server's static path; the sender passes the
+     absolute production URL. */
+  marioImageUrl?: string
+  /* Site logo. Defaults to /static/ for the preview server. */
+  logoUrl?: string
 }
+
+/* v2 "Nintendo editorial" palette — mirrors app/(site)/_shared.tsx */
+const RED = '#E60012'
+const YELLOW = '#FFC93D'
+const BLUE = '#2E4BDE'
+const GREEN = '#43B047'
+const CHARCOAL = '#232323'
+const GRAY = '#5C5C5C'
+const OFFWHITE = '#F7F6F2'
 
 export const NewJourneyEmail = ({
   journeyName,
@@ -42,11 +56,12 @@ export const NewJourneyEmail = ({
   startLocationCN,
   endLocation,
   endLocationCN,
-  images = [],
   journeyUrl,
   unsubscribeUrl,
   locale = 'en',
   subscriberName,
+  marioImageUrl = '/static/homepage_image_1.png',
+  logoUrl,
 }: NewJourneyEmailProps) => {
   const isZh = locale === 'zh'
   const displayName = isZh && journeyNameCN ? journeyNameCN : journeyName
@@ -54,147 +69,243 @@ export const NewJourneyEmail = ({
   const displayStartLocation = isZh && startLocationCN ? startLocationCN : startLocation
   const displayEndLocation = isZh && endLocationCN ? endLocationCN : endLocation
 
-  const greeting = isZh ? `你好${subscriberName}!` : `Hi ${subscriberName}!`
+  const displayFont = isZh
+    ? "'ZCOOL KuaiLe','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif"
+    : "'Fredoka','Trebuchet MS','Comic Sans MS',sans-serif"
+  const bodyFont = isZh
+    ? "'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif"
+    : "'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif"
+
+  const kicker = isZh ? '新旅程上线啦' : 'New Journey Alert'
+  const greeting = isZh ? `你好,${subscriberName}!` : `Hi ${subscriberName}!`
   const intro = isZh
-    ? '我的旅行日记添加了一段新的旅程，快来看看吧！'
-    : "I've just added a new journey to my travel journal!"
+    ? '我的旅行日记刚刚添加了一段新的旅程,快来看看吧!'
+    : "I've just added a new journey to my travel journal — come take a look!"
   const viewJourneyText = isZh ? '查看完整旅程' : 'View Full Journey'
   const dateLabel = isZh ? '日期' : 'Date'
   const routeLabel = isZh ? '路线' : 'Route'
   const durationLabel = isZh ? '时长' : 'Duration'
   const unsubscribeText = isZh ? '取消订阅' : 'Unsubscribe'
   const footer = isZh
-    ? '您订阅了小猴同学旅行日记的新旅程通知，所以您会收到本邮件。'
+    ? '您订阅了小猴同学旅行日记的新旅程通知,所以您会收到本邮件。'
     : "You're receiving this email because you subscribed to new journey notifications."
 
-  // Determine header image paths
-  // Using /static/ path for React Email preview server
-  const headerDesktop = isZh
-    ? '/static/email_header_zh.png'
-    : '/static/email_header_en.png'
-  const headerMobile = isZh
-    ? '/static/email_header_mobile_zh.png'
-    : '/static/email_header_mobile_en.png'
+  const logo = logoUrl ?? `/static/logo_${isZh ? 'zh' : 'en'}.png`
 
-  // Determine button image
-  const buttonImage = isZh
-    ? '/static/view_details_button_zh.png'
-    : '/static/view_details_button_en.png'
+  const labelPill: React.CSSProperties = {
+    display: 'inline-block',
+    backgroundColor: YELLOW,
+    border: `2.5px solid ${CHARCOAL}`,
+    borderRadius: '999px',
+    padding: '4px 18px',
+    fontSize: '12px',
+    fontWeight: 700,
+    fontFamily: displayFont,
+    color: CHARCOAL,
+    textTransform: 'uppercase',
+    letterSpacing: '3px',
+    margin: '0',
+  }
 
-  // Journey title banner
-  const titleBanner = '/static/email_journey_title_background.png'
-  const labelBackground = '/static/filter_desktop_background_long.png'
-  const cardBackground = '/static/email_subscription_background.png'
+  const infoValue: React.CSSProperties = {
+    color: CHARCOAL,
+    fontSize: '18px',
+    fontWeight: 700,
+    fontFamily: bodyFont,
+    margin: '10px 0 0',
+    lineHeight: '1.5',
+  }
 
   return (
-    <Html>
+    <Html lang={isZh ? 'zh-CN' : 'en'}>
       <Head>
         <style>
           {`
+            @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;700;800&family=ZCOOL+KuaiLe&display=swap');
             @media only screen and (max-width: 600px) {
-              .desktop-header { display: none !important; }
-              .mobile-header { display: block !important; }
-            }
-            @media only screen and (min-width: 601px) {
-              .desktop-header { display: block !important; }
-              .mobile-header { display: none !important; }
+              .card { box-shadow: 5px 5px 0 ${CHARCOAL} !important; }
+              .journey-title { font-size: 26px !important; }
+              .pad-x { padding-left: 20px !important; padding-right: 20px !important; }
+              .hero-img { width: 88% !important; }
             }
           `}
         </style>
       </Head>
       <Preview>
-        {isZh
-          ? `新旅程：${displayName}`
-          : `New Journey: ${displayName}`}
+        {isZh ? `新旅程:${displayName}` : `New Journey: ${displayName}`}
       </Preview>
-      <Body style={main}>
-        <Container style={container}>
-          {/* Header and Greeting Section */}
-          <Section style={headerGreetingSection}>
-            {/* Desktop Header */}
+      <Body style={{ backgroundColor: OFFWHITE, fontFamily: bodyFont, margin: 0, padding: 0 }}>
+        <Container style={{ margin: '0 auto', maxWidth: '600px', padding: '28px 12px 40px' }}>
+          {/* Logo */}
+          <Section style={{ textAlign: 'center', padding: '0 0 20px' }}>
             <Img
-              src={headerDesktop}
-              alt={isZh ? '新旅程' : 'New Journey'}
-              style={headerImageDesktop}
-              className="desktop-header"
+              src={logo}
+              alt={isZh ? '小猴同学旅行日记' : "Joey's Travel Journal"}
+              width="170"
+              style={{ margin: '0 auto', display: 'inline-block' }}
             />
-            {/* Mobile Header */}
-            <Img
-              src={headerMobile}
-              alt={isZh ? '新旅程' : 'New Journey'}
-              style={headerImageMobile}
-              className="mobile-header"
-            />
-            {/* Greeting Text */}
-            <Section style={greetingText}>
-              <Heading style={h1}>{greeting}</Heading>
-              <Text style={text}>{intro}</Text>
-            </Section>
           </Section>
 
-          {/* Journey Card Section with Background */}
-          <Section style={cardSectionWithBackground}>
-            {/* Journey Title Banner */}
-            <Section style={titleBannerSection}>
-              <Heading style={journeyTitle}>{displayName}</Heading>
+          {/* Main card — white panel, chunky charcoal border, hard offset shadow */}
+          <Section
+            className="card"
+            style={{
+              backgroundColor: '#FFFFFF',
+              border: `3px solid ${CHARCOAL}`,
+              borderRadius: '24px',
+              boxShadow: `8px 8px 0 ${CHARCOAL}`,
+              overflow: 'hidden',
+            }}
+          >
+            {/* Red kicker strip */}
+            <Section
+              style={{
+                backgroundColor: RED,
+                borderBottom: `3px solid ${CHARCOAL}`,
+                padding: '13px 24px',
+                textAlign: 'center',
+              }}
+            >
+              <Text
+                style={{
+                  color: '#FFFFFF',
+                  fontFamily: displayFont,
+                  fontWeight: 700,
+                  fontSize: '14px',
+                  letterSpacing: '5px',
+                  textTransform: 'uppercase',
+                  margin: '0',
+                }}
+              >
+                {kicker}
+              </Text>
             </Section>
 
-            {/* Journey Card */}
-            <Section style={journeyCardOuter}>
-              <Section style={journeyCardInner}>
-                <Section style={infoSection}>
-                  {/* Date */}
-                  <Section style={infoRow}>
-                    <Section style={labelBg}>
-                      <Text style={infoLabel}>{dateLabel}</Text>
-                    </Section>
-                    <Text style={infoValue}>
-                      {startDate} - {endDate}
-                    </Text>
-                  </Section>
+            {/* Title + greeting */}
+            <Section className="pad-x" style={{ padding: '30px 36px 0', textAlign: 'center' }}>
+              <Heading
+                className="journey-title"
+                style={{
+                  color: CHARCOAL,
+                  fontFamily: displayFont,
+                  fontWeight: 700,
+                  fontSize: '32px',
+                  lineHeight: '1.2',
+                  margin: '0 0 14px',
+                }}
+              >
+                {displayName}
+              </Heading>
+              <Text
+                style={{
+                  color: CHARCOAL,
+                  fontFamily: bodyFont,
+                  fontWeight: 800,
+                  fontSize: '17px',
+                  margin: '0 0 6px',
+                }}
+              >
+                {greeting}
+              </Text>
+              <Text
+                style={{
+                  color: GRAY,
+                  fontFamily: bodyFont,
+                  fontSize: '15px',
+                  lineHeight: '1.65',
+                  margin: '0',
+                }}
+              >
+                {intro}
+              </Text>
+            </Section>
 
-                  {/* Route */}
-                  <Section style={infoRow}>
-                    <Section style={labelBg}>
-                      <Text style={infoLabel}>{routeLabel}</Text>
-                    </Section>
-                    <Text style={infoValue}>{displayStartLocation}</Text>
-                    <Text style={infoValue}>↓</Text>
-                    <Text style={infoValue}>{displayEndLocation}</Text>
-                  </Section>
+            {/* Mario hero — first homepage image */}
+            <Section style={{ textAlign: 'center', padding: '10px 0 0' }}>
+              <Img
+                src={marioImageUrl}
+                alt="Mario driving"
+                className="hero-img"
+                style={{ width: '72%', maxWidth: '340px', height: 'auto', margin: '0 auto', display: 'inline-block' }}
+              />
+            </Section>
 
-                  {/* Duration */}
-                  <Section style={infoRow}>
-                    <Section style={labelBg}>
-                      <Text style={infoLabel}>{durationLabel}</Text>
-                    </Section>
-                    <Text style={infoValue}>{displayDuration}</Text>
-                  </Section>
-                </Section>
+            {/* Info panel — inset off-white box with chunky border */}
+            <Section
+              className="pad-x"
+              style={{
+                backgroundColor: OFFWHITE,
+                border: `2.5px solid ${CHARCOAL}`,
+                borderRadius: '18px',
+                margin: '18px 28px 0',
+                padding: '24px 16px 8px',
+                textAlign: 'center',
+              }}
+            >
+              <Section style={{ margin: '0 0 20px', textAlign: 'center' }}>
+                <Text style={labelPill}>{dateLabel}</Text>
+                <Text style={infoValue}>
+                  {startDate} – {endDate}
+                </Text>
+              </Section>
 
-                {/* Divider */}
-                <Hr style={divider} />
+              <Section style={{ margin: '0 0 20px', textAlign: 'center' }}>
+                <Text style={labelPill}>{routeLabel}</Text>
+                <Text style={infoValue}>
+                  {displayStartLocation}
+                  <span style={{ color: RED, fontWeight: 800, padding: '0 8px' }}>→</span>
+                  {displayEndLocation}
+                </Text>
+              </Section>
 
-                {/* Button */}
-                <Link href={journeyUrl} style={buttonLink}>
-                  <Img
-                    src={buttonImage}
-                    alt={viewJourneyText}
-                    style={buttonImg}
-                  />
-                </Link>
+              <Section style={{ margin: '0 0 20px', textAlign: 'center' }}>
+                <Text style={labelPill}>{durationLabel}</Text>
+                <Text style={infoValue}>{displayDuration}</Text>
               </Section>
             </Section>
+
+            {/* Chunky pill button */}
+            <Section style={{ textAlign: 'center', padding: '28px 24px 36px' }}>
+              <Link
+                href={journeyUrl}
+                style={{
+                  display: 'inline-block',
+                  backgroundColor: RED,
+                  color: '#FFFFFF',
+                  border: `3px solid ${CHARCOAL}`,
+                  borderRadius: '999px',
+                  boxShadow: `0 5px 0 ${CHARCOAL}`,
+                  padding: '14px 40px',
+                  fontFamily: displayFont,
+                  fontWeight: 600,
+                  fontSize: '16px',
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  textDecoration: 'none',
+                }}
+              >
+                {viewJourneyText}
+              </Link>
+            </Section>
           </Section>
 
-          <Hr style={hr} />
+          {/* Decorative dots — Mario palette */}
+          <Section style={{ textAlign: 'center', padding: '26px 0 0' }}>
+            <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '999px', backgroundColor: RED, margin: '0 5px' }} />
+            <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '999px', backgroundColor: YELLOW, margin: '0 5px' }} />
+            <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '999px', backgroundColor: BLUE, margin: '0 5px' }} />
+            <span style={{ display: 'inline-block', width: '10px', height: '10px', borderRadius: '999px', backgroundColor: GREEN, margin: '0 5px' }} />
+          </Section>
 
-          <Text style={footer_text}>
-            {footer}
-          </Text>
-          <Link href={unsubscribeUrl} style={unsubscribeLink}>
-            {unsubscribeText}
-          </Link>
+          {/* Footer */}
+          <Section style={{ textAlign: 'center', padding: '18px 32px 0' }}>
+            <Text style={{ color: GRAY, fontSize: '12px', lineHeight: '18px', fontFamily: bodyFont, margin: '0 0 8px' }}>
+              {footer}
+            </Text>
+            <Link href={unsubscribeUrl} style={{ color: GRAY, fontSize: '12px', textDecoration: 'underline' }}>
+              {unsubscribeText}
+            </Link>
+          </Section>
         </Container>
       </Body>
     </Html>
@@ -202,196 +313,3 @@ export const NewJourneyEmail = ({
 }
 
 export default NewJourneyEmail
-
-// Styles
-const main = {
-  backgroundColor: '#ffffff',
-  fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
-}
-
-const container = {
-  margin: '0 auto',
-  maxWidth: '600px',
-}
-
-const cardSectionWithBackground = {
-  backgroundImage: 'url(/static/email_background.png)',
-  backgroundRepeat: 'repeat',
-  backgroundSize: '200px',
-  padding: '20px 0 48px',
-}
-
-const headerGreetingSection = {
-  backgroundImage: 'url(/static/email_greeting_background.webp)',
-  backgroundRepeat: 'repeat',
-  backgroundSize: '200px',
-  margin: '0',
-  padding: '0',
-  display: 'block',
-}
-
-const greetingText = {
-  padding: '0 0 40px',
-}
-
-const h1 = {
-  color: '#F6F6F6',
-  fontSize: '24px',
-  fontWeight: 'bold',
-  margin: '40px 0 20px',
-  padding: '0 40px',
-  textAlign: 'center' as const,
-}
-
-const text = {
-  color: '#F6F6F6',
-  fontSize: '16px',
-  lineHeight: '26px',
-  padding: '0 40px',
-  margin: '0',
-  textAlign: 'center' as const,
-}
-
-const titleBannerSection = {
-  backgroundImage: 'url(/static/email_journey_title_background.png)',
-  backgroundSize: '400px auto',
-  backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
-  padding: '40px 20px',
-  textAlign: 'center' as const,
-  margin: '10px auto 10px',
-  maxWidth: '600px',
-}
-
-const journeyTitle = {
-  color: '#373737',
-  fontSize: '24px',
-  fontWeight: 'bold',
-  margin: '0',
-  textAlign: 'center' as const,
-  padding: '0',
-}
-
-const journeyCardOuter = {
-  backgroundImage: 'url(/static/email_subscription_background.png)',
-  backgroundRepeat: 'repeat',
-  backgroundSize: '200px auto',
-  padding: '8px',
-  borderRadius: '1rem',
-  margin: 'auto 40px',
-}
-
-const journeyCardInner = {
-  border: '4px solid #373737',
-  borderRadius: '0.75rem',
-  padding: '2rem 1rem',
-  backgroundImage: 'url(/static/email_subscription_background.png)',
-  backgroundRepeat: 'repeat',
-  backgroundSize: '200px auto',
-}
-
-const journeyImage = {
-  width: '100%',
-  height: 'auto',
-  display: 'block',
-  margin: '0 0 20px 0',
-  borderRadius: '12px',
-  aspectRatio: '1/1',
-  objectFit: 'cover' as const,
-}
-
-const infoSection = {
-  padding: '0',
-  backgroundColor: 'transparent',
-  textAlign: 'center' as const,
-}
-
-const infoRow = {
-  margin: '0 0 20px',
-}
-
-const labelBg = {
-  backgroundImage: 'url(/static/filter_desktop_background_long.png)',
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: '245px auto',
-  backgroundPosition: 'center',
-  padding: '16px 20px',
-  margin: '0 0 12px',
-}
-
-const infoLabel = {
-  color: '#F6F6F6',
-  fontSize: '16px',
-  fontWeight: '600',
-  textTransform: 'uppercase' as const,
-  margin: '0',
-  letterSpacing: '0.5px',
-}
-
-const infoValue = {
-  color: '#373737',
-  fontSize: '20px',
-  fontWeight: 'normal',
-  margin: '0',
-  lineHeight: '1.6',
-}
-
-const divider = {
-  width: 'calc(100% - 1rem)',
-  height: '4px',
-  backgroundColor: '#373737',
-  borderRadius: '2px',
-  margin: '0 auto 2rem auto',
-  borderColor: '#373737',
-}
-
-const buttonLink = {
-  display: 'block',
-  textDecoration: 'none',
-  margin: '0',
-}
-
-const buttonImg = {
-  width: '100%',
-  maxWidth: '300px',
-  height: 'auto',
-  display: 'block',
-  margin: '0 auto',
-}
-
-const hr = {
-  borderColor: '#e6ebf1',
-  margin: '20px 40px',
-}
-
-const footer_text = {
-  color: '#8898aa',
-  fontSize: '12px',
-  lineHeight: '16px',
-  padding: '0 40px',
-  margin: '10px 0',
-}
-
-const unsubscribeLink = {
-  color: '#8898aa',
-  fontSize: '12px',
-  textDecoration: 'underline',
-  padding: '0 40px',
-}
-
-const headerImageDesktop = {
-  width: '100%',
-  maxWidth: '600px',
-  height: 'auto',
-  display: 'block',
-  margin: '0',
-}
-
-const headerImageMobile = {
-  width: '100%',
-  maxWidth: '600px',
-  height: 'auto',
-  display: 'none',
-  margin: '0',
-}
