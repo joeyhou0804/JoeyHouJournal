@@ -192,7 +192,7 @@ export function SearchSvg({ size = 18, color = C.charcoal }: { size?: number; co
 
 export function SquiggleSvg({ color = C.red }: { color?: string }) {
   return (
-    <svg viewBox="0 0 220 22" className="mt-1 w-full" fill="none" aria-hidden="true" preserveAspectRatio="none" style={{ height: 14 }}>
+    <svg viewBox="0 0 220 22" className="w-full" fill="none" aria-hidden="true" preserveAspectRatio="none" style={{ height: 14 }}>
       <path
         d="M4 15 Q 30 5 58 13 T 112 13 T 166 13 T 216 11"
         stroke={color}
@@ -204,10 +204,15 @@ export function SquiggleSvg({ color = C.red }: { color?: string }) {
 }
 
 export function SquiggleWord({ children, color = C.red }: { children: React.ReactNode; color?: string }) {
+  // The squiggle overlays the word (absolute) instead of stacking below it
+  // in-flow — the in-flow version added its height to the heading, opening
+  // a gap before the subtitle that the absolute desktop/EN heroes don't have.
   return (
-    <span className="inline-flex flex-col" style={{ color }}>
+    <span className="relative inline-block" style={{ color }}>
       {children}
-      <SquiggleSvg color={color} />
+      <span className="absolute -bottom-3 left-0 w-full md:-bottom-4" aria-hidden="true">
+        <SquiggleSvg color={color} />
+      </span>
     </span>
   )
 }
@@ -430,10 +435,22 @@ export function PatternBg({ id, variant, stroke, opacity }: { id: string; varian
   const F: React.CSSProperties = { fill: 'currentColor', stroke: 'none' }
   const tile = variant === 'minimal' ? 300 : variant === 'score' ? 340 : 380
 
+  // Shrink the whole pattern on phones: the fixed-size tiles are designed
+  // for desktop widths, so on a narrow screen only a couple of oversized
+  // icons fit. Scaling down packs in more, smaller icons.
+  const [mobile, setMobile] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    setMobile(mq.matches)
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+
   return (
     <svg className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true" style={{ opacity, color: stroke }}>
       <defs>
-        <pattern id={id} width={tile} height={tile} patternUnits="userSpaceOnUse">
+        <pattern id={id} width={tile} height={tile} patternUnits="userSpaceOnUse" patternTransform={mobile ? 'scale(0.62)' : undefined}>
           {variant === 'travel' && (
             <>
               <g transform="translate(74 72) rotate(-12)" style={S}>
@@ -676,8 +693,16 @@ export function Reveal({ children, delay = 0, className = '' }: { children: Reac
   useEffect(() => {
     const el = ref.current
     if (!el) return
+    // One-way: once revealed, stay revealed. Toggling both ways makes
+    // elements at the viewport edge flicker on mobile (scroll bounce and
+    // the collapsing browser chrome repeatedly cross the threshold).
     const obs = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true)
+          obs.disconnect()
+        }
+      },
       { threshold: 0.15, rootMargin: '0px 0px -40px 0px' }
     )
     obs.observe(el)
@@ -913,6 +938,135 @@ export function SectionLoading({ label, tone = 'dark', icon = 'star' }: { label?
   )
 }
 
+/* ---------- Content image — fills its (relative-positioned) parent.
+   While the photo is in flight on a slow connection, a placeholder shows:
+   in lists the placeholder alternates between two patterns (a light sweep
+   vs. the site's diagonal stripes) and cycles the draw-in icon by index,
+   so a row of loading cards never looks like identical gray boxes.
+   The photo fades in once loaded. ---------- */
+
+const IMG_PH_ICONS: DrawLoaderIcon[] = ['star', 'pin', 'plane', 'food']
+
+export function ContentImage({
+  src,
+  alt,
+  index = 0,
+  eager = false,
+  draggable = false,
+  iconSize = 32,
+  imgClassName = '',
+  imgStyle,
+}: {
+  src: string
+  alt: string
+  index?: number
+  eager?: boolean
+  draggable?: boolean
+  iconSize?: number
+  imgClassName?: string
+  imgStyle?: React.CSSProperties
+}) {
+  const [loaded, setLoaded] = useState(false)
+  const imgRef = useRef<HTMLImageElement>(null)
+  // Already-cached images can complete before React attaches onLoad;
+  // re-check (and reset) when the src changes
+  useEffect(() => {
+    setLoaded(imgRef.current?.complete ?? false)
+  }, [src])
+  const shimmer = index % 2 === 0
+  return (
+    <>
+      {!loaded && (
+        <div
+          className="absolute inset-0 flex items-center justify-center overflow-hidden"
+          aria-hidden="true"
+          style={{
+            background: shimmer
+              ? C.offwhite
+              : `repeating-linear-gradient(-45deg, ${C.offwhite}, ${C.offwhite} 9px, #EAE9E0 9px, #EAE9E0 18px)`,
+          }}
+        >
+          {shimmer && <span className="v2-img-shimmer" style={{ animationDelay: `${(index % 4) * 0.22}s` }} />}
+          <span style={{ opacity: 0.4 }}>
+            <DrawLoader icon={IMG_PH_ICONS[index % IMG_PH_ICONS.length]} size={iconSize} />
+          </span>
+        </div>
+      )}
+      <div className="v2-img-fade absolute inset-0" style={{ opacity: loaded ? 1 : 0, transition: 'opacity 0.45s ease-out' }}>
+        <img
+          ref={imgRef}
+          src={src}
+          alt={alt}
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+          draggable={draggable}
+          onLoad={() => setLoaded(true)}
+          className={`h-full w-full object-cover ${imgClassName}`}
+          style={imgStyle}
+        />
+      </div>
+    </>
+  )
+}
+
+/* ---------- Small icon image (filter stickers, picker circles) — fades in
+   over a tiny draw-in placeholder icon; the placeholder cycles by index so
+   a row of filter icons doesn't pulse in sync. ---------- */
+
+export function IconImage({
+  src,
+  alt = '',
+  index = 0,
+  size,
+  className = '',
+  style,
+  imgClassName = '',
+  imgStyle,
+}: {
+  src: string
+  alt?: string
+  index?: number
+  /** Fixed square size in px; omit to size the wrapper via className/style */
+  size?: number
+  className?: string
+  style?: React.CSSProperties
+  imgClassName?: string
+  imgStyle?: React.CSSProperties
+}) {
+  const [loaded, setLoaded] = useState(false)
+  const imgRef = useRef<HTMLImageElement>(null)
+  useEffect(() => {
+    setLoaded(imgRef.current?.complete ?? false)
+  }, [src])
+  const phSize = Math.max(18, Math.round((size ?? 64) * 0.42))
+  return (
+    <span
+      className={`relative inline-flex items-center justify-center ${className}`}
+      style={{ ...(size ? { width: size, height: size } : {}), ...style }}
+    >
+      {!loaded && (
+        <span className="absolute inset-0 flex items-center justify-center" aria-hidden="true" style={{ opacity: 0.35 }}>
+          <DrawLoader icon={IMG_PH_ICONS[index % IMG_PH_ICONS.length]} size={phSize} />
+        </span>
+      )}
+      <img
+        ref={imgRef}
+        src={src}
+        alt={alt}
+        draggable={false}
+        onLoad={() => setLoaded(true)}
+        className={`v2-img-fade pointer-events-none ${imgClassName}`}
+        style={{
+          ...(size ? { width: size, height: size, objectFit: 'contain' as const } : {}),
+          ...imgStyle,
+          opacity: loaded ? 1 : 0,
+          transition: `opacity 0.3s ease-out${imgStyle?.transition ? `, ${imgStyle.transition}` : ''}`,
+        }}
+      />
+    </span>
+  )
+}
+
 export function SectionHeading({
   line1,
   line2,
@@ -1040,13 +1194,7 @@ export function SiteCard({ item, tilt, index }: { item: CardItem; tilt: number; 
         {/* Square image — the 1:1 equal-ratio implementation, inset */}
         <div className="relative w-[38%] shrink-0 overflow-hidden sm:w-[40%]" style={{ aspectRatio: '1 / 1', borderRadius: 12 }}>
           {item.image ? (
-            <img
-              src={item.image}
-              alt={item.title}
-              loading={index < 4 ? 'eager' : 'lazy'}
-              decoding="async"
-              className="v2-card-img absolute inset-0 h-full w-full object-cover"
-            />
+            <ContentImage src={item.image} alt={item.title} index={index} eager={index < 4} imgClassName="v2-card-img" />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center" style={{ background: C.offwhite }}>
               <StarSvg size={40} />
@@ -1089,14 +1237,7 @@ export function PolaroidInner({ item, index }: { item: CardItem; index: number }
           the photo's bottom-right corner so the row below is all location */}
       <div className="relative w-full overflow-hidden" style={{ aspectRatio: '1 / 1', borderRadius: 10 }}>
         {item.image ? (
-          <img
-            src={item.image}
-            alt={item.title}
-            loading={index < 4 ? 'eager' : 'lazy'}
-            decoding="async"
-            className="v2-card-img absolute inset-0 h-full w-full object-cover"
-            draggable={false}
-          />
+          <ContentImage src={item.image} alt={item.title} index={index} eager={index < 4} imgClassName="v2-card-img" />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center" style={{ background: C.offwhite }}>
             <StarSvg size={36} />
@@ -1274,8 +1415,12 @@ export function DrumCarousel({ items, hint, navCard, compact = false }: { items:
     if (!d) return
     const dx = e.clientX - d.startX
     if (Math.abs(dx) > 6) {
-      if (!d.moved) e.currentTarget.setPointerCapture(e.pointerId)
-      d.moved = true
+      if (!d.moved) {
+        // Mark moved before capturing: if capture throws on a touch
+        // browser, the drum must still rotate.
+        d.moved = true
+        try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* best-effort */ }
+      }
       if (!hasDragged) setHasDragged(true)
     }
     const raw = d.startOffset - dx / DRAG_PX_PER_CARD
@@ -1426,7 +1571,7 @@ export function ScrollProgressBar({ frac, onDrag, trackColor = C.yellow }: { fra
     e.preventDefault()
     e.stopPropagation()
     dragRef.current = { startX: e.clientX, startFrac: frac }
-    e.currentTarget.setPointerCapture(e.pointerId)
+    try { e.currentTarget.setPointerCapture(e.pointerId) } catch { /* best-effort */ }
     setDragging(true)
   }
   const onHandleMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -1503,8 +1648,12 @@ export function ScrollStrip({ items, navCard, cardClassName = 'w-[186px] md:w-[2
     if (!d || !el) return
     const dx = e.clientX - d.startX
     if (Math.abs(dx) > 6) {
-      if (!d.moved) el.setPointerCapture(e.pointerId)
-      d.moved = true
+      if (!d.moved) {
+        // Mark moved before capturing: if capture throws on a touch
+        // browser, the strip must still scroll.
+        d.moved = true
+        try { el.setPointerCapture(e.pointerId) } catch { /* best-effort */ }
+      }
       el.scrollLeft = d.scrollLeft - dx
     }
   }
@@ -1740,6 +1889,19 @@ export function SiteNav({ current }: { current?: string }) {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Tap anywhere outside the header closes the mobile menu
+  const headerRef = useRef<HTMLElement>(null)
+  useEffect(() => {
+    if (!menuOpen) return
+    const onPointerDown = (e: PointerEvent) => {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => document.removeEventListener('pointerdown', onPointerDown)
+  }, [menuOpen])
+
   const navLinks = [
     { href: '/journeys', label: ch.journeys, key: 'journeys' },
     { href: '/destinations', label: ch.destinations, key: 'destinations' },
@@ -1749,6 +1911,7 @@ export function SiteNav({ current }: { current?: string }) {
 
   return (
     <header
+      ref={headerRef}
       className="sticky top-0 z-[1200]"
       style={{
         background: scrolled ? 'rgba(255,255,255,0.72)' : 'rgba(255,255,255,0)',
@@ -2611,6 +2774,34 @@ export function DetailHero({
 
 /* ---------- Lightbox — fullscreen image viewer, v2 chunky style ---------- */
 
+/* Single lightbox photo: draw-in placeholder while it loads (keyed by src
+   at the call site, so state resets on every image change) */
+function LightboxImage({ src, alt, index }: { src: string; alt: string; index: number }) {
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <div className="relative" style={{ minHeight: loaded ? undefined : 220 }}>
+      {!loaded && (
+        <div className="absolute inset-0 flex items-center justify-center" aria-hidden="true">
+          <DrawLoader icon={IMG_PH_ICONS[index % IMG_PH_ICONS.length]} size={40} />
+        </div>
+      )}
+      <img
+        src={src}
+        alt={alt}
+        onLoad={() => setLoaded(true)}
+        className="v2-img-fade mx-auto block"
+        style={{
+          maxHeight: 'min(72vh, 640px)',
+          maxWidth: '100%',
+          objectFit: 'contain',
+          opacity: loaded ? 1 : 0,
+          transition: 'opacity 0.3s ease-out',
+        }}
+      />
+    </div>
+  )
+}
+
 export function SiteLightbox({
   images,
   index,
@@ -2665,13 +2856,7 @@ export function SiteLightbox({
         </button>
 
         <div className="relative w-full overflow-hidden" style={{ borderRadius: 14, background: C.offwhite }}>
-          <img
-            key={src}
-            src={src}
-            alt={alt || ''}
-            className="v2-pop-in mx-auto block"
-            style={{ maxHeight: 'min(72vh, 640px)', maxWidth: '100%', objectFit: 'contain' }}
-          />
+          <LightboxImage key={src} src={src} alt={alt || ''} index={index} />
         </div>
 
         {images.length > 1 && (

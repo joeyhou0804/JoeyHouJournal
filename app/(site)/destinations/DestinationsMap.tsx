@@ -6,7 +6,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { addTileLayerWithFallback, BASE_TILES, STREET_TILES } from 'src/utils/mapTiles'
-import { C, MapPinSvg, ArrowSvg, BtnArrow, HighlightTitle, MapStage, mapPinHtml, DISPLAY, BODY } from '../_shared'
+import { C, MapPinSvg, ArrowSvg, BtnArrow, HighlightTitle, MapStage, mapPinHtml, ContentImage, DISPLAY, BODY } from '../_shared'
 
 /* ============================================================
    Destinations map — 3D diorama edition. The Leaflet
@@ -247,10 +247,10 @@ export default function DestinationsMap({
                 style={{ aspectRatio: '1 / 1', borderRadius: 14, border: `2.5px solid ${C.charcoal}`, background: C.offwhite }}
               >
                 {dialogPlace.images && dialogPlace.images.length > 0 ? (
-                  <img
+                  <ContentImage
                     src={dialogPlace.images[0]}
                     alt={locale === 'zh' && dialogPlace.nameCN ? dialogPlace.nameCN : dialogPlace.name}
-                    className="absolute inset-0 h-full w-full object-cover"
+                    iconSize={26}
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">

@@ -7,7 +7,7 @@ import 'leaflet/dist/leaflet.css'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { isLocalTrip } from 'src/utils/journeyHelpers'
 import { addTileLayerWithFallback, BASE_TILES } from 'src/utils/mapTiles'
-import { C, MapPinSvg, ArrowSvg, BtnArrow, HighlightTitle, MapStage, mapPinHtml } from '../_shared'
+import { C, MapPinSvg, ArrowSvg, BtnArrow, HighlightTitle, MapStage, mapPinHtml, ContentImage } from '../_shared'
 import type { MapPlace } from '../destinations/DestinationsMap'
 
 /* ============================================================
@@ -755,10 +755,10 @@ export default function JourneyMap({
                 style={{ aspectRatio: '1 / 1', borderRadius: 14, border: `2.5px solid ${C.charcoal}`, background: C.offwhite }}
               >
                 {dialogPlace.images && dialogPlace.images.length > 0 ? (
-                  <img
+                  <ContentImage
                     src={dialogPlace.images[0]}
                     alt={locale === 'zh' && dialogPlace.nameCN ? dialogPlace.nameCN : dialogPlace.name}
-                    className="absolute inset-0 h-full w-full object-cover"
+                    iconSize={26}
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">

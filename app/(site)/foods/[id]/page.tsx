@@ -28,6 +28,7 @@ import {
   NotFoundPanel,
   DetailHero,
   SiteLightbox,
+  ContentImage,
   JourneyMapBlock,
   type JourneyMapBlockLabels,
 } from '../../_shared'
@@ -281,7 +282,7 @@ export default function FoodDetailPage() {
                     aria-label={food.imageUrl ? foodName : undefined}
                   >
                     {food.imageUrl ? (
-                      <img src={food.imageUrl} alt={foodName} loading="eager" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
+                      <ContentImage src={food.imageUrl} alt={foodName} eager iconSize={44} />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center">
                         <StarSvg size={52} />

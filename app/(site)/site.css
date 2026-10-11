@@ -40,6 +40,20 @@ html {
   animation: v2-draw 2.2s ease-in-out infinite;
 }
 
+/* ---- content image placeholders — a light sweep crosses the frame while
+   the photo loads (alternate items use static stripes instead, see
+   ContentImage); the img's opacity transition fades it in ---- */
+.v2-img-shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 25%, rgba(255, 255, 255, 0.7) 50%, transparent 75%);
+  transform: translateX(-100%);
+  animation: v2-img-shimmer 1.6s ease-in-out infinite;
+}
+@keyframes v2-img-shimmer {
+  to { transform: translateX(100%); }
+}
+
 /* ---- hero staggered headline ---- */
 .v2-hero-line {
   display: inline-block;
@@ -105,15 +119,22 @@ html {
   transform: rotate(var(--tilt, 0deg));
   transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease-out;
 }
-.v2-card:hover {
-  transform: rotate(0deg) translateY(-6px);
-  box-shadow: 0 18px 36px rgba(20, 20, 40, 0.18);
+/* Only real (fine-pointer) hover lifts the card: on touchscreens the tap
+   triggers a sticky :hover whose transform yanks the card out from under
+   the finger, which makes mobile browsers abandon the swipe gesture. */
+@media (hover: hover) and (pointer: fine) {
+  .v2-card:hover {
+    transform: rotate(0deg) translateY(-6px);
+    box-shadow: 0 18px 36px rgba(20, 20, 40, 0.18);
+  }
 }
 .v2-card-img {
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.v2-card:hover .v2-card-img {
-  transform: scale(1.05);
+@media (hover: hover) and (pointer: fine) {
+  .v2-card:hover .v2-card-img {
+    transform: scale(1.05);
+  }
 }
 
 /* ---- mobile nav panel ---- */
@@ -614,6 +635,7 @@ html {
   .v2-btn, .v2-card, .v2-card-img, .v2-nav-panel, .v2-food-circle, .v2-food-circle img,
   .v2-drum-inner, .v2-picker-circle, .v2-pop-in, .v2-draw-path,
   .v2-md-backdrop, .v2-md-dialog, .v2-mp-card, .v2-filter-sticker,
+  .v2-img-shimmer, .v2-img-fade,
   .v3-pin-drop, .v3-pin-shadow, .v3-pin-twinkle, .v3-pin-puff, .v3-cloud,
   .v3-flow-train, .v3-flow-train-light, .v3-flow-road, .v3-flow-plane,
   .v3-vehicle-body svg {

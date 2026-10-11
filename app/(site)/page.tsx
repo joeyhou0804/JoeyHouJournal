@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
@@ -28,6 +28,7 @@ import {
   SiteFooter,
   DrumCarousel,
   PolaroidInner,
+  IconImage,
   SectionLoading,
   EmptyState,
   type CardItem,
@@ -208,6 +209,53 @@ export default function HomePage() {
   }, [foodsData])
 
   const selectedCategory = cuisineCategories.find(c => c.id === selectedCuisine) ?? cuisineCategories[0]
+
+  // Swiping the display card sideways cycles to the next/previous category
+  const foodSwipeRef = useRef<{ x: number; y: number; swiped: boolean } | null>(null)
+  const cycleCategoryRef = useRef<(dir: 1 | -1) => void>(() => {})
+  cycleCategoryRef.current = (dir) => {
+    if (!selectedCategory || cuisineCategories.length < 2) return
+    const i = cuisineCategories.findIndex(c => c.id === selectedCategory.id)
+    const next = cuisineCategories[(i + dir + cuisineCategories.length) % cuisineCategories.length]
+    setSelectedCuisine(next.id)
+  }
+
+  // The swipe ends wherever the finger lifts — often past the card's edge —
+  // so move/up are caught at the window level, not on the card. Act on the
+  // first qualifying move: mobile browsers fire pointercancel as soon as
+  // they claim the gesture for scrolling, so waiting for pointerup would
+  // drop most swipes.
+  useEffect(() => {
+    const onMove = (e: PointerEvent) => {
+      const s = foodSwipeRef.current
+      if (!s || s.swiped) return
+      const dx = e.clientX - s.x
+      const dy = e.clientY - s.y
+      if (Math.abs(dx) > 28 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+        s.swiped = true
+        cycleCategoryRef.current(dx < 0 ? 1 : -1)
+      }
+    }
+    const onUpOrCancel = () => {
+      const s = foodSwipeRef.current
+      if (!s) return
+      if (s.swiped) {
+        // Keep the record alive until the click event has fired
+        // (click comes right after pointerup) so it can be suppressed.
+        window.setTimeout(() => { foodSwipeRef.current = null }, 80)
+      } else {
+        foodSwipeRef.current = null
+      }
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUpOrCancel)
+    window.addEventListener('pointercancel', onUpOrCancel)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUpOrCancel)
+      window.removeEventListener('pointercancel', onUpOrCancel)
+    }
+  }, [])
 
   const funStats = [
     { icon: <FlagSvg size={30} />, value: visitedStates ? visitedStates.count : 0, label: p.statStates, color: C.charcoal, loadingIcon: 'star' as const },
@@ -447,7 +495,13 @@ export default function HomePage() {
           ) : (
             <>
           {selectedCategory && (
-            <div className="relative mx-auto w-fit">
+            <div
+              className="relative mx-auto w-fit"
+              style={{ touchAction: 'pan-y' }}
+              onPointerDown={e => {
+                foodSwipeRef.current = { x: e.clientX, y: e.clientY, swiped: false }
+              }}
+            >
               <Reveal>
                 {/* pop-in animation lives on this wrapper — putting it on the
                     card itself would override the hover transform mid-animation */}
@@ -455,6 +509,12 @@ export default function HomePage() {
                   <Link
                     href={`/foods/${selectedCategory.food.id}`}
                     className="v2-card block w-[270px] md:w-[330px]"
+                    onClickCapture={e => {
+                      if (foodSwipeRef.current?.swiped) {
+                        e.preventDefault()
+                        e.stopPropagation()
+                      }
+                    }}
                   >
                     <PolaroidInner
                       item={{
@@ -478,7 +538,7 @@ export default function HomePage() {
               long labels never stretch the row's layout) */}
           <Reveal delay={100}>
             <div className="v2-scroll-row -mx-4 mt-12 flex items-start gap-4 overflow-x-auto px-4 pb-14 pt-2.5 md:mx-0 md:justify-center md:gap-5 md:overflow-visible md:px-0">
-              {cuisineCategories.map(cat => {
+              {cuisineCategories.map((cat, ci) => {
                 const active = selectedCategory?.id === cat.id
                 const label = locale === 'zh' && cat.labelCN ? cat.labelCN : cat.label
                 return (
@@ -494,15 +554,12 @@ export default function HomePage() {
                         boxShadow: active ? '0 6px 0 rgba(20, 60, 20, 0.28)' : 'none',
                       }}
                     >
-                      <img
+                      <IconImage
                         src={`/images/icons/filter/${cat.id}.png`}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
+                        index={ci}
                         className="w-[62%]"
-                        onError={e => {
-                          e.currentTarget.style.display = 'none'
-                        }}
+                        style={{ aspectRatio: '1 / 1' }}
+                        imgClassName="h-full w-full object-contain"
                       />
                     </button>
                     {/* Speech-bubble label under the selected circle — absolute

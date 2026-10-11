@@ -32,6 +32,7 @@ import {
   DetailHero,
   SiteLightbox,
   ScrollProgressBar,
+  ContentImage,
   JourneyMapBlock,
   type JourneyMapBlockLabels,
 } from '../../_shared'
@@ -304,8 +305,8 @@ export default function DestinationDetailPage() {
       ? foodsHere.filter(f => f.imageUrl && f.imageUrl === images[lightboxIndex])
       : []
 
-  const heroSubtitle = station.description ? station.description.split('\n')[0] : undefined
   const descText = locale === 'zh' && station.descriptionCN ? station.descriptionCN : station.description
+  const heroSubtitle = descText ? descText.split('\n')[0] : undefined
   const descParagraphs: string[] = descText ? descText.split('\n').filter(Boolean) : []
 
   const heroChips = [
@@ -415,13 +416,12 @@ export default function DestinationDetailPage() {
                         }
                         aria-label={mapImg ? p.mapLabel : `${stationName} ${i + 1}`}
                       >
-                        <img
+                        <ContentImage
                           src={src}
                           alt={mapImg ? p.mapLabel : stationName}
-                          loading={i < 4 ? 'eager' : 'lazy'}
-                          decoding="async"
-                          draggable={false}
-                          className="v2-card-img absolute inset-0 h-full w-full object-cover"
+                          index={i}
+                          eager={i < 4}
+                          imgClassName="v2-card-img"
                         />
                         {(mapImg || foodImg) && (
                           <span className="absolute right-2.5 top-2.5 flex flex-col items-end gap-1.5">

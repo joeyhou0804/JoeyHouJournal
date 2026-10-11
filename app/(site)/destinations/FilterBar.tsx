@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { C, DISPLAY, BODY, HighlightLabel, Reveal } from '../_shared'
+import { C, DISPLAY, BODY, HighlightLabel, Reveal, IconImage } from '../_shared'
 
 /* ============================================================
    Filter picker — Nintendo "Power up!" picker style.
@@ -68,7 +68,7 @@ export default function FilterBar({ label, groups, tone = 'dark', delay = 0 }: {
 
       {/* Group chips — icon reflects the current selection, bare and big */}
       <div className="mt-5 flex flex-wrap items-start justify-center gap-x-8 gap-y-4 md:gap-x-10">
-        {groups.map(group => {
+        {groups.map((group, gi) => {
           const current = group.options.find(o => o.value === group.value) || group.options[0]
           const open = openKey === group.key
           return (
@@ -89,16 +89,13 @@ export default function FilterBar({ label, groups, tone = 'dark', delay = 0 }: {
                   transition: 'background-color 0.15s ease-out, box-shadow 0.15s ease-out',
                 }}
               >
-                <img
+                <IconImage
                   key={current.value}
                   src={current.icon}
-                  alt=""
-                  draggable={false}
-                  className="v2-pop-in pointer-events-none relative"
-                  style={{
-                    width: 64,
-                    height: 64,
-                    objectFit: 'contain',
+                  index={gi}
+                  size={64}
+                  imgClassName="v2-pop-in"
+                  imgStyle={{
                     filter: 'drop-shadow(0 3px 4px rgba(20, 20, 40, 0.18))',
                     transform: open ? 'scale(1.08)' : 'none',
                     transition: 'transform 0.18s ease-out',
@@ -138,7 +135,7 @@ export default function FilterBar({ label, groups, tone = 'dark', delay = 0 }: {
           }}
         >
           <div className="flex flex-wrap items-start justify-center gap-x-6 gap-y-4">
-            {openGroup.options.map(option => {
+            {openGroup.options.map((option, oi) => {
               const active = option.value === openGroup.value
               return (
                 <button
@@ -154,15 +151,11 @@ export default function FilterBar({ label, groups, tone = 'dark', delay = 0 }: {
                 >
                   <span className="relative flex items-center justify-center" style={{ width: 64, height: 64 }}>
                     {active && <CheckBadge />}
-                    <img
+                    <IconImage
                       src={option.icon}
-                      alt=""
-                      draggable={false}
-                      className="pointer-events-none relative"
-                      style={{
-                        width: 64,
-                        height: 64,
-                        objectFit: 'contain',
+                      index={oi}
+                      size={64}
+                      imgStyle={{
                         filter: active
                           ? 'drop-shadow(0 4px 5px rgba(20, 20, 40, 0.28))'
                           : 'drop-shadow(0 3px 4px rgba(20, 20, 40, 0.15))',
