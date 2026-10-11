@@ -1,66 +1,37 @@
 'use client'
 
-import Box from '@mui/material/Box'
 import { useTranslation } from 'src/hooks/useTranslation'
-import MixedText from 'src/components/MixedText'
-import { vw, rvw } from 'src/utils/scaling'
+import { v2FontVars } from 'lib/v2-fonts'
+import { BodyFonts } from './(site)/BodyFonts'
+import { C, BODY, DISPLAY, CHAR_SHADOW, PatternBg, ChunkyButton, SiteNav, SiteFooter } from './(site)/_shared'
+import './(site)/site.css'
 
 export default function NotFoundClient() {
   const { locale, tr } = useTranslation()
 
   return (
-    <>
-      <style jsx>{`
-        @keyframes moveRight {
-          0% { background-position: 0% 0%; }
-          100% { background-position: 100% 0%; }
-        }
-      `}</style>
-      <Box sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundImage: 'url(/images/backgrounds/homepage_background_2.webp)',
-        backgroundRepeat: 'repeat',
-        backgroundSize: { xs: `${vw(200, 'mobile')} auto`, md: `${vw(200)} auto` },
-        animation: { xs: 'moveRight 20s linear infinite', md: 'moveRight 60s linear infinite' }
-      }}>
-        {/* Error Page Image */}
-        <Box
-          component="img"
-          src="/images/error/error_page_image.png"
-          alt="Error"
-          sx={{
-            maxWidth: rvw(300, 650),
-            width: '100%',
-            height: 'auto',
-            marginBottom: rvw(24, 32)
-          }}
-        />
-
-        {/* "Oh no..." / "哎呀..." */}
-        <Box sx={{
-          fontFamily: locale === 'zh' ? 'MarioFontTitleChinese, sans-serif' : 'MarioFontTitle, sans-serif',
-          fontSize: rvw(48, 64),
-          color: '#373737',
-          marginBottom: rvw(4, 8)
-        }}>
-          {tr.errorPage.title}
-        </Box>
-
-        {/* "This page could not be found." / "找不到该页面。" */}
-        <MixedText
-          text={tr.errorPage.notFound}
-          chineseFont="MarioFontChinese, sans-serif"
-          englishFont="MarioFont, sans-serif"
-          fontSize={rvw(24, 32)}
-          color="#373737"
-          component="p"
-          sx={{ margin: 0, textAlign: 'center', px: 2 }}
-        />
-      </Box>
-    </>
+    <div className={v2FontVars}>
+      <BodyFonts className={v2FontVars} />
+      <div className="min-h-screen overflow-x-clip" style={{ background: C.paper, fontFamily: BODY }}>
+        <SiteNav />
+        <section className="relative" style={{ overflow: 'visible' }}>
+          <PatternBg id="v2-wm-notfound" variant="travel" stroke={C.charcoal} opacity={0.05} />
+          <div className="relative z-10 flex min-h-[70vh] flex-col items-center justify-center gap-4 px-4 py-20 text-center">
+            <img
+              src="/images/site/toad_taxi_nyc.png"
+              alt={locale === 'zh' ? '奇诺比奥开着一辆纽约出租车' : 'Blue Toad driving a New York taxi'}
+              className="h-auto w-[min(80vw,320px)] md:w-[clamp(340px,30vw,460px)]"
+              style={{ filter: CHAR_SHADOW, transform: 'rotate(-2deg)' }}
+            />
+            <p style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', color: C.charcoal }}>{tr.errorPage.title}</p>
+            <p style={{ fontFamily: BODY, fontSize: 15, color: C.gray, fontWeight: 600 }}>{tr.errorPage.notFound}</p>
+            <div className="mt-3">
+              <ChunkyButton href="/" label={tr.errorPage.backHome} bg={C.red} small />
+            </div>
+          </div>
+        </section>
+        <SiteFooter />
+      </div>
+    </div>
   )
 }

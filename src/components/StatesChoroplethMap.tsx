@@ -5,6 +5,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import Box from '@mui/material/Box'
 import { useTranslation } from 'src/hooks/useTranslation'
+import { addTileLayerWithFallback, LIGHT_TILES } from 'src/utils/mapTiles'
 import { vw, rvw } from 'src/utils/scaling'
 import MapMarkerDrawer from './MapMarkerDrawer'
 
@@ -133,14 +134,14 @@ export default function StatesChoroplethMap({ visitedStates, destinations = [], 
 
     // Add tile layer with light gray theme
     // Allow more zoom out on mobile (minZoom 3) vs desktop (minZoom 4)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    addTileLayerWithFallback(map, LIGHT_TILES, {
       minZoom: isMobile ? 3 : 4,
       maxZoom: 10,
-    }).addTo(map)
+    })
 
-    // Fetch and display US states GeoJSON
-    fetch('https://raw.githubusercontent.com/PublicaMundi/MappingAPI/master/data/geojson/us-states.json')
+    // Fetch and display US states GeoJSON (served locally — the upstream
+    // raw.githubusercontent.com URL is unreachable from some networks)
+    fetch('/states/us-states.json')
       .then(response => response.json())
       .then(data => {
         // Create a set of visited states (both full names and abbreviations) for quick lookup

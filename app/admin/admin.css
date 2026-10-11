@@ -1,0 +1,271 @@
+/* Admin v2 styles — things site.css doesn't cover: form controls,
+   data tables, the right slide-over drawer, and small interaction helpers.
+   Pair with app/(site)/site.css (buttons, dialogs, nav panel). */
+
+/* ---- form controls (Input / Textarea / Select in _ui.tsx) ---- */
+.adm-input,
+.adm-select,
+.adm-textarea {
+  width: 100%;
+  background: #ffffff;
+  border: 2.5px solid #232323;
+  border-radius: 14px;
+  padding: 10px 16px;
+  font-family: var(--font-body-en), var(--font-body-zh), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #232323;
+  transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+.adm-select {
+  appearance: none;
+  padding-right: 40px;
+  cursor: pointer;
+}
+.adm-textarea {
+  resize: vertical;
+  line-height: 1.5;
+}
+.adm-input::placeholder,
+.adm-textarea::placeholder {
+  color: #5c5c5c;
+  opacity: 0.65;
+}
+.adm-input:focus,
+.adm-select:focus,
+.adm-textarea:focus {
+  outline: none;
+  border-color: #e60012;
+  box-shadow: 0 0 0 3px rgba(230, 0, 18, 0.15);
+}
+.adm-input:disabled,
+.adm-select:disabled,
+.adm-textarea:disabled {
+  background: #f7f6f2;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ---- data table (wrap in <TableWrap>, use className="adm-table w-full") ---- */
+.adm-table {
+  border-collapse: collapse;
+}
+.adm-table th {
+  font-family: var(--font-display-en), var(--font-display-zh), sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #5c5c5c;
+  text-align: left;
+  white-space: nowrap;
+  padding: 10px 14px;
+  border-bottom: 2.5px solid #232323;
+}
+.adm-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #edede8;
+  font-family: var(--font-body-en), var(--font-body-zh), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #232323;
+  vertical-align: middle;
+}
+.adm-table tbody tr {
+  transition: background-color 0.12s ease-out;
+}
+.adm-table tbody tr:hover {
+  background: #f7f6f2;
+}
+.adm-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ---- right slide-over drawer (Drawer in _ui.tsx) ---- */
+.adm-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(20, 20, 34, 0.45);
+  animation: adm-fade 0.2s ease-out both;
+}
+.adm-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 2001;
+  height: 100dvh;
+  background: #ffffff;
+  border-left: 3px solid #232323;
+  box-shadow: -18px 0 44px rgba(10, 10, 30, 0.28);
+  overflow-y: auto;
+  animation: adm-drawer-in 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes adm-drawer-in {
+  from { transform: translateX(60px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ---- inline spinner for loading buttons (Btn loading prop).
+   Default red track for light surfaces; Btn overrides the colors inline
+   when it sits on a colored background. ---- */
+.adm-spin {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 999px;
+  border: 2.5px solid rgba(230, 0, 18, 0.25);
+  border-top-color: #e60012;
+  animation: adm-spin 0.7s linear infinite;
+}
+@keyframes adm-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---- danger button: white with red border/text, flushes solid red on
+   hover (the .v2-btn-white red-flush, but with a red resting border) ---- */
+.adm-btn-danger:not(:disabled):hover {
+  background: #e60012 !important;
+  color: #ffffff !important;
+}
+
+/* ---- hoverable Card lift ---- */
+.adm-card-hover {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease-out;
+}
+.adm-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 28px rgba(20, 20, 40, 0.16);
+}
+
+/* ---- custom checkbox (Checkbox in _ui.tsx) ---- */
+.adm-check {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  margin: 0;
+  border-radius: 7px;
+  border: 2.5px solid #232323;
+  background: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.15s ease-out, transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease-out;
+}
+.adm-check:hover {
+  box-shadow: 0 0 0 3px rgba(230, 0, 18, 0.12);
+}
+.adm-check:checked {
+  background-color: #e60012;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 13l4 4 10-10' stroke='white' stroke-width='3.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 14px 14px;
+  transform: scale(1.08);
+}
+.adm-check:focus-visible {
+  outline: none;
+  border-color: #e60012;
+  box-shadow: 0 0 0 3px rgba(230, 0, 18, 0.15);
+}
+.adm-check:disabled {
+  background-color: #f7f6f2;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---- small round icon button (IconBtn in _ui.tsx) ---- */
+.adm-icon-btn {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #232323;
+  border: 2.5px solid #232323;
+  box-shadow: 0 3px 0 #232323;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out, color 0.12s ease-out;
+}
+.adm-icon-btn:not(:disabled):hover {
+  background: #e60012;
+  color: #ffffff;
+}
+.adm-icon-btn:not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #232323;
+}
+.adm-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.adm-icon-btn-danger,
+.adm-icon-btn-danger:not(:disabled):hover {
+  background: #e60012;
+  color: #ffffff;
+}
+.adm-icon-btn-danger:not(:disabled):hover {
+  filter: brightness(0.92);
+}
+
+/* ---- square pagination button (Pagination in _ui.tsx) ---- */
+.adm-page-btn {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #232323;
+  border: 2.5px solid #232323;
+  box-shadow: 0 2px 0 #232323;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out, color 0.12s ease-out;
+}
+.adm-page-btn:not(:disabled):hover {
+  background: #e60012;
+  color: #ffffff;
+}
+.adm-page-btn:not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 #232323;
+}
+.adm-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ---- subtle entrance for freshly rendered lists/rows ---- */
+.adm-fade-in {
+  animation: adm-fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes adm-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes adm-fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---- reduced motion: honor user preference ---- */
+@media (prefers-reduced-motion: reduce) {
+  .adm-input, .adm-select, .adm-textarea,
+  .adm-table tbody tr,
+  .adm-drawer-backdrop, .adm-drawer,
+  .adm-spin, .adm-check, .adm-icon-btn, .adm-page-btn,
+  .adm-btn-danger, .adm-card-hover,
+  .adm-fade-in {
+    animation: none !important;
+    transition: none !important;
+  }
+  .adm-fade-in { opacity: 1 !important; }
+}

@@ -1,11 +1,24 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Box, Button, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material'
-import { Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material'
-import Link from 'next/link'
-import AdminLoading from 'src/components/AdminLoading'
+import {
+  Alert,
+  Btn,
+  BODY,
+  C,
+  Card,
+  ConfirmModal,
+  DISPLAY,
+  EmptyState,
+  Field,
+  FormGrid,
+  IconBtn,
+  Input,
+  PageHeader,
+  Panel,
+  SectionLoading,
+  TableWrap,
+} from '../_ui'
 
 interface HomeLocation {
   id: string
@@ -16,8 +29,39 @@ interface HomeLocation {
   coordinates: { lat: number; lng: number }
 }
 
+function PencilSvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 20l1.1-4.1L16.6 4.4a2.12 2.12 0 0 1 3 3L8.1 18.9 4 20z"
+        stroke="currentColor"
+        strokeWidth={2.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M14.8 6.2l3 3" stroke="currentColor" strokeWidth={2.8} strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function TrashSvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 7h16" stroke="currentColor" strokeWidth={3} strokeLinecap="round" />
+      <path d="M9.5 7V5.4A1.4 1.4 0 0 1 10.9 4h2.2a1.4 1.4 0 0 1 1.4 1.4V7" stroke="currentColor" strokeWidth={3} strokeLinecap="round" />
+      <path
+        d="M6.6 7l0.9 12.1A1.9 1.9 0 0 0 9.4 21h5.2a1.9 1.9 0 0 0 1.9-1.9L17.4 7"
+        stroke="currentColor"
+        strokeWidth={3}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M10 11.5v5M14 11.5v5" stroke="currentColor" strokeWidth={3} strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export default function HomeLocationsPage() {
-  const router = useRouter()
   const [homeLocations, setHomeLocations] = useState<HomeLocation[]>([])
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
@@ -31,6 +75,10 @@ export default function HomeLocationsPage() {
   })
   const [editing, setEditing] = useState(false)
   const [geocodeTimeout, setGeocodeTimeout] = useState<NodeJS.Timeout | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [feedback, setFeedback] = useState<{ tone: 'error' | 'success'; text: string } | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<HomeLocation | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     fetchHomeLocations()
@@ -80,6 +128,8 @@ export default function HomeLocationsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSaving(true)
+    setFeedback(null)
 
     const payload = {
       id: formData.id || `home-${Date.now()}`,
@@ -102,13 +152,17 @@ export default function HomeLocationsPage() {
       })
 
       if (response.ok) {
-        alert(editing ? 'Home location updated!' : 'Home location added!')
+        setFeedback({ tone: 'success', text: editing ? 'Home location updated!' : 'Home location added!' })
         resetForm()
         fetchHomeLocations()
+      } else {
+        setFeedback({ tone: 'error', text: 'Failed to save home location' })
       }
     } catch (error) {
       console.error('Failed to save home location:', error)
-      alert('Failed to save home location')
+      setFeedback({ tone: 'error', text: 'Failed to save home location' })
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -123,25 +177,33 @@ export default function HomeLocationsPage() {
       lng: home.coordinates.lng.toString()
     })
     setEditing(true)
+    setFeedback(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this home location?')) return
+  const confirmDelete = async () => {
+    if (!deleteTarget) return
+    setDeleting(true)
 
     try {
       const response = await fetch('/api/admin/home-locations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, _method: 'DELETE' })
+        body: JSON.stringify({ id: deleteTarget.id, _method: 'DELETE' })
       })
 
       if (response.ok) {
-        alert('Home location deleted!')
+        setFeedback({ tone: 'success', text: 'Home location deleted!' })
+        setDeleteTarget(null)
         fetchHomeLocations()
+      } else {
+        setFeedback({ tone: 'error', text: 'Failed to delete home location' })
       }
     } catch (error) {
       console.error('Failed to delete home location:', error)
-      alert('Failed to delete home location')
+      setFeedback({ tone: 'error', text: 'Failed to delete home location' })
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -159,322 +221,222 @@ export default function HomeLocationsPage() {
   }
 
   if (loading) {
-    return <AdminLoading message="Loading Home Locations..." />
+    return <SectionLoading label="Loading home locations…" icon="pin" />
   }
 
   return (
-    <Box sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, marginBottom: '2rem', gap: { xs: 2, sm: 0 } }}>
-        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', margin: 0 }}>
-          Home Locations ({homeLocations.length})
-        </h1>
-        <button
-          onClick={() => router.push('/admin/dashboard')}
-          style={{
-            width: '100%',
-            maxWidth: '200px',
-            padding: '0.75rem 1.5rem',
-            fontSize: '16px',
-            fontFamily: 'MarioFont, sans-serif',
-            backgroundColor: 'white',
-            border: '2px solid #373737',
-            borderRadius: '0.5rem',
-            cursor: 'pointer'
-          }}
-        >
-          Back to Dashboard
-        </button>
-      </Box>
+    <div>
+      <PageHeader
+        kicker="ADMIN"
+        title="Home"
+        accent="Locations"
+        sub={`${homeLocations.length} ${homeLocations.length === 1 ? 'place' : 'places'} you've called home, with the dates you lived there.`}
+      />
 
-      {/* Form */}
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          backgroundColor: 'white',
-          padding: { xs: '1rem', sm: '2rem' },
-          borderRadius: '1rem',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-          marginBottom: '2rem'
-        }}
-      >
-        <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', marginBottom: '1.5rem' }}>
-          {editing ? 'Edit Home Location' : 'Add New Home Location'}
-        </Typography>
-
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '1rem' }}>
-          <TextField
-            label="Name (e.g., New York, NY)"
-            value={formData.name}
-            onChange={(e) => {
-              setFormData({ ...formData, name: e.target.value })
-              // Auto-geocode when name changes
-              if (e.target.value.trim()) {
-                debounceGeocode(e.target.value)
-              }
-            }}
-            required
-            fullWidth
-            sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-          />
-          <Box sx={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end' }}>
-            <TextField
-              label="Chinese Name"
-              value={formData.nameCN}
-              onChange={(e) => setFormData({ ...formData, nameCN: e.target.value })}
-              fullWidth
-              sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-            />
-            <Button
-              onClick={() => {
-                const parts = formData.name.split(',').map(p => p.trim())
-                if (parts.length >= 2) {
-                  const { generateChineseDestinationName } = require('lib/cityTranslations')
-                  const cityName = parts[0]
-                  const stateCode = parts[1]
-                  const fullTranslation = generateChineseDestinationName(cityName, stateCode)
-                  if (fullTranslation) {
-                    const cityNameCN = fullTranslation.split('·')[1] || fullTranslation
-                    setFormData({ ...formData, nameCN: cityNameCN })
-                  }
-                }
-              }}
-              disabled={!formData.name || !formData.name.includes(',')}
-              variant="outlined"
-              sx={{
-                minWidth: '120px',
-                height: '56px',
-                fontFamily: 'MarioFont, sans-serif',
-                fontSize: '12px',
-                borderColor: '#373737',
-                color: '#373737',
-                '&:hover': { borderColor: '#FFD701', backgroundColor: '#FFD701' },
-                '&:disabled': { borderColor: '#e0e0e0', color: '#999' }
-              }}
-            >
-              Auto-Generate
-            </Button>
-          </Box>
-          <TextField
-            label="Start Date"
-            type="date"
-            value={formData.startDate}
-            onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-            required
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-          />
-          <TextField
-            label="End Date"
-            type="date"
-            value={formData.endDate}
-            onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-            required
-            fullWidth
-            InputLabelProps={{ shrink: true }}
-            sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-          />
-          <TextField
-            label="Latitude"
-            type="number"
-            value={formData.lat}
-            onChange={(e) => setFormData({ ...formData, lat: e.target.value })}
-            required
-            fullWidth
-            inputProps={{ step: 'any' }}
-            sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-          />
-          <TextField
-            label="Longitude"
-            type="number"
-            value={formData.lng}
-            onChange={(e) => setFormData({ ...formData, lng: e.target.value })}
-            required
-            fullWidth
-            inputProps={{ step: 'any' }}
-            sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-          />
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexDirection: { xs: 'column', sm: 'row' } }}>
-          <button
-            type="submit"
-            style={{
-              padding: '0.75rem 2rem',
-              fontSize: '16px',
-              fontFamily: 'MarioFont, sans-serif',
-              backgroundColor: '#FFD701',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              width: '100%'
-            }}
-          >
-            {editing ? 'Update' : 'Add'} Home Location
-          </button>
-          {editing && (
-            <button
-              type="button"
-              onClick={resetForm}
-              style={{
-                padding: '0.75rem 2rem',
-                fontSize: '16px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: 'white',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                width: '100%'
-              }}
-            >
-              Cancel
-            </button>
-          )}
-        </Box>
-      </Box>
-
-      {/* Mobile Card View */}
-      <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-        {homeLocations.length === 0 ? (
-          <Box sx={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif', backgroundColor: 'white', borderRadius: '1rem' }}>
-            No home locations found
-          </Box>
-        ) : (
-          homeLocations.map((home) => (
-            <Box
-              key={home.id}
-              sx={{
-                backgroundColor: 'white',
-                borderRadius: '1rem',
-                padding: '1rem',
-                marginBottom: '1rem',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-              }}
-            >
-              <Box sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '0.5rem', color: '#373737' }}>
-                {home.name}
-              </Box>
-              {home.nameCN && (
-                <Box sx={{ fontSize: '14px', color: '#666', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
-                  {home.nameCN}
-                </Box>
-              )}
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666', marginBottom: '1rem' }}>
-                <Box><strong>Start:</strong> {home.startDate}</Box>
-                <Box><strong>End:</strong> {home.endDate}</Box>
-                <Box sx={{ gridColumn: '1 / -1' }}>
-                  <strong>Coords:</strong> {home.coordinates.lat.toFixed(4)}, {home.coordinates.lng.toFixed(4)}
-                </Box>
-              </Box>
-              <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-                <button
-                  onClick={() => handleEdit(home)}
-                  style={{
-                    flex: 1,
-                    padding: '0.5rem 1rem',
-                    fontSize: '14px',
-                    fontFamily: 'MarioFont, sans-serif',
-                    backgroundColor: '#FFD701',
-                    border: '2px solid #373737',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(home.id)}
-                  style={{
-                    flex: 1,
-                    padding: '0.5rem 1rem',
-                    fontSize: '14px',
-                    fontFamily: 'MarioFont, sans-serif',
-                    backgroundColor: '#ff6b6b',
-                    color: 'white',
-                    border: '2px solid #c92a2a',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Delete
-                </button>
-              </Box>
-            </Box>
-          ))
+      <Panel title={editing ? 'Edit Home Location' : 'Add Home Location'} className="mb-6">
+        {feedback && (
+          <div className="mb-4">
+            <Alert tone={feedback.tone} onClose={() => setFeedback(null)}>
+              {feedback.text}
+            </Alert>
+          </div>
         )}
-      </Box>
+        <form onSubmit={handleSubmit}>
+          <FormGrid cols={2}>
+            <Field label="Name" htmlFor="hl-name" required hint="e.g., New York, NY — coordinates auto-fill after you stop typing">
+              <Input
+                id="hl-name"
+                value={formData.name}
+                onChange={e => {
+                  setFormData({ ...formData, name: e.target.value })
+                  // Auto-geocode when name changes
+                  if (e.target.value.trim()) {
+                    debounceGeocode(e.target.value)
+                  }
+                }}
+                placeholder="New York, NY"
+                required
+              />
+            </Field>
+            <Field label="Chinese Name" htmlFor="hl-name-cn">
+              <div className="flex items-center gap-2">
+                <Input
+                  id="hl-name-cn"
+                  value={formData.nameCN}
+                  onChange={e => setFormData({ ...formData, nameCN: e.target.value })}
+                />
+                <Btn
+                  variant="white"
+                  size="sm"
+                  disabled={!formData.name || !formData.name.includes(',')}
+                  onClick={() => {
+                    const parts = formData.name.split(',').map(p => p.trim())
+                    if (parts.length >= 2) {
+                      const { generateChineseDestinationName } = require('lib/cityTranslations')
+                      const cityName = parts[0]
+                      const stateCode = parts[1]
+                      const fullTranslation = generateChineseDestinationName(cityName, stateCode)
+                      if (fullTranslation) {
+                        const cityNameCN = fullTranslation.split('·')[1] || fullTranslation
+                        setFormData({ ...formData, nameCN: cityNameCN })
+                      }
+                    }
+                  }}
+                >
+                  Auto-Generate
+                </Btn>
+              </div>
+            </Field>
+            <Field label="Start Date" htmlFor="hl-start" required>
+              <Input
+                id="hl-start"
+                type="date"
+                value={formData.startDate}
+                onChange={e => setFormData({ ...formData, startDate: e.target.value })}
+                required
+              />
+            </Field>
+            <Field label="End Date" htmlFor="hl-end" required>
+              <Input
+                id="hl-end"
+                type="date"
+                value={formData.endDate}
+                onChange={e => setFormData({ ...formData, endDate: e.target.value })}
+                required
+              />
+            </Field>
+            <Field label="Latitude" htmlFor="hl-lat" required>
+              <Input
+                id="hl-lat"
+                type="number"
+                step="any"
+                value={formData.lat}
+                onChange={e => setFormData({ ...formData, lat: e.target.value })}
+                required
+              />
+            </Field>
+            <Field label="Longitude" htmlFor="hl-lng" required>
+              <Input
+                id="hl-lng"
+                type="number"
+                step="any"
+                value={formData.lng}
+                onChange={e => setFormData({ ...formData, lng: e.target.value })}
+                required
+              />
+            </Field>
+          </FormGrid>
 
-      {/* Desktop Table View */}
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Name</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Chinese Name</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Start Date</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>End Date</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Coordinates</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {homeLocations.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} sx={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
-                    No home locations found
-                  </TableCell>
-                </TableRow>
-              ) : (
-                homeLocations.map((home) => (
-                  <TableRow key={home.id}>
-                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.name}</TableCell>
-                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.nameCN || '-'}</TableCell>
-                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.startDate}</TableCell>
-                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{home.endDate}</TableCell>
-                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Btn variant="primary" type="submit" loading={saving}>
+              {editing ? 'Save Changes' : 'Add Location'}
+            </Btn>
+            {editing && (
+              <Btn variant="white" onClick={resetForm}>
+                Cancel
+              </Btn>
+            )}
+          </div>
+        </form>
+      </Panel>
+
+      {homeLocations.length === 0 ? (
+        <EmptyState title="No home locations found" subtitle="Add your first home base with the form above." />
+      ) : (
+        <>
+          {/* Mobile Card View */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {homeLocations.map(home => (
+              <Card key={home.id} className="adm-fade-in">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 16, color: C.charcoal }}>{home.name}</p>
+                    {home.nameCN && (
+                      <p className="mt-0.5" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+                        {home.nameCN}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex shrink-0 gap-2">
+                    <IconBtn label={`Edit ${home.name}`} title="Edit" onClick={() => handleEdit(home)}>
+                      <PencilSvg />
+                    </IconBtn>
+                    <IconBtn label={`Delete ${home.name}`} title="Delete" danger onClick={() => setDeleteTarget(home)}>
+                      <TrashSvg />
+                    </IconBtn>
+                  </div>
+                </div>
+                <div
+                  className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1"
+                  style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}
+                >
+                  <span>
+                    <strong style={{ color: C.charcoal }}>Start:</strong> {home.startDate}
+                  </span>
+                  <span>
+                    <strong style={{ color: C.charcoal }}>End:</strong> {home.endDate}
+                  </span>
+                  <span className="col-span-2">
+                    <strong style={{ color: C.charcoal }}>Coords:</strong> {home.coordinates.lat.toFixed(4)},{' '}
+                    {home.coordinates.lng.toFixed(4)}
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Desktop Table View */}
+          <TableWrap className="hidden md:block">
+            <table className="adm-table w-full">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Chinese Name</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Coordinates</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {homeLocations.map(home => (
+                  <tr key={home.id}>
+                    <td style={{ fontFamily: DISPLAY, fontWeight: 700 }}>{home.name}</td>
+                    <td>{home.nameCN || '-'}</td>
+                    <td className="whitespace-nowrap">{home.startDate}</td>
+                    <td className="whitespace-nowrap">{home.endDate}</td>
+                    <td className="whitespace-nowrap">
                       {home.coordinates.lat.toFixed(4)}, {home.coordinates.lng.toFixed(4)}
-                    </TableCell>
-                    <TableCell>
-                      <button
-                        onClick={() => handleEdit(home)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#FFD701',
-                          border: '2px solid #373737',
-                          borderRadius: '0.5rem',
-                          cursor: 'pointer',
-                          marginRight: '0.5rem'
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(home.id)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#ff6b6b',
-                          color: 'white',
-                          border: '2px solid #c92a2a',
-                          borderRadius: '0.5rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-    </Box>
+                    </td>
+                    <td>
+                      <div className="flex gap-2">
+                        <IconBtn label={`Edit ${home.name}`} title="Edit" onClick={() => handleEdit(home)}>
+                          <PencilSvg />
+                        </IconBtn>
+                        <IconBtn label={`Delete ${home.name}`} title="Delete" danger onClick={() => setDeleteTarget(home)}>
+                          <TrashSvg />
+                        </IconBtn>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrap>
+        </>
+      )}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        onClose={() => {
+          if (!deleting) setDeleteTarget(null)
+        }}
+        onConfirm={confirmDelete}
+        title="Delete Home Location?"
+        message={deleteTarget ? `This will permanently delete "${deleteTarget.name}".` : ''}
+        confirmLabel="Delete"
+        loading={deleting}
+      />
+    </div>
   )
 }

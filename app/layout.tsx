@@ -3,8 +3,9 @@ import { Providers } from './providers'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Joey Hou's Journal | United States",
-  description: "Welcome to my travel journal site! Enjoy the pictures I take in the US on trains...and more!",
+  title: '小猴同学的旅行日记 · 美国',
+  description:
+    "Joey Hou's travel journal across the United States — train journeys, destinations, and foods along the way. 小猴同学旅行日记 · 美国游记。",
   icons: {
     icon: '/favicon.png',
   },

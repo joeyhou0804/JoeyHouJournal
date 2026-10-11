@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic'
 
 const INSTAGRAM_APP_ID = process.env.INSTAGRAM_APP_ID
 const INSTAGRAM_APP_SECRET = process.env.INSTAGRAM_APP_SECRET
-const INSTAGRAM_REDIRECT_URI = process.env.INSTAGRAM_REDIRECT_URI
 
 export async function GET(request: NextRequest) {
   try {
@@ -29,9 +28,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'No authorization code received' }, { status: 400 })
     }
 
-    // Exchange code for short-lived access token via Facebook Graph API
-    console.log('Token exchange redirect_uri:', INSTAGRAM_REDIRECT_URI)
-    const tokenUrl = `https://graph.facebook.com/v18.0/oauth/access_token?client_id=${INSTAGRAM_APP_ID}&redirect_uri=${encodeURIComponent(INSTAGRAM_REDIRECT_URI!)}&client_secret=${INSTAGRAM_APP_SECRET}&code=${code}`
+    // Exchange code for short-lived access token via Facebook Graph API.
+    // The redirect_uri must be identical to the one used in the OAuth dialog,
+    // which the client builds from window.location.origin — so derive it from
+    // this request's origin instead of a hard-coded env var (port-agnostic).
+    const redirectUri = new URL('/api/admin/instagram/callback', request.url).toString()
+    console.log('Token exchange redirect_uri:', redirectUri)
+    const tokenUrl = `https://graph.facebook.com/v18.0/oauth/access_token?client_id=${INSTAGRAM_APP_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&client_secret=${INSTAGRAM_APP_SECRET}&code=${code}`
 
     const tokenResponse = await fetch(tokenUrl)
 

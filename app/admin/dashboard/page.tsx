@@ -1,28 +1,20 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper
-} from '@mui/material'
-import {
-  Add as AddIcon,
-  Visibility as ViewIcon,
-  LocationOn as LocationIcon,
-  Train as TrainIcon,
-  Photo as PhotoIcon
-} from '@mui/icons-material'
-import Link from 'next/link'
+import { MapPinSvg, StatCard, TrainSvg } from '../../(site)/_shared'
+import type { DrawLoaderIcon } from '../../(site)/_shared'
+import { Btn, C, DISPLAY, BODY, PageHeader, Panel } from '../_ui'
+import { PlusSvg } from '../_list'
+
+function ImageSvg({ size = 26, color = C.green }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true" className="shrink-0">
+      <rect x="3" y="4.5" width="18" height="15" rx="3.5" stroke={color} strokeWidth="2.6" />
+      <circle cx="9" cy="10" r="1.6" fill={color} />
+      <path d="M4.5 17.5l4.5-4.5 3.5 3.5 3-3 4 4" stroke={color} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
@@ -65,221 +57,103 @@ export default function AdminDashboard() {
     fetchStats()
   }, [])
 
+  const tiles: { label: string; value: number; color: string; icon: React.ReactNode; loadingIcon: DrawLoaderIcon }[] = [
+    { label: 'TOTAL DESTINATIONS', value: stats.totalDestinations, color: C.red, icon: <MapPinSvg size={22} />, loadingIcon: 'pin' },
+    { label: 'TOTAL JOURNEYS', value: stats.totalJourneys, color: C.blue, icon: <TrainSvg size={26} color={C.blue} />, loadingIcon: 'plane' },
+    { label: 'TOTAL IMAGES', value: stats.totalImages, color: C.green, icon: <ImageSvg size={26} />, loadingIcon: 'star' },
+  ]
+
+  const steps: { n: number; title: string; desc: string; cta: string; href: string; variant: 'primary' | 'white'; icon?: React.ReactNode; arrow?: boolean }[] = [
+    {
+      n: 1,
+      title: 'Create Destinations',
+      desc: 'Start by adding individual destinations (cities, stations, places) with their details, coordinates, and images.',
+      cta: 'Add Destination',
+      href: '/admin/destinations/new',
+      variant: 'primary',
+      icon: <PlusSvg size={13} />,
+    },
+    {
+      n: 2,
+      title: 'Create a Journey',
+      desc: 'Create a journey with route information, dates, and transportation segments (train, plane, bus, drive).',
+      cta: 'Add Journey',
+      href: '/admin/journeys/new',
+      variant: 'primary',
+      icon: <PlusSvg size={13} />,
+    },
+    {
+      n: 3,
+      title: 'Link Destinations to Journey',
+      desc: 'Go to the journey details page and add the destinations you created to complete your travel story.',
+      cta: 'View Journeys',
+      href: '/admin/journeys',
+      variant: 'white',
+      arrow: true,
+    },
+  ]
+
   return (
-    <Box>
-      <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', color: '#373737', margin: 0, marginBottom: '2rem' }}>
-        Dashboard
-      </h1>
+    <div>
+      <PageHeader
+        kicker="ADMIN"
+        title="Dashboard"
+        sub="Welcome back! Here's an overview of your travel journal."
+      />
 
-      {/* Stats Grid */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' }, gap: 3, mb: 4 }}>
-        <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2 }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <LocationIcon sx={{ fontSize: 40, color: '#FFD701', mr: 2 }} />
-              <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-                  Total Destinations
-                </Typography>
-                <Typography variant="h3" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
-                  {stats.totalDestinations}
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
+      {/* Stats grid */}
+      <div className="mb-8 grid grid-cols-1 gap-5 sm:grid-cols-3 md:mb-10">
+        {tiles.map(tile => (
+          <div key={tile.label} className="[&>*]:w-full">
+            <StatCard
+              icon={tile.icon}
+              value={tile.value}
+              label={tile.label}
+              color={tile.color}
+              loading={loading}
+              loadingIcon={tile.loadingIcon}
+            />
+          </div>
+        ))}
+      </div>
 
-        <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2 }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <TrainIcon sx={{ fontSize: 40, color: '#FFD701', mr: 2 }} />
-              <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-                  Total Journeys
-                </Typography>
-                <Typography variant="h3" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
-                  {stats.totalJourneys}
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
+      {/* Workflow guide */}
+      <Panel title="Content Creation Workflow" pad={24}>
+        <p className="mb-5" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 14, color: C.gray }}>
+          Follow these steps to add new content to your travel journal:
+        </p>
 
-        <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2 }}>
-          <CardContent>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <PhotoIcon sx={{ fontSize: 40, color: '#FFD701', mr: 2 }} />
-              <Box>
-                <Typography variant="body2" color="text.secondary" sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-                  Total Images
-                </Typography>
-                <Typography variant="h3" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
-                  {stats.totalImages}
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
-
-      {/* Workflow Guide */}
-      <h2 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(20px, 5vw, 24px)', marginBottom: '1rem', color: '#373737' }}>
-        Content Creation Workflow
-      </h2>
-      <Box sx={{ border: '2px solid #FFD701', borderRadius: '1rem', marginBottom: '2rem', backgroundColor: '#FFFEF7', padding: { xs: '1rem', sm: '2rem' } }}>
-          <p style={{ fontFamily: 'MarioFont, sans-serif', marginBottom: '1.5rem', color: '#373737', fontSize: '16px' }}>
-            Follow these steps to add new content to your travel journal:
-          </p>
-
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, sm: 3 } }}>
-            {/* Step 1 */}
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'start', gap: { xs: 1.5, sm: 2 } }}>
-              <Box sx={{
-                minWidth: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                backgroundColor: '#FFD701',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '20px',
-                color: '#373737',
-                flexShrink: 0
-              }}>
-                1
-              </Box>
-              <Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
-                <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', fontSize: '18px', margin: 0, marginBottom: '0.5rem' }}>
-                  Create Destinations
-                </h3>
-                <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', marginBottom: '1rem', fontSize: '14px' }}>
-                  Start by adding individual destinations (cities, stations, places) with their details, coordinates, and images.
+        <div className="flex flex-col gap-5">
+          {steps.map(step => (
+            <div key={step.n} className="flex flex-col gap-3 sm:flex-row sm:items-start">
+              <span
+                className="flex shrink-0 items-center justify-center rounded-full"
+                style={{
+                  width: 28,
+                  height: 28,
+                  background: C.yellow,
+                  border: `2.5px solid ${C.charcoal}`,
+                  fontFamily: DISPLAY,
+                  fontWeight: 700,
+                  fontSize: 14,
+                  color: C.charcoal,
+                }}
+              >
+                {step.n}
+              </span>
+              <div className="min-w-0 flex-1">
+                <h3 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 15, color: C.charcoal }}>{step.title}</h3>
+                <p className="mb-3 mt-1" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+                  {step.desc}
                 </p>
-                <Link href="/admin/destinations/new" style={{ textDecoration: 'none', display: 'block' }}>
-                  <button
-                    style={{
-                      width: '100%',
-                      maxWidth: '200px',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '16px',
-                      fontFamily: 'MarioFont, sans-serif',
-                      backgroundColor: '#FFD701',
-                      border: '2px solid #373737',
-                      borderRadius: '0.5rem',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.5rem'
-                    }}
-                  >
-                    <AddIcon sx={{ fontSize: '20px' }} />
-                    Add Destination
-                  </button>
-                </Link>
-              </Box>
-            </Box>
-
-            {/* Step 2 */}
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'start', gap: { xs: 1.5, sm: 2 } }}>
-              <Box sx={{
-                minWidth: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                backgroundColor: '#FFD701',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '20px',
-                color: '#373737',
-                flexShrink: 0
-              }}>
-                2
-              </Box>
-              <Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
-                <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', fontSize: '18px', margin: 0, marginBottom: '0.5rem' }}>
-                  Create a Journey
-                </h3>
-                <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', marginBottom: '1rem', fontSize: '14px' }}>
-                  Create a journey with route information, dates, and transportation segments (train, plane, bus, drive).
-                </p>
-                <Link href="/admin/journeys/new" style={{ textDecoration: 'none', display: 'block' }}>
-                  <button
-                    style={{
-                      width: '100%',
-                      maxWidth: '200px',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '16px',
-                      fontFamily: 'MarioFont, sans-serif',
-                      backgroundColor: '#FFD701',
-                      border: '2px solid #373737',
-                      borderRadius: '0.5rem',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.5rem'
-                    }}
-                  >
-                    <AddIcon sx={{ fontSize: '20px' }} />
-                    Add Journey
-                  </button>
-                </Link>
-              </Box>
-            </Box>
-
-            {/* Step 3 */}
-            <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'start', gap: { xs: 1.5, sm: 2 } }}>
-              <Box sx={{
-                minWidth: '40px',
-                height: '40px',
-                borderRadius: '50%',
-                backgroundColor: '#FFD701',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontFamily: 'MarioFontTitle, sans-serif',
-                fontSize: '20px',
-                color: '#373737',
-                flexShrink: 0
-              }}>
-                3
-              </Box>
-              <Box sx={{ flex: 1, width: { xs: '100%', sm: 'auto' } }}>
-                <h3 style={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737', fontSize: '18px', margin: 0, marginBottom: '0.5rem' }}>
-                  Link Destinations to Journey
-                </h3>
-                <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', marginBottom: '1rem', fontSize: '14px' }}>
-                  Go to the journey details page and add the destinations you created to complete your travel story.
-                </p>
-                <Link href="/admin/journeys" style={{ textDecoration: 'none', display: 'block' }}>
-                  <button
-                    style={{
-                      width: '100%',
-                      maxWidth: '200px',
-                      padding: '0.75rem 1.5rem',
-                      fontSize: '16px',
-                      fontFamily: 'MarioFont, sans-serif',
-                      backgroundColor: 'white',
-                      border: '2px solid #373737',
-                      borderRadius: '0.5rem',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      gap: '0.5rem'
-                    }}
-                  >
-                    <ViewIcon sx={{ fontSize: '20px' }} />
-                    View Journeys
-                  </button>
-                </Link>
-              </Box>
-            </Box>
-          </Box>
-      </Box>
-    </Box>
+                <Btn variant={step.variant} size="sm" href={step.href} icon={step.icon} arrow={step.arrow}>
+                  {step.cta}
+                </Btn>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Panel>
+    </div>
   )
 }

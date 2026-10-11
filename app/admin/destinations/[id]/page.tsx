@@ -3,10 +3,30 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { Box, TextField, MenuItem, Drawer, Typography, Button, Alert } from '@mui/material'
-import { Delete as DeleteIcon } from '@mui/icons-material'
 import { generateChineseDestinationName } from 'lib/cityTranslations'
 import type { CuisineStyle } from '@/src/data/foods'
+import {
+  Alert,
+  Btn,
+  C,
+  BODY,
+  DISPLAY,
+  Checkbox,
+  Chip,
+  ConfirmModal,
+  Drawer,
+  Field,
+  FormGrid,
+  IconBtn,
+  Input,
+  PageHeader,
+  Panel,
+  SectionLoading,
+  SectionTitle,
+  Select,
+  Textarea,
+  Toggle,
+} from '../../_ui'
 
 interface DestinationFormData {
   id?: string
@@ -40,6 +60,321 @@ interface FoodFormData {
   lng: number
 }
 
+const CUISINE_STYLES: CuisineStyle[] = [
+  'East Asian',
+  'American',
+  'European',
+  'Southeast Asian',
+  'South Asian',
+  'Latin American',
+  'Other',
+  'Drinks',
+  'Desserts',
+]
+
+const readOnlyInputStyle: React.CSSProperties = { background: '#F7F6F2', cursor: 'not-allowed' }
+
+/* ---------- tiny inline icons ---------- */
+
+function BackSvg() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M15 5l-7 7 7 7" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function PinSvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 21s-7-5.4-7-11a7 7 0 1 1 14 0c0 5.6-7 11-7 11z"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="10" r="2.4" stroke="currentColor" strokeWidth="2.2" />
+    </svg>
+  )
+}
+
+function PlusSvg() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function PencilSvg() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M16.5 4.5l3 3L8 19l-4.5 1.5L5 16 16.5 4.5z"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function TrashSvg() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 7h16M9.5 7V5.4A1.4 1.4 0 0 1 10.9 4h2.2a1.4 1.4 0 0 1 1.4 1.4V7M6.5 7l.9 12.2a1.5 1.5 0 0 0 1.5 1.3h6.2a1.5 1.5 0 0 0 1.5-1.3L17.5 7"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function CloseSvg() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function CheckSvg() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 13l4 4 10-10" stroke="#FFFFFF" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+/* ---------- FoodRow — one saved food in the list ---------- */
+
+function FoodRow({ food, onEdit, onDelete }: { food: FoodFormData; onEdit: () => void; onDelete: () => void }) {
+  return (
+    <div
+      className="adm-fade-in flex items-center gap-3 rounded-2xl p-3"
+      style={{ border: `2.5px solid ${C.charcoal}`, background: C.offwhite }}
+    >
+      {food.imageUrl && (
+        <img
+          src={food.imageUrl}
+          alt={food.name}
+          className="rounded-xl object-cover"
+          style={{ width: 64, height: 64, flex: 'none', border: `2px solid ${C.charcoal}`, background: '#FFFFFF' }}
+        />
+      )}
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+          <span style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 15, color: C.charcoal }}>
+            {food.name}
+            {food.nameCN && (
+              <span style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}> ({food.nameCN})</span>
+            )}
+          </span>
+          {food.cuisineStyle && <Chip tone="yellow">{food.cuisineStyle}</Chip>}
+        </div>
+        <div style={{ fontFamily: BODY, fontWeight: 700, fontSize: 13, color: C.charcoal }}>{food.restaurantName}</div>
+        {food.restaurantAddress && (
+          <div className="truncate" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 12, color: C.gray }}>
+            {food.restaurantAddress}
+          </div>
+        )}
+      </div>
+      <div className="flex flex-none items-center gap-2">
+        <IconBtn label={`Edit ${food.name}`} title="Edit food" onClick={onEdit}>
+          <PencilSvg />
+        </IconBtn>
+        <IconBtn label={`Delete ${food.name}`} title="Delete food" danger onClick={onDelete}>
+          <TrashSvg />
+        </IconBtn>
+      </div>
+    </div>
+  )
+}
+
+/* ---------- FoodDrawer — create/edit one food (all state lives in the page) ---------- */
+
+function FoodDrawer({
+  open,
+  editing,
+  images,
+  currentFood,
+  geocodingError,
+  onChange,
+  onGeocode,
+  onClose,
+  onCancel,
+  onSave,
+}: {
+  open: boolean
+  editing: boolean
+  images: string[]
+  currentFood: Partial<FoodFormData>
+  geocodingError: string | null
+  onChange: (food: Partial<FoodFormData>) => void
+  onGeocode: () => void
+  onClose: () => void
+  onCancel: () => void
+  onSave: () => void
+}) {
+  const saveDisabled = !currentFood.name || !currentFood.restaurantName || !currentFood.imageUrl || !currentFood.cuisineStyle
+
+  return (
+    <Drawer open={open} onClose={onClose} title={editing ? 'Edit Food' : 'Add Food'} width={500}>
+      <div className="flex flex-col gap-4">
+        {/* Image selection — picks one of the destination images */}
+        <Field label="Select Image" required>
+          {images.length === 0 ? (
+            <span style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+              Please add destination images first
+            </span>
+          ) : (
+            <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))', gap: 8 }}>
+              {images.map((url, idx) => {
+                const selected = currentFood.imageUrl === url
+                return (
+                  <div
+                    key={idx}
+                    onClick={() => onChange({ ...currentFood, imageUrl: url })}
+                    style={{
+                      position: 'relative',
+                      paddingBottom: '100%',
+                      cursor: 'pointer',
+                      border: selected ? `3px solid ${C.red}` : '2px solid #D8D8D2',
+                      borderRadius: 12,
+                      overflow: 'hidden',
+                      transition: 'transform 0.15s ease-out, border-color 0.15s ease-out',
+                    }}
+                  >
+                    <img
+                      src={url}
+                      alt={`Option ${idx + 1}`}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    {selected && (
+                      <span
+                        className="absolute flex items-center justify-center rounded-full"
+                        style={{
+                          top: 4,
+                          right: 4,
+                          width: 22,
+                          height: 22,
+                          background: C.red,
+                          border: `2px solid ${C.charcoal}`,
+                        }}
+                        aria-hidden="true"
+                      >
+                        <CheckSvg />
+                      </span>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </Field>
+
+        <Field label="Food Name (English)" required>
+          <Input
+            required
+            value={currentFood.name || ''}
+            onChange={e => onChange({ ...currentFood, name: e.target.value })}
+          />
+        </Field>
+
+        <Field label="Food Name (Chinese)">
+          <Input
+            value={currentFood.nameCN || ''}
+            onChange={e => onChange({ ...currentFood, nameCN: e.target.value })}
+          />
+        </Field>
+
+        <Field label="Restaurant Name" required>
+          <Input
+            required
+            value={currentFood.restaurantName || ''}
+            onChange={e => onChange({ ...currentFood, restaurantName: e.target.value })}
+          />
+        </Field>
+
+        <Field label="Cuisine Style" required>
+          <Select
+            required
+            value={currentFood.cuisineStyle || 'East Asian'}
+            onChange={e => onChange({ ...currentFood, cuisineStyle: e.target.value as CuisineStyle })}
+          >
+            {CUISINE_STYLES.map(style => (
+              <option key={style} value={style}>
+                {style}
+              </option>
+            ))}
+          </Select>
+        </Field>
+
+        <Field label="Restaurant Address">
+          <Textarea
+            rows={2}
+            value={currentFood.restaurantAddress || ''}
+            onChange={e => onChange({ ...currentFood, restaurantAddress: e.target.value })}
+          />
+        </Field>
+
+        {currentFood.restaurantAddress && (
+          <div>
+            <Btn variant="white" size="sm" icon={<PinSvg />} onClick={onGeocode}>
+              Detect Coordinates from Address
+            </Btn>
+          </div>
+        )}
+
+        {geocodingError && <Alert tone="info">{geocodingError}</Alert>}
+
+        <FormGrid cols={2}>
+          <Field label="Latitude" required>
+            <Input
+              required
+              type="number"
+              step="any"
+              value={currentFood.lat || ''}
+              onChange={e => onChange({ ...currentFood, lat: parseFloat(e.target.value) })}
+            />
+          </Field>
+          <Field label="Longitude" required>
+            <Input
+              required
+              type="number"
+              step="any"
+              value={currentFood.lng || ''}
+              onChange={e => onChange({ ...currentFood, lng: parseFloat(e.target.value) })}
+            />
+          </Field>
+        </FormGrid>
+
+        <div className="mt-2 flex gap-3">
+          <Btn variant="white" className="flex-1" onClick={onCancel}>
+            Cancel
+          </Btn>
+          <Btn variant="primary" className="flex-1" onClick={onSave} disabled={saveDisabled}>
+            {editing ? 'Update Food' : 'Add Food'}
+          </Btn>
+        </div>
+      </div>
+    </Drawer>
+  )
+}
+
+/* ---------- Page ---------- */
+
 export default function DestinationFormPage() {
   const router = useRouter()
   const params = useParams()
@@ -57,10 +392,12 @@ export default function DestinationFormPage() {
   })
 
   const [loading, setLoading] = useState(false)
+  const [pageLoading, setPageLoading] = useState(!isNew)
   const [uploading, setUploading] = useState(false)
   const [coordinatesEditable, setCoordinatesEditable] = useState(false)
+  const [geocoding, setGeocoding] = useState(false)
   const [geocodingError, setGeocodingError] = useState<string | null>(null)
-  const [deleteDrawerOpen, setDeleteDrawerOpen] = useState(false)
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false)
   const [deleting, setDeleting] = useState(false)
   const [journeys, setJourneys] = useState<any[]>([])
   const [foods, setFoods] = useState<FoodFormData[]>([])
@@ -71,6 +408,8 @@ export default function DestinationFormPage() {
   const images = watch('images') || []
   const cityName = watch('name')
   const destinationName = watch('name')
+  const stateValue = watch('state')
+  const showMap = watch('showMap')
 
   useEffect(() => {
     async function fetchData() {
@@ -163,11 +502,14 @@ export default function DestinationFormPage() {
       }
     } catch (error) {
       console.error('Failed to fetch destination:', error)
+    } finally {
+      setPageLoading(false)
     }
   }
 
   const geocodeAddress = async (address: string) => {
     try {
+      setGeocoding(true)
       setGeocodingError(null)
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
@@ -186,6 +528,8 @@ export default function DestinationFormPage() {
       console.error('Geocoding error:', error)
       setGeocodingError('Failed to geocode address. Please enter coordinates manually.')
       setCoordinatesEditable(true)
+    } finally {
+      setGeocoding(false)
     }
   }
 
@@ -211,6 +555,29 @@ export default function DestinationFormPage() {
       }
     } catch (error) {
       console.error('State extraction error:', error)
+    }
+  }
+
+  const autoGenerateNameCN = () => {
+    let cityName = watch('name')
+    let stateInput = watch('state')
+
+    // If name contains comma (e.g., "New Orleans, LA"), split it
+    if (cityName && cityName.includes(',')) {
+      const parts = cityName.split(',').map(p => p.trim())
+      cityName = parts[0]
+      // If state code is provided in name, use it; otherwise use state field
+      if (parts.length >= 2 && parts[1]) {
+        stateInput = parts[1]
+      }
+    }
+
+    const translation = generateChineseDestinationName(cityName, stateInput)
+    if (translation) {
+      setValue('nameCN', translation)
+    } else {
+      console.warn('No translation found for:', { cityName, stateInput })
+      alert(`Unable to generate Chinese name for "${cityName}, ${stateInput}". The city or state may not be in the translation database. Please enter manually.`)
     }
   }
 
@@ -356,372 +723,247 @@ export default function DestinationFormPage() {
       alert('Error deleting destination')
     } finally {
       setDeleting(false)
-      setDeleteDrawerOpen(false)
+      setDeleteConfirmOpen(false)
     }
   }
 
-  const ActionButtons = ({ insideForm = false }: { insideForm?: boolean }) => (
-    <Box sx={{ display: 'flex', gap: '1rem', width: { xs: '100%', sm: 'auto' } }}>
-      <button
-        type="button"
-        onClick={() => router.push('/admin/destinations')}
-        style={{
-          flex: 1,
-          padding: '0.75rem 2rem',
-          fontSize: '16px',
-          fontFamily: 'MarioFont, sans-serif',
-          backgroundColor: 'white',
-          border: '2px solid #373737',
-          borderRadius: '0.5rem',
-          cursor: 'pointer'
-        }}
-      >
-        Cancel
-      </button>
-      <button
-        type={insideForm ? 'submit' : 'button'}
-        onClick={insideForm ? undefined : handleSubmit(onSubmit)}
-        disabled={loading}
-        style={{
-          flex: 1,
-          padding: '0.75rem 2rem',
-          fontSize: '16px',
-          fontFamily: 'MarioFont, sans-serif',
-          backgroundColor: '#FFD701',
-          border: '2px solid #373737',
-          borderRadius: '0.5rem',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          opacity: loading ? 0.6 : 1
-        }}
-      >
-        {loading ? 'Saving...' : 'Save Destination'}
-      </button>
-    </Box>
-  )
+  /* ---------- foods (local list, persisted together with the destination) ---------- */
+
+  const openAddFood = () => {
+    setCurrentFood({
+      cuisineStyle: 'East Asian',
+      lat: watch('lat'),
+      lng: watch('lng')
+    })
+    setEditingFoodIndex(null)
+    setFoodDrawerOpen(true)
+  }
+
+  const openEditFood = (index: number) => {
+    setCurrentFood(foods[index])
+    setEditingFoodIndex(index)
+    setFoodDrawerOpen(true)
+  }
+
+  const removeFood = (index: number) => {
+    if (confirm('Are you sure you want to delete this food?')) {
+      const updatedFoods = foods.filter((_, i) => i !== index)
+      setFoods(updatedFoods)
+    }
+  }
+
+  const closeFoodDrawer = () => {
+    setFoodDrawerOpen(false)
+    setCurrentFood({})
+    setEditingFoodIndex(null)
+    setGeocodingFoodError(null)
+  }
+
+  const cancelFoodDrawer = () => {
+    setFoodDrawerOpen(false)
+    setCurrentFood({})
+    setEditingFoodIndex(null)
+  }
+
+  const geocodeFoodAddress = async () => {
+    try {
+      setGeocodingFoodError(null)
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(currentFood.restaurantAddress!)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
+      )
+      const data = await response.json()
+
+      if (data.status === 'OK' && data.results.length > 0) {
+        const location = data.results[0].geometry.location
+        setCurrentFood({
+          ...currentFood,
+          lat: location.lat,
+          lng: location.lng
+        })
+      } else {
+        console.error('Geocoding failed with status:', data.status, 'Error message:', data.error_message)
+        setGeocodingFoodError(`Could not find coordinates for "${currentFood.restaurantAddress}". Status: ${data.status}. Please enter manually.`)
+      }
+    } catch (error) {
+      console.error('Geocoding error:', error)
+      setGeocodingFoodError('Failed to geocode address. Please enter coordinates manually.')
+    }
+  }
+
+  const saveFood = () => {
+    if (!currentFood.name || !currentFood.restaurantName || !currentFood.imageUrl || !currentFood.cuisineStyle) {
+      alert('Please fill in all required fields')
+      return
+    }
+
+    const foodData: FoodFormData = {
+      id: currentFood.id || Date.now().toString(16),
+      name: currentFood.name!,
+      nameCN: currentFood.nameCN || '',
+      restaurantName: currentFood.restaurantName!,
+      restaurantAddress: currentFood.restaurantAddress || '',
+      cuisineStyle: currentFood.cuisineStyle!,
+      imageUrl: currentFood.imageUrl!,
+      lat: currentFood.lat!,
+      lng: currentFood.lng!
+    }
+
+    if (editingFoodIndex !== null) {
+      const updatedFoods = [...foods]
+      updatedFoods[editingFoodIndex] = foodData
+      setFoods(updatedFoods)
+    } else {
+      setFoods([...foods, foodData])
+    }
+
+    setFoodDrawerOpen(false)
+    setCurrentFood({})
+    setEditingFoodIndex(null)
+    setGeocodingFoodError(null)
+  }
+
+  if (pageLoading) {
+    return <SectionLoading label="Loading destination…" icon="pin" />
+  }
 
   return (
-    <Box>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, marginBottom: '2rem', gap: { xs: 2, sm: 0 } }}>
-        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', margin: 0 }}>
-          {isNew ? 'Add Destination' : 'Edit Destination'}
-        </h1>
-        <ActionButtons />
-      </Box>
+    <div>
+      {/* Back navigation */}
+      <div className="mb-5">
+        <Btn variant="white" size="sm" href="/admin/destinations" icon={<BackSvg />}>
+          Back to Destinations
+        </Btn>
+      </div>
 
-      <Box
-        component="form"
-        onSubmit={handleSubmit(onSubmit)}
-        sx={{
-          backgroundColor: 'white',
-          padding: { xs: '1rem', sm: '2rem' },
-          borderRadius: '1rem',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-        }}
-      >
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '1.5rem' }}>
-          {/* Name (English) */}
-          <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Name (English) *
-            </label>
-            <input
-              {...register('name', { required: true })}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: `2px solid ${errors.name ? 'red' : '#373737'}`,
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
-              }}
-            />
-          </Box>
+      <PageHeader
+        kicker="ADMIN · DESTINATIONS"
+        title={isNew ? 'New' : 'Edit'}
+        accent={isNew ? 'Destination' : destinationName || 'Destination'}
+        sub={
+          isNew
+            ? 'Pin a new place on the map — details, coordinates, images and foods.'
+            : 'Update this destination’s details, coordinates, images and foods.'
+        }
+      />
 
-          {/* Name (Chinese) */}
-          <Box>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-              <label style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-                Name (Chinese)
-              </label>
-              <button
-                type="button"
-                onClick={() => {
-                  let cityName = watch('name')
-                  let stateInput = watch('state')
-
-                  // If name contains comma (e.g., "New Orleans, LA"), split it
-                  if (cityName && cityName.includes(',')) {
-                    const parts = cityName.split(',').map(p => p.trim())
-                    cityName = parts[0]
-                    // If state code is provided in name, use it; otherwise use state field
-                    if (parts.length >= 2 && parts[1]) {
-                      stateInput = parts[1]
-                    }
-                  }
-
-                  const translation = generateChineseDestinationName(cityName, stateInput)
-                  if (translation) {
-                    setValue('nameCN', translation)
-                  } else {
-                    console.warn('No translation found for:', { cityName, stateInput })
-                    alert(`Unable to generate Chinese name for "${cityName}, ${stateInput}". The city or state may not be in the translation database. Please enter manually.`)
-                  }
-                }}
-                disabled={!watch('name') || !watch('state')}
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontFamily: 'MarioFont, sans-serif',
-                  fontSize: '12px',
-                  backgroundColor: watch('name') && watch('state') ? '#FFD701' : '#E0E0E0',
-                  color: watch('name') && watch('state') ? '#373737' : '#999',
-                  border: 'none',
-                  borderRadius: '0.5rem',
-                  cursor: watch('name') && watch('state') ? 'pointer' : 'not-allowed',
-                }}
-              >
-                Auto-Generate
-              </button>
-            </Box>
-            <input
-              {...register('nameCN')}
-              placeholder="e.g., 加利福尼亚州·旧金山"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
-              }}
-            />
-          </Box>
-
-          {/* State */}
-          <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              State *
-            </label>
-            <input
-              {...register('state', { required: true })}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: `2px solid ${errors.state ? 'red' : '#373737'}`,
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
-              }}
-            />
-          </Box>
-
-          {/* Date */}
-          <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Date *
-            </label>
-            <input
-              type="date"
-              {...register('date', { required: true })}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: `2px solid ${errors.date ? 'red' : '#373737'}`,
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif'
-              }}
-            />
-          </Box>
-
-          {/* Journey Selector */}
-          <Box sx={{ gridColumn: '1 / -1' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Select Journey
-            </label>
-            <TextField
-              select
-              fullWidth
-              value={watch('journeyId') || ''}
-              onChange={(e) => {
-                const selectedJourney = journeys.find(j => j.id === e.target.value)
-                if (selectedJourney) {
-                  setValue('journeyId', selectedJourney.id)
-                  setValue('journeyName', selectedJourney.name)
-                  setValue('journeyNameCN', selectedJourney.nameCN || '')
-                }
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  fontFamily: 'MarioFont, sans-serif',
-                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' },
-                  '&:hover fieldset': { borderColor: '#373737' },
-                  '&.Mui-focused fieldset': { borderColor: '#FFD701', borderWidth: '2px' }
-                }
-              }}
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+        {/* Basic info */}
+        <Panel>
+          <SectionTitle hint="Name, state and visit date">Basic Info</SectionTitle>
+          <FormGrid cols={2}>
+            <Field
+              label="Name (English)"
+              required
+              error={errors.name ? 'Required' : undefined}
+              hint="Auto-detects state and coordinates while you type."
             >
-              <MenuItem value="">
-                <em>Select a journey...</em>
-              </MenuItem>
-              {journeys.map((journey) => (
-                <MenuItem key={journey.id} value={journey.id} sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-                  {journey.name} {journey.nameCN && `(${journey.nameCN})`}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Box>
+              <Input {...register('name', { required: true })} placeholder="e.g., San Francisco, CA" />
+            </Field>
 
-          {/* Journey Name (English) - Auto-filled, display only */}
-          <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Journey Name (English)
-            </label>
-            <input
-              {...register('journeyName')}
-              readOnly
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #e0e0e0',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: '#f5f5f5',
-                cursor: 'not-allowed'
-              }}
-            />
-          </Box>
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <label
+                  className="uppercase"
+                  style={{ fontFamily: DISPLAY, fontWeight: 600, fontSize: 12.5, letterSpacing: '0.05em', color: C.charcoal }}
+                >
+                  Name (Chinese)
+                </label>
+                <Btn
+                  variant="yellow"
+                  size="xs"
+                  onClick={autoGenerateNameCN}
+                  disabled={!destinationName || !stateValue}
+                >
+                  Auto-Generate
+                </Btn>
+              </div>
+              <Input {...register('nameCN')} placeholder="e.g., 加利福尼亚州·旧金山" />
+            </div>
 
-          {/* Journey Name (Chinese) - Auto-filled, display only */}
-          <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Journey Name (Chinese)
-            </label>
-            <input
-              {...register('journeyNameCN')}
-              readOnly
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #e0e0e0',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: '#f5f5f5',
-                cursor: 'not-allowed'
-              }}
-            />
-          </Box>
+            <Field label="State" required error={errors.state ? 'Required' : undefined}>
+              <Input {...register('state', { required: true })} placeholder="e.g., California" />
+            </Field>
 
-          {/* Journey ID - Display only */}
-          <Box sx={{ gridColumn: '1 / -1' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Journey ID (Auto-generated)
-            </label>
-            <input
-              {...register('journeyId')}
-              readOnly
-              placeholder="Select a journey above"
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: '2px solid #e0e0e0',
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: '#f5f5f5',
-                cursor: 'not-allowed'
-              }}
-            />
-          </Box>
+            <Field label="Date" required error={errors.date ? 'Required' : undefined} hint="Saved as YYYY-MM-DD.">
+              <Input type="date" {...register('date', { required: true })} />
+            </Field>
+          </FormGrid>
+        </Panel>
 
-          {/* Coordinates Section */}
-          <Box sx={{ gridColumn: '1 / -1' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-              <label style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-                Coordinates (Auto-generated from city name)
-              </label>
-              <button
-                type="button"
-                onClick={() => setCoordinatesEditable(!coordinatesEditable)}
-                style={{
-                  padding: '0.5rem 1rem',
-                  fontSize: '14px',
-                  fontFamily: 'MarioFont, sans-serif',
-                  backgroundColor: coordinatesEditable ? '#FFD701' : 'white',
-                  border: '2px solid #373737',
-                  borderRadius: '0.5rem',
-                  cursor: 'pointer'
+        {/* Journey */}
+        <Panel>
+          <SectionTitle hint="Names and ID fill in automatically">Journey</SectionTitle>
+          <div className="flex flex-col gap-4">
+            <Field label="Select Journey">
+              <Select
+                value={watch('journeyId') || ''}
+                onChange={(e) => {
+                  const selectedJourney = journeys.find(j => j.id === e.target.value)
+                  if (selectedJourney) {
+                    setValue('journeyId', selectedJourney.id)
+                    setValue('journeyName', selectedJourney.name)
+                    setValue('journeyNameCN', selectedJourney.nameCN || '')
+                  }
                 }}
               >
-                {coordinatesEditable ? 'Lock' : 'Edit'}
-              </button>
-            </Box>
-            {geocodingError && (
-              <Box sx={{
-                backgroundColor: '#fff3cd',
-                border: '1px solid #ffc107',
-                borderRadius: '0.5rem',
-                padding: '0.75rem',
-                marginBottom: '1rem',
-                fontFamily: 'MarioFont, sans-serif',
-                fontSize: '14px',
-                color: '#856404'
-              }}>
-                ⚠️ {geocodingError}
-              </Box>
-            )}
-          </Box>
+                <option value="">Select a journey…</option>
+                {journeys.map((journey) => (
+                  <option key={journey.id} value={journey.id}>
+                    {journey.name} {journey.nameCN && `(${journey.nameCN})`}
+                  </option>
+                ))}
+              </Select>
+            </Field>
 
-          {/* Latitude */}
-          <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Latitude *
-            </label>
-            <input
-              {...register('lat', { required: true, valueAsNumber: true })}
-              type="number"
-              step="any"
-              readOnly={!coordinatesEditable}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: `2px solid ${errors.lat ? 'red' : coordinatesEditable ? '#373737' : '#e0e0e0'}`,
-                borderRadius: '0.5rem',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: coordinatesEditable ? 'white' : '#f5f5f5',
-                cursor: coordinatesEditable ? 'text' : 'not-allowed'
-              }}
-            />
-          </Box>
+            <FormGrid cols={2}>
+              <Field label="Journey Name (English)" hint="Auto-filled">
+                <Input {...register('journeyName')} readOnly style={readOnlyInputStyle} />
+              </Field>
+              <Field label="Journey Name (Chinese)" hint="Auto-filled">
+                <Input {...register('journeyNameCN')} readOnly style={readOnlyInputStyle} />
+              </Field>
+            </FormGrid>
 
-          {/* Longitude */}
-          <Box>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Longitude *
-            </label>
-            <input
-              {...register('lng', { required: true, valueAsNumber: true })}
-              type="number"
-              step="any"
-              readOnly={!coordinatesEditable}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                fontSize: '16px',
-                border: `2px solid ${errors.lng ? 'red' : coordinatesEditable ? '#373737' : '#e0e0e0'}`,
-                borderRadius: '0.5rem',
-                backgroundColor: coordinatesEditable ? 'white' : '#f5f5f5',
-                cursor: coordinatesEditable ? 'text' : 'not-allowed',
-                fontFamily: 'MarioFont, sans-serif'
-              }}
-            />
-          </Box>
+            <Field label="Journey ID (Auto-generated)">
+              <Input {...register('journeyId')} readOnly placeholder="Select a journey above" style={readOnlyInputStyle} />
+            </Field>
+          </div>
+        </Panel>
 
-          {/* Detect Coordinates Button */}
-          <Box sx={{ gridColumn: '1 / -1', display: 'flex', gap: 2, alignItems: 'center' }}>
-            <Button
-              variant="outlined"
+        {/* Location */}
+        <Panel>
+          <SectionTitle hint="Auto-generated from the destination name">Location</SectionTitle>
+          {geocodingError && (
+            <div className="mb-4">
+              <Alert tone="info">{geocodingError}</Alert>
+            </div>
+          )}
+          <FormGrid cols={2}>
+            <Field label="Latitude" required error={errors.lat ? 'Required' : undefined}>
+              <Input
+                {...register('lat', { required: true, valueAsNumber: true })}
+                type="number"
+                step="any"
+                readOnly={!coordinatesEditable}
+                style={!coordinatesEditable ? readOnlyInputStyle : undefined}
+              />
+            </Field>
+            <Field label="Longitude" required error={errors.lng ? 'Required' : undefined}>
+              <Input
+                {...register('lng', { required: true, valueAsNumber: true })}
+                type="number"
+                step="any"
+                readOnly={!coordinatesEditable}
+                style={!coordinatesEditable ? readOnlyInputStyle : undefined}
+              />
+            </Field>
+          </FormGrid>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Btn
+              variant="white"
+              size="sm"
+              icon={<PinSvg />}
+              loading={geocoding}
               onClick={() => {
                 const name = watch('name')
                 if (name) {
@@ -730,245 +972,121 @@ export default function DestinationFormPage() {
                   setGeocodingError('Please enter a destination name first')
                 }
               }}
-              sx={{
-                fontFamily: 'MarioFont, sans-serif',
-                textTransform: 'none',
-                borderColor: '#373737',
-                color: '#373737',
-                '&:hover': {
-                  borderColor: '#373737',
-                  backgroundColor: 'rgba(55, 55, 55, 0.04)'
-                }
-              }}
             >
               Detect Coordinates
-            </Button>
-            <Button
-              variant="text"
-              onClick={() => setCoordinatesEditable(!coordinatesEditable)}
-              sx={{
-                fontFamily: 'MarioFont, sans-serif',
-                textTransform: 'none',
-                color: '#373737'
-              }}
-            >
+            </Btn>
+            <Btn variant="white" size="sm" onClick={() => setCoordinatesEditable(!coordinatesEditable)}>
               {coordinatesEditable ? 'Lock Coordinates' : 'Edit Manually'}
-            </Button>
-          </Box>
-        </Box>
+            </Btn>
+          </div>
+        </Panel>
 
-        {/* Description (English) */}
-        <Box sx={{ marginTop: '1.5rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-            Description (English)
-          </label>
-          <textarea
-            {...register('description')}
-            rows={4}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              fontSize: '16px',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              fontFamily: 'MarioFont, sans-serif',
-              resize: 'vertical'
-            }}
-          />
-        </Box>
+        {/* Descriptions */}
+        <Panel>
+          <SectionTitle>Descriptions</SectionTitle>
+          <div className="flex flex-col gap-4">
+            <Field label="Description (English)">
+              <Textarea {...register('description')} rows={4} />
+            </Field>
+            <Field label="Description (Chinese)">
+              <Textarea {...register('descriptionCN')} rows={4} />
+            </Field>
+          </div>
+        </Panel>
 
-        {/* Description (Chinese) */}
-        <Box sx={{ marginTop: '1.5rem' }}>
-          <label style={{ display: 'block', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-            Description (Chinese)
-          </label>
-          <textarea
-            {...register('descriptionCN')}
-            rows={4}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              fontSize: '16px',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              fontFamily: 'MarioFont, sans-serif',
-              resize: 'vertical'
-            }}
-          />
-        </Box>
-
-        {/* Show Map Toggle */}
-        <Box sx={{ marginTop: '1.5rem', padding: '1rem', backgroundColor: '#f5f5f5', borderRadius: '0.5rem', border: '2px solid #373737' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <input
-              type="checkbox"
-              {...register('showMap')}
-              id="showMap"
-              style={{
-                width: '24px',
-                height: '24px',
-                cursor: 'pointer',
-                accentColor: '#FFD701'
-              }}
-            />
-            <label htmlFor="showMap" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
-              Show Map in Carousel
-            </label>
-          </Box>
-          <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', marginTop: '0.5rem', marginLeft: '40px' }}>
-            When enabled, the last tab in the destination carousel will display a map instead of the image number.
-          </Typography>
-        </Box>
-
-        {/* Extra Info - Visit Details */}
-        <Box sx={{ marginTop: '1.5rem', padding: '1.5rem', backgroundColor: '#f5f5f5', borderRadius: '0.5rem', border: '2px solid #373737' }}>
-          <Typography sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '1rem', color: '#373737' }}>
-            Visit Details
-          </Typography>
-
-          {/* Visited by Myself */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
-            <input
-              type="checkbox"
-              {...register('visitedByMyself')}
-              id="visitedByMyself"
-              style={{
-                width: '24px',
-                height: '24px',
-                cursor: 'pointer',
-                accentColor: '#FFD701'
-              }}
-            />
-            <label htmlFor="visitedByMyself" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
-              Visited by Myself
-            </label>
-          </Box>
-
-          {/* Visited on Trains */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, marginBottom: '1rem' }}>
-            <input
-              type="checkbox"
-              {...register('visitedOnTrains')}
-              id="visitedOnTrains"
-              style={{
-                width: '24px',
-                height: '24px',
-                cursor: 'pointer',
-                accentColor: '#FFD701'
-              }}
-            />
-            <label htmlFor="visitedOnTrains" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
-              Visited on Trains
-            </label>
-          </Box>
-
-          {/* Stayed Overnight */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <input
-              type="checkbox"
-              {...register('stayedOvernight')}
-              id="stayedOvernight"
-              style={{
-                width: '24px',
-                height: '24px',
-                cursor: 'pointer',
-                accentColor: '#FFD701'
-              }}
-            />
-            <label htmlFor="stayedOvernight" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1 }}>
-              Stayed Overnight
-            </label>
-          </Box>
-        </Box>
+        {/* Settings */}
+        <Panel>
+          <SectionTitle hint="Visibility and visit details">Settings</SectionTitle>
+          <div className="flex flex-col gap-4">
+            <div>
+              <Toggle checked={showMap || false} onChange={v => setValue('showMap', v)} label="Show Map in Carousel" />
+              <p className="mt-1.5" style={{ marginLeft: 56, fontFamily: BODY, fontWeight: 600, fontSize: 12, color: C.gray }}>
+                When enabled, the last tab in the destination carousel will display a map instead of the image number.
+              </p>
+            </div>
+            <Checkbox {...register('visitedByMyself')} label="Visited by Myself" />
+            <Checkbox {...register('visitedOnTrains')} label="Visited on Trains" />
+            <Checkbox {...register('stayedOvernight')} label="Stayed Overnight" />
+          </div>
+        </Panel>
 
         {/* Images */}
-        <Box sx={{ marginTop: '1.5rem' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <label style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              Images
-            </label>
+        <Panel>
+          <SectionTitle hint={images.length > 0 ? 'Drag thumbnails to reorder' : undefined}>Images</SectionTitle>
 
-            <input
-              type="file"
-              id="image-upload"
-              multiple
-              accept="image/*"
-              onChange={handleImageUpload}
-              disabled={uploading}
-              style={{ display: 'none' }}
-            />
+          <input
+            type="file"
+            id="image-upload"
+            multiple
+            accept="image/*"
+            onChange={handleImageUpload}
+            disabled={uploading}
+            style={{ display: 'none' }}
+          />
 
-            <label
-              htmlFor="image-upload"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.75rem 1.5rem',
-                fontSize: '16px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: uploading ? '#e0e0e0' : '#FFD701',
-                color: '#373737',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                cursor: uploading ? 'not-allowed' : 'pointer',
-                fontWeight: 'bold',
-                transition: 'all 0.2s'
-              }}
-            >
-              {uploading ? 'Uploading...' : 'Choose Images'}
-            </label>
-          </Box>
-
-          {uploading && (
-            <Box sx={{
-              marginTop: '1rem',
-              padding: '0.75rem',
-              backgroundColor: '#e3f2fd',
-              border: '1px solid #2196f3',
-              borderRadius: '0.5rem',
-              fontFamily: 'MarioFont, sans-serif',
-              color: '#1976d2'
-            }}>
-              ⏳ Uploading images...
-            </Box>
-          )}
+          <label
+            htmlFor="image-upload"
+            className="block rounded-2xl p-6 text-center"
+            style={{
+              border: `2.5px dashed ${C.charcoal}`,
+              background: C.offwhite,
+              cursor: uploading ? 'not-allowed' : 'pointer',
+              opacity: uploading ? 0.7 : 1,
+            }}
+          >
+            {uploading ? (
+              <span
+                className="inline-flex items-center gap-2"
+                style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 14, color: C.charcoal }}
+              >
+                <span className="adm-spin" aria-hidden="true" />
+                Uploading images…
+              </span>
+            ) : (
+              <>
+                <span className="block" style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 15, color: C.charcoal }}>
+                  Choose Images
+                </span>
+                <span className="mt-1 block" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 12.5, color: C.gray }}>
+                  Click to browse — multiple allowed, uploaded to Cloudinary
+                </span>
+              </>
+            )}
+          </label>
 
           {images.length > 0 && (
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
+            <div className="mt-4 grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
               {images.map((url, index) => (
-                <Box
+                <div
                   key={index}
                   draggable
                   onDragStart={(e) => handleDragStart(e, index)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, index)}
-                  sx={{
+                  className="rounded-xl"
+                  style={{
                     position: 'relative',
                     paddingBottom: '100%', // Square aspect ratio
                     overflow: 'hidden',
-                    borderRadius: '0.5rem',
-                    border: '2px solid #e0e0e0',
-                    backgroundColor: '#f5f5f5',
+                    border: `2px solid ${C.charcoal}`,
+                    background: C.offwhite,
                     cursor: 'move'
                   }}
                 >
-                  <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '0.5rem',
-                      left: '0.5rem',
-                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                      color: 'white',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '0.25rem',
-                      fontSize: '12px',
-                      fontFamily: 'MarioFont, sans-serif',
-                      zIndex: 1
+                  <span
+                    className="absolute left-2 top-2 rounded-md px-1.5 py-0.5"
+                    style={{
+                      background: C.charcoal,
+                      color: '#FFFFFF',
+                      fontFamily: DISPLAY,
+                      fontWeight: 700,
+                      fontSize: 11,
+                      zIndex: 1,
                     }}
+                    aria-hidden="true"
                   >
                     {index + 1}
-                  </Box>
+                  </span>
                   <img
                     src={url}
                     alt={`Image ${index + 1}`}
@@ -982,645 +1100,102 @@ export default function DestinationFormPage() {
                       pointerEvents: 'none'
                     }}
                   />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(index)}
-                    style={{
-                      position: 'absolute',
-                      top: '0.5rem',
-                      right: '0.5rem',
-                      backgroundColor: 'rgba(255, 0, 0, 0.9)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '50%',
-                      width: '32px',
-                      height: '32px',
-                      cursor: 'pointer',
-                      fontSize: '20px',
-                      fontWeight: 'bold',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      transition: 'all 0.2s',
-                      boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                      zIndex: 2
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 0, 0, 1)'
-                      e.currentTarget.style.transform = 'scale(1.1)'
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.backgroundColor = 'rgba(255, 0, 0, 0.9)'
-                      e.currentTarget.style.transform = 'scale(1)'
-                    }}
-                  >
-                    ×
-                  </button>
-                </Box>
+                  <span className="absolute" style={{ top: 6, right: 6, zIndex: 2 }}>
+                    <IconBtn label={`Remove image ${index + 1}`} title="Remove image" danger size={28} onClick={() => removeImage(index)}>
+                      <CloseSvg />
+                    </IconBtn>
+                  </span>
+                </div>
               ))}
-            </Box>
+            </div>
           )}
-        </Box>
+        </Panel>
 
-        {/* Foods Section */}
-        <Box sx={{ marginTop: '3rem' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <Typography sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '24px', fontWeight: 'bold' }}>
-              Foods & Restaurants
-            </Typography>
-            <button
-              type="button"
-              onClick={() => {
-                setCurrentFood({
-                  cuisineStyle: 'East Asian',
-                  lat: watch('lat'),
-                  lng: watch('lng')
-                })
-                setEditingFoodIndex(null)
-                setFoodDrawerOpen(true)
-              }}
-              style={{
-                padding: '0.75rem 1.5rem',
-                fontSize: '16px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: '#FFD701',
-                color: '#373737',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                fontWeight: 'bold'
-              }}
-            >
-              + Add Food
-            </button>
-          </Box>
+        {/* Foods */}
+        <Panel>
+          <div className="flex items-start justify-between gap-3">
+            <SectionTitle hint="Saved together with the destination">Foods &amp; Restaurants</SectionTitle>
+            <Btn size="sm" icon={<PlusSvg />} onClick={openAddFood}>
+              Add Food
+            </Btn>
+          </div>
 
           {foods.length === 0 ? (
-            <Box sx={{
-              padding: '2rem',
-              backgroundColor: '#f5f5f5',
-              borderRadius: '0.5rem',
-              border: '2px dashed #ccc',
-              textAlign: 'center'
-            }}>
-              <Typography sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                No foods added yet. Click "Add Food" to get started.
-              </Typography>
-            </Box>
-          ) : (
-            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
-              {foods.map((food, index) => (
-                <Box
-                  key={food.id || index}
-                  sx={{
-                    backgroundColor: 'white',
-                    border: '2px solid #373737',
-                    borderRadius: '0.5rem',
-                    overflow: 'hidden',
-                    transition: 'transform 0.2s',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
-                    }
-                  }}
-                >
-                  <Box sx={{ position: 'relative', paddingBottom: '66.67%', backgroundColor: '#f5f5f5' }}>
-                    <img
-                      src={food.imageUrl}
-                      alt={food.name}
-                      style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover'
-                      }}
-                    />
-                    <Box sx={{
-                      position: 'absolute',
-                      top: '0.5rem',
-                      right: '0.5rem',
-                      backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                      color: 'white',
-                      padding: '0.25rem 0.5rem',
-                      borderRadius: '0.25rem',
-                      fontSize: '12px',
-                      fontFamily: 'MarioFont, sans-serif'
-                    }}>
-                      {food.cuisineStyle}
-                    </Box>
-                  </Box>
-
-                  <Box sx={{ padding: '1rem' }}>
-                    <Typography sx={{
-                      fontFamily: 'MarioFontTitle, sans-serif',
-                      fontSize: '16px',
-                      fontWeight: 'bold',
-                      marginBottom: '0.25rem'
-                    }}>
-                      {food.name}
-                      {food.nameCN && (
-                        <Typography component="span" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#666', marginLeft: '0.5rem' }}>
-                          ({food.nameCN})
-                        </Typography>
-                      )}
-                    </Typography>
-
-                    <Typography sx={{
-                      fontFamily: 'MarioFont, sans-serif',
-                      fontSize: '14px',
-                      color: '#666',
-                      marginBottom: '0.5rem'
-                    }}>
-                      {food.restaurantName}
-                    </Typography>
-
-                    <Box sx={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setCurrentFood(food)
-                          setEditingFoodIndex(index)
-                          setFoodDrawerOpen(true)
-                        }}
-                        style={{
-                          flex: 1,
-                          padding: '0.5rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: 'white',
-                          color: '#373737',
-                          border: '2px solid #373737',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (confirm('Are you sure you want to delete this food?')) {
-                            const updatedFoods = foods.filter((_, i) => i !== index)
-                            setFoods(updatedFoods)
-                          }
-                        }}
-                        style={{
-                          flex: 1,
-                          padding: '0.5rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#d32f2f',
-                          color: 'white',
-                          border: '2px solid #d32f2f',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </Box>
-                  </Box>
-                </Box>
-              ))}
-            </Box>
-          )}
-        </Box>
-
-        {/* Form Actions */}
-        <Box sx={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end' }}>
-          <ActionButtons insideForm={true} />
-        </Box>
-      </Box>
-
-      {/* Dangerous Zone - Delete Destination */}
-      {!isNew && (
-        <Box
-          sx={{
-            backgroundColor: 'white',
-            padding: { xs: '1.5rem', sm: '2rem' },
-            borderRadius: '1rem',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            marginTop: '2rem',
-            border: '2px solid #d32f2f'
-          }}
-        >
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, gap: { xs: '1.5rem', sm: 0 } }}>
-            <Box>
-              <Typography
-                variant="h6"
-                sx={{
-                  fontFamily: 'MarioFontTitle, sans-serif',
-                  fontSize: 'clamp(20px, 5vw, 24px)',
-                  color: '#d32f2f',
-                  marginBottom: '0.5rem'
-                }}
-              >
-                ⚠️ Dangerous Zone
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{
-                  fontFamily: 'MarioFont, sans-serif',
-                  fontSize: '14px',
-                  color: '#666'
-                }}
-              >
-                Once you delete this destination, there is no going back. Please be certain.
-              </Typography>
-            </Box>
-            <Button
-              variant="outlined"
-              startIcon={<DeleteIcon />}
-              onClick={() => setDeleteDrawerOpen(true)}
-              sx={{
-                color: '#d32f2f',
-                borderColor: '#d32f2f',
-                fontFamily: 'MarioFont, sans-serif',
-                padding: '0.75rem 1.5rem',
-                fontSize: '16px',
-                width: { xs: '100%', sm: 'auto' },
-                '&:hover': {
-                  borderColor: '#d32f2f',
-                  backgroundColor: 'rgba(211, 47, 47, 0.04)'
-                }
-              }}
+            <div
+              className="rounded-2xl p-8 text-center"
+              style={{ border: '2.5px dashed #C9C9C2', background: C.offwhite }}
             >
+              <span style={{ fontFamily: BODY, fontWeight: 600, fontSize: 14, color: C.gray }}>
+                No foods added yet. Click "Add Food" to get started.
+              </span>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {foods.map((food, index) => (
+                <FoodRow
+                  key={food.id || index}
+                  food={food}
+                  onEdit={() => openEditFood(index)}
+                  onDelete={() => removeFood(index)}
+                />
+              ))}
+            </div>
+          )}
+        </Panel>
+
+        {/* Form actions */}
+        <div className="flex flex-wrap justify-end gap-3">
+          <Btn variant="white" size="lg" onClick={() => router.push('/admin/destinations')}>
+            Cancel
+          </Btn>
+          <Btn variant="primary" size="lg" type="submit" loading={loading} arrow>
+            {isNew ? 'Create Destination' : 'Save Changes'}
+          </Btn>
+        </div>
+      </form>
+
+      {/* Dangerous Zone — edit mode only */}
+      {!isNew && (
+        <Panel
+          tone="danger"
+          title="Dangerous Zone"
+          className="mt-6"
+          actions={
+            <Btn variant="danger" onClick={() => setDeleteConfirmOpen(true)}>
               Delete Destination
-            </Button>
-          </Box>
-        </Box>
+            </Btn>
+          }
+        >
+          <p style={{ fontFamily: BODY, fontWeight: 600, fontSize: 14, color: C.gray }}>
+            Once you delete this destination, there is no going back. Please be certain.
+          </p>
+        </Panel>
       )}
 
-      {/* Delete Confirmation Drawer */}
-      <Drawer
-        anchor="right"
-        open={deleteDrawerOpen}
-        onClose={() => setDeleteDrawerOpen(false)}
-      >
-        <Box sx={{ width: 450, padding: 3 }}>
-          <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 2 }}>
-            Delete Destination: {destinationName}
-          </Typography>
+      {/* Delete confirmation */}
+      <ConfirmModal
+        open={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={handleDeleteDestination}
+        title="Delete Destination"
+        message={`Are you sure you want to delete "${destinationName || 'this destination'}"? All data including images, descriptions, and location information will be permanently removed. This action cannot be undone.`}
+        confirmLabel="Confirm Delete"
+        loading={deleting}
+      />
 
-          <Alert severity="error" sx={{ mb: 3 }}>
-            <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold' }}>
-              This action cannot be undone!
-            </Typography>
-          </Alert>
-
-          <Typography variant="body1" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 3 }}>
-            Are you sure you want to delete this destination? All data including images, descriptions, and location information will be permanently removed.
-          </Typography>
-
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-            <Button
-              variant="outlined"
-              onClick={() => setDeleteDrawerOpen(false)}
-              disabled={deleting}
-              sx={{
-                fontFamily: 'MarioFont, sans-serif',
-                color: '#373737',
-                borderColor: '#373737'
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleDeleteDestination}
-              disabled={deleting}
-              sx={{
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: '#d32f2f',
-                '&:hover': { backgroundColor: '#b71c1c' }
-              }}
-            >
-              {deleting ? 'Deleting...' : 'Confirm Delete'}
-            </Button>
-          </Box>
-        </Box>
-      </Drawer>
-
-      {/* Food Edit/Create Drawer */}
-      <Drawer
-        anchor="right"
+      {/* Food create/edit drawer */}
+      <FoodDrawer
         open={foodDrawerOpen}
-        onClose={() => {
-          setFoodDrawerOpen(false)
-          setCurrentFood({})
-          setEditingFoodIndex(null)
-          setGeocodingFoodError(null)
-        }}
-      >
-        <Box sx={{ width: { xs: '100vw', sm: 500 }, padding: 3 }}>
-          <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 3 }}>
-            {editingFoodIndex !== null ? 'Edit Food' : 'Add Food'}
-          </Typography>
-
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {/* Image Selection */}
-            <Box>
-              <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', mb: 1 }}>
-                Select Image *
-              </Typography>
-              {images.length === 0 ? (
-                <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px', color: '#999' }}>
-                  Please add destination images first
-                </Typography>
-              ) : (
-                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '0.5rem' }}>
-                  {images.map((url, idx) => (
-                    <Box
-                      key={idx}
-                      onClick={() => setCurrentFood({ ...currentFood, imageUrl: url })}
-                      sx={{
-                        position: 'relative',
-                        paddingBottom: '100%',
-                        cursor: 'pointer',
-                        border: currentFood.imageUrl === url ? '3px solid #FFD701' : '2px solid #e0e0e0',
-                        borderRadius: '0.5rem',
-                        overflow: 'hidden',
-                        transition: 'all 0.2s',
-                        '&:hover': {
-                          borderColor: '#FFD701',
-                          transform: 'scale(1.05)'
-                        }
-                      }}
-                    >
-                      <img
-                        src={url}
-                        alt={`Option ${idx + 1}`}
-                        style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
-                      />
-                      {currentFood.imageUrl === url && (
-                        <Box sx={{
-                          position: 'absolute',
-                          top: '0.25rem',
-                          right: '0.25rem',
-                          backgroundColor: '#FFD701',
-                          color: '#373737',
-                          borderRadius: '50%',
-                          width: '24px',
-                          height: '24px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontWeight: 'bold'
-                        }}>
-                          ✓
-                        </Box>
-                      )}
-                    </Box>
-                  ))}
-                </Box>
-              )}
-            </Box>
-
-            {/* Food Name (English) */}
-            <TextField
-              label="Food Name (English)"
-              value={currentFood.name || ''}
-              onChange={(e) => setCurrentFood({ ...currentFood, name: e.target.value })}
-              required
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  fontFamily: 'MarioFont, sans-serif',
-                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
-                },
-                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
-              }}
-            />
-
-            {/* Food Name (Chinese) */}
-            <TextField
-              label="Food Name (Chinese)"
-              value={currentFood.nameCN || ''}
-              onChange={(e) => setCurrentFood({ ...currentFood, nameCN: e.target.value })}
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  fontFamily: 'MarioFont, sans-serif',
-                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
-                },
-                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
-              }}
-            />
-
-            {/* Restaurant Name */}
-            <TextField
-              label="Restaurant Name"
-              value={currentFood.restaurantName || ''}
-              onChange={(e) => setCurrentFood({ ...currentFood, restaurantName: e.target.value })}
-              required
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  fontFamily: 'MarioFont, sans-serif',
-                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
-                },
-                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
-              }}
-            />
-
-            {/* Cuisine Style */}
-            <TextField
-              select
-              label="Cuisine Style"
-              value={currentFood.cuisineStyle || 'East Asian'}
-              onChange={(e) => setCurrentFood({ ...currentFood, cuisineStyle: e.target.value as CuisineStyle })}
-              required
-              fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  fontFamily: 'MarioFont, sans-serif',
-                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
-                },
-                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
-              }}
-            >
-              {['East Asian', 'American', 'European', 'Southeast Asian', 'South Asian', 'Latin American', 'Other', 'Drinks', 'Desserts'].map((style) => (
-                <MenuItem key={style} value={style} sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-                  {style}
-                </MenuItem>
-              ))}
-            </TextField>
-
-            {/* Restaurant Address */}
-            <TextField
-              label="Restaurant Address"
-              value={currentFood.restaurantAddress || ''}
-              onChange={(e) => setCurrentFood({ ...currentFood, restaurantAddress: e.target.value })}
-              fullWidth
-              multiline
-              rows={2}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  fontFamily: 'MarioFont, sans-serif',
-                  '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
-                },
-                '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
-              }}
-            />
-
-            {/* Geocode Button */}
-            {currentFood.restaurantAddress && (
-              <Button
-                variant="outlined"
-                onClick={async () => {
-                  try {
-                    setGeocodingFoodError(null)
-                    const response = await fetch(
-                      `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(currentFood.restaurantAddress!)}&key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}`
-                    )
-                    const data = await response.json()
-
-                    console.log('Geocoding API response:', data)
-                    console.log('Status:', data.status)
-
-                    if (data.status === 'OK' && data.results.length > 0) {
-                      const location = data.results[0].geometry.location
-                      setCurrentFood({
-                        ...currentFood,
-                        lat: location.lat,
-                        lng: location.lng
-                      })
-                    } else {
-                      console.error('Geocoding failed with status:', data.status, 'Error message:', data.error_message)
-                      setGeocodingFoodError(`Could not find coordinates for "${currentFood.restaurantAddress}". Status: ${data.status}. Please enter manually.`)
-                    }
-                  } catch (error) {
-                    console.error('Geocoding error:', error)
-                    setGeocodingFoodError('Failed to geocode address. Please enter coordinates manually.')
-                  }
-                }}
-                sx={{
-                  fontFamily: 'MarioFont, sans-serif',
-                  textTransform: 'none',
-                  borderColor: '#373737',
-                  color: '#373737'
-                }}
-              >
-                Detect Coordinates from Address
-              </Button>
-            )}
-
-            {geocodingFoodError && (
-              <Alert severity="warning" sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-                {geocodingFoodError}
-              </Alert>
-            )}
-
-            {/* Coordinates */}
-            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-              <TextField
-                label="Latitude"
-                type="number"
-                value={currentFood.lat || ''}
-                onChange={(e) => setCurrentFood({ ...currentFood, lat: parseFloat(e.target.value) })}
-                required
-                inputProps={{ step: 'any' }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    fontFamily: 'MarioFont, sans-serif',
-                    '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
-                  },
-                  '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
-                }}
-              />
-              <TextField
-                label="Longitude"
-                type="number"
-                value={currentFood.lng || ''}
-                onChange={(e) => setCurrentFood({ ...currentFood, lng: parseFloat(e.target.value) })}
-                required
-                inputProps={{ step: 'any' }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    fontFamily: 'MarioFont, sans-serif',
-                    '& fieldset': { borderColor: '#373737', borderWidth: '2px' }
-                  },
-                  '& .MuiInputLabel-root': { fontFamily: 'MarioFont, sans-serif' }
-                }}
-              />
-            </Box>
-
-            {/* Action Buttons */}
-            <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
-              <Button
-                variant="outlined"
-                onClick={() => {
-                  setFoodDrawerOpen(false)
-                  setCurrentFood({})
-                  setEditingFoodIndex(null)
-                }}
-                sx={{
-                  flex: 1,
-                  fontFamily: 'MarioFont, sans-serif',
-                  color: '#373737',
-                  borderColor: '#373737'
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() => {
-                  if (!currentFood.name || !currentFood.restaurantName || !currentFood.imageUrl || !currentFood.cuisineStyle) {
-                    alert('Please fill in all required fields')
-                    return
-                  }
-
-                  const foodData: FoodFormData = {
-                    id: currentFood.id || Date.now().toString(16),
-                    name: currentFood.name!,
-                    nameCN: currentFood.nameCN || '',
-                    restaurantName: currentFood.restaurantName!,
-                    restaurantAddress: currentFood.restaurantAddress || '',
-                    cuisineStyle: currentFood.cuisineStyle!,
-                    imageUrl: currentFood.imageUrl!,
-                    lat: currentFood.lat!,
-                    lng: currentFood.lng!
-                  }
-
-                  if (editingFoodIndex !== null) {
-                    const updatedFoods = [...foods]
-                    updatedFoods[editingFoodIndex] = foodData
-                    setFoods(updatedFoods)
-                  } else {
-                    setFoods([...foods, foodData])
-                  }
-
-                  setFoodDrawerOpen(false)
-                  setCurrentFood({})
-                  setEditingFoodIndex(null)
-                  setGeocodingFoodError(null)
-                }}
-                disabled={!currentFood.name || !currentFood.restaurantName || !currentFood.imageUrl || !currentFood.cuisineStyle}
-                sx={{
-                  flex: 1,
-                  fontFamily: 'MarioFont, sans-serif',
-                  backgroundColor: '#FFD701',
-                  color: '#373737',
-                  '&:hover': { backgroundColor: '#FFC700' },
-                  '&.Mui-disabled': { backgroundColor: '#e0e0e0', color: '#999' }
-                }}
-              >
-                {editingFoodIndex !== null ? 'Update Food' : 'Add Food'}
-              </Button>
-            </Box>
-          </Box>
-        </Box>
-      </Drawer>
-    </Box>
+        editing={editingFoodIndex !== null}
+        images={images}
+        currentFood={currentFood}
+        geocodingError={geocodingFoodError}
+        onChange={setCurrentFood}
+        onGeocode={geocodeFoodAddress}
+        onClose={closeFoodDrawer}
+        onCancel={cancelFoodDrawer}
+        onSave={saveFood}
+      />
+    </div>
   )
 }

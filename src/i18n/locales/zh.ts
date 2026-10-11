@@ -13,7 +13,7 @@ export const zh: Translations = {
 
   // Homepage
   homepage: {
-    title: '侯江天的日记 | 美国',
+    title: '小猴同学旅行日记 - 美国游记',
     description: '欢迎来到我的旅行日记网站！欣赏我在美国火车上拍摄的照片......以及更多！',
     slogan: '乘火车探索美国',
     carouselText: '我在美国各地旅行的照片',

@@ -1,10 +1,27 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Box, Button, TextField, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
-import { Delete as DeleteIcon, Search as SearchIcon } from '@mui/icons-material'
-import AdminLoading from 'src/components/AdminLoading'
+import {
+  Alert,
+  Btn,
+  BODY,
+  C,
+  Card,
+  Chip,
+  ConfirmModal,
+  DISPLAY,
+  EmptyState,
+  Field,
+  FormGrid,
+  IconBtn,
+  Input,
+  PageHeader,
+  Panel,
+  SearchPill,
+  SectionLoading,
+  Select,
+  TableWrap,
+} from '../_ui'
 
 interface EmailSubscription {
   id: number
@@ -16,8 +33,39 @@ interface EmailSubscription {
   unsubscribeToken: string
 }
 
+function PencilSvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M4 20l1.1-4.1L16.6 4.4a2.12 2.12 0 0 1 3 3L8.1 18.9 4 20z"
+        stroke="currentColor"
+        strokeWidth={2.8}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M14.8 6.2l3 3" stroke="currentColor" strokeWidth={2.8} strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function TrashSvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 7h16" stroke="currentColor" strokeWidth={3} strokeLinecap="round" />
+      <path d="M9.5 7V5.4A1.4 1.4 0 0 1 10.9 4h2.2a1.4 1.4 0 0 1 1.4 1.4V7" stroke="currentColor" strokeWidth={3} strokeLinecap="round" />
+      <path
+        d="M6.6 7l0.9 12.1A1.9 1.9 0 0 0 9.4 21h5.2a1.9 1.9 0 0 0 1.9-1.9L17.4 7"
+        stroke="currentColor"
+        strokeWidth={3}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M10 11.5v5M14 11.5v5" stroke="currentColor" strokeWidth={3} strokeLinecap="round" />
+    </svg>
+  )
+}
+
 export default function EmailSubscriptionsPage() {
-  const router = useRouter()
   const [subscriptions, setSubscriptions] = useState<EmailSubscription[]>([])
   const [filteredSubscriptions, setFilteredSubscriptions] = useState<EmailSubscription[]>([])
   const [loading, setLoading] = useState(true)
@@ -29,6 +77,10 @@ export default function EmailSubscriptionsPage() {
     preferredLocale: 'en'
   })
   const [editing, setEditing] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [feedback, setFeedback] = useState<{ tone: 'error' | 'success'; text: string } | null>(null)
+  const [deleteTarget, setDeleteTarget] = useState<EmailSubscription | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   useEffect(() => {
     fetchSubscriptions()
@@ -63,6 +115,8 @@ export default function EmailSubscriptionsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setSaving(true)
+    setFeedback(null)
 
     const payload = {
       name: formData.name,
@@ -79,13 +133,17 @@ export default function EmailSubscriptionsPage() {
       })
 
       if (response.ok) {
-        alert(editing ? 'Email subscription updated!' : 'Email subscription added!')
+        setFeedback({ tone: 'success', text: editing ? 'Email subscription updated!' : 'Email subscription added!' })
         resetForm()
         fetchSubscriptions()
+      } else {
+        setFeedback({ tone: 'error', text: 'Failed to save email subscription' })
       }
     } catch (error) {
       console.error('Failed to save email subscription:', error)
-      alert('Failed to save email subscription')
+      setFeedback({ tone: 'error', text: 'Failed to save email subscription' })
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -97,25 +155,33 @@ export default function EmailSubscriptionsPage() {
       preferredLocale: subscription.preferredLocale
     })
     setEditing(true)
+    setFeedback(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleDelete = async (email: string) => {
-    if (!confirm('Are you sure you want to delete this email subscription?')) return
+  const confirmDelete = async () => {
+    if (!deleteTarget) return
+    setDeleting(true)
 
     try {
       const response = await fetch('/api/admin/email-subscriptions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, _method: 'DELETE' })
+        body: JSON.stringify({ email: deleteTarget.email, _method: 'DELETE' })
       })
 
       if (response.ok) {
-        alert('Email subscription deleted!')
+        setFeedback({ tone: 'success', text: 'Email subscription deleted!' })
+        setDeleteTarget(null)
         fetchSubscriptions()
+      } else {
+        setFeedback({ tone: 'error', text: 'Failed to delete email subscription' })
       }
     } catch (error) {
       console.error('Failed to delete email subscription:', error)
-      alert('Failed to delete email subscription')
+      setFeedback({ tone: 'error', text: 'Failed to delete email subscription' })
+    } finally {
+      setDeleting(false)
     }
   }
 
@@ -130,271 +196,179 @@ export default function EmailSubscriptionsPage() {
   }
 
   if (loading) {
-    return <AdminLoading message="Loading Email Subscriptions..." />
+    return <SectionLoading label="Loading subscriptions…" icon="star" />
   }
 
   return (
-    <Box sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-      <Box sx={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', margin: 0 }}>
-          Email Subscriptions ({filteredSubscriptions.length})
-        </h1>
-      </Box>
+    <div>
+      <PageHeader
+        kicker="ADMIN"
+        title="Email"
+        accent="Subscriptions"
+        sub={`${subscriptions.length} total subscriber${subscriptions.length === 1 ? '' : 's'} — emailed when a new journey goes live.`}
+      />
 
-      {/* Form */}
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          backgroundColor: 'white',
-          padding: { xs: '1rem', sm: '2rem' },
-          borderRadius: '1rem',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-          marginBottom: '2rem'
-        }}
-      >
-        <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', marginBottom: '1.5rem' }}>
-          {editing ? 'Edit Email Subscription' : 'Add New Email Subscription'}
-        </Typography>
+      <Panel title={editing ? 'Edit Subscriber' : 'Add Subscriber'} className="mb-6">
+        {feedback && (
+          <div className="mb-4">
+            <Alert tone={feedback.tone} onClose={() => setFeedback(null)}>
+              {feedback.text}
+            </Alert>
+          </div>
+        )}
+        <form onSubmit={handleSubmit}>
+          <FormGrid cols={2}>
+            <Field label="Name" htmlFor="es-name" required>
+              <Input
+                id="es-name"
+                value={formData.name}
+                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                required
+              />
+            </Field>
+            <Field label="Email" htmlFor="es-email" required hint={editing ? 'Email cannot be changed while editing' : undefined}>
+              <Input
+                id="es-email"
+                type="email"
+                value={formData.email}
+                onChange={e => setFormData({ ...formData, email: e.target.value })}
+                required
+                disabled={editing}
+              />
+            </Field>
+            <Field label="Preferred Language" htmlFor="es-locale">
+              <div className="max-w-[220px]">
+                <Select
+                  id="es-locale"
+                  value={formData.preferredLocale}
+                  onChange={e => setFormData({ ...formData, preferredLocale: e.target.value })}
+                >
+                  <option value="en">English</option>
+                  <option value="zh">Chinese</option>
+                </Select>
+              </div>
+            </Field>
+          </FormGrid>
 
-        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: '1rem' }}>
-          <TextField
-            label="Name"
-            value={formData.name}
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            required
-            fullWidth
-            sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-          />
-          <TextField
-            label="Email"
-            type="email"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            required
-            fullWidth
-            disabled={editing}
-            sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-          />
-          <FormControl fullWidth>
-            <InputLabel sx={{ fontFamily: 'MarioFont, sans-serif' }}>Preferred Language</InputLabel>
-            <Select
-              value={formData.preferredLocale}
-              onChange={(e) => setFormData({ ...formData, preferredLocale: e.target.value })}
-              label="Preferred Language"
-              sx={{ '& .MuiSelect-select': { fontFamily: 'MarioFont, sans-serif' } }}
-            >
-              <MenuItem value="en" sx={{ fontFamily: 'MarioFont, sans-serif' }}>English</MenuItem>
-              <MenuItem value="zh" sx={{ fontFamily: 'MarioFont, sans-serif' }}>Chinese</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-
-        <Box sx={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', flexDirection: { xs: 'column', sm: 'row' } }}>
-          <button
-            type="submit"
-            style={{
-              padding: '0.75rem 2rem',
-              fontSize: '16px',
-              fontFamily: 'MarioFont, sans-serif',
-              backgroundColor: '#FFD701',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              width: '100%'
-            }}
-          >
-            {editing ? 'Update' : 'Add'} Email Subscription
-          </button>
-          {editing && (
-            <button
-              type="button"
-              onClick={resetForm}
-              style={{
-                padding: '0.75rem 2rem',
-                fontSize: '16px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: 'white',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                width: '100%'
-              }}
-            >
-              Cancel
-            </button>
-          )}
-        </Box>
-      </Box>
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Btn variant="primary" type="submit" loading={saving}>
+              {editing ? 'Save Changes' : 'Add Subscriber'}
+            </Btn>
+            {editing && (
+              <Btn variant="white" onClick={resetForm}>
+                Cancel
+              </Btn>
+            )}
+          </div>
+        </form>
+      </Panel>
 
       {/* Search Bar */}
-      <Box sx={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1rem' }}>
-        <TextField
-          label="Search by name or email"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          fullWidth
-          placeholder="Enter name or email..."
-          InputProps={{
-            startAdornment: <SearchIcon sx={{ color: '#999', marginRight: '0.5rem' }} />
-          }}
-          sx={{ '& .MuiInputBase-input': { fontFamily: 'MarioFont, sans-serif' } }}
-        />
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex-1">
+          <SearchPill value={searchTerm} onChange={setSearchTerm} placeholder="Search by name or email…" />
+        </div>
         {searchTerm && (
-          <button
-            onClick={() => setSearchTerm('')}
-            style={{
-              padding: '0.75rem 1.5rem',
-              fontSize: '16px',
-              fontFamily: 'MarioFont, sans-serif',
-              backgroundColor: 'white',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap'
-            }}
-          >
+          <Btn variant="white" size="sm" onClick={() => setSearchTerm('')}>
             Clear
-          </button>
+          </Btn>
         )}
-      </Box>
+      </div>
 
-      {/* Mobile Card View */}
-      <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-        {filteredSubscriptions.length === 0 ? (
-          <Box sx={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif', backgroundColor: 'white', borderRadius: '1rem' }}>
-            {searchTerm ? 'No matching subscriptions found' : 'No email subscriptions found'}
-          </Box>
-        ) : (
-          filteredSubscriptions.map((subscription) => (
-            <Box
-              key={subscription.id}
-              sx={{
-                backgroundColor: 'white',
-                borderRadius: '1rem',
-                padding: '1rem',
-                marginBottom: '1rem',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
-              }}
-            >
-              <Box sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '0.5rem', color: '#373737' }}>
-                {subscription.name}
-              </Box>
-              <Box sx={{ fontSize: '14px', color: '#666', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
-                {subscription.email}
-              </Box>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666', marginBottom: '1rem' }}>
-                <Box><strong>Language:</strong> {subscription.preferredLocale === 'en' ? 'English' : 'Chinese'}</Box>
-                <Box><strong>Subscribed:</strong> {new Date(subscription.subscribedAt).toLocaleDateString()}</Box>
-              </Box>
-              <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-                <button
-                  onClick={() => handleEdit(subscription)}
-                  style={{
-                    flex: 1,
-                    padding: '0.5rem 1rem',
-                    fontSize: '14px',
-                    fontFamily: 'MarioFont, sans-serif',
-                    backgroundColor: '#FFD701',
-                    border: '2px solid #373737',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDelete(subscription.email)}
-                  style={{
-                    flex: 1,
-                    padding: '0.5rem 1rem',
-                    fontSize: '14px',
-                    fontFamily: 'MarioFont, sans-serif',
-                    backgroundColor: '#ff6b6b',
-                    color: 'white',
-                    border: '2px solid #c92a2a',
-                    borderRadius: '0.5rem',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Delete
-                </button>
-              </Box>
-            </Box>
-          ))
-        )}
-      </Box>
+      {filteredSubscriptions.length === 0 ? (
+        <EmptyState
+          title={searchTerm ? 'No matching subscriptions found' : 'No email subscriptions found'}
+          subtitle={searchTerm ? 'Try a different name or email.' : 'Add the first subscriber with the form above.'}
+        />
+      ) : (
+        <>
+          {/* Mobile Card View */}
+          <div className="flex flex-col gap-3 md:hidden">
+            {filteredSubscriptions.map(subscription => (
+              <Card key={subscription.id} className="adm-fade-in">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <p style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 16, color: C.charcoal }}>{subscription.name}</p>
+                    <p className="mt-0.5 break-all" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+                      {subscription.email}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 gap-2">
+                    <IconBtn label={`Edit ${subscription.name}`} title="Edit" onClick={() => handleEdit(subscription)}>
+                      <PencilSvg />
+                    </IconBtn>
+                    <IconBtn label={`Delete ${subscription.name}`} title="Delete" danger onClick={() => setDeleteTarget(subscription)}>
+                      <TrashSvg />
+                    </IconBtn>
+                  </div>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+                  <Chip tone={subscription.preferredLocale === 'en' ? 'blue' : 'red'}>
+                    {subscription.preferredLocale === 'en' ? 'English' : 'Chinese'}
+                  </Chip>
+                  <span style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+                    <strong style={{ color: C.charcoal }}>Subscribed:</strong>{' '}
+                    {new Date(subscription.subscribedAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
 
-      {/* Desktop Table View */}
-      <Box sx={{ display: { xs: 'none', md: 'block' } }}>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Name</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Email</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Language</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Subscribed Date</TableCell>
-                <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredSubscriptions.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} sx={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
-                    {searchTerm ? 'No matching subscriptions found' : 'No email subscriptions found'}
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredSubscriptions.map((subscription) => (
-                  <TableRow key={subscription.id}>
-                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{subscription.name}</TableCell>
-                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>{subscription.email}</TableCell>
-                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-                      {subscription.preferredLocale === 'en' ? 'English' : 'Chinese'}
-                    </TableCell>
-                    <TableCell sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-                      {new Date(subscription.subscribedAt).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      <button
-                        onClick={() => handleEdit(subscription)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#FFD701',
-                          border: '2px solid #373737',
-                          borderRadius: '0.5rem',
-                          cursor: 'pointer',
-                          marginRight: '0.5rem'
-                        }}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(subscription.email)}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '14px',
-                          fontFamily: 'MarioFont, sans-serif',
-                          backgroundColor: '#ff6b6b',
-                          color: 'white',
-                          border: '2px solid #c92a2a',
-                          borderRadius: '0.5rem',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-    </Box>
+          {/* Desktop Table View */}
+          <TableWrap className="hidden md:block">
+            <table className="adm-table w-full">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Language</th>
+                  <th>Subscribed Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredSubscriptions.map(subscription => (
+                  <tr key={subscription.id}>
+                    <td style={{ fontFamily: DISPLAY, fontWeight: 700 }}>{subscription.name}</td>
+                    <td>{subscription.email}</td>
+                    <td>
+                      <Chip tone={subscription.preferredLocale === 'en' ? 'blue' : 'red'}>
+                        {subscription.preferredLocale === 'en' ? 'English' : 'Chinese'}
+                      </Chip>
+                    </td>
+                    <td className="whitespace-nowrap">{new Date(subscription.subscribedAt).toLocaleDateString()}</td>
+                    <td>
+                      <div className="flex gap-2">
+                        <IconBtn label={`Edit ${subscription.name}`} title="Edit" onClick={() => handleEdit(subscription)}>
+                          <PencilSvg />
+                        </IconBtn>
+                        <IconBtn label={`Delete ${subscription.name}`} title="Delete" danger onClick={() => setDeleteTarget(subscription)}>
+                          <TrashSvg />
+                        </IconBtn>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrap>
+        </>
+      )}
+
+      <ConfirmModal
+        open={!!deleteTarget}
+        onClose={() => {
+          if (!deleting) setDeleteTarget(null)
+        }}
+        onConfirm={confirmDelete}
+        title="Delete Subscriber?"
+        message={
+          deleteTarget ? `This will permanently delete ${deleteTarget.name} (${deleteTarget.email}) from the subscription list.` : ''
+        }
+        confirmLabel="Delete"
+        loading={deleting}
+      />
+    </div>
   )
 }

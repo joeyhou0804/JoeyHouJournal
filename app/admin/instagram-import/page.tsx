@@ -3,46 +3,28 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  CardMedia,
-  Grid,
-  CircularProgress,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  BODY,
+  Btn,
+  C,
+  Card,
   Chip,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  Paper,
-  Link,
+  ConfirmModal,
+  DISPLAY,
   Drawer,
-  Tooltip,
-} from '@mui/material'
-import {
-  Instagram as InstagramIcon,
-  CheckCircle as CheckIcon,
-  Cancel as CancelIcon,
-  CloudUpload as UploadIcon,
-  Block as BlockIcon,
-  Visibility as VisibilityIcon,
-} from '@mui/icons-material'
-import AdminLoading from 'src/components/AdminLoading'
+  EmptyState,
+  Field,
+  FormGrid,
+  IconBtn,
+  Input,
+  Modal,
+  PageHeader,
+  Pagination,
+  Panel,
+  SectionLoading,
+  SectionTitle,
+  Toggle,
+} from '../_ui'
 import { generateChineseDestinationName } from '@/lib/cityTranslations'
 
 interface InstagramPost {
@@ -59,16 +41,524 @@ interface InstagramPost {
   }>
 }
 
-interface Destination {
-  id: string
-  name: string
-  state: string
-  journeyName: string
+/* ---------- small inline icons ---------- */
+
+function InstagramSvg({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5.5" stroke="currentColor" strokeWidth="2.4" />
+      <circle cx="12" cy="12" r="4.2" stroke="currentColor" strokeWidth="2.4" />
+      <circle cx="17.2" cy="6.8" r="1.4" fill="currentColor" />
+    </svg>
+  )
 }
+
+function RefreshSvg({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M20 12a8 8 0 1 1-2.34-5.66" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M20 4v5h-5" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function EyeSvg({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M2.5 12s3.5-6.5 9.5-6.5S21.5 12 21.5 12s-3.5 6.5-9.5 6.5S2.5 12 2.5 12Z"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="12" r="2.8" stroke="currentColor" strokeWidth="2.4" />
+    </svg>
+  )
+}
+
+function BlockSvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="2.6" />
+      <path d="M6.2 6.2l11.6 11.6" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function RestoreSvg({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 10h9a6 6 0 1 1 0 12h-3" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+      <path d="M8 6l-4 4 4 4" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function UploadSvg({ size = 15 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 16V4m0 0L6.5 9.5M12 4l5.5 5.5" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M4 20h16" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+/* ---------- caption + media helpers ---------- */
+
+const getMediaPreview = (post: InstagramPost) => {
+  if (post.mediaType === 'CAROUSEL_ALBUM' && post.childMedia.length > 0) {
+    return post.childMedia[0].mediaUrl
+  }
+  return post.mediaUrl
+}
+
+// Parse bilingual caption into English and Chinese
+const parseBilingualCaption = (caption: string) => {
+  if (!caption) return { english: '', chinese: '' }
+
+  // Split by lines and filter out empty lines
+  const lines = caption.split('\n').filter(line => line.trim().length > 0)
+
+  const chineseLines: string[] = []
+  const englishLines: string[] = []
+
+  lines.forEach(line => {
+    // Check if line contains Chinese characters
+    const hasChinese = /[一-龥]/.test(line)
+    // Check if line contains English letters
+    const hasEnglish = /[a-zA-Z]/.test(line)
+
+    if (hasChinese && hasEnglish) {
+      // Mixed line - try to split by Chinese/English boundaries
+      // Extract Chinese portion
+      const chinesePortion = line.match(/[一-龥　-〿＀-￯]+/g)?.join('') || ''
+      // Extract English portion
+      const englishPortion = line.match(/[a-zA-Z\s.,!?;:'"()-]+/g)?.join(' ').trim() || ''
+
+      if (chinesePortion) chineseLines.push(chinesePortion.trim())
+      if (englishPortion) englishLines.push(englishPortion.trim())
+    } else if (hasChinese) {
+      chineseLines.push(line.trim())
+    } else if (hasEnglish) {
+      englishLines.push(line.trim())
+    }
+  })
+
+  return {
+    chinese: chineseLines.join('\n'),
+    english: englishLines.join('\n')
+  }
+}
+
+// US State abbreviation to full name mapping
+const stateMap: { [key: string]: string } = {
+  'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+  'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+  'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+  'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+  'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+  'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+  'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+  'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+  'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+  'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming',
+  'DC': 'District of Columbia'
+}
+
+const FIELD_LABEL_STYLE: React.CSSProperties = {
+  fontFamily: DISPLAY,
+  fontWeight: 600,
+  fontSize: 12.5,
+  letterSpacing: '0.05em',
+  color: C.charcoal,
+}
+
+function CaptionLines({ caption, clamp = false }: { caption: string; clamp?: boolean }) {
+  const { english, chinese } = parseBilingualCaption(caption)
+  if (!english && !chinese) {
+    return <p style={{ fontFamily: BODY, fontWeight: 600, fontSize: 12, color: '#999999' }}>No caption</p>
+  }
+  return (
+    <div className="flex flex-col gap-1">
+      {english && (
+        <p className={clamp ? 'line-clamp-2' : ''} style={{ fontFamily: BODY, fontWeight: 600, fontSize: 12, color: C.gray }}>
+          <strong style={{ color: C.charcoal }}>EN:</strong> {english}
+        </p>
+      )}
+      {chinese && (
+        <p className={clamp ? 'line-clamp-2' : ''} style={{ fontFamily: BODY, fontWeight: 600, fontSize: 12, color: C.gray }}>
+          <strong style={{ color: C.charcoal }}>中文:</strong> {chinese}
+        </p>
+      )}
+    </div>
+  )
+}
+
+/* ---------- PostCard — one tile in the posts grid ---------- */
+
+function PostCard({
+  post,
+  imported,
+  onSelect,
+  onExclude,
+}: {
+  post: InstagramPost
+  imported: boolean
+  onSelect: (post: InstagramPost) => void
+  onExclude: (post: InstagramPost) => void
+}) {
+  const preview = getMediaPreview(post)
+  return (
+    <Card
+      hoverable={!imported}
+      className="adm-fade-in"
+      style={{ padding: 10, cursor: imported ? 'default' : 'pointer', opacity: imported ? 0.6 : 1 }}
+    >
+      <div onClick={() => onSelect(post)}>
+        <div className="relative mb-2.5">
+          {preview ? (
+            <img
+              src={preview}
+              alt={post.caption?.substring(0, 50) || 'Instagram post'}
+              loading="lazy"
+              className="aspect-square w-full rounded-xl object-cover"
+              style={{ border: `2px solid ${C.charcoal}` }}
+            />
+          ) : (
+            <div className="aspect-square w-full rounded-xl" style={{ border: `2px solid ${C.charcoal}`, background: C.offwhite }} />
+          )}
+          <div className="absolute" style={{ top: 8, left: 8 }}>
+            <Chip tone={post.mediaType === 'CAROUSEL_ALBUM' ? 'blue' : 'gray'}>
+              {post.mediaType === 'CAROUSEL_ALBUM' ? `${post.childMedia.length} photos` : 'Single'}
+            </Chip>
+          </div>
+          <div className="absolute" style={{ top: 8, right: 8 }}>
+            <Chip tone={imported ? 'green' : 'yellow'}>{imported ? 'Imported' : 'New'}</Chip>
+          </div>
+        </div>
+        <CaptionLines caption={post.caption} clamp />
+        <div className="mt-2 flex items-center justify-between gap-2">
+          <span style={{ fontFamily: BODY, fontWeight: 600, fontSize: 11, color: C.gray }}>
+            {new Date(post.timestamp).toLocaleDateString()}
+          </span>
+          {!imported && (
+            <IconBtn
+              label="Exclude this post from import"
+              title="Exclude this post from import"
+              danger
+              size={30}
+              onClick={e => {
+                e.stopPropagation()
+                onExclude(post)
+              }}
+            >
+              <BlockSvg />
+            </IconBtn>
+          )}
+        </div>
+      </div>
+    </Card>
+  )
+}
+
+/* ---------- ImportModal — create a destination from one post ---------- */
+
+interface ImportModalProps {
+  post: InstagramPost
+  importing: boolean
+  error: string | null
+  destinationName: string
+  destinationNameCn: string
+  destinationState: string
+  destinationCountry: string
+  destinationDate: string
+  isEditingCountry: boolean
+  lat: number
+  lng: number
+  isDetectingCoords: boolean
+  showMap: boolean
+  onNameChange: (name: string) => void
+  onNameCnChange: (value: string) => void
+  onCountryChange: (value: string) => void
+  onEditCountry: () => void
+  onDateChange: (value: string) => void
+  onShowMapChange: (checked: boolean) => void
+  onClose: () => void
+  onCancel: () => void
+  onImport: () => void
+}
+
+function ImportModal({
+  post,
+  importing,
+  error,
+  destinationName,
+  destinationNameCn,
+  destinationState,
+  destinationCountry,
+  destinationDate,
+  isEditingCountry,
+  lat,
+  lng,
+  isDetectingCoords,
+  showMap,
+  onNameChange,
+  onNameCnChange,
+  onCountryChange,
+  onEditCountry,
+  onDateChange,
+  onShowMapChange,
+  onClose,
+  onCancel,
+  onImport,
+}: ImportModalProps) {
+  const handleAutoGenerateCn = () => {
+    // Extract city name and state code from destination name (e.g., "San Francisco, CA")
+    const parts = destinationName.split(',').map(p => p.trim())
+    if (parts.length >= 2) {
+      const cityName = parts[0]
+      const stateCode = parts[1]
+      console.log('Generating Chinese name for:', { cityName, stateCode })
+      const fullTranslation = generateChineseDestinationName(cityName, stateCode)
+      console.log('Translation result:', fullTranslation)
+      if (fullTranslation) {
+        // Keep the full translation format (州名·城市名)
+        onNameCnChange(fullTranslation)
+      } else {
+        console.warn('No translation found for:', { cityName, stateCode })
+      }
+    } else {
+      console.warn('Invalid destination name format. Expected: "City, State"')
+    }
+  }
+
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      title="Import Instagram Post"
+      maxWidth={640}
+      footer={
+        <>
+          <Btn variant="white" size="sm" onClick={onCancel}>
+            Cancel
+          </Btn>
+          <Btn
+            variant="primary"
+            size="sm"
+            icon={<UploadSvg />}
+            loading={importing}
+            disabled={!destinationName || !destinationDate}
+            onClick={onImport}
+          >
+            {importing ? 'Creating...' : 'Create & Import'}
+          </Btn>
+        </>
+      }
+    >
+      <div style={{ maxHeight: 'calc(100dvh - 260px)', overflowY: 'auto' }}>
+        {error && (
+          <div className="mb-4">
+            <Alert tone="error">{error}</Alert>
+          </div>
+        )}
+
+        <div className="mb-4">
+          <img
+            src={getMediaPreview(post)}
+            alt="Preview"
+            className="w-full rounded-xl"
+            style={{ maxHeight: 300, objectFit: 'contain', border: `2px solid ${C.charcoal}`, background: C.offwhite }}
+          />
+          {post.mediaType === 'CAROUSEL_ALBUM' && (
+            <p className="mt-2" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+              This carousel contains {post.childMedia.length} images. All will be imported.
+            </p>
+          )}
+        </div>
+
+        <div className="mb-4 rounded-xl p-3" style={{ background: C.offwhite, border: '2px solid #E5E4DE' }}>
+          <CaptionLines caption={post.caption} />
+        </div>
+
+        <div className="mb-4">
+          <SectionTitle>Create New Destination</SectionTitle>
+          <FormGrid cols={2}>
+            <Field label="Name (English)" required hint="Format: Name, STATE" htmlFor="ig-import-name">
+              <Input
+                type="text"
+                id="ig-import-name"
+                value={destinationName}
+                onChange={e => onNameChange(e.target.value)}
+                placeholder="e.g., Grand Canyon, AZ"
+              />
+            </Field>
+
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="uppercase" style={FIELD_LABEL_STYLE}>
+                  Name (Chinese)
+                </span>
+                <Btn
+                  variant="yellow"
+                  size="xs"
+                  onClick={handleAutoGenerateCn}
+                  disabled={!destinationName || !destinationName.includes(',')}
+                >
+                  Auto-Generate
+                </Btn>
+              </div>
+              <Input
+                type="text"
+                value={destinationNameCn}
+                onChange={e => onNameCnChange(e.target.value)}
+                placeholder="e.g., 加利福尼亚州·旧金山"
+              />
+            </div>
+
+            <Field label="State" hint="Auto-detected" htmlFor="ig-import-state">
+              <Input
+                type="text"
+                id="ig-import-state"
+                value={destinationState}
+                readOnly
+                placeholder="Auto-filled from name"
+                style={{ background: C.offwhite }}
+              />
+            </Field>
+
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center justify-between gap-2">
+                <span className="uppercase" style={FIELD_LABEL_STYLE}>
+                  Country
+                </span>
+                {!isEditingCountry && (
+                  <Btn variant="white" size="xs" onClick={onEditCountry}>
+                    Edit
+                  </Btn>
+                )}
+              </div>
+              <Input
+                type="text"
+                value={destinationCountry}
+                onChange={e => onCountryChange(e.target.value)}
+                readOnly={!isEditingCountry}
+                placeholder="USA"
+                style={!isEditingCountry ? { background: C.offwhite } : undefined}
+              />
+            </div>
+
+            <Field label="Date" required htmlFor="ig-import-date">
+              <Input type="date" id="ig-import-date" value={destinationDate} onChange={e => onDateChange(e.target.value)} />
+            </Field>
+          </FormGrid>
+        </div>
+
+        <div className="mb-4 rounded-xl p-3" style={{ background: C.offwhite, border: `2px solid ${C.charcoal}` }}>
+          <div className="mb-1.5 flex items-center gap-2">
+            <span className="uppercase" style={{ ...FIELD_LABEL_STYLE, fontSize: 11.5 }}>
+              Coordinates
+            </span>
+            {isDetectingCoords && (
+              <span style={{ fontFamily: BODY, fontWeight: 600, fontSize: 12, color: C.gray }}>(Detecting...)</span>
+            )}
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <span className="uppercase" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 11, color: C.gray }}>
+                Latitude
+              </span>
+              <p style={{ fontFamily: BODY, fontWeight: 700, fontSize: 14, color: C.charcoal }}>{lat ? lat.toFixed(6) : '—'}</p>
+            </div>
+            <div>
+              <span className="uppercase" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 11, color: C.gray }}>
+                Longitude
+              </span>
+              <p style={{ fontFamily: BODY, fontWeight: 700, fontSize: 14, color: C.charcoal }}>{lng ? lng.toFixed(6) : '—'}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-xl p-3" style={{ background: C.offwhite, border: `2px solid ${C.charcoal}` }}>
+          <Toggle checked={showMap} onChange={onShowMapChange} label="Show Map in Carousel" />
+          <p className="mt-2" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 12, color: C.gray }}>
+            When enabled, the last tab will display a map instead of the image number.
+          </p>
+        </div>
+      </div>
+    </Modal>
+  )
+}
+
+/* ---------- HistoryDrawer — imported + excluded posts ---------- */
+
+function HistoryDrawer({
+  open,
+  onClose,
+  processedPosts,
+  importedPostIds,
+  excludedPostIds,
+  onUnexclude,
+}: {
+  open: boolean
+  onClose: () => void
+  processedPosts: InstagramPost[]
+  importedPostIds: Set<string>
+  excludedPostIds: Set<string>
+  onUnexclude: (postId: string) => void
+}) {
+  return (
+    <Drawer open={open} onClose={onClose} title="Processed Posts" width={600}>
+      <p className="mb-4" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+        {importedPostIds.size} imported · {excludedPostIds.size} excluded
+      </p>
+
+      {processedPosts.length === 0 ? (
+        <EmptyState title="No Processed Posts" subtitle="Posts you import or exclude will show up here." />
+      ) : (
+        <div className="flex flex-col gap-3">
+          {processedPosts.map(post => {
+            const isImported = importedPostIds.has(post.id)
+            const isExcluded = excludedPostIds.has(post.id)
+            return (
+              <Card key={post.id} style={{ padding: 10 }}>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={getMediaPreview(post)}
+                    alt="Post preview"
+                    className="rounded-lg object-cover"
+                    style={{ width: 56, height: 56, border: `2px solid ${C.charcoal}`, flex: 'none' }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="line-clamp-2" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 12, color: C.charcoal }}>
+                      {parseBilingualCaption(post.caption).english?.substring(0, 50) || 'No caption'}...
+                    </p>
+                    <p className="mt-0.5" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 11, color: C.gray }}>
+                      {new Date(post.timestamp).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <Chip tone={isImported ? 'green' : 'gray'}>{isImported ? 'Imported' : 'Excluded'}</Chip>
+                  {isExcluded && (
+                    <IconBtn label="Restore post" title="Restore post" onClick={() => onUnexclude(post.id)}>
+                      <RestoreSvg />
+                    </IconBtn>
+                  )}
+                </div>
+              </Card>
+            )
+          })}
+        </div>
+      )}
+    </Drawer>
+  )
+}
+
+/* ---------- page ---------- */
 
 export default function InstagramImportPage() {
   const router = useRouter()
   const [isConnected, setIsConnected] = useState(false)
+  const [connectedUserId, setConnectedUserId] = useState<string | null>(null)
   const [checkingConnection, setCheckingConnection] = useState(true)
   const [loading, setLoading] = useState(false)
   const [posts, setPosts] = useState<InstagramPost[]>([])
@@ -116,6 +606,18 @@ export default function InstagramImportPage() {
     checkConnection()
   }, [])
 
+  // Surface OAuth results from the callback redirect (?error=... / ?connected=true)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const oauthError = params.get('error')
+    if (oauthError) {
+      setError(oauthError)
+    }
+    if (oauthError || params.get('connected')) {
+      window.history.replaceState(null, '', window.location.pathname)
+    }
+  }, [])
+
   const checkConnection = async () => {
     try {
       setCheckingConnection(true)
@@ -127,6 +629,7 @@ export default function InstagramImportPage() {
         const data = await response.json()
         console.log('Status data:', data)
         setIsConnected(data.connected === true)
+        setConnectedUserId(data.connected === true ? data.userId || null : null)
       } else {
         setIsConnected(false)
       }
@@ -291,66 +794,6 @@ export default function InstagramImportPage() {
     }
   }
 
-  const getMediaPreview = (post: InstagramPost) => {
-    if (post.mediaType === 'CAROUSEL_ALBUM' && post.childMedia.length > 0) {
-      return post.childMedia[0].mediaUrl
-    }
-    return post.mediaUrl
-  }
-
-  // Parse bilingual caption into English and Chinese
-  const parseBilingualCaption = (caption: string) => {
-    if (!caption) return { english: '', chinese: '' }
-
-    // Split by lines and filter out empty lines
-    const lines = caption.split('\n').filter(line => line.trim().length > 0)
-
-    const chineseLines: string[] = []
-    const englishLines: string[] = []
-
-    lines.forEach(line => {
-      // Check if line contains Chinese characters
-      const hasChinese = /[\u4e00-\u9fa5]/.test(line)
-      // Check if line contains English letters
-      const hasEnglish = /[a-zA-Z]/.test(line)
-
-      if (hasChinese && hasEnglish) {
-        // Mixed line - try to split by Chinese/English boundaries
-        // Extract Chinese portion
-        const chinesePortion = line.match(/[\u4e00-\u9fa5\u3000-\u303f\uff00-\uffef]+/g)?.join('') || ''
-        // Extract English portion
-        const englishPortion = line.match(/[a-zA-Z\s.,!?;:'"()-]+/g)?.join(' ').trim() || ''
-
-        if (chinesePortion) chineseLines.push(chinesePortion.trim())
-        if (englishPortion) englishLines.push(englishPortion.trim())
-      } else if (hasChinese) {
-        chineseLines.push(line.trim())
-      } else if (hasEnglish) {
-        englishLines.push(line.trim())
-      }
-    })
-
-    return {
-      chinese: chineseLines.join('\n'),
-      english: englishLines.join('\n')
-    }
-  }
-
-  // US State abbreviation to full name mapping
-  const stateMap: { [key: string]: string } = {
-    'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
-    'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
-    'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
-    'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
-    'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
-    'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
-    'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
-    'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
-    'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
-    'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming',
-    'DC': 'District of Columbia'
-  }
-
   // Geocode address to get coordinates
   const geocodeAddress = async (address: string) => {
     setIsDetectingCoords(true)
@@ -401,15 +844,6 @@ export default function InstagramImportPage() {
     }
   }
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage)
-  }
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
-
   const handleExcludePost = async () => {
     if (!postToExclude) return
 
@@ -454,7 +888,7 @@ export default function InstagramImportPage() {
     }
   }
 
-  const handleRowClick = (post: InstagramPost) => {
+  const handlePostClick = (post: InstagramPost) => {
     const isImported = importedPostIds.has(post.id)
     const isExcluded = excludedPostIds.has(post.id)
 
@@ -465,6 +899,20 @@ export default function InstagramImportPage() {
     const postDate = new Date(post.timestamp)
     const formattedDate = postDate.toISOString().split('T')[0]
     setDestinationDate(formattedDate)
+  }
+
+  // Full reset behind the import dialog's Cancel button
+  const resetImportForm = () => {
+    setSelectedPost(null)
+    setDestinationName('')
+    setDestinationNameCn('')
+    setDestinationState('')
+    setDestinationCountry('USA')
+    setDestinationDate('')
+    setLat(0)
+    setLng(0)
+    setShowMap(false)
+    setIsEditingCountry(false)
   }
 
   // Filter out excluded posts from main list
@@ -488,744 +936,213 @@ export default function InstagramImportPage() {
     importedPostIds.has(post.id) || excludedPostIds.has(post.id)
   )
 
+  const pageSub = 'Import photos from your Instagram posts straight into travel destinations.'
+
+  if (checkingConnection) {
+    return <SectionLoading label="Checking Instagram Connection..." icon="star" />
+  }
+
   if (!isConnected) {
     return (
-      <Box>
-        <Typography variant="h4" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 3, color: '#373737' }}>
-          Instagram Import
-        </Typography>
-
-        <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2, textAlign: 'center', py: 6 }}>
-          <CardContent>
-            <InstagramIcon sx={{ fontSize: 80, color: '#E4405F', mb: 3 }} />
-            <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', mb: 2, color: '#373737' }}>
-              Connect Your Instagram Account
-            </Typography>
-            <Typography variant="body1" sx={{ fontFamily: 'MarioFont, sans-serif', mb: 4, color: '#666', maxWidth: 500, mx: 'auto' }}>
-              Link your Instagram Creator account to import photos from your posts directly into your travel destinations.
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              startIcon={<InstagramIcon />}
-              onClick={handleConnect}
-              sx={{
-                backgroundColor: '#E4405F',
-                color: 'white',
-                fontFamily: 'MarioFont, sans-serif',
-                px: 4,
-                '&:hover': { backgroundColor: '#C13584' },
-              }}
-            >
+      <div>
+        <PageHeader
+          kicker="ADMIN"
+          title="Instagram"
+          accent="Import"
+          sub={pageSub}
+          actions={
+            <Btn variant="primary" icon={<InstagramSvg />} onClick={handleConnect}>
               Connect Instagram
-            </Button>
-          </CardContent>
-        </Card>
-      </Box>
+            </Btn>
+          }
+        />
+
+        {error && (
+          <div className="mb-4">
+            <Alert tone="error" onClose={() => setError(null)}>
+              {error}
+            </Alert>
+          </div>
+        )}
+
+        <Panel pad={32}>
+          <div className="flex flex-col items-center gap-4 py-6 text-center">
+            <span style={{ color: C.red, lineHeight: 0 }}>
+              <InstagramSvg size={64} />
+            </span>
+            <h2 style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 22, color: C.charcoal }}>
+              Connect Your Instagram Account
+            </h2>
+            <div className="w-full" style={{ maxWidth: 520 }}>
+              <Alert tone="info">
+                Link your Instagram Creator account to import photos from your posts directly into your travel destinations.
+              </Alert>
+            </div>
+            <Btn variant="primary" size="lg" icon={<InstagramSvg />} onClick={handleConnect}>
+              Connect Instagram
+            </Btn>
+          </div>
+        </Panel>
+      </div>
     )
   }
 
-  if (checkingConnection) {
-    return <AdminLoading message="Checking Instagram Connection..." />
-  }
-
   return (
-    <Box>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, mb: 3, gap: { xs: 2, sm: 0 } }}>
-        <Box>
-          <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', color: '#373737', margin: 0 }}>
-            Instagram Import
-          </h1>
-          {posts.length > 0 && (
-            <p style={{ fontFamily: 'MarioFont, sans-serif', color: '#666', marginTop: '0.5rem', fontSize: '14px' }}>
-              {filteredPosts.length - importedPostIds.size} available · {importedPostIds.size} imported · {excludedPostIds.size} excluded
-            </p>
-          )}
-        </Box>
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 1, sm: 2 }, width: { xs: '100%', sm: 'auto' } }}>
-          {processedPosts.length > 0 && (
-            <button
-              onClick={() => setShowProcessedPosts(true)}
-              style={{
-                width: '100%',
-                padding: '0.75rem 1.5rem',
-                fontSize: '16px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: 'white',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem'
-              }}
-            >
-              <VisibilityIcon sx={{ fontSize: '20px' }} />
-              View Processed ({processedPosts.length})
-            </button>
-          )}
-          <button
-            onClick={loadPosts}
-            disabled={loading}
-            style={{
-              width: '100%',
-              padding: '0.75rem 1.5rem',
-              fontSize: '16px',
-              fontFamily: 'MarioFont, sans-serif',
-              backgroundColor: '#FFD701',
-              border: '2px solid #373737',
-              borderRadius: '0.5rem',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.6 : 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem'
-            }}
-          >
-            <InstagramIcon sx={{ fontSize: '20px' }} />
-            {loading ? 'Loading...' : 'Load Posts'}
-          </button>
-        </Box>
-      </Box>
+    <div>
+      <PageHeader
+        kicker="ADMIN"
+        title="Instagram"
+        accent="Import"
+        sub={pageSub}
+        actions={
+          <>
+            {processedPosts.length > 0 && (
+              <Btn variant="white" size="sm" icon={<EyeSvg />} onClick={() => setShowProcessedPosts(true)}>
+                View Processed ({processedPosts.length})
+              </Btn>
+            )}
+            <Btn variant="white" size="sm" icon={<RefreshSvg />} loading={loading} onClick={loadPosts}>
+              {loading ? 'Loading...' : posts.length > 0 ? 'Refresh' : 'Load Posts'}
+            </Btn>
+          </>
+        }
+      />
+
+      <Panel className="mb-6" pad={16}>
+        <Alert tone="success">
+          Instagram account connected{connectedUserId ? ` (account ID: ${connectedUserId})` : ''}. Load your latest posts to
+          start importing.
+        </Alert>
+        {posts.length > 0 && (
+          <p className="mt-3" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+            {filteredPosts.length - importedPostIds.size} available · {importedPostIds.size} imported · {excludedPostIds.size}{' '}
+            excluded
+          </p>
+        )}
+      </Panel>
 
       {error && (
-        <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError(null)}>
-          {error}
-        </Alert>
+        <div className="mb-4">
+          <Alert tone="error" onClose={() => setError(null)}>
+            {error}
+          </Alert>
+        </div>
       )}
 
       {successMessage && (
-        <Alert
-          severity="success"
-          sx={{ mb: 3 }}
-          onClose={() => setSuccessMessage(null)}
-          action={
-            <Button
-              color="inherit"
-              size="small"
-              onClick={() => router.push('/admin/destinations')}
-              sx={{ fontFamily: 'MarioFont, sans-serif' }}
-            >
+        <div className="mb-4">
+          <Alert tone="success" onClose={() => setSuccessMessage(null)}>
+            {successMessage}{' '}
+            <Btn variant="white" size="xs" className="ml-1 align-middle" onClick={() => router.push('/admin/destinations')}>
               View Destinations
-            </Button>
-          }
-        >
-          {successMessage}
-        </Alert>
+            </Btn>
+          </Alert>
+        </div>
       )}
 
       {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
-          <CircularProgress sx={{ color: '#FFD701' }} />
-        </Box>
+        <Panel>
+          <SectionLoading label="Loading posts…" icon="star" />
+        </Panel>
       ) : posts.length === 0 ? (
-        <Card elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2, textAlign: 'center', py: 6 }}>
-          <CardContent>
-            <Typography variant="body1" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-              Click "Load Posts" to fetch your Instagram photos
-            </Typography>
-          </CardContent>
-        </Card>
+        <Panel>
+          <EmptyState title="No Posts Loaded" subtitle='Click "Load Posts" to fetch your Instagram photos.' />
+        </Panel>
       ) : (
-        <Paper elevation={0} sx={{ border: '1px solid #e0e0e0', borderRadius: 2, overflowX: 'auto' }}>
-          <TableContainer sx={{ minWidth: { xs: '600px', sm: '100%' } }}>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontWeight: 'bold' }}>Preview</TableCell>
-                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontWeight: 'bold' }}>Type</TableCell>
-                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontWeight: 'bold' }}>Caption</TableCell>
-                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontWeight: 'bold' }}>Date</TableCell>
-                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontWeight: 'bold' }}>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {paginatedPosts.map((post) => {
-                  const isImported = importedPostIds.has(post.id)
-                  return (
-                  <TableRow
-                    key={post.id}
-                    onClick={() => handleRowClick(post)}
-                    sx={{
-                      '&:hover': { backgroundColor: isImported ? '#f5f5f5' : '#fafafa' },
-                      cursor: isImported ? 'default' : 'pointer',
-                      backgroundColor: isImported ? '#f5f5f5' : 'transparent',
-                      opacity: isImported ? 0.6 : 1,
-                    }}
-                  >
-                    <TableCell onClick={(e) => e.stopPropagation()}>
-                      <Box
-                        component="img"
-                        src={getMediaPreview(post)}
-                        alt={post.caption?.substring(0, 50)}
-                        sx={{
-                          width: 80,
-                          height: 80,
-                          objectFit: 'cover',
-                          borderRadius: 1,
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {post.mediaType === 'CAROUSEL_ALBUM' ? (
-                        <Chip
-                          label={`${post.childMedia.length} photos`}
-                          size="small"
-                          sx={{ fontFamily: 'MarioFont, sans-serif' }}
-                        />
-                      ) : (
-                        <Chip
-                          label="Single"
-                          size="small"
-                          sx={{ fontFamily: 'MarioFont, sans-serif' }}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {(() => {
-                        const { english, chinese } = parseBilingualCaption(post.caption)
-                        return (
-                          <Box>
-                            {english && (
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontFamily: 'MarioFont, sans-serif',
-                                  color: '#666',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  display: '-webkit-box',
-                                  WebkitLineClamp: 2,
-                                  WebkitBoxOrient: 'vertical',
-                                  mb: chinese ? 0.5 : 0,
-                                }}
-                              >
-                                <strong>EN:</strong> {english}
-                              </Typography>
-                            )}
-                            {chinese && (
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  fontFamily: 'MarioFont, sans-serif',
-                                  color: '#666',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  display: '-webkit-box',
-                                  WebkitLineClamp: 2,
-                                  WebkitBoxOrient: 'vertical',
-                                }}
-                              >
-                                <strong>中文:</strong> {chinese}
-                              </Typography>
-                            )}
-                            {!english && !chinese && (
-                              <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#999' }}>
-                                No caption
-                              </Typography>
-                            )}
-                          </Box>
-                        )
-                      })()}
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                        {new Date(post.timestamp).toLocaleDateString()}
-                      </Typography>
-                    </TableCell>
-                    <TableCell onClick={(e) => e.stopPropagation()}>
-                      {isImported ? (
-                        <Chip
-                          icon={<CheckIcon />}
-                          label="Imported"
-                          size="small"
-                          sx={{
-                            fontFamily: 'MarioFont, sans-serif',
-                            backgroundColor: '#4caf50',
-                            color: 'white',
-                          }}
-                        />
-                      ) : (
-                        <Tooltip title="Exclude this post from import">
-                          <IconButton
-                            size="small"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setPostToExclude(post)
-                            }}
-                            sx={{
-                              color: '#f44336',
-                              '&:hover': { backgroundColor: 'rgba(244, 67, 54, 0.1)' },
-                            }}
-                          >
-                            <BlockIcon />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            component="div"
-            count={filteredPosts.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-            sx={{ fontFamily: 'MarioFont, sans-serif' }}
+        <>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {paginatedPosts.map(post => (
+              <PostCard
+                key={post.id}
+                post={post}
+                imported={importedPostIds.has(post.id)}
+                onSelect={handlePostClick}
+                onExclude={p => setPostToExclude(p)}
+              />
+            ))}
+          </div>
+          <Pagination
+            page={page + 1}
+            pageSize={rowsPerPage}
+            total={filteredPosts.length}
+            onPageChange={p => setPage(p - 1)}
+            onPageSizeChange={n => {
+              setRowsPerPage(n)
+              setPage(0)
+            }}
+            pageSizeOptions={[5, 10, 25, 50]}
           />
-        </Paper>
+        </>
       )}
 
       {/* Import Dialog */}
-      <Dialog
-        open={selectedPost !== null}
-        onClose={() => setSelectedPost(null)}
-        maxWidth="md"
-        fullWidth
-        fullScreen={false}
-        sx={{
-          '& .MuiDialog-paper': {
-            margin: { xs: '16px', sm: '32px' },
-            maxHeight: { xs: 'calc(100% - 32px)', sm: 'calc(100% - 64px)' },
-            width: { xs: 'calc(100% - 32px)', sm: '100%' }
-          }
-        }}
-      >
-        {selectedPost && (
-          <>
-            <DialogTitle sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>
-              Import Instagram Post
-            </DialogTitle>
-            <DialogContent>
-              <Box sx={{ mb: 3 }}>
-                <img
-                  src={getMediaPreview(selectedPost)}
-                  alt="Preview"
-                  style={{ width: '100%', maxHeight: 300, objectFit: 'contain', borderRadius: 8 }}
-                />
-                {selectedPost.mediaType === 'CAROUSEL_ALBUM' && (
-                  <Typography variant="body2" sx={{ mt: 2, fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                    This carousel contains {selectedPost.childMedia.length} images. All will be imported.
-                  </Typography>
-                )}
-              </Box>
-
-              {(() => {
-                const { english, chinese } = parseBilingualCaption(selectedPost.caption)
-                return (
-                  <Box sx={{ mb: 3, p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-                    {english && (
-                      <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666', mb: 1 }}>
-                        <strong>EN:</strong> {english}
-                      </Typography>
-                    )}
-                    {chinese && (
-                      <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                        <strong>中文:</strong> {chinese}
-                      </Typography>
-                    )}
-                  </Box>
-                )
-              })()}
-
-              <Typography variant="h6" sx={{ mb: 2, fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
-                Create New Destination
-              </Typography>
-
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <Typography variant="body2" sx={{ mb: 0.5, fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                  Name (English) * <span style={{ color: '#999', fontSize: '0.9em' }}>(Format: Name, STATE)</span>
-                </Typography>
-                <input
-                  type="text"
-                  value={destinationName}
-                  onChange={(e) => handleDestinationNameChange(e.target.value)}
-                  placeholder="e.g., Grand Canyon, AZ"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    fontFamily: 'MarioFont, sans-serif',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                  }}
-                />
-              </FormControl>
-
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-                  <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                    Name (Chinese)
-                  </Typography>
-                  <Button
-                    size="small"
-                    onClick={() => {
-                      // Extract city name and state code from destination name (e.g., "San Francisco, CA")
-                      const parts = destinationName.split(',').map(p => p.trim())
-                      if (parts.length >= 2) {
-                        const cityName = parts[0]
-                        const stateCode = parts[1]
-                        console.log('Generating Chinese name for:', { cityName, stateCode })
-                        const fullTranslation = generateChineseDestinationName(cityName, stateCode)
-                        console.log('Translation result:', fullTranslation)
-                        if (fullTranslation) {
-                          // Keep the full translation format (州名·城市名)
-                          setDestinationNameCn(fullTranslation)
-                        } else {
-                          console.warn('No translation found for:', { cityName, stateCode })
-                        }
-                      } else {
-                        console.warn('Invalid destination name format. Expected: "City, State"')
-                      }
-                    }}
-                    disabled={!destinationName || !destinationName.includes(',')}
-                    sx={{
-                      fontFamily: 'MarioFont, sans-serif',
-                      fontSize: '12px',
-                      textTransform: 'none',
-                      backgroundColor: destinationName && destinationName.includes(',') ? '#FFD701' : '#E0E0E0',
-                      color: '#373737',
-                      '&:hover': { backgroundColor: '#FFC700' },
-                      '&:disabled': { backgroundColor: '#E0E0E0', color: '#999' },
-                    }}
-                  >
-                    Auto-Generate
-                  </Button>
-                </Box>
-                <input
-                  type="text"
-                  value={destinationNameCn}
-                  onChange={(e) => setDestinationNameCn(e.target.value)}
-                  placeholder="e.g., 加利福尼亚州·旧金山"
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    fontFamily: 'MarioFont, sans-serif',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                  }}
-                />
-              </FormControl>
-
-              <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-                <FormControl fullWidth>
-                  <Typography variant="body2" sx={{ mb: 0.5, fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                    State <span style={{ color: '#999', fontSize: '0.9em' }}>(Auto-detected)</span>
-                  </Typography>
-                  <input
-                    type="text"
-                    value={destinationState}
-                    readOnly
-                    placeholder="Auto-filled from name"
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      fontFamily: 'MarioFont, sans-serif',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px',
-                      backgroundColor: '#f9f9f9',
-                    }}
-                  />
-                </FormControl>
-
-                <FormControl fullWidth>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
-                    <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                      Country
-                    </Typography>
-                    {!isEditingCountry && (
-                      <Button
-                        size="small"
-                        onClick={() => setIsEditingCountry(true)}
-                        sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '0.75rem', minWidth: 'auto', p: 0 }}
-                      >
-                        Edit
-                      </Button>
-                    )}
-                  </Box>
-                  <input
-                    type="text"
-                    value={destinationCountry}
-                    onChange={(e) => setDestinationCountry(e.target.value)}
-                    readOnly={!isEditingCountry}
-                    placeholder="USA"
-                    style={{
-                      width: '100%',
-                      padding: '10px',
-                      fontFamily: 'MarioFont, sans-serif',
-                      border: '1px solid #ddd',
-                      borderRadius: '4px',
-                      backgroundColor: isEditingCountry ? 'white' : '#f9f9f9',
-                    }}
-                  />
-                </FormControl>
-              </Box>
-
-              {/* Coordinates Display */}
-              <Box sx={{ mb: 2, p: 2, backgroundColor: '#f9f9f9', borderRadius: '4px', border: '1px solid #ddd' }}>
-                <Typography variant="body2" sx={{ mb: 1, fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', color: '#666' }}>
-                  Coordinates {isDetectingCoords && '(Detecting...)'}
-                </Typography>
-                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
-                  <Box>
-                    <Typography variant="caption" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#999' }}>
-                      Latitude
-                    </Typography>
-                    <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-                      {lat ? lat.toFixed(6) : '—'}
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="caption" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#999' }}>
-                      Longitude
-                    </Typography>
-                    <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-                      {lng ? lng.toFixed(6) : '—'}
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-
-              <FormControl fullWidth sx={{ mb: 2 }}>
-                <Typography variant="body2" sx={{ mb: 0.5, fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                  Date *
-                </Typography>
-                <input
-                  type="date"
-                  value={destinationDate}
-                  onChange={(e) => setDestinationDate(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px',
-                    fontFamily: 'MarioFont, sans-serif',
-                    border: '1px solid #ddd',
-                    borderRadius: '4px',
-                  }}
-                />
-              </FormControl>
-
-              {/* Show Map Toggle */}
-              <Box sx={{ mb: 2, p: 2, backgroundColor: '#f9f9f9', borderRadius: '4px', border: '1px solid #ddd' }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <input
-                    type="checkbox"
-                    checked={showMap}
-                    onChange={(e) => setShowMap(e.target.checked)}
-                    id="showMap-import"
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      cursor: 'pointer',
-                      accentColor: '#FFD701'
-                    }}
-                  />
-                  <label htmlFor="showMap-import" style={{ fontFamily: 'MarioFont, sans-serif', fontWeight: 'bold', cursor: 'pointer', flex: 1, color: '#666' }}>
-                    Show Map in Carousel
-                  </label>
-                </Box>
-                <Typography sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '12px', color: '#999', marginTop: '0.5rem', marginLeft: '32px' }}>
-                  When enabled, the last tab will display a map instead of the image number.
-                </Typography>
-              </Box>
-            </DialogContent>
-            <DialogActions>
-              <Button
-                onClick={() => {
-                  setSelectedPost(null)
-                  setDestinationName('')
-                  setDestinationNameCn('')
-                  setDestinationState('')
-                  setDestinationCountry('USA')
-                  setDestinationDate('')
-                  setLat(0)
-                  setLng(0)
-                  setShowMap(false)
-                  setIsEditingCountry(false)
-                }}
-                startIcon={<CancelIcon />}
-                sx={{ fontFamily: 'MarioFont, sans-serif' }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleImport}
-                disabled={!destinationName || !destinationDate || importing}
-                variant="contained"
-                startIcon={importing ? <CircularProgress size={20} /> : <UploadIcon />}
-                sx={{
-                  backgroundColor: '#FFD701',
-                  color: '#373737',
-                  fontFamily: 'MarioFont, sans-serif',
-                  '&:hover': { backgroundColor: '#E5C001' },
-                  '&:disabled': { backgroundColor: '#e0e0e0' },
-                }}
-              >
-                {importing ? 'Creating...' : 'Create & Import'}
-              </Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
+      {selectedPost && (
+        <ImportModal
+          post={selectedPost}
+          importing={importing}
+          error={error}
+          destinationName={destinationName}
+          destinationNameCn={destinationNameCn}
+          destinationState={destinationState}
+          destinationCountry={destinationCountry}
+          destinationDate={destinationDate}
+          isEditingCountry={isEditingCountry}
+          lat={lat}
+          lng={lng}
+          isDetectingCoords={isDetectingCoords}
+          showMap={showMap}
+          onNameChange={handleDestinationNameChange}
+          onNameCnChange={setDestinationNameCn}
+          onCountryChange={setDestinationCountry}
+          onEditCountry={() => setIsEditingCountry(true)}
+          onDateChange={setDestinationDate}
+          onShowMapChange={setShowMap}
+          onClose={() => setSelectedPost(null)}
+          onCancel={resetImportForm}
+          onImport={handleImport}
+        />
+      )}
 
       {/* Exclude Confirmation Dialog */}
-      <Dialog
+      <ConfirmModal
         open={postToExclude !== null}
         onClose={() => setPostToExclude(null)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>
-          Exclude Post from Import?
-        </DialogTitle>
-        <DialogContent>
-          <Typography sx={{ fontFamily: 'MarioFont, sans-serif', mb: 2 }}>
+        onConfirm={handleExcludePost}
+        title="Exclude Post from Import?"
+        confirmLabel="Exclude"
+        cancelLabel="Cancel"
+        message={
+          <>
             This post will be hidden from the import list. You can restore it later from the "View Processed" section.
-          </Typography>
-          {postToExclude && (
-            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', p: 2, backgroundColor: '#f5f5f5', borderRadius: 1 }}>
-              <Box
-                component="img"
-                src={getMediaPreview(postToExclude)}
-                alt="Post preview"
-                sx={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 1 }}
-              />
-              <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', flex: 1 }}>
-                {parseBilingualCaption(postToExclude.caption).english || 'No caption'}
-              </Typography>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => setPostToExclude(null)}
-            sx={{ fontFamily: 'MarioFont, sans-serif' }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleExcludePost}
-            variant="contained"
-            startIcon={<BlockIcon />}
-            sx={{
-              backgroundColor: '#f44336',
-              color: 'white',
-              fontFamily: 'MarioFont, sans-serif',
-              '&:hover': { backgroundColor: '#d32f2f' },
-            }}
-          >
-            Exclude Post
-          </Button>
-        </DialogActions>
-      </Dialog>
+            {postToExclude && (
+              <span
+                className="mt-3 flex items-center gap-3 rounded-xl p-3 text-left"
+                style={{ background: C.offwhite, border: `2px solid ${C.charcoal}` }}
+              >
+                <img
+                  src={getMediaPreview(postToExclude)}
+                  alt="Post preview"
+                  className="rounded-lg object-cover"
+                  style={{ width: 56, height: 56, border: `2px solid ${C.charcoal}`, flex: 'none' }}
+                />
+                <span className="line-clamp-2" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.charcoal }}>
+                  {parseBilingualCaption(postToExclude.caption).english || 'No caption'}
+                </span>
+              </span>
+            )}
+          </>
+        }
+      />
 
       {/* Processed Posts Drawer */}
-      <Drawer
-        anchor="right"
+      <HistoryDrawer
         open={showProcessedPosts}
         onClose={() => setShowProcessedPosts(false)}
-        sx={{ '& .MuiDrawer-paper': { width: { xs: '100%', sm: '90%', md: '600px' } } }}
-      >
-        <Box sx={{ p: 3 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-            <Typography variant="h5" sx={{ fontFamily: 'MarioFontTitle, sans-serif', color: '#373737' }}>
-              Processed Posts
-            </Typography>
-            <Button onClick={() => setShowProcessedPosts(false)} sx={{ fontFamily: 'MarioFont, sans-serif' }}>
-              Close
-            </Button>
-          </Box>
-
-          <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', color: '#666', mb: 3 }}>
-            {importedPostIds.size} imported · {excludedPostIds.size} excluded
-          </Typography>
-
-          <TableContainer component={Paper} elevation={0} sx={{ border: '1px solid #e0e0e0' }}>
-            <Table size="small">
-              <TableHead>
-                <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
-                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Preview</TableCell>
-                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Caption</TableCell>
-                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Status</TableCell>
-                  <TableCell sx={{ fontFamily: 'MarioFontTitle, sans-serif' }}>Action</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {processedPosts.map((post) => {
-                  const isImported = importedPostIds.has(post.id)
-                  const isExcluded = excludedPostIds.has(post.id)
-                  return (
-                    <TableRow key={post.id}>
-                      <TableCell>
-                        <Box
-                          component="img"
-                          src={getMediaPreview(post)}
-                          alt="Post preview"
-                          sx={{ width: 50, height: 50, objectFit: 'cover', borderRadius: 1 }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2" sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '12px' }}>
-                          {parseBilingualCaption(post.caption).english?.substring(0, 50) || 'No caption'}...
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {isImported ? (
-                          <Chip
-                            icon={<CheckIcon />}
-                            label="Imported"
-                            size="small"
-                            sx={{
-                              fontFamily: 'MarioFont, sans-serif',
-                              backgroundColor: '#4caf50',
-                              color: 'white',
-                              fontSize: '11px',
-                            }}
-                          />
-                        ) : (
-                          <Chip
-                            icon={<BlockIcon />}
-                            label="Excluded"
-                            size="small"
-                            sx={{
-                              fontFamily: 'MarioFont, sans-serif',
-                              backgroundColor: '#f44336',
-                              color: 'white',
-                              fontSize: '11px',
-                            }}
-                          />
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {isExcluded && (
-                          <Button
-                            size="small"
-                            onClick={() => handleUnexcludePost(post.id)}
-                            sx={{
-                              fontFamily: 'MarioFont, sans-serif',
-                              fontSize: '11px',
-                              color: '#FFD701',
-                              '&:hover': { backgroundColor: 'rgba(255, 215, 1, 0.1)' },
-                            }}
-                          >
-                            Restore
-                          </Button>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      </Drawer>
-    </Box>
+        processedPosts={processedPosts}
+        importedPostIds={importedPostIds}
+        excludedPostIds={excludedPostIds}
+        onUnexclude={handleUnexcludePost}
+      />
+    </div>
   )
 }

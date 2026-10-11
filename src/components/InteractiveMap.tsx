@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css'
 import Box from '@mui/material/Box'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { isLocalTrip } from 'src/utils/journeyHelpers'
+import { addTileLayerWithFallback, LIGHT_TILES } from 'src/utils/mapTiles'
 import { rvw } from 'src/utils/scaling'
 import MapMarkerDrawer from './MapMarkerDrawer'
 
@@ -208,11 +209,10 @@ export default function InteractiveMap({ places, isDetailView = false, routeCoor
 
     // Add tile layer with light gray theme
     // Allow more zoom out on mobile (minZoom 3) vs desktop (minZoom 4)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    addTileLayerWithFallback(map, LIGHT_TILES, {
       minZoom: isMobile ? 3 : 4,
       maxZoom: maxZoom,
-    }).addTo(map)
+    })
 
     // Create custom orange marker icon (single visit)
     const orangeIcon = L.icon({

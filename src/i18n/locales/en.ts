@@ -11,7 +11,7 @@ export const en = {
 
   // Homepage
   homepage: {
-    title: "Joey Hou's Journal | United States",
+    title: "Joey Hou's Journal - United States",
     description: "Welcome to my travel journal site! Enjoy the pictures I take in the US on trains...and more!",
     slogan: "Exploring America by Rail",
     carouselText: "Pictures from my travels across America",

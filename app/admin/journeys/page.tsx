@@ -1,19 +1,32 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
-import Box from '@mui/material/Box'
-import AdminLoading from 'src/components/AdminLoading'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
+import { TrainSvg } from '../../(site)/_shared'
+import {
+  Btn,
+  Card,
+  C,
+  DISPLAY,
+  BODY,
+  EmptyState,
+  PageHeader,
+  Pagination,
+  SearchPill,
+  SectionLoading,
+  TableWrap,
+} from '../_ui'
+import { PAGE_SIZE_OPTIONS, usePagedSearch } from '../_list'
 
 export default function JourneysPage() {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
   const [journeys, setJourneys] = useState<any[]>([])
   const [destinations, setDestinations] = useState<any[]>([])
   const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const { searchTerm, setSearchTerm, page, setPage, rowsPerPage, changeRowsPerPage, filtered, paginated } =
+    usePagedSearch(journeys, (journey, term) =>
+      journey.name.toLowerCase().includes(term.toLowerCase())
+    )
 
   // Fetch data from API
   useEffect(() => {
@@ -46,286 +59,122 @@ export default function JourneysPage() {
     fetchData()
   }, [])
 
-  const filteredJourneys = journeys.filter(journey =>
-    journey.name.toLowerCase().includes(searchTerm.toLowerCase())
-  )
-
-  const paginatedJourneys = filteredJourneys.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  )
-
   if (isLoading) {
-    return <AdminLoading message="Loading Journeys..." />
+    return <SectionLoading label="Loading journeys…" icon="plane" />
   }
 
+  const durationText = (journey: any) =>
+    `${journey.days} day${journey.days > 1 ? 's' : ''}${journey.nights > 0 ? `, ${journey.nights} night${journey.nights > 1 ? 's' : ''}` : ''}`
+
   return (
-    <Box>
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, marginBottom: '2rem', gap: { xs: 2, sm: 0 } }}>
-        <h1 style={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: 'clamp(24px, 6vw, 36px)', margin: 0 }}>
-          Journeys ({journeys.length})
-        </h1>
-        <Box sx={{ display: 'flex', gap: '1rem', width: { xs: '100%', sm: 'auto' } }}>
-          <Link href="/admin/journeys/new" style={{ width: '100%' }}>
-            <button
-              style={{
-                width: '100%',
-                padding: '0.75rem 1.5rem',
-                fontSize: '16px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: '#FFD701',
-                border: '2px solid #373737',
-                borderRadius: '0.5rem',
-                cursor: 'pointer'
-              }}
-            >
-              + Add Journey
-            </button>
-          </Link>
-        </Box>
-      </Box>
+    <div>
+      <PageHeader
+        kicker="ADMIN"
+        title="Manage"
+        accent="Journeys"
+        sub={`${journeys.length} journeys in your journal`}
+        actions={
+          <Btn variant="primary" href="/admin/journeys/new" icon={<TrainSvg size={15} color="#FFFFFF" />}>
+            Add Journey
+          </Btn>
+        }
+      />
 
-      <Box sx={{ marginBottom: '1.5rem' }}>
-        <input
-          type="text"
-          placeholder="Search journeys..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '0.75rem',
-            fontSize: '16px',
-            border: '2px solid #373737',
-            borderRadius: '0.5rem',
-            fontFamily: 'MarioFont, sans-serif'
-          }}
-        />
-      </Box>
+      <div className="mb-5">
+        <SearchPill value={searchTerm} onChange={setSearchTerm} placeholder="Search journeys..." />
+      </div>
 
-      {/* Mobile Card View */}
-      <Box sx={{ display: { xs: 'block', md: 'none' } }}>
-        {paginatedJourneys.length === 0 ? (
-          <Box sx={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif', backgroundColor: 'white', borderRadius: '1rem' }}>
-            No journeys found
-          </Box>
-        ) : (
-          paginatedJourneys.map((journey) => (
-            <Box
-              key={journey.id}
-              onClick={() => window.location.href = `/admin/journeys/${journey.id}`}
-              sx={{
-                backgroundColor: 'white',
-                borderRadius: '1rem',
-                padding: '1rem',
-                marginBottom: '1rem',
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                cursor: 'pointer',
-                '&:hover': { backgroundColor: '#f5f5f5' }
-              }}
-            >
-              <Box sx={{ fontFamily: 'MarioFontTitle, sans-serif', fontSize: '18px', marginBottom: '0.5rem', color: '#373737' }}>
-                {journey.name}
-              </Box>
-              {journey.nameCN && (
-                <Box sx={{ fontSize: '14px', color: '#666', marginBottom: '0.5rem', fontFamily: 'MarioFont, sans-serif' }}>
-                  {journey.nameCN}
-                </Box>
-              )}
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.5rem', fontSize: '14px', fontFamily: 'MarioFont, sans-serif', color: '#666' }}>
-                <Box>
-                  <strong>Route:</strong> {calculateRouteDisplay(journey, homeLocations)}
-                  <div style={{ fontSize: '12px', color: '#999', marginTop: '2px' }}>
-                    {calculateRouteDisplayCN(journey, homeLocations)}
-                  </div>
-                </Box>
-                <Box><strong>Duration:</strong> {journey.days} day{journey.days > 1 ? 's' : ''}{journey.nights > 0 ? `, ${journey.nights} night${journey.nights > 1 ? 's' : ''}` : ''}</Box>
-                <Box><strong>Places:</strong> {journey.totalPlaces}</Box>
-                <Box><strong>Dates:</strong> {journey.startDate} to {journey.endDate}</Box>
-              </Box>
-            </Box>
-          ))
-        )}
-      </Box>
-
-      {/* Desktop Table View */}
-      <Box
-        sx={{
-          display: { xs: 'none', md: 'block' },
-          backgroundColor: 'white',
-          borderRadius: '1rem',
-          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-          overflow: 'hidden'
-        }}
-      >
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr style={{ backgroundColor: '#f9f9f9', borderBottom: '2px solid #e0e0e0' }}>
-              <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Name</th>
-              <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Route</th>
-              <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Duration</th>
-              <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Places</th>
-              <th style={{ padding: '1rem', textAlign: 'left', fontFamily: 'MarioFont, sans-serif' }}>Dates</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedJourneys.length === 0 ? (
-              <tr>
-                <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', fontFamily: 'MarioFont, sans-serif' }}>
-                  No journeys found
-                </td>
-              </tr>
-            ) : (
-              paginatedJourneys.map((journey) => (
-                <tr
-                  key={journey.id}
-                  style={{
-                    borderBottom: '1px solid #e0e0e0',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
-                  }}
-                  onClick={() => window.location.href = `/admin/journeys/${journey.id}`}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9f9f9'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                >
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
-                    {journey.name}
-                    {journey.nameCN && <div style={{ fontSize: '12px', color: '#666' }}>{journey.nameCN}</div>}
-                  </td>
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-                    {calculateRouteDisplay(journey, homeLocations)}
-                    <div style={{ fontSize: '12px', color: '#999', marginTop: '2px' }}>
-                      {calculateRouteDisplayCN(journey, homeLocations)}
+      {paginated.length === 0 ? (
+        <EmptyState title="No journeys found" subtitle="Try a different search, or add a new journey." />
+      ) : (
+        <>
+          {/* Mobile card view */}
+          <div className="flex flex-col gap-4 md:hidden">
+            {paginated.map(journey => (
+              <div
+                key={journey.id}
+                onClick={() => window.location.href = `/admin/journeys/${journey.id}`}
+                className="adm-fade-in cursor-pointer"
+              >
+                <Card hoverable>
+                  <div style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 17, color: C.charcoal }}>{journey.name}</div>
+                  {journey.nameCN && (
+                    <div className="mt-0.5" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+                      {journey.nameCN}
                     </div>
-                  </td>
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-                    {journey.days} day{journey.days > 1 ? 's' : ''}{journey.nights > 0 ? `, ${journey.nights} night${journey.nights > 1 ? 's' : ''}` : ''}
-                  </td>
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif' }}>
-                    {journey.totalPlaces}
-                  </td>
-                  <td style={{ padding: '1rem', fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-                    {journey.startDate} to {journey.endDate}
-                  </td>
+                  )}
+                  <div className="mt-2.5 grid grid-cols-1 gap-1.5" style={{ fontFamily: BODY, fontWeight: 600, fontSize: 13, color: C.gray }}>
+                    <div>
+                      <span style={{ color: C.charcoal }}>Route:</span> {calculateRouteDisplay(journey, homeLocations)}
+                      <div className="mt-0.5" style={{ fontSize: 12, opacity: 0.75 }}>
+                        {calculateRouteDisplayCN(journey, homeLocations)}
+                      </div>
+                    </div>
+                    <div>
+                      <span style={{ color: C.charcoal }}>Duration:</span> {durationText(journey)}
+                    </div>
+                    <div>
+                      <span style={{ color: C.charcoal }}>Places:</span> {journey.totalPlaces}
+                    </div>
+                    <div>
+                      <span style={{ color: C.charcoal }}>Dates:</span> {journey.startDate} to {journey.endDate}
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop table view */}
+          <TableWrap className="hidden md:block">
+            <table className="adm-table w-full">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Route</th>
+                  <th>Duration</th>
+                  <th>Places</th>
+                  <th>Dates</th>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </Box>
-
-      {/* Pagination Controls */}
-      {filteredJourneys.length > 0 && (
-        <Box sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
-          justifyContent: 'space-between',
-          alignItems: { xs: 'stretch', sm: 'center' },
-          marginTop: '1rem',
-          padding: '1rem',
-          backgroundColor: 'white',
-          borderRadius: '0.5rem',
-          border: '1px solid #e0e0e0',
-          gap: { xs: '1rem', sm: 0 }
-        }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: { xs: 'space-between', sm: 'flex-start' } }}>
-            <label style={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-              Rows per page:
-            </label>
-            <select
-              value={rowsPerPage}
-              onChange={(e) => {
-                setRowsPerPage(Number(e.target.value))
-                setPage(0)
-              }}
-              style={{
-                padding: '0.5rem',
-                fontSize: '14px',
-                fontFamily: 'MarioFont, sans-serif',
-                border: '2px solid #373737',
-                borderRadius: '0.25rem',
-                cursor: 'pointer'
-              }}
-            >
-              <option value={5}>5</option>
-              <option value={10}>10</option>
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-            </select>
-          </Box>
-
-          <Box sx={{ fontFamily: 'MarioFont, sans-serif', fontSize: '14px' }}>
-            {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, filteredJourneys.length)} of {filteredJourneys.length}
-          </Box>
-
-          <Box sx={{ display: 'flex', gap: '0.5rem' }}>
-            <button
-              onClick={() => setPage(0)}
-              disabled={page === 0}
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '14px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
-                border: '2px solid #373737',
-                borderRadius: '0.25rem',
-                cursor: page === 0 ? 'not-allowed' : 'pointer',
-                opacity: page === 0 ? 0.5 : 1
-              }}
-            >
-              ««
-            </button>
-            <button
-              onClick={() => setPage(page - 1)}
-              disabled={page === 0}
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '14px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: page === 0 ? '#e0e0e0' : '#FFD701',
-                border: '2px solid #373737',
-                borderRadius: '0.25rem',
-                cursor: page === 0 ? 'not-allowed' : 'pointer',
-                opacity: page === 0 ? 0.5 : 1
-              }}
-            >
-              «
-            </button>
-            <button
-              onClick={() => setPage(page + 1)}
-              disabled={page >= Math.ceil(filteredJourneys.length / rowsPerPage) - 1}
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '14px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: page >= Math.ceil(filteredJourneys.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
-                border: '2px solid #373737',
-                borderRadius: '0.25rem',
-                cursor: page >= Math.ceil(filteredJourneys.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
-                opacity: page >= Math.ceil(filteredJourneys.length / rowsPerPage) - 1 ? 0.5 : 1
-              }}
-            >
-              »
-            </button>
-            <button
-              onClick={() => setPage(Math.ceil(filteredJourneys.length / rowsPerPage) - 1)}
-              disabled={page >= Math.ceil(filteredJourneys.length / rowsPerPage) - 1}
-              style={{
-                padding: '0.5rem 1rem',
-                fontSize: '14px',
-                fontFamily: 'MarioFont, sans-serif',
-                backgroundColor: page >= Math.ceil(filteredJourneys.length / rowsPerPage) - 1 ? '#e0e0e0' : '#FFD701',
-                border: '2px solid #373737',
-                borderRadius: '0.25rem',
-                cursor: page >= Math.ceil(filteredJourneys.length / rowsPerPage) - 1 ? 'not-allowed' : 'pointer',
-                opacity: page >= Math.ceil(filteredJourneys.length / rowsPerPage) - 1 ? 0.5 : 1
-              }}
-            >
-              »»
-            </button>
-          </Box>
-        </Box>
+              </thead>
+              <tbody>
+                {paginated.map(journey => (
+                  <tr
+                    key={journey.id}
+                    onClick={() => window.location.href = `/admin/journeys/${journey.id}`}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <td>
+                      {journey.name}
+                      {journey.nameCN && <div style={{ fontSize: 12, color: C.gray }}>{journey.nameCN}</div>}
+                    </td>
+                    <td>
+                      {calculateRouteDisplay(journey, homeLocations)}
+                      <div className="mt-0.5" style={{ fontSize: 12, color: C.gray }}>
+                        {calculateRouteDisplayCN(journey, homeLocations)}
+                      </div>
+                    </td>
+                    <td>{durationText(journey)}</td>
+                    <td>{journey.totalPlaces}</td>
+                    <td>
+                      {journey.startDate} to {journey.endDate}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </TableWrap>
+        </>
       )}
 
-    </Box>
+      <Pagination
+        page={page + 1}
+        pageSize={rowsPerPage}
+        total={filtered.length}
+        onPageChange={p => setPage(p - 1)}
+        onPageSizeChange={changeRowsPerPage}
+        pageSizeOptions={PAGE_SIZE_OPTIONS}
+      />
+    </div>
   )
 }

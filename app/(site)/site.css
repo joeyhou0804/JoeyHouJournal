@@ -1,0 +1,628 @@
+/* Site v2 styles — Nintendo "About Mario" inspired.
+   Restrained chrome, big rotated type, tone-on-tone patterns.
+   All animations are transform/opacity-only (GPU-friendly). */
+
+/* smooth scroll for in-page anchor buttons (this file only loads on the public site pages) */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ---- keyframes ---- */
+@keyframes v2-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes v2-rise {
+  from { opacity: 0; transform: translateY(42px) rotate(var(--r, 0deg)); }
+  to { opacity: 1; transform: translateY(0) rotate(var(--r, 0deg)); }
+}
+@keyframes v2-float {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-10px) rotate(var(--r, 0deg)); }
+}
+@keyframes v2-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-12deg); }
+  75% { transform: rotate(12deg); }
+}
+/* ---- draw-in loader: the icon's outline draws itself in (dashoffset
+   1 → 0), holds, then undraws (0 → -1, the stroke chases itself off).
+   Relies on pathLength="1" so one dash pattern fits any path. ---- */
+@keyframes v2-draw {
+  0% { stroke-dashoffset: 1; }
+  42% { stroke-dashoffset: 0; }
+  58% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -1; }
+}
+.v2-draw-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: v2-draw 2.2s ease-in-out infinite;
+}
+
+/* ---- hero staggered headline ---- */
+.v2-hero-line {
+  display: inline-block;
+  transform: rotate(var(--r, 0deg));
+  animation: v2-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ---- gentle float for photo cluster / accents ---- */
+.v2-float {
+  animation: v2-float 5s ease-in-out infinite;
+}
+
+/* ---- logo star wiggle ---- */
+.v2-logo:hover .v2-logo-star {
+  animation: v2-wiggle 0.45s ease-in-out;
+}
+
+/* ---- scroll reveal ---- */
+.v2-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.6s ease-out, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.v2-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- marquee ---- */
+.v2-marquee-track {
+  animation: v2-marquee 26s linear infinite;
+}
+
+/* ---- chunky pressable button (kept from v1, refined) ----
+   Nintendo style: no lift on hover — the arrow slides in and the color
+   deepens slightly. Press down on :active. */
+.v2-btn {
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out, color 0.12s ease-out, filter 0.12s ease-out;
+}
+.v2-btn:hover {
+  filter: brightness(0.93);
+}
+.v2-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 2px 0 #232323;
+}
+/* White buttons flush red with white text on hover (Nintendo nav style).
+   !important beats the inline background/color styles. */
+.v2-btn-white:hover {
+  background: #e60012 !important;
+  color: #ffffff !important;
+}
+.v2-chip-white {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+.v2-chip-white:not(.v2-chip-open):hover {
+  background: #e60012 !important;
+}
+
+/* ---- cards: subtle radius, soft shadow, playful tilt that straightens on hover ---- */
+.v2-card {
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease-out;
+}
+.v2-card:hover {
+  transform: rotate(0deg) translateY(-6px);
+  box-shadow: 0 18px 36px rgba(20, 20, 40, 0.18);
+}
+.v2-card-img {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.v2-card:hover .v2-card-img {
+  transform: scale(1.05);
+}
+
+/* ---- mobile nav panel ---- */
+.v2-nav-panel {
+  transition: opacity 0.25s ease-out, transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.v2-nav-panel-closed {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+/* ---- food circle picker (power-up selector style) ---- */
+.v2-food-circle {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease-out;
+}
+.v2-food-circle:hover {
+  transform: translateY(-6px) scale(1.04) rotate(-2deg);
+  box-shadow: 0 14px 26px rgba(10, 30, 10, 0.28);
+}
+.v2-food-circle img {
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.v2-food-circle:hover img {
+  transform: scale(1.08);
+}
+
+/* ---- horizontal scroll rows ---- */
+.v2-scroll-row {
+  scrollbar-width: none;
+}
+.v2-scroll-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---- drum carousel (Mario plays) — cards on a cylinder, drag/swipe
+   to rotate; center card straight + highest, sides descend ---- */
+.v2-drum-card {
+  will-change: transform, opacity;
+}
+.v2-drum-inner {
+  transition: box-shadow 0.3s ease-out;
+}
+.v2-drum-card:hover .v2-drum-inner {
+  box-shadow: 0 22px 40px rgba(20, 20, 40, 0.22) !important;
+}
+
+/* ---- power-up picker ---- */
+.v2-picker-circle {
+  transition: transform 0.2s ease-out, background-color 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+.v2-picker-circle:not(.v2-picker-active):hover {
+  transform: translateY(-4px);
+}
+.v2-picker-active {
+  transform: scale(1.12);
+}
+
+/* ---- content swap on picker change ---- */
+@keyframes v2-pop-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+.v2-pop-in {
+  animation: v2-pop-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   3D DIORAMA MAP — a tilted game-board stage. The map plane
+   leans back like a tabletop (pins/routes are stuck on the
+   board); clouds drift overhead; pins stand on shadow blobs.
+   Used by DestinationsMap + JourneyMap.
+   ============================================================ */
+
+/* ---- stage + board tilt ---- */
+.v3-stage {
+  position: relative;
+  overflow: hidden;
+  perspective: 1300px;
+  perspective-origin: 50% 45%;
+}
+.v3-tilt {
+  position: absolute;
+  inset: 0;
+  transform: rotateX(10deg) scale(1.07);
+  transform-origin: 50% 50%;
+}
+/* Warm paper tint for the base map tiles — kept subtle so state lines,
+   city names and the CARTO palette stay readable */
+.v3-tilt .leaflet-tile-pane {
+  filter: sepia(0.08) saturate(0.95) brightness(1.02) contrast(1);
+}
+/* Street tiles (food detail restaurant map): no filter — streets and
+   buildings must stay crisp */
+.v3-tiles-street .leaflet-tile-pane {
+  filter: none;
+}
+
+/* ---- floating zoom controls (off the tilted plane, so the round
+   buttons stay perfectly circular) ---- */
+.v3-zoom {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.v3-zoom button {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #232323;
+  border: 2.5px solid #232323;
+  box-shadow: 0 2px 0 #232323;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out;
+}
+.v3-zoom button:hover {
+  background: #e60012;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 0 #232323;
+}
+.v3-zoom button:active {
+  transform: translateY(1.5px);
+  box-shadow: 0 1px 0 #232323;
+}
+.v3-zoom button svg {
+  display: block;
+}
+
+/* ---- aerial haze + shadow-box inner shadow ---- */
+.v3-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.20) 0%, rgba(255, 255, 255, 0) 24%, rgba(20, 20, 40, 0.04) 78%, rgba(20, 20, 40, 0.10) 100%);
+  box-shadow:
+    inset 0 16px 26px -18px rgba(20, 20, 40, 0.5),
+    inset 0 -22px 30px -18px rgba(20, 20, 40, 0.45),
+    inset 14px 0 26px -20px rgba(20, 20, 40, 0.35),
+    inset -14px 0 26px -20px rgba(20, 20, 40, 0.35);
+}
+
+/* ---- drifting clouds (screen-space, above the board) ---- */
+.v3-clouds {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+}
+.v3-cloud {
+  position: absolute;
+  left: -100px;
+  animation: v3-cloud-drift linear infinite;
+}
+.v3-cloud svg {
+  display: block;
+  filter: drop-shadow(7px 10px 0 rgba(35, 35, 35, 0.10));
+}
+.v3-cloud-a { top: 8%; animation-duration: 52s; animation-delay: -14s; }
+.v3-cloud-b { top: 30%; animation-duration: 74s; animation-delay: -46s; }
+@keyframes v3-cloud-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(min(100vw, 72rem) + 200px)); }
+}
+
+/* ---- sticker pins standing on ground shadows ---- */
+.v3-pin-wrap,
+.v3-vehicle-wrap {
+  background: none;
+  border: none;
+}
+.v3-pin {
+  position: relative;
+  width: 34px;
+  height: 46px;
+  cursor: pointer;
+}
+.v3-pin-drop {
+  transform-origin: 50% 100%;
+  animation: v3-pin-drop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+  animation-delay: inherit;
+}
+.v3-pin-body {
+  transform-origin: 50% 100%;
+  transition: transform 0.18s ease-out;
+  filter: drop-shadow(0 3px 2px rgba(20, 20, 40, 0.35));
+}
+.v3-pin-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -1px;
+  width: 22px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(20, 20, 40, 0.32);
+  filter: blur(1.5px);
+  transform: translateX(-50%);
+  transition: transform 0.18s ease-out, opacity 0.18s ease-out;
+  animation: v3-shadow-pop 0.5s ease-out backwards;
+  animation-delay: inherit;
+}
+.v3-pin:hover .v3-pin-body {
+  transform: translateY(-5px) rotate(-4deg) scale(1.07);
+}
+.v3-pin:hover .v3-pin-shadow {
+  transform: translateX(-50%) scale(0.72);
+  opacity: 0.22;
+}
+
+/* ---- crowded maps: pins shrink at rest, grow to full size on hover ---- */
+.v3-pin-sm .v3-pin-body {
+  transform: scale(0.62);
+}
+.v3-pin-sm:hover .v3-pin-body {
+  transform: translateY(-5px) rotate(-4deg) scale(1);
+}
+.v3-pin-sm .v3-pin-shadow {
+  transform: translateX(-50%) scale(0.62);
+}
+.v3-pin-sm:hover .v3-pin-shadow {
+  transform: translateX(-50%) scale(0.72);
+  opacity: 0.22;
+}
+.v3-pin-sm .v3-pin-twinkle {
+  display: none;
+}
+@keyframes v3-pin-drop {
+  0% { opacity: 0; transform: translateY(-34px) scale(0.45); }
+  60% { opacity: 1; transform: translateY(2.5px) scale(1.05); }
+  80% { transform: translateY(-1px) scale(0.99); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes v3-shadow-pop {
+  from { opacity: 0; transform: translateX(-50%) scale(0.3); }
+  to { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+/* ---- star twinkle on multi-visit (gold) pins ---- */
+.v3-pin-twinkle {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  width: 13px;
+  height: 13px;
+  pointer-events: none;
+  transform-origin: center;
+  animation: v3-twinkle 2.8s ease-in-out infinite;
+}
+@keyframes v3-twinkle {
+  0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+  50% { transform: scale(1) rotate(90deg); opacity: 1; }
+}
+
+/* ---- chimney smoke puffs on the home pin ---- */
+.v3-pin-puff {
+  position: absolute;
+  top: 8px;
+  left: 17px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1.5px solid rgba(35, 35, 35, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  animation: v3-puff 2.6s ease-out infinite;
+}
+@keyframes v3-puff {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  12% { opacity: 0.95; }
+  100% { opacity: 0; transform: translate(3px, -13px) scale(1.5); }
+}
+
+/* ---- traveling vehicles (journey routes) ---- */
+.v3-vehicle {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  opacity: var(--vop, 1);
+}
+.v3-vehicle-shadow {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  width: 20px;
+  height: 8px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgba(20, 20, 40, 0.3);
+  filter: blur(1.5px);
+}
+.v3-vehicle-body {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(var(--ang, 0deg)) scale(var(--vsc, 1));
+  will-change: transform;
+}
+.v3-vehicle-body svg {
+  display: block;
+  filter: drop-shadow(0 2px 1.5px rgba(20, 20, 40, 0.35));
+  animation: v3-vehicle-bob 0.9s ease-in-out infinite alternate;
+}
+.v3-vehicle-plane .v3-vehicle-shadow {
+  top: 82%;
+  width: 13px;
+  height: 6px;
+  opacity: 0.75;
+}
+.v3-vehicle-plane .v3-vehicle-body {
+  transform: translateY(-8px) rotate(var(--ang, 0deg)) scale(var(--vsc, 1));
+}
+.v3-vehicle-plane .v3-vehicle-body svg {
+  animation-duration: 1.3s;
+}
+@keyframes v3-vehicle-bob {
+  from { transform: translateY(-1.2px); }
+  to { transform: translateY(1.2px); }
+}
+
+/* ---- route flow (marching dashes after the draw-on) ---- */
+@keyframes v3-flow-20 {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -20px; }
+}
+@keyframes v3-flow-train-light {
+  from { stroke-dashoffset: 10px; }
+  to { stroke-dashoffset: -10px; }
+}
+@keyframes v3-flow-10 {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: -10px; }
+}
+.v3-flow-train { animation: v3-flow-20 1s linear infinite; }
+.v3-flow-train-light { animation: v3-flow-train-light 1s linear infinite; }
+.v3-flow-road { animation: v3-flow-10 0.85s linear infinite; }
+.v3-flow-plane { animation: v3-flow-20 1.8s linear infinite; }
+
+/* ---- leaflet chrome restyle ---- */
+.v2-map {
+  font-family: var(--font-body-en), var(--font-body-zh), sans-serif;
+}
+.v2-map .leaflet-control-attribution {
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px 0 0 0;
+}
+
+/* ---- two-finger hint overlay (mobile) ---- */
+.v2-map-hint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 20, 34, 0.45);
+  color: #ffffff;
+  font-family: var(--font-display-en), var(--font-display-zh), sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  text-align: center;
+  padding: 24px;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-out;
+}
+
+/* ---- marker dialog nav buttons (shared by the dialog's prev/next) ---- */
+.v2-mp-nav {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #232323;
+  border: 2.5px solid #232323;
+  box-shadow: 0 3px 0 #232323;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background-color 0.12s ease-out, color 0.12s ease-out;
+}
+.v2-mp-nav:not(:disabled):hover {
+  background: #e60012;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 #232323;
+}
+.v2-mp-nav:not(:disabled):active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #232323;
+}
+.v2-mp-nav:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.v2-mp-counter {
+  font-family: var(--font-display-en), var(--font-display-zh), sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: #232323;
+  background: #ffc93d;
+  border: 2.5px solid #232323;
+  border-radius: 999px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+
+/* ---- marker dialog (mobile + desktop) — centered card dialog with a
+   springy pop entrance (bounce + slight rotational settle) ---- */
+.v2-md-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(20, 20, 34, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: v2-fade-in 0.2s ease-out both;
+}
+.v2-md-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 430px;
+  background: #ffffff;
+  border: 3px solid #232323;
+  border-radius: 22px;
+  box-shadow: 0 10px 0 #232323, 0 30px 60px rgba(10, 10, 30, 0.35);
+  padding: 16px;
+  animation: v2-dialog-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+.v2-md-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #232323;
+  border: 2.5px solid #232323;
+  box-shadow: 0 2px 0 #232323;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: background-color 0.12s ease-out, color 0.12s ease-out;
+}
+.v2-md-close:hover {
+  background: #e60012;
+  color: #ffffff;
+}
+@keyframes v2-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes v2-dialog-pop {
+  0% { transform: scale(0.6) rotate(-3deg); opacity: 0; }
+  55% { transform: scale(1.06) rotate(1.4deg); opacity: 1; }
+  78% { transform: scale(0.98) rotate(-0.6deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ---- filter stickers (bare icon artwork, playful motion) ---- */
+.v2-filter-sticker {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.v2-filter-sticker:hover {
+  transform: translateY(-4px) rotate(-3deg);
+}
+.v2-filter-sticker:active {
+  transform: scale(0.92);
+}
+
+/* ---- reduced motion: honor user preference ---- */
+@media (prefers-reduced-motion: reduce) {
+  .v2-hero-line, .v2-float, .v2-reveal, .v2-marquee-track,
+  .v2-btn, .v2-card, .v2-card-img, .v2-nav-panel, .v2-food-circle, .v2-food-circle img,
+  .v2-drum-inner, .v2-picker-circle, .v2-pop-in, .v2-draw-path,
+  .v2-md-backdrop, .v2-md-dialog, .v2-mp-card, .v2-filter-sticker,
+  .v3-pin-drop, .v3-pin-shadow, .v3-pin-twinkle, .v3-pin-puff, .v3-cloud,
+  .v3-flow-train, .v3-flow-train-light, .v3-flow-road, .v3-flow-plane,
+  .v3-vehicle-body svg {
+    animation: none !important;
+    transition: none !important;
+  }
+  .v2-reveal { opacity: 1 !important; transform: none !important; }
+  /* twinkles sit at opacity 0 in their keyframe ends — hide statically */
+  .v3-pin-twinkle { opacity: 0 !important; }
+  /* loader paths rest fully drawn when motion is off */
+  .v2-draw-path { stroke-dashoffset: 0 !important; }
+}

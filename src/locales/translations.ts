@@ -151,6 +151,7 @@ export const translations = {
     errorPage: {
       title: 'Oh no...',
       notFound: 'This page could not be found.',
+      backHome: 'Back to Home',
     },
   },
   zh: {
@@ -303,6 +304,7 @@ export const translations = {
     errorPage: {
       title: '哎呀...',
       notFound: '找不到该页面。',
+      backHome: '回到首页',
     },
   },
 } as const
