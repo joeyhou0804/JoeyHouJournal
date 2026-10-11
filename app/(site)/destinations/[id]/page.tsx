@@ -282,6 +282,9 @@ export default function DestinationDetailPage() {
   /* ---------- Filmstrip (Nintendo "Browse" gallery) helpers ---------- */
 
   const onFilmPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Touch swipes scroll natively (touchAction pan-x pan-y on the row) —
+    // the JS drag is only for mouse/pen. See ScrollStrip for why.
+    if (e.pointerType === 'touch') return
     filmDrag.current = { startX: e.clientX, scrollLeft: filmRef.current?.scrollLeft ?? 0, moved: false }
   }
   const onFilmPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -290,13 +293,25 @@ export default function DestinationDetailPage() {
     if (!d || !el) return
     const dx = e.clientX - d.startX
     if (Math.abs(dx) > 6) {
-      if (!d.moved) el.setPointerCapture(e.pointerId)
-      d.moved = true
+      if (!d.moved) {
+        // Mark moved before capturing: if capture throws, the strip must
+        // still scroll.
+        d.moved = true
+        try { el.setPointerCapture(e.pointerId) } catch { /* best-effort */ }
+      }
       el.scrollLeft = d.scrollLeft - dx
     }
   }
   const onFilmPointerUp = () => {
-    filmDrag.current = null
+    const d = filmDrag.current
+    if (!d) return
+    if (d.moved) {
+      // Keep the drag record alive until the click event has fired
+      // (click comes right after pointerup) so it can be suppressed.
+      window.setTimeout(() => { filmDrag.current = null }, 80)
+    } else {
+      filmDrag.current = null
+    }
   }
 
   // Foods visible in the photo currently open in the lightbox
@@ -388,7 +403,7 @@ export default function DestinationDetailPage() {
                   onPointerUp={onFilmPointerUp}
                   onPointerCancel={onFilmPointerUp}
                   className={`v2-scroll-row flex select-none items-stretch gap-4 overflow-x-auto overflow-y-hidden px-5 pb-2 pt-2 md:px-10 ${filmCanScroll ? '' : 'justify-center'}`}
-                  style={{ scrollSnapType: 'x proximity', touchAction: 'pan-y', cursor: filmCanScroll ? 'grab' : undefined }}
+                  style={{ scrollSnapType: 'x proximity', touchAction: 'pan-x pan-y', cursor: filmCanScroll ? 'grab' : undefined }}
                 >
                   {images.map((src, i) => {
                     const mapImg = isMapImage(i)

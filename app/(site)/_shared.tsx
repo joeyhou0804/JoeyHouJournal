@@ -1640,6 +1640,11 @@ export function ScrollStrip({ items, navCard, cardClassName = 'w-[186px] md:w-[2
   }, [items.length])
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Touch swipes scroll natively (touchAction pan-x pan-y on the row) —
+    // the JS drag is only for mouse/pen. Routing touch through JS breaks on
+    // real phones: the browser claims any slightly-vertical swipe for page
+    // scroll and fires pointercancel, freezing the strip mid-gesture.
+    if (e.pointerType === 'touch') return
     dragRef.current = { startX: e.clientX, scrollLeft: rowRef.current?.scrollLeft ?? 0, moved: false }
   }
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -1685,7 +1690,7 @@ export function ScrollStrip({ items, navCard, cardClassName = 'w-[186px] md:w-[2
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
           className={`v2-scroll-row flex select-none items-start gap-5 overflow-x-auto overflow-y-hidden pb-3 pt-3 md:gap-7 ${fullBleed ? 'px-5 md:px-10' : 'px-1'} ${canScroll ? '' : 'justify-center'}`}
-          style={{ scrollSnapType: 'x proximity', touchAction: 'pan-y', cursor: canScroll ? 'grab' : undefined }}
+          style={{ scrollSnapType: 'x proximity', touchAction: 'pan-x pan-y', cursor: canScroll ? 'grab' : undefined }}
         >
           {items.map((item, i) => (
             <Reveal key={item.key} delay={(i % 4) * 80} className="shrink-0">
