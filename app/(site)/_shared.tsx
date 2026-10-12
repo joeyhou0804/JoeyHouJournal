@@ -43,9 +43,10 @@ export function ArrowSvg({ size = 16 }: { size?: number }) {
 export function BtnArrow({ size = 15, dir = 'right' }: { size?: number; dir?: 'right' | 'down' }) {
   return (
     <span
-      className="inline-flex w-0 items-center overflow-hidden opacity-0 transition-all duration-200 ease-out group-hover:w-[18px] group-hover:opacity-100"
+      className="v2-btn-arrow inline-flex items-center overflow-hidden transition-all duration-200 ease-out"
       aria-hidden="true"
-      style={{ justifyContent: 'flex-end' }}
+      // --aw = expanded width on hover: arrow size + 10px gap from the label
+      style={{ justifyContent: 'flex-end', ['--aw' as never]: `${size + 10}px` }}
     >
       <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
         {dir === 'down' ? (

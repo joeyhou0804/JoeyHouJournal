@@ -107,6 +107,17 @@ html {
   background: #e60012 !important;
   color: #ffffff !important;
 }
+/* Slide-in arrow inside chunky buttons (BtnArrow): hidden at rest, expands
+   on hover. --aw (set inline) = arrow size + 10px so the label never crowds
+   the arrow. */
+.v2-btn-arrow {
+  width: 0;
+  opacity: 0;
+}
+.group:hover .v2-btn-arrow {
+  width: var(--aw, 25px);
+  opacity: 1;
+}
 .v2-chip-white {
   transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.15s ease-out, box-shadow 0.15s ease-out;
 }
