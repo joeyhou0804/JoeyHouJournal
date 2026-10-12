@@ -1799,8 +1799,9 @@ export function ScrollStrip({ items, navCard, cardClassName = 'w-[186px] md:w-[2
 /* ---------- Site logo — pin-star mark + bilingual wordmark lockup.
    Canonical names: full "Joey Hou's Journal - United States" /
    "小猴同学的旅行日记 - 美国游记"; short "Joey Hou's Journal" / "小猴同学的旅行日记".
-   The lockup carries the short name: owner line small on top,
-   "JOURNAL" / "旅行日记" loud in red below. ---------- */
+   Three-line lockup: owner line small on top, "JOURNAL" / "旅行日记" loud
+   in red in the middle, "UNITED STATES" / "美国游记" smallest at the
+   bottom. ---------- */
 
 export function SiteLogo({
   href,
@@ -1853,6 +1854,19 @@ export function SiteLogo({
           }}
         >
           {zh ? '旅行日记' : 'JOURNAL'}
+        </span>
+        <span
+          style={{
+            fontFamily: DISPLAY,
+            fontWeight: 600,
+            fontSize: size === 'lg' ? (zh ? 9 : 8.5) : zh ? 8 : 7.5,
+            letterSpacing: zh ? 2.2 : 2.8,
+            color: topColor,
+            opacity: 0.85,
+            marginTop: 3,
+          }}
+        >
+          {zh ? '美国游记' : 'UNITED STATES'}
         </span>
       </span>
       {badge && (

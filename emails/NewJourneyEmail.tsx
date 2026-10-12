@@ -92,6 +92,7 @@ export const NewJourneyEmail = ({
 
   const logoTop = isZh ? '小猴同学的' : "JOEY HOU'S"
   const logoBottom = isZh ? '旅行日记' : 'JOURNAL'
+  const logoThird = isZh ? '美国游记' : 'UNITED STATES'
 
   const labelPill: React.CSSProperties = {
     display: 'inline-block',
@@ -183,6 +184,20 @@ export const NewJourneyEmail = ({
                 }}
               >
                 {logoBottom}
+              </Text>
+              <Text
+                style={{
+                  fontFamily: displayFont,
+                  fontWeight: 600,
+                  fontSize: '8px',
+                  letterSpacing: isZh ? '2.2px' : '2.8px',
+                  color: GRAY,
+                  opacity: 0.85,
+                  margin: '3px 0 0',
+                  lineHeight: 1,
+                }}
+              >
+                {logoThird}
               </Text>
             </div>
           </Section>
