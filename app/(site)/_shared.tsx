@@ -1195,13 +1195,15 @@ export function Marquee({ variant = 'travel' }: { variant?: 'travel' | 'food' })
         </div>
       </div>
       {/* Yoshi mountain biking — overlaps the red band from the left, its
-          ground line flush with the footer's top edge */}
+          ground line flush with the footer's top edge. Desktop: flush with
+          the window's left edge. Mobile: the left third hangs off-screen
+          (page root is overflow-x-clip, so no horizontal scrollbar). */}
       <CharImage
         src="/images/site/yoshi_mountain_bike.webp"
         alt=""
         width={1120}
         height={611}
-        className="absolute bottom-0 left-1 z-20 w-[280px] md:left-[2%] md:w-[480px] lg:left-[4%] lg:w-[560px]"
+        className="absolute bottom-0 left-0 z-20 w-[280px] -translate-x-1/3 md:w-[480px] md:translate-x-0 lg:w-[560px]"
         style={{ filter: CHAR_SHADOW }}
       />
     </div>
