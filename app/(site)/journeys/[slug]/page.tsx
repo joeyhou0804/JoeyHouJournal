@@ -228,8 +228,10 @@ export default function JourneyDetailPage() {
           { icon: <StarSvg size={13} />, text: formatDuration(journey.days, journey.nights, tr) },
           { icon: <PinSvg size={13} />, text: `${journey.totalPlaces || places.length} ` + (locale === 'zh' ? '个地点' : 'places') },
         ]}
-        image="/images/site/yoshi_safari_van.png"
+        image="/images/site/yoshi_safari_van.webp"
         imageAlt={locale === 'zh' ? '耀西趴在越野车顶上看地图' : 'Yoshi reading a map on top of a safari van'}
+        imageWidth={1600}
+        imageHeight={872}
         imageClassName="w-[min(94vw,460px)] md:w-[clamp(560px,48vw,760px)]"
         dividerFill={C.blue}
       />

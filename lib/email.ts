@@ -84,7 +84,7 @@ export async function sendNewJourneyEmails(journey: JourneyEmailData) {
           unsubscribeUrl,
           locale: isZh ? ('zh' as const) : ('en' as const),
           subscriberName: subscriber.name,
-          marioImageUrl: 'https://joeyhoujournal.com/images/homepage/homepage_image_1.png',
+          marioImageUrl: 'https://joeyhoujournal.com/images/homepage/homepage_image_1_email.png',
           pinUrl: 'https://joeyhoujournal.com/images/logos/logo_pin.png',
         })
       )

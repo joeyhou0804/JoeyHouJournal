@@ -30,6 +30,7 @@ import {
   StarburstBadge,
   SearchPill,
   ShowMoreButton,
+  CharImage,
   EmptyState,
   type CardItem,
 } from '../_shared'
@@ -345,11 +346,12 @@ export default function FoodsPage() {
 
           {/* Yoshi eating a burger on a bench — extra large, overlapping the wave from the right */}
           <div className="v2-float pointer-events-none relative z-20 mx-auto -mb-10 mt-6 flex justify-center md:absolute md:bottom-[-84px] md:right-[-32px] md:m-0">
-            <img
-              src="/images/site/yoshi_food_bench.png"
+            <CharImage
+              src="/images/site/yoshi_food_bench.webp"
               alt={locale === 'zh' ? '绿耀西坐在长椅上吃汉堡' : 'Green Yoshi eating a burger on a bench'}
-              loading="eager"
-              decoding="async"
+              eager
+              width={1100}
+              height={614}
               className="w-[min(92vw,440px)] md:w-[clamp(520px,48vw,720px)]"
               style={{ filter: CHAR_SHADOW, transform: 'rotate(3deg)' }}
             />

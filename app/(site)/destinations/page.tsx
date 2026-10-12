@@ -31,6 +31,7 @@ import {
   ShowMoreButton,
   EmptyState,
   HeroCount,
+  CharImage,
   type CardItem,
 } from '../_shared'
 import FilterBar, { type FilterGroup } from './FilterBar'
@@ -351,11 +352,12 @@ export default function DestinationsPage() {
 
           {/* Bowser driving a monster semi truck — extra large, overlapping the wave from the right */}
           <div className="v2-float pointer-events-none relative z-20 mx-auto -mb-10 mt-6 flex justify-center md:absolute md:bottom-[-84px] md:right-[-32px] md:m-0">
-            <img
-              src="/images/site/bowser_truck.png"
+            <CharImage
+              src="/images/site/bowser_truck.webp"
               alt={locale === 'zh' ? '酷霸王开着巨型大卡车' : 'Bowser driving a monster semi truck'}
-              loading="eager"
-              decoding="async"
+              eager
+              width={1600}
+              height={872}
               className="w-[min(96vw,480px)] md:w-[clamp(600px,52vw,840px)]"
               style={{ filter: CHAR_SHADOW, transform: 'rotate(-3deg)' }}
             />

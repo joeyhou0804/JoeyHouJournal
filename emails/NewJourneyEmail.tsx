@@ -60,7 +60,7 @@ export const NewJourneyEmail = ({
   unsubscribeUrl,
   locale = 'en',
   subscriberName,
-  marioImageUrl = '/static/homepage_image_1.png',
+  marioImageUrl = '/static/homepage_image_1_email.png',
   pinUrl = '/static/logo_pin.png',
 }: NewJourneyEmailProps) => {
   const isZh = locale === 'zh'
@@ -261,13 +261,26 @@ export const NewJourneyEmail = ({
               </Text>
             </Section>
 
-            {/* Mario hero — first homepage image */}
+            {/* Mario hero — first homepage image (680px quantized PNG, ~76KB).
+                width/height attributes reserve the space so slow connections
+                (and clients that block images) don't collapse the layout;
+                the off-white background shows as a placeholder while loading. */}
             <Section style={{ textAlign: 'center', padding: '10px 0 0' }}>
               <Img
                 src={marioImageUrl}
-                alt="Mario driving"
+                alt={isZh ? '马力欧开着一辆红色雪佛兰' : 'Mario driving a red Chevrolet'}
+                width={340}
+                height={185}
                 className="hero-img"
-                style={{ width: '72%', maxWidth: '340px', height: 'auto', margin: '0 auto', display: 'inline-block' }}
+                style={{
+                  width: '72%',
+                  maxWidth: '340px',
+                  height: 'auto',
+                  margin: '0 auto',
+                  display: 'inline-block',
+                  backgroundColor: OFFWHITE,
+                  borderRadius: '12px',
+                }}
               />
             </Section>
 

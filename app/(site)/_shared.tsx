@@ -1010,6 +1010,52 @@ export function ContentImage({
   )
 }
 
+/* ---------- Character art (transparent WebP cutouts floating over section
+   edges) — fades in once loaded; intrinsic width/height reserve the aspect
+   ratio so slow connections don't get a layout jump. Unlike ContentImage
+   there's no placeholder box: the art has an irregular transparent
+   silhouette, so a frame would look wrong. ---------- */
+
+export function CharImage({
+  src,
+  alt,
+  eager = false,
+  width,
+  height,
+  className = '',
+  style,
+}: {
+  src: string
+  alt: string
+  eager?: boolean
+  /* Intrinsic pixel size of the image file (aspect-ratio reservation) */
+  width: number
+  height: number
+  className?: string
+  style?: React.CSSProperties
+}) {
+  const [loaded, setLoaded] = useState(false)
+  const imgRef = useRef<HTMLImageElement>(null)
+  // Already-cached images can complete before React attaches onLoad
+  useEffect(() => {
+    setLoaded(imgRef.current?.complete ?? false)
+  }, [src])
+  return (
+    <img
+      ref={imgRef}
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      onLoad={() => setLoaded(true)}
+      className={className}
+      style={{ ...style, height: 'auto', opacity: loaded ? 1 : 0, transition: 'opacity 0.45s ease-out' }}
+    />
+  )
+}
+
 /* ---------- Small icon image (filter stickers, picker circles) — fades in
    over a tiny draw-in placeholder icon; the placeholder cycles by index so
    a row of filter icons doesn't pulse in sync. ---------- */
@@ -1150,11 +1196,11 @@ export function Marquee({ variant = 'travel' }: { variant?: 'travel' | 'food' })
       </div>
       {/* Yoshi mountain biking — overlaps the red band from the left, its
           ground line flush with the footer's top edge */}
-      <img
-        src="/images/site/yoshi_mountain_bike.png"
+      <CharImage
+        src="/images/site/yoshi_mountain_bike.webp"
         alt=""
-        loading="lazy"
-        decoding="async"
+        width={1120}
+        height={611}
         className="absolute bottom-0 left-1 z-20 w-[280px] md:left-[2%] md:w-[480px] lg:left-[4%] lg:w-[560px]"
         style={{ filter: CHAR_SHADOW }}
       />
@@ -2679,6 +2725,8 @@ export function DetailHero({
   chips = [],
   image,
   imageAlt,
+  imageWidth,
+  imageHeight,
   imageClassName = 'w-[min(80vw,340px)] md:w-[clamp(400px,38vw,540px)]',
   dividerFill = C.yellow,
 }: {
@@ -2688,6 +2736,9 @@ export function DetailHero({
   chips?: DetailChip[]
   image?: string
   imageAlt?: string
+  /* Intrinsic pixel size of the image file (aspect-ratio reservation) */
+  imageWidth?: number
+  imageHeight?: number
   imageClassName?: string
   dividerFill?: string
 }) {
@@ -2761,11 +2812,12 @@ export function DetailHero({
         {/* Character art — floats right on desktop, below the text on mobile */}
         {image && (
           <div className="v2-float pointer-events-none relative z-20 mx-auto -mb-8 mt-8 flex justify-center md:absolute md:bottom-[-50px] md:right-[-10px] md:m-0">
-            <img
+            <CharImage
               src={image}
               alt={imageAlt || ''}
-              loading="eager"
-              decoding="async"
+              eager
+              width={imageWidth ?? 1100}
+              height={imageHeight ?? 600}
               className={imageClassName}
               style={{ filter: CHAR_SHADOW, transform: 'rotate(3deg)' }}
             />

@@ -37,7 +37,7 @@ export async function GET(request: Request) {
         unsubscribeUrl: 'https://joeyhoujournal.com/api/unsubscribe?token=preview',
         locale,
         subscriberName: isZh ? '小猴同学' : 'Joey',
-        marioImageUrl: '/images/homepage/homepage_image_1.png',
+        marioImageUrl: '/images/homepage/homepage_image_1_email.png',
         pinUrl: '/images/logos/logo_pin.png',
       })
     )

@@ -30,6 +30,7 @@ import {
   StarburstBadge,
   EmptyState,
   JourneyMapBlock,
+  CharImage,
   type JourneyMapBlockLabels,
 } from '../_shared'
 import FilterBar, { type FilterGroup } from '../destinations/FilterBar'
@@ -530,11 +531,12 @@ export default function MapsPage() {
 
           {/* Luigi driving his expedition dune buggy — extra large, overlapping the wave from the right */}
           <div className="v2-float pointer-events-none relative z-20 mx-auto -mb-10 mt-6 flex justify-center md:absolute md:bottom-[-84px] md:right-[-32px] md:m-0">
-            <img
-              src="/images/site/luigi_dune_buggy.png"
+            <CharImage
+              src="/images/site/luigi_dune_buggy.webp"
               alt={locale === 'zh' ? '路易吉开着沙滩越野车，手里还拿着地图' : 'Luigi driving an expedition dune buggy holding a map'}
-              loading="eager"
-              decoding="async"
+              eager
+              width={1600}
+              height={872}
               className="w-[min(92vw,440px)] md:w-[clamp(520px,48vw,720px)]"
               style={{ filter: CHAR_SHADOW, transform: 'rotate(-3deg)' }}
             />

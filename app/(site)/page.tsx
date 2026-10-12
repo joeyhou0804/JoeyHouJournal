@@ -29,6 +29,7 @@ import {
   DrumCarousel,
   PolaroidInner,
   IconImage,
+  CharImage,
   SectionLoading,
   EmptyState,
   type CardItem,
@@ -329,11 +330,12 @@ export default function HomePage() {
 
           {/* Mario in Chevy — large, overlapping the headline and the wave below */}
           <div className="v2-float pointer-events-none relative z-20 mx-auto -mb-10 mt-8 flex justify-center md:absolute md:bottom-[-90px] md:right-[-48px] md:m-0">
-            <img
-              src="/images/homepage/homepage_image_1.png"
+            <CharImage
+              src="/images/homepage/homepage_image_1.webp"
               alt={locale === 'zh' ? '马力欧开着一辆红色雪佛兰' : 'Mario driving a red Chevrolet'}
-              loading="eager"
-              decoding="async"
+              eager
+              width={1700}
+              height={927}
               className="w-[min(92vw,430px)] md:w-[clamp(560px,52vw,780px)]"
               style={{ filter: CHAR_SHADOW, transform: 'rotate(-2deg)' }}
             />
@@ -350,11 +352,11 @@ export default function HomePage() {
         {/* Peach on her scooter — on the left (alternating sides), all
             screen sizes */}
         <div className="pointer-events-none absolute -top-16 left-0 z-20 md:left-[2%] md:top-4 lg:left-[4%]">
-          <img
-            src="/images/homepage/homepage_image_2.png"
+          <CharImage
+            src="/images/homepage/homepage_image_2.webp"
             alt={locale === 'zh' ? '桃花公主骑着粉色小摩托' : 'Peach on a pink scooter'}
-            loading="lazy"
-            decoding="async"
+            width={1000}
+            height={545}
             className="w-[200px] md:w-[400px] lg:w-[460px]"
             style={{ transform: 'rotate(-3deg)', filter: CHAR_SHADOW }}
           />
@@ -390,11 +392,11 @@ export default function HomePage() {
 
         {/* Toad in his taxi — large, overlapping the heading from the right */}
         <div className="pointer-events-none absolute -top-12 right-0 z-20 md:right-[2%] md:top-6 lg:right-[3%]">
-          <img
-            src="/images/homepage/homepage_image_3.png"
+          <CharImage
+            src="/images/homepage/homepage_image_3.webp"
             alt={locale === 'zh' ? '奇诺比奥开着黄色出租车' : 'Toad driving a yellow taxi'}
-            loading="lazy"
-            decoding="async"
+            width={1100}
+            height={600}
             className="w-[190px] md:w-[460px] lg:w-[540px]"
             style={{ transform: 'rotate(-4deg)', filter: CHAR_SHADOW }}
           />
@@ -428,11 +430,11 @@ export default function HomePage() {
 
         {/* Bowser Jr. on a hoverboard — large, overlapping the heading from the left */}
         <div className="pointer-events-none absolute -top-12 left-0 z-20 md:left-[2%] md:top-6 lg:left-[5%]">
-          <img
-            src="/images/homepage/homepage_image_4.png"
+          <CharImage
+            src="/images/homepage/homepage_image_4.webp"
             alt={locale === 'zh' ? '小酷霸王踩着悬浮滑板' : 'Bowser Jr. on a hoverboard'}
-            loading="lazy"
-            decoding="async"
+            width={1000}
+            height={545}
             className="w-[180px] md:w-[400px] lg:w-[470px]"
             style={{ transform: 'rotate(-5deg)', filter: CHAR_SHADOW }}
           />
@@ -472,11 +474,11 @@ export default function HomePage() {
             same placement pattern as the other sections' images
             (alternating sides: Peach left, Toad right, Bowser Jr. left) */}
         <div className="pointer-events-none absolute -top-16 right-1 z-20 md:right-[2%] md:top-6 lg:right-[3%]">
-          <img
-            src="/images/homepage/yoshi_delivery.png"
+          <CharImage
+            src="/images/homepage/yoshi_delivery.webp"
             alt={locale === 'zh' ? '耀西骑着小摩托送外卖' : 'Yoshi delivering food on a scooter'}
-            loading="lazy"
-            decoding="async"
+            width={1000}
+            height={1241}
             className="w-[130px] md:w-[300px] lg:w-[340px]"
             style={{ transform: 'rotate(4deg)', filter: CHAR_SHADOW }}
           />

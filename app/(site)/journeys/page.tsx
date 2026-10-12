@@ -31,6 +31,7 @@ import {
   SearchPill,
   ShowMoreButton,
   HeroCount,
+  CharImage,
   type JourneyMapBlockLabels,
   type CardItem,
 } from '../_shared'
@@ -501,11 +502,12 @@ export default function JourneysPage() {
 
           {/* Koopa & Goomba on the Desert Dash sidecar — extra large, overlapping the wave from the right */}
           <div className="v2-float pointer-events-none relative z-20 mx-auto -mb-10 mt-6 flex justify-center md:absolute md:bottom-[-84px] md:right-[-32px] md:m-0">
-            <img
-              src="/images/site/koopa_sidecar.png"
+            <CharImage
+              src="/images/site/koopa_sidecar.webp"
               alt={locale === 'zh' ? '慢慢龟骑摩托，边车里坐着栗宝宝' : 'Koopa riding a motorcycle with Goomba in the sidecar'}
-              loading="eager"
-              decoding="async"
+              eager
+              width={1500}
+              height={818}
               className="w-[min(92vw,440px)] md:w-[clamp(520px,48vw,720px)]"
               style={{ filter: CHAR_SHADOW, transform: 'rotate(3deg)' }}
             />

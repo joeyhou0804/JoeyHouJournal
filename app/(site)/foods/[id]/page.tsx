@@ -254,8 +254,10 @@ export default function FoodDetailPage() {
             ? [{ icon: <PinSvg size={13} />, text: destinationName, href: `/destinations/${destination.id}` }]
             : []),
         ]}
-        image="/images/homepage/yoshi_delivery.png"
+        image="/images/homepage/yoshi_delivery.webp"
         imageAlt={locale === 'zh' ? '耀西骑着小摩托送外卖' : 'Yoshi delivering food on a scooter'}
+        imageWidth={1000}
+        imageHeight={1241}
         imageClassName="w-[min(52vw,220px)] md:w-[clamp(260px,22vw,340px)]"
         dividerFill={C.green}
       />

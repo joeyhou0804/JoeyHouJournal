@@ -376,8 +376,10 @@ export default function DestinationDetailPage() {
         title={stationName}
         subtitle={heroSubtitle}
         chips={heroChips}
-        image="/images/homepage/homepage_image_3.png"
+        image="/images/homepage/homepage_image_3.webp"
         imageAlt={locale === 'zh' ? '奇诺比奥开着黄色出租车' : 'Toad driving a yellow taxi'}
+        imageWidth={1100}
+        imageHeight={600}
         imageClassName="w-[min(80vw,340px)] md:w-[clamp(400px,38vw,560px)]"
         dividerFill={seq.length > 0 ? seq[0].bg : C.red}
       />
