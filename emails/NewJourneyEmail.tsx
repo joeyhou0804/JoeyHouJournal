@@ -263,8 +263,8 @@ export const NewJourneyEmail = ({
 
             {/* Mario hero — first homepage image (680px quantized PNG, ~76KB).
                 width/height attributes reserve the space so slow connections
-                (and clients that block images) don't collapse the layout;
-                the off-white background shows as a placeholder while loading. */}
+                (and clients that block images) don't collapse the layout.
+                No background: the art is a transparent cutout over the white card. */}
             <Section style={{ textAlign: 'center', padding: '10px 0 0' }}>
               <Img
                 src={marioImageUrl}
@@ -278,8 +278,6 @@ export const NewJourneyEmail = ({
                   height: 'auto',
                   margin: '0 auto',
                   display: 'inline-block',
-                  backgroundColor: OFFWHITE,
-                  borderRadius: '12px',
                 }}
               />
             </Section>
