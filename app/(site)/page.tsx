@@ -497,13 +497,17 @@ export default function HomePage() {
           ) : (
             <>
           {selectedCategory && (
+            // The swipe zone spans the full row width, so swiping the empty
+            // space beside the card also cycles — vertical scrolling is
+            // untouched (touchAction: pan-y).
             <div
-              className="relative mx-auto w-fit"
+              className="relative"
               style={{ touchAction: 'pan-y' }}
               onPointerDown={e => {
                 foodSwipeRef.current = { x: e.clientX, y: e.clientY, swiped: false }
               }}
             >
+              <div className="relative mx-auto w-fit">
               <Reveal>
                 {/* pop-in animation lives on this wrapper — putting it on the
                     card itself would override the hover transform mid-animation */}
@@ -532,6 +536,7 @@ export default function HomePage() {
                   </Link>
                 </div>
               </Reveal>
+              </div>
             </div>
           )}
 
