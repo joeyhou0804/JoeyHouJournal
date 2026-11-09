@@ -17,6 +17,7 @@ import {
   TableWrap,
 } from '../_ui'
 import { PAGE_SIZE_OPTIONS, usePagedSearch } from '../_list'
+import { getStateSearchText } from 'src/utils/stateSearch'
 
 export default function JourneysPage() {
   const [journeys, setJourneys] = useState<any[]>([])
@@ -24,9 +25,15 @@ export default function JourneysPage() {
   const [homeLocations, setHomeLocations] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const { searchTerm, setSearchTerm, page, setPage, rowsPerPage, changeRowsPerPage, filtered, paginated } =
-    usePagedSearch(journeys, (journey, term) =>
-      journey.name.toLowerCase().includes(term.toLowerCase())
-    )
+    usePagedSearch(journeys, (journey, term) => {
+      const query = term.toLowerCase()
+      const destinationSearchText = destinations
+        .filter(destination => destination.journeyId === journey.id)
+        .map(destination => [destination.name, destination.nameCN, getStateSearchText(destination.state)].filter(Boolean).join(' '))
+        .join(' ')
+
+      return journey.name.toLowerCase().includes(query) || destinationSearchText.toLowerCase().includes(query)
+    })
 
   // Fetch data from API
   useEffect(() => {

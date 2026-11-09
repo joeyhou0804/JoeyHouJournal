@@ -18,6 +18,7 @@ import {
   TableWrap,
 } from '../_ui'
 import { PAGE_SIZE_OPTIONS, PencilSvg, PlusSvg, usePagedSearch } from '../_list'
+import { stateMatchesSearch } from 'src/utils/stateSearch'
 
 interface Destination {
   id: string
@@ -48,7 +49,7 @@ export default function DestinationsPage() {
     usePagedSearch(destinations, (dest, term) =>
       dest.name.toLowerCase().includes(term.toLowerCase()) ||
       dest.journeyName?.toLowerCase().includes(term.toLowerCase()) ||
-      dest.state?.toLowerCase().includes(term.toLowerCase())
+      stateMatchesSearch(dest.state, term)
     )
 
   useEffect(() => {

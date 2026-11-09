@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Fuse from 'fuse.js'
+import { getStateSearchText } from 'src/utils/stateSearch'
 import { useTranslation } from 'src/hooks/useTranslation'
 import { calculateRouteDisplay, calculateRouteDisplayCN } from 'src/utils/journeyHelpers'
 import { formatDuration } from 'src/utils/formatDuration'
@@ -352,7 +353,7 @@ export default function JourneysPage() {
       const destinationSearchText = journey
         ? allDestinations
             .filter(d => d.journeyName === journey.name)
-            .map(d => [d.name, d.nameCN, d.state].filter(Boolean).join(' '))
+            .map(d => [d.name, d.nameCN, getStateSearchText(d.state)].filter(Boolean).join(' '))
             .join(' ')
         : ''
       return { ...trip, destinationSearchText }

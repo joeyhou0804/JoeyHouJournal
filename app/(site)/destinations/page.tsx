@@ -36,6 +36,7 @@ import {
 } from '../_shared'
 import FilterBar, { type FilterGroup } from './FilterBar'
 import { applyDestinationFilters as applyFilters } from '../_filters'
+import { getStateSearchText } from 'src/utils/stateSearch'
 import '../site.css'
 
 const DestinationsMap = dynamic(() => import('./DestinationsMap'), {
@@ -222,7 +223,7 @@ export default function DestinationsPage() {
   }, [destinationsData, homeLocations, mapHome, mapGroup, mapOther])
 
   // Cards follow the list filters, then the search query
-  const allCards: CardItem[] = useMemo(() => {
+  const allCards: (CardItem & { searchText: string })[] = useMemo(() => {
     return applyFilters(destinationsData, listHome, listGroup, listOther, homeLocations).map(d => ({
       key: String(d.id),
       href: `/destinations/${d.id}`,
@@ -230,13 +231,16 @@ export default function DestinationsPage() {
       meta1: locale === 'zh' && d.journeyNameCN ? d.journeyNameCN : d.journeyName,
       meta2: d.date,
       image: d.images && d.images.length > 0 ? d.images[0] : null,
+      searchText: [d.name, d.nameCN, d.journeyName, d.journeyNameCN, getStateSearchText(d.state)]
+        .filter(Boolean)
+        .join(' '),
     }))
   }, [destinationsData, homeLocations, listHome, listGroup, listOther, locale])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
     if (!q) return allCards
-    return allCards.filter(c => c.title.toLowerCase().includes(q) || (c.meta1 || '').toLowerCase().includes(q))
+    return allCards.filter(c => c.searchText.toLowerCase().includes(q))
   }, [allCards, query])
 
   const visible = filtered.slice(0, shown)

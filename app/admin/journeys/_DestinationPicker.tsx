@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { BODY, Btn, C, Checkbox, Chip, DISPLAY, Drawer, SearchPill, Toggle } from '../_ui'
+import { stateMatchesSearch } from 'src/utils/stateSearch'
 
 /* ============================================================
    DestinationPicker — right drawer for staging journey
@@ -56,7 +57,7 @@ export default function DestinationPicker({
 
   const filteredAvailableDestinations = availableDestinations.filter(dest =>
     dest.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    dest.state?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    stateMatchesSearch(dest.state, searchTerm) ||
     dest.nameCN?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
